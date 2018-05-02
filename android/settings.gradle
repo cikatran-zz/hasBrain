@@ -1,0 +1,3 @@
+rootProject.name = 'hasBrain'
+
+include ':app'
