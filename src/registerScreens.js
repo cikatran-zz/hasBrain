@@ -3,28 +3,25 @@ import ExploreStack from './screenStacks/ExploreStack'
 import SaveStack from "./screenStacks/SaveStack";
 import {Image, StyleSheet} from "react-native";
 import React from "react";
+import {colors} from "./constants/colors";
+import {strings} from "./constants/strings";
+import {defaultHeaderStyle} from "./constants/theme";
 
 const TabNav = TabNavigator({
     Explore: {
         screen: ExploreStack,
         navigationOptions: ({navigation}) => ({
-            header: null,
+            title: strings.exploreHeader,
+            headerTitleStyle: defaultHeaderStyle,
             tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_home.png')} style={{tintColor: tintColor, width: 25, height: 25}}/>),
-            tabBarOptions: {
-                activeTintColor: '#ffffff',
-                inactiveTintColor: '#ECECEC'
-            }
         }),
     },
     Save: {
         screen: SaveStack,
         navigationOptions: ({navigation}) => ({
-            header: null,
+            title: strings.bookmarkHeader,
+            headerTitleStyle: defaultHeaderStyle,
             tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_bookmark.png')} style={{tintColor: tintColor, width: 25, height: 25}}/>),
-            tabBarOptions: {
-                activeTintColor: '#ffffff',
-                inactiveTintColor: '#ECECEC'
-            }
         }),
     }
 }, {
@@ -32,12 +29,12 @@ const TabNav = TabNavigator({
     animationEnabled: false,
     tabBarOptions: {
         style: {
-            backgroundColor: '#4ec2ea'
+            backgroundColor: colors.mainWhite
         },
         showLabel: false,
         showIcon: true,
-        activeTintColor: '#ffffff',
-        inactiveTintColor: '#808285'
+        activeTintColor: colors.mainDarkGray,
+        inactiveTintColor: colors.mainLightGray
     }
 });
 

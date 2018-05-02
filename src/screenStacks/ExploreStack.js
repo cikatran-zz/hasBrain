@@ -3,11 +3,8 @@ import Explore from "../screens/Explore";
 
 export default ExploreStack = StackNavigator({
     Explore: {
-        screen: Explore
+        screen: Explore,
     }
-}, {
-    headerMode: 'none',
-    navigationOptions: {
-        gesturesEnabled: false,
-    }
+},{
+    headerMode: 'none'
 });
