@@ -1,22 +1,44 @@
 import {StackNavigator, TabNavigator} from 'react-navigation'
-import Home from './screens/Home'
-
-const HomeStack = StackNavigator({
-    Home: {
-        screen: Home
-    }
-});
+import ExploreStack from './screenStacks/ExploreStack'
+import SaveStack from "./screenStacks/SaveStack";
+import {Image, StyleSheet} from "react-native";
+import React from "react";
 
 const TabNav = TabNavigator({
-    Home: {
-        screen: HomeStack,
+    Explore: {
+        screen: ExploreStack,
         navigationOptions: ({navigation}) => ({
             header: null,
+            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_home.png')} style={{tintColor: tintColor, width: 25, height: 25}}/>),
+            tabBarOptions: {
+                activeTintColor: '#ffffff',
+                inactiveTintColor: '#ECECEC'
+            }
+        }),
+    },
+    Save: {
+        screen: SaveStack,
+        navigationOptions: ({navigation}) => ({
+            header: null,
+            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_bookmark.png')} style={{tintColor: tintColor, width: 25, height: 25}}/>),
+            tabBarOptions: {
+                activeTintColor: '#ffffff',
+                inactiveTintColor: '#ECECEC'
+            }
         }),
     }
 }, {
     swipeEnabled: false,
     animationEnabled: false,
+    tabBarOptions: {
+        style: {
+            backgroundColor: '#4ec2ea'
+        },
+        showLabel: false,
+        showIcon: true,
+        activeTintColor: '#ffffff',
+        inactiveTintColor: '#808285'
+    }
 });
 
 export const ScreenStack = StackNavigator({
@@ -24,7 +46,6 @@ export const ScreenStack = StackNavigator({
         screen: TabNav
     }
 }, {
-    headerMode: 'none',
     navigationOptions: {
         gesturesEnabled: false,
     }

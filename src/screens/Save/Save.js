@@ -1,7 +1,7 @@
 import React from 'react'
-import {View} from 'react-native'
+import {Text, View} from 'react-native'
 
-export default class Home extends React.Component {
+export default class Save extends React.Component {
 
     constructor(props) {
         super(props)
@@ -11,6 +11,7 @@ export default class Home extends React.Component {
 
         return (
             <View style={{backgroundColor: '#ECECEC'}}>
+                <Text>Save</Text>
             </View>
         )
     }

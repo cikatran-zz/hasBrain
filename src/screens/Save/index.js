@@ -1,4 +1,4 @@
-import Home from './Home'
+import Save from './Save'
 import {connect} from 'react-redux';
 
 function mapStateToProps(state) {
@@ -14,4 +14,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Home);
+)(Save);
