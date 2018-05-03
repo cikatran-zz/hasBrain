@@ -1,6 +1,7 @@
 import {StackNavigator, TabNavigator} from 'react-navigation'
 import ExploreStack from './screenStacks/ExploreStack'
 import SaveStack from "./screenStacks/SaveStack";
+import NotificationStack from './screenStacks/NotificationStack'
 import {Image, StyleSheet} from "react-native";
 import React from "react";
 import {colors} from "./constants/colors";
@@ -13,7 +14,7 @@ const TabNav = TabNavigator({
         navigationOptions: ({navigation}) => ({
             title: strings.exploreHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_home.png')} style={{tintColor: tintColor, width: 25, height: 25}}/>),
+            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_explore.png')} style={{tintColor: tintColor, width: 25, height: 25}}/>),
         }),
     },
     Save: {
@@ -21,7 +22,15 @@ const TabNav = TabNavigator({
         navigationOptions: ({navigation}) => ({
             title: strings.bookmarkHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_bookmark.png')} style={{tintColor: tintColor, width: 25, height: 25}}/>),
+            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_saved.png')} style={{tintColor: tintColor, width: 25, height: 25}}/>),
+        }),
+    },
+    Notification: {
+        screen: NotificationStack,
+        navigationOptions: ({navigation}) => ({
+            title: strings.notificationHeader,
+            headerTitleStyle: defaultHeaderStyle,
+            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_notification.png')} style={{tintColor: tintColor, width: 25, height: 25}}/>),
         }),
     }
 }, {

@@ -1,4 +1,5 @@
 export const strings = {
     exploreHeader: "hasBrain",
-    bookmarkHeader: "Bookmark"
+    bookmarkHeader: "Bookmark",
+    notificationHeader: "Notification"
 };

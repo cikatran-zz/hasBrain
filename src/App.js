@@ -6,7 +6,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import {Image, View} from 'react-native'
 const { persistor, store } = configureStore();
 
-const hasBrainPic = require('./assets/ic_hasBrain.png')
+const hasBrainPic = require('./assets/ic_hasbrain.png')
 export default class App extends Component {
     render() {
         return (
