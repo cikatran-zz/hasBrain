@@ -3,23 +3,26 @@ import {ActivityIndicator, FlatList, SectionList, Text, View, StyleSheet} from '
 import {colors} from "../../constants/colors";
 import VerticalRow from "../../components/VerticalRow";
 
-export default class Explore extends React.Component {
+export default class Explore extends React.PureComponent {
 
     constructor(props) {
-        super(props)
+        super(props);
+        this.currentPage = 1;
     }
 
     componentDidMount() {
         this.props.getArticles(1,20);
+        this.props.getPlaylist();
     }
 
-    _keyExtractor = (item, index) => index;
+    _keyExtractor = (item, index) => index + "";
 
     _renderVerticalItem = ({item}) => (
         <VerticalRow title={item.title} author={item.author} time={item.sourceCreateAt}/>
     );
 
     _renderVerticalSection = ({item}) => (
+
         <FlatList
             style={{flex: 1}}
             horizontal={false}
@@ -29,25 +32,37 @@ export default class Explore extends React.Component {
             renderItem={this._renderVerticalItem} />
     );
 
-    render() {
-        const {articles} = this.props;
-        if (!articles.fetched || articles.isFetching) {
-            return (
-                <View style={{flex: 1, justifyContent:'center', alignItems:'center'}}>
-                    <ActivityIndicator size="large"/>
-                </View>
-            );
-        }
+    _fetchMore = () => {
+        this.currentPage += 1
+        this.props.getArticles(this.currentPage,20);
+    };
 
+    _renderListFooter = (isFetching) => {
+        return (
+            <View style={{justifyContent:'center', alignItems:'center', height: 200}}>
+                <ActivityIndicator size="large"/>
+            </View>
+        );
+    };
+
+    render() {
+        const {articles, playlist} = this.props;
+        if (articles.error === true) {
+            return null;
+        }
         return (
             <View style={{flex: 1, flexDirection: 'column'}}>
                 <SectionList
+                    refreshing={articles.isFetching}
+                    onRefresh={() => this.props.getArticles(1,20)}
                     style={{backgroundColor: colors.mainLightGray, position: 'relative', flex: 1}}
                     keyExtractor={this._keyExtractor}
                     stickySectionHeadersEnabled={false}
-                    onEndReachedThreshold={20}
                     showsVerticalScrollIndicator={false}
                     bounces={true}
+                    onEndReached={this._fetchMore}
+                    ListFooterComponent={()=>this._renderListFooter(articles.isFetching)}
+                    onEndReachedThreshold={1}
                     sections={[
                         {data: [articles.data], renderItem: this._renderVerticalSection}
                     ]}
