@@ -28,6 +28,7 @@ export default function notificationReducer(state = initialState, action) {
                 fetched: true,
                 errorMessage: action.errorMessage
             }
-
+        default:
+            return state
     }
 }

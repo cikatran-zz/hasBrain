@@ -4,23 +4,20 @@ import {blackTextStyle, grayTextStyle, titleCardStyle} from "../constants/theme"
 import {getPublishDateDescription} from "../utils/dateUtils";
 import {colors} from "../constants/colors";
 
-export default class VerticalRow extends React.PureComponent {
+export default class VerticalNotificationRow extends React.PureComponent {
     render() {
         return (
             <View style={[styles.cardView, this.props.style]}>
                 <View style={styles.horizontalView}>
                     <Text style={[titleCardStyle, {flex: 2, flexWrap: "wrap"}]}>{this.props.title}</Text>
-                    <Image source={require('../assets/ic_hasbrain.png')}
+                    <Image source={{uri:this.props.image}}
                            style={styles.thumbnailImage}/>
                 </View>
                 <View style={[styles.horizontalView, {marginTop: 15}]}>
                     <View style={styles.subTextView}>
-                        <Text style={blackTextStyle}>{this.props.author}</Text>
+                        <Text style={blackTextStyle}>{this.props.highlight}</Text>
                         <Text style={grayTextStyle}>{getPublishDateDescription(this.props.time)}</Text>
                     </View>
-                    <TouchableOpacity style={styles.savedButton}>
-                        <Image style={styles.saveImage} source={require('../assets/ic_saved.png')}/>
-                    </TouchableOpacity>
                 </View>
             </View>
         )
