@@ -1,6 +1,6 @@
 import * as actionTypes from './actionTypes';
 
-export function getArticles(page, perPage) {
+export function getPlaylist(page, perPage) {
     return {
         type: actionTypes.FETCHING_PLAYLIST,
     }

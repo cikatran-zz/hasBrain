@@ -1,5 +1,5 @@
 import Notification from './Notification'
-import {connect} from 'react-redux';
+import { connect } from 'react-redux'
 import { getNotification } from '../../actions/getNotification'
 
 function mapStateToProps(state) {
@@ -17,4 +17,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Notification);
+)(Notification)

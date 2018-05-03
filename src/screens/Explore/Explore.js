@@ -12,7 +12,7 @@ export default class Explore extends React.PureComponent {
 
     componentDidMount() {
         this.props.getArticles(1,20);
-        this.props.getPlaylist();
+        // this.props.getPlaylist();
     }
 
     _keyExtractor = (item, index) => index + "";
