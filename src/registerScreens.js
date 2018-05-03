@@ -14,7 +14,7 @@ const TabNav = TabNavigator({
         navigationOptions: ({navigation}) => ({
             title: strings.exploreHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_explore.png')} style={{tintColor: tintColor, width: 25, height: 25}}/>),
+            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_explore.png')} style={{tintColor: tintColor, width: 25, height: 25, resizeMode: 'contain'}}/>),
         }),
     },
     Save: {
@@ -22,7 +22,7 @@ const TabNav = TabNavigator({
         navigationOptions: ({navigation}) => ({
             title: strings.bookmarkHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_saved.png')} style={{tintColor: tintColor, width: 25, height: 25}}/>),
+            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_saved.png')} style={{tintColor: tintColor, width: 25, height: 25, resizeMode: 'contain'}}/>),
         }),
     },
     Notification: {
@@ -30,7 +30,7 @@ const TabNav = TabNavigator({
         navigationOptions: ({navigation}) => ({
             title: strings.notificationHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_notification.png')} style={{tintColor: tintColor, width: 25, height: 25}}/>),
+            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_notification.png')} style={{tintColor: tintColor, width: 25, height: 25, resizeMode: 'contain'}}/>),
         }),
     }
 }, {

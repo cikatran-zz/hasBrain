@@ -7,22 +7,22 @@ const initialState = {
     error: false,
 };
 
-export default function articlesReducer(state = initialState, action) {
+export default function playlistReducer(state = initialState, action) {
 
     switch (action.type) {
-        case actionTypes.FETCHING_ARTICLE:
+        case actionTypes.FETCHING_PLAYLIST:
             return {
                 ...state,
                 isFetching: true
             };
-        case actionTypes.FETCH_ARTICLE_SUCCESS:
+        case actionTypes.FETCH_PLAYLIST_SUCCESS:
             return {
                 ...state,
                 isFetching: false,
                 fetched: true,
-                data: [...((state.data != null) ? state.data: []), ...action.data]
+                data: action.data
             };
-        case actionTypes.FETCH_ARTICLE_FAILURE:
+        case actionTypes.FETCH_PLAYLIST_FAILURE:
             return {
                 ...state,
                 isFetching: false,

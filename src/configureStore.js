@@ -9,6 +9,7 @@ import {createReactNavigationReduxMiddleware} from "react-navigation-redux-helpe
 import { persistStore, persistReducer } from 'redux-persist'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import storage from 'redux-persist/lib/storage'
+import articlesReducer from "./reducers/articlesReducer";
 
 const navMiddleware = createReactNavigationReduxMiddleware(
     "root",
@@ -21,7 +22,7 @@ let applyMiddlewares = applyMiddleware(epicMiddleware, navMiddleware);
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['nav'],
+    blacklist: ['nav', 'articlesReducer'],
     stateReconciler: autoMergeLevel2
 }
 

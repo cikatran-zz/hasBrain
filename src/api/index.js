@@ -52,12 +52,18 @@ const get = (endpoints) => {
 };
 
 export const getArticles = (page, perPage) => {
-    console.log(page,perPage);
     return client.query({
         query: config.queries.articles,
-        //variables: {page: page, perPage: perPage}
+        variables: {page: page, perPage: perPage}
     })
 };
+
+export const getPlaylist = () => {
+    return client.query({
+        query: config.queries.playlist,
+    })
+};
+
 export const getNotification = () => {
     return fetch('http://hasbrain-api.mstage.io/highlight?profile_id=5ad85caf0a553e680e7e28a6', {
         method: 'GET',
