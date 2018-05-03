@@ -2,44 +2,26 @@ import React from 'react'
 import {
     Text, View, FlatList, StyleSheet
 } from 'react-native'
-import { getNotification } from '../../api'
+import VerticalNotificationRow from '../../components/VerticalNotificationRow'
 
 export default class Notification extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = {
-            notificationData: null
-        }
     }
 
     componentDidMount() {
-        getNotification().then((response) => response.json()).then((response) => {
-            console.log(response)
-        });
-        let temp = [{ name: 'abc' }, { name: 'temp 1' }]
-        this._updateNotificationData(temp)
-    }
-
-    _updateNotificationData = (notification) => {
-        this.setState({ notificationData: notification })
+        this.props.getNotification()
     }
 
     _renderListItem = ({ item }) => {
         return (
-            <View style={styles.listItemContainer}>
-                <Text>{item.name}</Text>
-                <Text>{item.name}</Text>
-                <Text>{item.name}</Text>
-
-
-            </View>
+            <VerticalNotificationRow title={item.title} highlight={item.highlight} time={item.created_at} image={item.photo}/>
         )
     }
 
     render() {
-        console.log(this.props)
-        // const {data} = this.props.navigation.state.params;
+        const { notification } = this.props
         return (
             <View style={{ backgroundColor: '#ECECEC' }}>
                 <FlatList
@@ -47,7 +29,7 @@ export default class Notification extends React.Component {
                     keyExtractor={this._keyExtractor}
                     horizontal={false}
                     renderItem={this._renderListItem}
-                    data={this.state.notificationData}
+                    data={notification.data}
                     ItemSeparatorComponent={() => <View
                         style={{
                             width: '100%',
