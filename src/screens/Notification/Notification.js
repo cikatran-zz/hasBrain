@@ -2,6 +2,7 @@ import React from 'react'
 import {
     Text, View, FlatList, StyleSheet
 } from 'react-native'
+import { getNotification } from '../../api'
 
 export default class Notification extends React.Component {
 
@@ -13,6 +14,9 @@ export default class Notification extends React.Component {
     }
 
     componentDidMount() {
+        getNotification().then((response) => response.json()).then((response) => {
+            console.log(response)
+        });
         let temp = [{ name: 'abc' }, { name: 'temp 1' }]
         this._updateNotificationData(temp)
     }

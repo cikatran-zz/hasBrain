@@ -8,10 +8,16 @@ const instance = axios.create({
     serverURL: `${config.serverURL}`
 });
 
-const httpLink = new HttpLink({
+const httpLinkContentkit = new HttpLink({
     uri: config.serverURL,
     headers: {
-        Authorization: config.authenKey}
+        Authorization: config.authenKeyContentKit}
+});
+
+const httpLinkHasbrain = new HttpLink({
+    uri: config.serverURL,
+    headers: {
+        Authorization: config.authenKeyHasbrain}
 });
 
 const errorHandler = onError(({networkError}) => {
@@ -24,7 +30,7 @@ const errorHandler = onError(({networkError}) => {
 });
 
 const client = new ApolloClient({
-    link: errorHandler.concat(httpLink),
+    link: errorHandler.concat(httpLinkContentkit),
     cache: new InMemoryCache()
 });
 
@@ -44,3 +50,14 @@ const get = (endpoints) => {
             throw err;
         });
 };
+
+export const getNotification = () => {
+    return fetch('http://hasbrain-api.mstage.io/highlight?profile_id=5ad85caf0a553e680e7e28a6', {
+        method: 'GET',
+        headers: {
+            'x-hasbrain-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhYjMzNzI1ZTZlOTFlMGNlMDk4OWRlNCIsImlhdCI6MTUxNjIzOTAyMn0.anJXLAhnRxz37NxmiKtzk76KBZCH1RQXV1DuQCy1wMc'
+        }
+    }).then(data => {
+        return data
+    })
+}
