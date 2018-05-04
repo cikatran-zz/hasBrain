@@ -3,6 +3,7 @@ import {Image, Text, TouchableOpacity, View, StyleSheet, ImageBackground} from "
 import {blackTextStyle, grayTextStyle, titleCardStyle} from "../constants/theme";
 import {getPublishDateDescription} from "../utils/dateUtils";
 import {colors} from "../constants/colors";
+import _ from 'lodash'
 
 export default class HorizontalCell extends React.PureComponent {
     render() {
@@ -10,8 +11,8 @@ export default class HorizontalCell extends React.PureComponent {
             <View style={[styles.cardView, this.props.style]} >
                 <Image style={styles.image} source={require('../assets/ic_hasbrain.png')}/>
                 <View style={styles.textView}>
-                    <Text numberOfLines={2} style={[titleCardStyle, {height: 60, flexWrap: "wrap", width: '100%', flex: 1}]}>{this.props.title}</Text>
-                    <Text style={[blackTextStyle, {marginBottom: 5}]}>{this.props.author}</Text>
+                    <Text numberOfLines={2} style={[titleCardStyle, {height: 60, flexWrap: "wrap", width: '100%', flex: 1}]}>{(this.props.title == null) ? "" : this.props.title}</Text>
+                    <Text style={[blackTextStyle, {marginBottom: 5}]}>{(this.props.author == null) ? "" : this.props.author}</Text>
                     <Text style={grayTextStyle}>{getPublishDateDescription(this.props.time)}</Text>
                 </View>
             </View>

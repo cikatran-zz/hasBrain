@@ -33,6 +33,11 @@
   
   [IQKeyboardManagerObj enable];
   
+  NSString *token = @"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0X2lkIjoiNWFkODU4MjRiM2NlYzM0MTUzMDRhZWI2IiwiaWF0IjoxNTI0MTI5MTI2fQ.4HywQhdO-7LEEYcwrAsybLqBArgzHbD0sy2yScU2Rjk";
+  
+  [[UserKitModule sharedInstance] initializeWithToken:token];
+  [[UserKitIdentityModule sharedInstance] initializeWithToken:token];
+  
   return YES;
 }
 

@@ -15,13 +15,13 @@ export default class VerticalRow extends React.PureComponent {
         return (
             <View style={[styles.cardView, this.props.style]}>
                 <View style={styles.horizontalView}>
-                    <Text style={[titleCardStyle, {flex: 2, flexWrap: "wrap"}]}>{this.props.title}</Text>
+                    <Text style={[titleCardStyle, {flex: 2, flexWrap: "wrap"}]}>{(this.props.title == null) ? "" : this.props.title}</Text>
                     <Image source={require('../assets/ic_hasbrain.png')}
                            style={styles.thumbnailImage}/>
                 </View>
                 <View style={[styles.horizontalView, {marginTop: 15}]}>
                     <View style={styles.subTextView}>
-                        <Text style={[blackTextStyle, {marginBottom: 5}]}>{this.props.author}</Text>
+                        <Text style={[blackTextStyle, {marginBottom: 5}]}>{(this.props.author == null) ? "" : this.props.author}</Text>
                         <Text style={grayTextStyle}>{getPublishDateDescription(this.props.time)}</Text>
                     </View>
                     <TouchableOpacity style={styles.savedButton}>

@@ -1,6 +1,9 @@
 import React from 'react'
-import {Text, View, StyleSheet, Image, Platform, TextInput, TouchableOpacity} from 'react-native'
+import {Text, View, StyleSheet, Image, Platform, TextInput, TouchableOpacity, NativeModules} from 'react-native'
 import {colors} from "../../constants/colors";
+import {NavigationActions} from "react-navigation";
+import IndicatorModal from "../../components/IndicatorModal";
+import Toast from 'react-native-root-toast';
 
 export default class Explore extends React.PureComponent {
 
@@ -8,22 +11,95 @@ export default class Explore extends React.PureComponent {
         super(props);
         this.email = "";
         this.password = "";
+        this.indicatorModal = null;
     }
 
     componentDidMount() {
+        NativeModules.RNUserKitIdentity.checkSignIn((error, results) => {
+            let result = JSON.parse(results[0]);
+            if (result.is_sign_in) {
+                this._goToHomeScreen();
+            }
+        });
     }
 
-    _signUp = () => {
+    _goToHomeScreen = () => {
+        const resetAction = NavigationActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({
+                    routeName: 'Home'
+                })
+            ]
+        });
+        this.props.navigation.dispatch(resetAction);
+    };
 
+    _signUp = () => {
+        if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) {
+            this._showMessage("Invalid email");
+            return;
+        }
+        this.indicatorModal.setState({isShow: true});
+        NativeModules.RNUserKitIdentity.signUpWithEmail(this.email, this.password, {}, (error, results) => {
+            if (error != null) {
+                this.callbackMessage = JSON.parse(error).message;
+                this.indicatorModal.setState({isShow: false});
+            } else {
+                this.indicatorModal.setState({isShow: false});
+                this._goToHomeScreen();
+            }
+        })
     };
 
     _signIn = () => {
-
+        if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) {
+            this._showMessage("Invalid email");
+            return;
+        }
+        this.indicatorModal.setState({isShow: true});
+        NativeModules.RNUserKitIdentity.signInWithEmail(this.email, this.password, (error, results) => {
+            if (error != null) {
+                this.callbackMessage = JSON.parse(error).message;
+                this.indicatorModal.setState({isShow: false});
+            } else {
+                this.indicatorModal.setState({isShow: false});
+                this._goToHomeScreen();
+            }
+        })
     };
+
+    _showMessage = (message) => {
+        Toast.show(message, {
+            duration: Toast.durations.LONG,
+            position: Toast.positions.BOTTOM,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+            onShow: () => {
+
+            },
+            onShown: () => {
+
+            },
+            onHide: () => {
+
+            },
+            onHidden: () => {
+
+            }
+        });
+    };
+
+    onDismissIndicatorModal() {
+        this._showMessage(this.callbackMessage)
+    }
 
     render() {
         return (
             <View style={styles.container}>
+                <IndicatorModal ref={(modal)=>{this.indicatorModal = modal}} onDismiss={this.onDismissIndicatorModal.bind(this)}/>
                 <Image style={styles.image} source={require('../../assets/ic_hasbrain.png')}/>
                 <Text style={styles.text}>hasBrain</Text>
                 <TextInput style={styles.inputText}

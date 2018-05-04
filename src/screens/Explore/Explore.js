@@ -33,9 +33,12 @@ export default class Explore extends React.PureComponent {
             renderItem={this._renderVerticalItem}/>
     );
 
-    _renderHorizontalItem = ({item}) => (
-        <HorizontalCell title={item.title} author={item.author} time={item.sourceCreateAt}/>
-    );
+    _renderHorizontalItem = ({item}) => {
+        if (item == null) {
+            return null;
+        }
+        return (<HorizontalCell title={item.title} author={item.author} time={item.sourceCreateAt}/>)
+    };
 
     _renderHorizontalFooter = () => (
         <View style={{

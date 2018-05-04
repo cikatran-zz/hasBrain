@@ -2,7 +2,7 @@ import {StackNavigator, TabNavigator} from 'react-navigation'
 import ExploreStack from './screenStacks/ExploreStack'
 import SaveStack from "./screenStacks/SaveStack";
 import NotificationStack from './screenStacks/NotificationStack'
-import {Image, StyleSheet} from "react-native";
+import {Image, StyleSheet, NativeModules} from "react-native";
 import React from "react";
 import {colors} from "./constants/colors";
 import {strings} from "./constants/strings";
