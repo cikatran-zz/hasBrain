@@ -11,12 +11,16 @@ export default class VerticalRow extends React.PureComponent {
 
     }
 
+    _getImage = () => {
+        return (this.props.image != null) ? {uri:this.props.image} : require('../assets/ic_hasbrain.png');
+    };
+
     render() {
         return (
             <View style={[styles.cardView, this.props.style]}>
                 <View style={styles.horizontalView}>
                     <Text style={[titleCardStyle, {flex: 2, flexWrap: "wrap"}]}>{(this.props.title == null) ? "" : this.props.title}</Text>
-                    <Image source={require('../assets/ic_hasbrain.png')}
+                    <Image source={this._getImage()}
                            style={styles.thumbnailImage}/>
                 </View>
                 <View style={[styles.horizontalView, {marginTop: 15}]}>

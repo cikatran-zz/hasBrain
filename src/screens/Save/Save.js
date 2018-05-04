@@ -4,6 +4,7 @@ import {
 } from 'react-native'
 import VerticalNotificationRow from '../../components/VerticalNotificationRow'
 import {colors} from "../../constants/colors";
+import VerticalRow from "../../components/VerticalRow";
 
 export default class Save extends React.Component {
 
@@ -17,8 +18,7 @@ export default class Save extends React.Component {
 
     _renderListItem = ({ item }) => {
         return (
-            <VerticalNotificationRow title={item.title} highlight={item.description}
-                                     time={item.created_at} image={item.photo}/>
+            <VerticalRow title={item.title} time={item.created_at} image={item.photo}/>
         )
     };
 

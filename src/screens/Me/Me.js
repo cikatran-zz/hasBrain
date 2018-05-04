@@ -3,6 +3,7 @@ import {
     Text, View, StyleSheet, NativeModules, Platform, TouchableOpacity
 } from 'react-native'
 import { colors } from '../../constants/colors'
+import {NavigationActions} from "react-navigation";
 
 export default class Me extends React.Component {
 
@@ -15,15 +16,13 @@ export default class Me extends React.Component {
     }
 
     _signOut = () => {
-        const { navigation } = this.props
-        NativeModules.RNUserKitIdentity.signOut()
-        navigation.goBack()
-    }
+        NativeModules.RNUserKitIdentity.signOut();
+        this.props.navigation.navigate('Root')
+    };
 
     render() {
-        const { me } = this.props
         return (
-            <View style={{ backgroundColor: colors.mainLightGray }}>
+            <View style={{ backgroundColor: colors.mainLightGray, flex:1, justifyContent: 'center', alignItems: 'center'}}>
                 <TouchableOpacity onPress={() => this._signOut()}>
                     <Text style={styles.signOut}>Sign out</Text>
                 </TouchableOpacity>
@@ -40,11 +39,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff'
     },
     signOut: {
-        marginLeft: 70,
-        marginRight: 70,
-        marginBottom: 84,
+        paddingVertical: 15,
+        paddingHorizontal: 25,
         borderRadius: (Platform.OS === 'ios') ? 17 : 30,
-        backgroundColor: '#000000',
+        backgroundColor: colors.redButton,
         fontSize: 17,
         color: '#ffffff',
         overflow: 'hidden',

@@ -18,6 +18,7 @@ export default class Explore extends React.PureComponent {
         this.state = {
             isChecked: false
         };
+        this.callbackMessage = "";
     }
 
     componentDidMount() {
@@ -77,6 +78,9 @@ export default class Explore extends React.PureComponent {
     };
 
     _showMessage = (message) => {
+        if (message === "") {
+            return;
+        }
         Toast.show(message, {
             duration: Toast.durations.LONG,
             position: Toast.positions.BOTTOM,
