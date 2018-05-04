@@ -52,24 +52,29 @@ public class AndroidUserKitIdentityFramework extends ReactContextBaseJavaModule 
                     }
                     AccountProfile profile = accountProfiles.get(0);
                     WritableNativeMap map = new WritableNativeMap();
-                    map.putString("name",profile.getName());
+                    map.putString("name", profile.getName());
                     map.putString("email", profile.getAccountEmail());
                     if (profile.getProperties().get("age") == null) {
                         map.putNull("age");
-                    }else {
+                    } else {
                         map.putString("age", profile.getProperties().get("age").toString());
                     }
                     if (profile.getProperties().get("sex") == null) {
                         map.putNull("sex");
                     } else {
-                        map.putString("sex", (String)profile.getProperties().get("sex"));
+                        map.putString("sex", (String) profile.getProperties().get("sex"));
+                    }
+                    if (profile.getId() == null) {
+                        map.putNull("id");
+                    } else {
+                        map.putString("id", profile.getId());
                     }
 
                     WritableNativeArray array = new WritableNativeArray();
                     array.pushMap(map);
                     callback.invoke(null, array);
 
-                }, throwable ->  callback.invoke(((IdentityException) throwable).toJsonString(), null));
+                }, throwable -> callback.invoke(((IdentityException) throwable).toJsonString(), null));
     }
 
 
