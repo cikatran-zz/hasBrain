@@ -1,8 +1,15 @@
 import React from 'react'
-import {ActivityIndicator, FlatList, SectionList, Text, View, StyleSheet} from 'react-native'
+import {ActivityIndicator, FlatList, SectionList, Text, View, StyleSheet, Dimensions} from 'react-native'
 import {colors} from "../../constants/colors";
 import VerticalRow from "../../components/VerticalRow";
 import HorizontalCell from "../../components/HorizontalCell";
+import Carousel from 'react-native-snap-carousel';
+
+const horizontalMargin = 20;
+const slideWidth = 280;
+
+const sliderWidth = Dimensions.get('window').width;
+const itemWidth = slideWidth + horizontalMargin * 2;
 
 export default class Explore extends React.PureComponent {
 
@@ -49,15 +56,15 @@ export default class Explore extends React.PureComponent {
     );
 
     _renderHorizontalSection = ({item}) => (
-        <FlatList
-            style={{paddingHorizontal: 10}}
-            horizontal={true}
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
+        item?<Carousel
+            layout={'default'}
             data={item}
             keyExtractor={this._keyExtractor}
+            sliderWidth={sliderWidth}
+            itemWidth={itemWidth}
+            layoutCardOffset={40}
             ListFooterComponent={this._renderHorizontalFooter}
-            renderItem={this._renderHorizontalItem} />
+            renderItem={this._renderHorizontalItem} />:null
     );
 
     _fetchMore = () => {
@@ -92,7 +99,7 @@ export default class Explore extends React.PureComponent {
                     ListFooterComponent={()=>this._renderListFooter(articles.isFetching)}
                     onEndReachedThreshold={1}
                     sections={[
-                        {data: [playlist.data], renderItem: this._renderHorizontalSection},
+                        {data: [playlist.data ?playlist.data : null], renderItem: this._renderHorizontalSection},
                         {data: [articles.data], renderItem: this._renderVerticalSection}
                     ]}
                 />

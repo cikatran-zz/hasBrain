@@ -29,8 +29,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.mainWhite,
         borderRadius: 5,
         flex: 1,
-        width: 250,
-        marginRight: 10,
+        width: '100%',
         marginVertical: 10
     },
     image: {
