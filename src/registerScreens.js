@@ -1,33 +1,36 @@
-import {StackNavigator, TabNavigator} from 'react-navigation'
+import { StackNavigator, TabNavigator } from 'react-navigation'
 import ExploreStack from './screenStacks/ExploreStack'
-import SaveStack from "./screenStacks/SaveStack";
+import SaveStack from './screenStacks/SaveStack'
 import NotificationStack from './screenStacks/NotificationStack'
-import {Image, StyleSheet, NativeModules} from "react-native";
-import React from "react";
-import {colors} from "./constants/colors";
-import {strings} from "./constants/strings";
-import {defaultHeaderStyle} from "./constants/theme";
-import Authentication from "./screens/Authentication/Authentication";
-import MeStack from "./screenStacks/MeStack";
+import { Image, StyleSheet, NativeModules } from 'react-native'
+import React from 'react'
+import { colors } from './constants/colors'
+import { strings } from './constants/strings'
+import { defaultHeaderStyle } from './constants/theme'
+import Authentication from './screens/Authentication/Authentication'
+import Reader from './screens/Reader'
+import MeStack from './screenStacks/MeStack'
 
 const TabNav = TabNavigator({
     EXPLORE: {
         screen: ExploreStack,
-        navigationOptions: ({navigation}) => ({
+        navigationOptions: ({ navigation }) => ({
             title: 'Today I learnt',
             tabBarLabel: strings.exploreHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_explore.png')} style={[{tintColor: tintColor}, styles.tabBarIcon]}/>),
-        }),
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_explore.png')}
+                                                   style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
+        })
     },
     SAVED: {
         screen: SaveStack,
-        navigationOptions: ({navigation}) => ({
+        navigationOptions: ({ navigation }) => ({
             title: 'Saved',
             tabBarLabel: strings.bookmarkHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_saved.png')} style={[{tintColor: tintColor}, styles.tabBarIcon]}/>),
-        }),
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_saved.png')}
+                                                   style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
+        })
     },
     Me: {
         screen: MeStack,
@@ -41,13 +44,14 @@ const TabNav = TabNavigator({
     },
     NOTIFICATIONS: {
         screen: NotificationStack,
-        navigationOptions: ({navigation}) => ({
+        navigationOptions: ({ navigation }) => ({
             title: 'Following',
             tabBarLabel: strings.notificationHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_notification.png')} style={[{tintColor: tintColor}, styles.tabBarIcon]}/>),
-        }),
-    },
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_notification.png')}
+                                                   style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
+        })
+    }
 }, {
     tabBarPosition: 'bottom',
     swipeEnabled: false,
@@ -61,7 +65,7 @@ const TabNav = TabNavigator({
         activeTintColor: colors.blueText,
         inactiveTintColor: colors.mainDarkGray
     }
-});
+})
 
 const styles = StyleSheet.create({
     tabBarIcon: {
@@ -69,7 +73,7 @@ const styles = StyleSheet.create({
         height: 20,
         resizeMode: 'contain'
     }
-});
+})
 
 export const ScreenStack = StackNavigator({
 
@@ -81,9 +85,12 @@ export const ScreenStack = StackNavigator({
     },
     Home: {
         screen: TabNav
+    },
+    Reader: {
+        screen: Reader
     }
 }, {
     navigationOptions: {
-        gesturesEnabled: false,
+        gesturesEnabled: false
     }
-});
+})

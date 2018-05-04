@@ -17,7 +17,7 @@ export default class VerticalRow extends React.PureComponent {
 
     render() {
         return (
-            <View style={[styles.cardView, this.props.style]}>
+            <View style={[styles.cardView, this.props.style]} onPress={() => this.props.onPress()}>
                 <View style={styles.horizontalView}>
                     <Text style={[titleCardStyle, {flex: 2, flexWrap: "wrap"}]}>{(this.props.title == null) ? "" : this.props.title}</Text>
                     <Image source={this._getImage()}
