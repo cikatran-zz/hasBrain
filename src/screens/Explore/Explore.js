@@ -13,13 +13,11 @@ import { colors } from '../../constants/colors'
 import VerticalRow from '../../components/VerticalRow'
 import HorizontalCell from '../../components/HorizontalCell'
 import Carousel from 'react-native-snap-carousel'
-import { NavigationActions } from 'react-navigation'
 
-const horizontalMargin = 20
-const slideWidth = 200
+const horizontalMargin = 20;
 
 const sliderWidth = Dimensions.get('window').width
-const itemWidth = slideWidth + horizontalMargin * 2
+const itemWidth = sliderWidth - horizontalMargin * 2
 
 export default class Explore extends React.PureComponent {
 
@@ -58,9 +56,8 @@ export default class Explore extends React.PureComponent {
         if (item == null) {
             return null
         }
-        return (
-            <HorizontalCell title={item.title} author={item.author} time={item.sourceCreateAt}/>)
-    }
+        return (<HorizontalCell style={{alignSelf: 'center'}} title={item.title} author={item.author} time={item.sourceCreateAt} url={item.url} navigation={this.props.navigation}/>)
+    };
 
     _renderHorizontalFooter = () => (
         <View style={{
@@ -76,8 +73,10 @@ export default class Explore extends React.PureComponent {
             keyExtractor={this._keyExtractor}
             sliderWidth={sliderWidth}
             itemWidth={itemWidth}
+            layout={'default'}
             inactiveSlideOpacity={1}
             inactiveSlideScale={1}
+            layoutCardOffset={10}
             ListFooterComponent={this._renderHorizontalFooter}
             renderItem={this._renderHorizontalItem}/> : null
     )

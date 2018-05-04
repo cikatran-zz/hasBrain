@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-    Text, View, FlatList, StyleSheet
+    Text, View, FlatList, StyleSheet, TouchableOpacity
 } from 'react-native'
 import VerticalNotificationRow from '../../components/VerticalNotificationRow'
 import {colors} from "../../constants/colors";
@@ -16,9 +16,14 @@ export default class Save extends React.Component {
         this.props.getSaved()
     }
 
-    _renderListItem = ({ item }) => {
+    _renderListItem = ({item}) => {
         return (
-            <VerticalRow title={item.title} time={item.created_at} image={item.photo}/>
+            <TouchableOpacity onPress={() => {
+                this.props.navigation.navigate('Reader', {url: item.url})
+            }}>
+                <VerticalRow title={item.title} author={item.author} time={item.created_at} image={item.photo}
+                />
+            </TouchableOpacity>
         )
     };
 
@@ -26,14 +31,19 @@ export default class Save extends React.Component {
 
     _renderEmptyList = () => {
         return (
-            <View style={{flex: 1, backgroundColor: colors.mainLightGray, justifyContent: 'center', alignItems: 'center'}}/>
+            <View style={{
+                flex: 1,
+                backgroundColor: colors.mainLightGray,
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}/>
         )
     };
 
     render() {
-        const { saved } = this.props;
+        const {saved} = this.props;
         return (
-            <View style={{ backgroundColor: colors.mainLightGray, flex: 1 }}>
+            <View style={{backgroundColor: colors.mainLightGray, flex: 1}}>
                 <FlatList
                     refreshing={saved.isFetching}
                     onRefresh={() => this.props.getSaved()}

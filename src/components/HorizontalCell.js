@@ -11,7 +11,6 @@ import {
 import {blackTextStyle, grayTextStyle, titleCardStyle} from "../constants/theme";
 import {getPublishDateDescription} from "../utils/dateUtils";
 import {colors} from "../constants/colors";
-import _ from 'lodash'
 
 const horizontalMargin = 20;
 const slideWidth = 280;
@@ -19,16 +18,22 @@ const slideWidth = 280;
 const itemWidth = slideWidth + horizontalMargin * 2;
 
 export default class HorizontalCell extends React.PureComponent {
+    _openWebView = () => {
+        this.props.navigation.navigate('Reader', {url: this.props.url})
+    };
+
     render() {
         return (
-            <View style={[styles.cardView, this.props.style]} >
-                <Image style={styles.image} source={require('../assets/ic_hasbrain.png')}/>
-                <View style={styles.textView}>
-                    <Text numberOfLines={2} style={[titleCardStyle, {height: 60, flexWrap: "wrap", width: '100%', flex: 1}]}>{(this.props.title == null) ? "" : this.props.title}</Text>
-                    <Text style={[blackTextStyle, {marginBottom: 5}]}>{(this.props.author == null) ? "" : this.props.author}</Text>
-                    <Text style={grayTextStyle}>{getPublishDateDescription(this.props.time)}</Text>
+            <TouchableOpacity onPress={()=>this._openWebView()}>
+                <View style={[styles.cardView, this.props.style]} >
+                    <Image style={styles.image} source={require('../assets/ic_hasbrain.png')}/>
+                    <View style={styles.textView}>
+                        <Text numberOfLines={2} style={[titleCardStyle, {height: 60, flexWrap: "wrap", width: '100%', flex: 1}]}>{(this.props.title == null) ? "" : this.props.title}</Text>
+                        <Text style={[blackTextStyle, {marginBottom: 5}]}>{(this.props.author == null) ? "" : this.props.author}</Text>
+                        <Text style={grayTextStyle}>{getPublishDateDescription(this.props.time)}</Text>
+                    </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         )
     }
 }

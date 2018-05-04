@@ -10,21 +10,27 @@ export default class VerticalNotificationRow extends React.PureComponent {
         return (this.props.image != null) ? {uri:this.props.image} : require('../assets/ic_hasbrain.png');
     };
 
+    _openWebView = () => {
+        this.props.navigation.navigate('Reader', {url: this.props.url})
+    };
+
     render() {
         return (
-            <View style={[styles.cardView, this.props.style]}>
-                <View style={styles.horizontalView}>
-                    <Text style={[titleCardStyle, {flex: 2, flexWrap: "wrap"}]}>{(this.props.title == null) ? "" : this.props.title}</Text>
-                    <Image source={this._getImage()}
-                           style={styles.thumbnailImage}/>
-                </View>
-                <View style={[styles.horizontalView, {marginTop: 15}]}>
-                    <View style={styles.subTextView}>
-                        <Text style={blackTextStyle}>{(this.props.highlight == null) ? "" : this.props.highlight}</Text>
-                        <Text style={grayTextStyle}>{getPublishDateDescription(this.props.time)}</Text>
+            <TouchableOpacity onPress={()=>this._openWebView()}>
+                <View style={[styles.cardView, this.props.style]}>
+                    <View style={styles.horizontalView}>
+                        <Text style={[titleCardStyle, {flex: 2, flexWrap: "wrap"}]}>{(this.props.title == null) ? "" : this.props.title}</Text>
+                        <Image source={this._getImage()}
+                               style={styles.thumbnailImage}/>
+                    </View>
+                    <View style={[styles.horizontalView, {marginTop: 15}]}>
+                        <View style={styles.subTextView}>
+                            <Text style={blackTextStyle}>{(this.props.highlight == null) ? "" : this.props.highlight}</Text>
+                            <Text style={grayTextStyle}>{getPublishDateDescription(this.props.time)}</Text>
+                        </View>
                     </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         )
     }
 }

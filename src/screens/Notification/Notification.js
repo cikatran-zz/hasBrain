@@ -17,7 +17,7 @@ export default class Notification extends React.Component {
 
     _renderListItem = ({ item }) => {
         return (
-            <VerticalNotificationRow title={item.title} highlight={item.highlight} time={item.created_at} image={item.photo}/>
+            <VerticalNotificationRow title={item.title} highlight={item.highlight} time={item.created_at} image={item.photo} url={item.url} navigation={this.props.navigation}/>
         )
     };
 
