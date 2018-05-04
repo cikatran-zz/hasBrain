@@ -29,7 +29,7 @@ export default class VerticalRow extends React.PureComponent {
                         <Text style={grayTextStyle}>{getPublishDateDescription(this.props.time)}</Text>
                     </View>
                     <TouchableOpacity style={styles.savedButton}>
-                        <Image style={styles.saveImage} source={require('../assets/ic_saved.png')}/>
+                        <Image style={styles.saveImage} source={require('../assets/ic_menu_saved_inactive.png')}/>
                     </TouchableOpacity>
                 </View>
             </View>

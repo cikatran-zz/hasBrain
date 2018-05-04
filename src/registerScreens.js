@@ -18,7 +18,7 @@ const TabNav = TabNavigator({
             title: 'Today I learnt',
             tabBarLabel: strings.exploreHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_explore.png')}
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_explore_inactive.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     },
@@ -28,7 +28,7 @@ const TabNav = TabNavigator({
             title: 'Saved',
             tabBarLabel: strings.bookmarkHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_saved.png')}
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_saved_inactive.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     },
@@ -38,7 +38,7 @@ const TabNav = TabNavigator({
             title: 'Me',
             tabBarLabel: strings.meHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_hasbrain.png')}
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_me_inactive.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     },
@@ -48,7 +48,7 @@ const TabNav = TabNavigator({
             title: 'Following',
             tabBarLabel: strings.notificationHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_notification.png')}
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_noti_inactive.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     }
