@@ -7,6 +7,7 @@ import React from "react";
 import {colors} from "./constants/colors";
 import {strings} from "./constants/strings";
 import {defaultHeaderStyle} from "./constants/theme";
+import Authentication from "./screens/Authentication/Authentication";
 
 const TabNav = TabNavigator({
     Explore: {
@@ -57,7 +58,14 @@ const styles = StyleSheet.create({
 });
 
 export const ScreenStack = StackNavigator({
+
     Root: {
+        screen: Authentication,
+        navigationOptions: {
+            header: null
+        }
+    },
+    Home: {
         screen: TabNav
     }
 }, {

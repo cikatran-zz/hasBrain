@@ -13,7 +13,6 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* hasBrainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* hasBrainTests.m */; };
-		038E974ADD5F6E17133A89C3 /* libPods-hasBrainTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC8E514DE0D3A2AC7F7E283C /* libPods-hasBrainTests.a */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
@@ -23,9 +22,34 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		36DECD1375A93FF64785D74C /* Pods_hasBrainTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB91D5FCF470029DA1079C6B /* Pods_hasBrainTests.framework */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
-		62BC02DB56132A1E0C77B050 /* libPods-hasBrain.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 23B5C06D1B7A65D139BCE856 /* libPods-hasBrain.a */; };
+		6927DEC9209C64F100FFA275 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEA4209C64F100FFA275 /* Constants.swift */; };
+		6927DECA209C64F100FFA275 /* LivePlaybackRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEA7209C64F100FFA275 /* LivePlaybackRecorder.swift */; };
+		6927DECB209C64F100FFA275 /* RNLivePlaybackRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEA8209C64F100FFA275 /* RNLivePlaybackRecorder.m */; };
+		6927DECC209C64F100FFA275 /* SpecificRequiredItem+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEAB209C64F100FFA275 /* SpecificRequiredItem+Extension.swift */; };
+		6927DECD209C64F100FFA275 /* ErrorModel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEAC209C64F100FFA275 /* ErrorModel+Extension.swift */; };
+		6927DECE209C64F100FFA275 /* EPG+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEAD209C64F100FFA275 /* EPG+Extension.swift */; };
+		6927DECF209C64F100FFA275 /* WatchingHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEB0209C64F100FFA275 /* WatchingHistory.swift */; };
+		6927DED0209C64F100FFA275 /* RNWatchingHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEB1209C64F100FFA275 /* RNWatchingHistory.m */; };
+		6927DED1209C64F100FFA275 /* RNVODPlaybackRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEB3209C64F100FFA275 /* RNVODPlaybackRecorder.m */; };
+		6927DED2209C64F100FFA275 /* VODPlaybackRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEB4209C64F100FFA275 /* VODPlaybackRecorder.swift */; };
+		6927DED3209C64F100FFA275 /* UserKitModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEB6209C64F100FFA275 /* UserKitModule.swift */; };
+		6927DED4209C64F100FFA275 /* RNUserKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEB7209C64F100FFA275 /* RNUserKit.m */; };
+		6927DED5209C64F100FFA275 /* OANotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEB9209C64F100FFA275 /* OANotificationCenter.swift */; };
+		6927DED6209C64F100FFA275 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEBB209C64F100FFA275 /* Notification.swift */; };
+		6927DED7209C64F100FFA275 /* RNOANotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEBC209C64F100FFA275 /* RNOANotification.m */; };
+		6927DED8209C64F100FFA275 /* IQKeyboardManagerObj.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEBE209C64F100FFA275 /* IQKeyboardManagerObj.swift */; };
+		6927DED9209C64F100FFA275 /* UserKitIdentityModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEC1209C64F100FFA275 /* UserKitIdentityModule.swift */; };
+		6927DEDA209C64F100FFA275 /* RNUserKitIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEC2209C64F100FFA275 /* RNUserKitIdentity.m */; };
+		6927DEDB209C64F100FFA275 /* UserKitIdentityProfile+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEC4209C64F100FFA275 /* UserKitIdentityProfile+Extension.swift */; };
+		6927DEDC209C64F100FFA275 /* UKIError+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEC5209C64F100FFA275 /* UKIError+Extension.swift */; };
+		6927DEDD209C64F100FFA275 /* AuthenticationModel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEC6209C64F100FFA275 /* AuthenticationModel+Extension.swift */; };
+		6927DEDE209C64F100FFA275 /* ImageUpload+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEC7209C64F100FFA275 /* ImageUpload+Extension.swift */; };
+		6927DEE2209C654A00FFA275 /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEE0209C654900FFA275 /* JSON.swift */; };
+		6927DEE3209C654A00FFA275 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEE1209C654900FFA275 /* String+Extension.swift */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		8784C7BAB3BC8EC83B27C4DF /* Pods_hasBrain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0395669FEDAC5182B67B5C5 /* Pods_hasBrain.framework */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 /* End PBXBuildFile section */
 
@@ -318,17 +342,48 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = hasBrain/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = hasBrain/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
-		23B5C06D1B7A65D139BCE856 /* libPods-hasBrain.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-hasBrain.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23F69FE4637A123D7C59BD1C /* Pods-hasBrainTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hasBrainTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-hasBrainTests/Pods-hasBrainTests.release.xcconfig"; sourceTree = "<group>"; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		6927DE6E209C627800FFA275 /* hasBrain-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "hasBrain-Bridging-Header.h"; sourceTree = "<group>"; };
+		6927DEA4209C64F100FFA275 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		6927DEA5209C64F100FFA275 /* RNUserKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNUserKit.h; sourceTree = "<group>"; };
+		6927DEA7209C64F100FFA275 /* LivePlaybackRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LivePlaybackRecorder.swift; sourceTree = "<group>"; };
+		6927DEA8209C64F100FFA275 /* RNLivePlaybackRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNLivePlaybackRecorder.m; sourceTree = "<group>"; };
+		6927DEA9209C64F100FFA275 /* RNLivePlaybackRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNLivePlaybackRecorder.h; sourceTree = "<group>"; };
+		6927DEAB209C64F100FFA275 /* SpecificRequiredItem+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SpecificRequiredItem+Extension.swift"; sourceTree = "<group>"; };
+		6927DEAC209C64F100FFA275 /* ErrorModel+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ErrorModel+Extension.swift"; sourceTree = "<group>"; };
+		6927DEAD209C64F100FFA275 /* EPG+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EPG+Extension.swift"; sourceTree = "<group>"; };
+		6927DEAF209C64F100FFA275 /* RNWatchingHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNWatchingHistory.h; sourceTree = "<group>"; };
+		6927DEB0209C64F100FFA275 /* WatchingHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchingHistory.swift; sourceTree = "<group>"; };
+		6927DEB1209C64F100FFA275 /* RNWatchingHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNWatchingHistory.m; sourceTree = "<group>"; };
+		6927DEB3209C64F100FFA275 /* RNVODPlaybackRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVODPlaybackRecorder.m; sourceTree = "<group>"; };
+		6927DEB4209C64F100FFA275 /* VODPlaybackRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VODPlaybackRecorder.swift; sourceTree = "<group>"; };
+		6927DEB5209C64F100FFA275 /* RNVODPlaybackRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVODPlaybackRecorder.h; sourceTree = "<group>"; };
+		6927DEB6209C64F100FFA275 /* UserKitModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserKitModule.swift; sourceTree = "<group>"; };
+		6927DEB7209C64F100FFA275 /* RNUserKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNUserKit.m; sourceTree = "<group>"; };
+		6927DEB9209C64F100FFA275 /* OANotificationCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OANotificationCenter.swift; sourceTree = "<group>"; };
+		6927DEBA209C64F100FFA275 /* RNOANotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNOANotification.h; sourceTree = "<group>"; };
+		6927DEBB209C64F100FFA275 /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
+		6927DEBC209C64F100FFA275 /* RNOANotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNOANotification.m; sourceTree = "<group>"; };
+		6927DEBE209C64F100FFA275 /* IQKeyboardManagerObj.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IQKeyboardManagerObj.swift; sourceTree = "<group>"; };
+		6927DEC1209C64F100FFA275 /* UserKitIdentityModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserKitIdentityModule.swift; sourceTree = "<group>"; };
+		6927DEC2209C64F100FFA275 /* RNUserKitIdentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNUserKitIdentity.m; sourceTree = "<group>"; };
+		6927DEC4209C64F100FFA275 /* UserKitIdentityProfile+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserKitIdentityProfile+Extension.swift"; sourceTree = "<group>"; };
+		6927DEC5209C64F100FFA275 /* UKIError+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UKIError+Extension.swift"; sourceTree = "<group>"; };
+		6927DEC6209C64F100FFA275 /* AuthenticationModel+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AuthenticationModel+Extension.swift"; sourceTree = "<group>"; };
+		6927DEC7209C64F100FFA275 /* ImageUpload+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImageUpload+Extension.swift"; sourceTree = "<group>"; };
+		6927DEC8209C64F100FFA275 /* RNUserKitIdentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNUserKitIdentity.h; sourceTree = "<group>"; };
+		6927DEE0209C654900FFA275 /* JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
+		6927DEE1209C654900FFA275 /* String+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8ABE82CC763D4698E642131D /* Pods-hasBrainTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hasBrainTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-hasBrainTests/Pods-hasBrainTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8D2B4A87433FF7DB5D2912C0 /* Pods-hasBrain.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hasBrain.debug.xcconfig"; path = "Pods/Target Support Files/Pods-hasBrain/Pods-hasBrain.debug.xcconfig"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
-		BC8E514DE0D3A2AC7F7E283C /* libPods-hasBrainTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-hasBrainTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BDC76855000675693051ED2A /* Pods-hasBrain.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hasBrain.release.xcconfig"; path = "Pods/Target Support Files/Pods-hasBrain/Pods-hasBrain.release.xcconfig"; sourceTree = "<group>"; };
+		CB91D5FCF470029DA1079C6B /* Pods_hasBrainTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_hasBrainTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0395669FEDAC5182B67B5C5 /* Pods_hasBrain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_hasBrain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -337,7 +392,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */,
-				038E974ADD5F6E17133A89C3 /* libPods-hasBrainTests.a in Frameworks */,
+				36DECD1375A93FF64785D74C /* Pods_hasBrainTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,7 +413,7 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
-				62BC02DB56132A1E0C77B050 /* libPods-hasBrain.a in Frameworks */,
+				8784C7BAB3BC8EC83B27C4DF /* Pods_hasBrain.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -447,6 +502,9 @@
 		13B07FAE1A68108700A75B9A /* hasBrain */ = {
 			isa = PBXGroup;
 			children = (
+				6927DEDF209C654900FFA275 /* Utilities */,
+				6927DEA2209C64F100FFA275 /* NativeModule */,
+				6927DE6E209C627800FFA275 /* hasBrain-Bridging-Header.h */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -485,8 +543,8 @@
 			isa = PBXGroup;
 			children = (
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
-				23B5C06D1B7A65D139BCE856 /* libPods-hasBrain.a */,
-				BC8E514DE0D3A2AC7F7E283C /* libPods-hasBrainTests.a */,
+				D0395669FEDAC5182B67B5C5 /* Pods_hasBrain.framework */,
+				CB91D5FCF470029DA1079C6B /* Pods_hasBrainTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -498,6 +556,132 @@
 				5E9157351DD0AC6500FF2AA8 /* libRCTAnimation.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		6927DEA2209C64F100FFA275 /* NativeModule */ = {
+			isa = PBXGroup;
+			children = (
+				6927DEA3209C64F100FFA275 /* UserKit */,
+				6927DEB8209C64F100FFA275 /* OANotificationCenter */,
+				6927DEBD209C64F100FFA275 /* IQKeyboardManager */,
+				6927DEBF209C64F100FFA275 /* Orientatation */,
+				6927DEC0209C64F100FFA275 /* UserKitIdentity */,
+			);
+			name = NativeModule;
+			path = hasBrain/NativeModule;
+			sourceTree = "<group>";
+		};
+		6927DEA3209C64F100FFA275 /* UserKit */ = {
+			isa = PBXGroup;
+			children = (
+				6927DEA4209C64F100FFA275 /* Constants.swift */,
+				6927DEA5209C64F100FFA275 /* RNUserKit.h */,
+				6927DEA6209C64F100FFA275 /* LivePlaybackRecorder */,
+				6927DEAA209C64F100FFA275 /* Extensions */,
+				6927DEAE209C64F100FFA275 /* WatchingHistory */,
+				6927DEB2209C64F100FFA275 /* VODPlaybackRecorder */,
+				6927DEB6209C64F100FFA275 /* UserKitModule.swift */,
+				6927DEB7209C64F100FFA275 /* RNUserKit.m */,
+			);
+			path = UserKit;
+			sourceTree = "<group>";
+		};
+		6927DEA6209C64F100FFA275 /* LivePlaybackRecorder */ = {
+			isa = PBXGroup;
+			children = (
+				6927DEA7209C64F100FFA275 /* LivePlaybackRecorder.swift */,
+				6927DEA8209C64F100FFA275 /* RNLivePlaybackRecorder.m */,
+				6927DEA9209C64F100FFA275 /* RNLivePlaybackRecorder.h */,
+			);
+			path = LivePlaybackRecorder;
+			sourceTree = "<group>";
+		};
+		6927DEAA209C64F100FFA275 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				6927DEAB209C64F100FFA275 /* SpecificRequiredItem+Extension.swift */,
+				6927DEAC209C64F100FFA275 /* ErrorModel+Extension.swift */,
+				6927DEAD209C64F100FFA275 /* EPG+Extension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		6927DEAE209C64F100FFA275 /* WatchingHistory */ = {
+			isa = PBXGroup;
+			children = (
+				6927DEAF209C64F100FFA275 /* RNWatchingHistory.h */,
+				6927DEB0209C64F100FFA275 /* WatchingHistory.swift */,
+				6927DEB1209C64F100FFA275 /* RNWatchingHistory.m */,
+			);
+			path = WatchingHistory;
+			sourceTree = "<group>";
+		};
+		6927DEB2209C64F100FFA275 /* VODPlaybackRecorder */ = {
+			isa = PBXGroup;
+			children = (
+				6927DEB3209C64F100FFA275 /* RNVODPlaybackRecorder.m */,
+				6927DEB4209C64F100FFA275 /* VODPlaybackRecorder.swift */,
+				6927DEB5209C64F100FFA275 /* RNVODPlaybackRecorder.h */,
+			);
+			path = VODPlaybackRecorder;
+			sourceTree = "<group>";
+		};
+		6927DEB8209C64F100FFA275 /* OANotificationCenter */ = {
+			isa = PBXGroup;
+			children = (
+				6927DEB9209C64F100FFA275 /* OANotificationCenter.swift */,
+				6927DEBA209C64F100FFA275 /* RNOANotification.h */,
+				6927DEBB209C64F100FFA275 /* Notification.swift */,
+				6927DEBC209C64F100FFA275 /* RNOANotification.m */,
+			);
+			path = OANotificationCenter;
+			sourceTree = "<group>";
+		};
+		6927DEBD209C64F100FFA275 /* IQKeyboardManager */ = {
+			isa = PBXGroup;
+			children = (
+				6927DEBE209C64F100FFA275 /* IQKeyboardManagerObj.swift */,
+			);
+			path = IQKeyboardManager;
+			sourceTree = "<group>";
+		};
+		6927DEBF209C64F100FFA275 /* Orientatation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Orientatation;
+			sourceTree = "<group>";
+		};
+		6927DEC0209C64F100FFA275 /* UserKitIdentity */ = {
+			isa = PBXGroup;
+			children = (
+				6927DEC1209C64F100FFA275 /* UserKitIdentityModule.swift */,
+				6927DEC2209C64F100FFA275 /* RNUserKitIdentity.m */,
+				6927DEC3209C64F100FFA275 /* Extensions */,
+				6927DEC8209C64F100FFA275 /* RNUserKitIdentity.h */,
+			);
+			path = UserKitIdentity;
+			sourceTree = "<group>";
+		};
+		6927DEC3209C64F100FFA275 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				6927DEC4209C64F100FFA275 /* UserKitIdentityProfile+Extension.swift */,
+				6927DEC5209C64F100FFA275 /* UKIError+Extension.swift */,
+				6927DEC6209C64F100FFA275 /* AuthenticationModel+Extension.swift */,
+				6927DEC7209C64F100FFA275 /* ImageUpload+Extension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		6927DEDF209C654900FFA275 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				6927DEE0209C654900FFA275 /* JSON.swift */,
+				6927DEE1209C654900FFA275 /* String+Extension.swift */,
+			);
+			name = Utilities;
+			path = hasBrain/Utilities;
 			sourceTree = "<group>";
 		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
@@ -641,6 +825,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 8TP5543C2X;
+						LastSwiftMigration = 0930;
 					};
 				};
 			};
@@ -1015,9 +1200,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-hasBrain/Pods-hasBrain-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/IQKeyboardManagerSwift/IQKeyboardManagerSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/UserKit/UserKit.framework",
+				"${BUILT_PRODUCTS_DIR}/UserKitIdentity/UserKitIdentity.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IQKeyboardManagerSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UserKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UserKitIdentity.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1121,7 +1313,31 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				6927DECD209C64F100FFA275 /* ErrorModel+Extension.swift in Sources */,
+				6927DECE209C64F100FFA275 /* EPG+Extension.swift in Sources */,
+				6927DED7209C64F100FFA275 /* RNOANotification.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				6927DED6209C64F100FFA275 /* Notification.swift in Sources */,
+				6927DEE3209C654A00FFA275 /* String+Extension.swift in Sources */,
+				6927DEE2209C654A00FFA275 /* JSON.swift in Sources */,
+				6927DECA209C64F100FFA275 /* LivePlaybackRecorder.swift in Sources */,
+				6927DEDD209C64F100FFA275 /* AuthenticationModel+Extension.swift in Sources */,
+				6927DED3209C64F100FFA275 /* UserKitModule.swift in Sources */,
+				6927DED8209C64F100FFA275 /* IQKeyboardManagerObj.swift in Sources */,
+				6927DED1209C64F100FFA275 /* RNVODPlaybackRecorder.m in Sources */,
+				6927DEDB209C64F100FFA275 /* UserKitIdentityProfile+Extension.swift in Sources */,
+				6927DECB209C64F100FFA275 /* RNLivePlaybackRecorder.m in Sources */,
+				6927DEDC209C64F100FFA275 /* UKIError+Extension.swift in Sources */,
+				6927DEDE209C64F100FFA275 /* ImageUpload+Extension.swift in Sources */,
+				6927DEDA209C64F100FFA275 /* RNUserKitIdentity.m in Sources */,
+				6927DED5209C64F100FFA275 /* OANotificationCenter.swift in Sources */,
+				6927DEC9209C64F100FFA275 /* Constants.swift in Sources */,
+				6927DED0209C64F100FFA275 /* RNWatchingHistory.m in Sources */,
+				6927DECF209C64F100FFA275 /* WatchingHistory.swift in Sources */,
+				6927DED9209C64F100FFA275 /* UserKitIdentityModule.swift in Sources */,
+				6927DED2209C64F100FFA275 /* VODPlaybackRecorder.swift in Sources */,
+				6927DECC209C64F100FFA275 /* SpecificRequiredItem+Extension.swift in Sources */,
+				6927DED4209C64F100FFA275 /* RNUserKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1152,6 +1368,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8ABE82CC763D4698E642131D /* Pods-hasBrainTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1173,6 +1390,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 23F69FE4637A123D7C59BD1C /* Pods-hasBrainTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = hasBrainTests/Info.plist;
@@ -1192,6 +1410,7 @@
 			baseConfigurationReference = 8D2B4A87433FF7DB5D2912C0 /* Pods-hasBrain.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 8TP5543C2X;
@@ -1205,6 +1424,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.hasBrain.hasBrainApp;
 				PRODUCT_NAME = hasBrain;
+				SWIFT_OBJC_BRIDGING_HEADER = "hasBrain-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1214,6 +1436,7 @@
 			baseConfigurationReference = BDC76855000675693051ED2A /* Pods-hasBrain.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8TP5543C2X;
 				INFOPLIST_FILE = hasBrain/Info.plist;
@@ -1226,6 +1449,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.hasBrain.hasBrainApp;
 				PRODUCT_NAME = hasBrain;
+				SWIFT_OBJC_BRIDGING_HEADER = "hasBrain-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

@@ -1,5 +1,3 @@
-let monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "June",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
 
 export function getPublishDateDescription(time) {
     return new Date(time).toRelativeTime(5000);
