@@ -1,7 +1,7 @@
 import Explore from './Explore'
 import {connect} from 'react-redux';
 import {getArticles} from "../../actions/getArticles";
-import {getPlaylist} from "../../api";
+import {getPlaylist} from "../../actions/getPlaylist";
 
 function mapStateToProps(state) {
     return {

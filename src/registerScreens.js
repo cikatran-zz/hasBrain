@@ -14,7 +14,7 @@ const TabNav = TabNavigator({
         navigationOptions: ({navigation}) => ({
             title: strings.exploreHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_explore.png')} style={{tintColor: tintColor, width: 25, height: 25, resizeMode: 'contain'}}/>),
+            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_explore.png')} style={[{tintColor: tintColor}, styles.tabBarIcon]}/>),
         }),
     },
     Save: {
@@ -22,7 +22,7 @@ const TabNav = TabNavigator({
         navigationOptions: ({navigation}) => ({
             title: strings.bookmarkHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_saved.png')} style={{tintColor: tintColor, width: 25, height: 25, resizeMode: 'contain'}}/>),
+            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_saved.png')} style={[{tintColor: tintColor}, styles.tabBarIcon]}/>),
         }),
     },
     Notification: {
@@ -30,10 +30,11 @@ const TabNav = TabNavigator({
         navigationOptions: ({navigation}) => ({
             title: strings.notificationHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_notification.png')} style={{tintColor: tintColor, width: 25, height: 25, resizeMode: 'contain'}}/>),
+            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_notification.png')} style={[{tintColor: tintColor}, styles.tabBarIcon]}/>),
         }),
     }
 }, {
+    tabBarPosition: 'bottom',
     swipeEnabled: false,
     animationEnabled: false,
     tabBarOptions: {
@@ -44,6 +45,14 @@ const TabNav = TabNavigator({
         showIcon: true,
         activeTintColor: colors.mainDarkGray,
         inactiveTintColor: colors.mainLightGray
+    }
+});
+
+const styles = StyleSheet.create({
+    tabBarIcon: {
+        width: 20,
+        height: 20,
+        resizeMode: 'contain'
     }
 });
 

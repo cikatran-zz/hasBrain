@@ -5,6 +5,12 @@ import {getPublishDateDescription} from "../utils/dateUtils";
 import {colors} from "../constants/colors";
 
 export default class VerticalRow extends React.PureComponent {
+
+    constructor(props) {
+        super(props);
+
+    }
+
     render() {
         return (
             <View style={[styles.cardView, this.props.style]}>
@@ -15,7 +21,7 @@ export default class VerticalRow extends React.PureComponent {
                 </View>
                 <View style={[styles.horizontalView, {marginTop: 15}]}>
                     <View style={styles.subTextView}>
-                        <Text style={blackTextStyle}>{this.props.author}</Text>
+                        <Text style={[blackTextStyle, {marginBottom: 5}]}>{this.props.author}</Text>
                         <Text style={grayTextStyle}>{getPublishDateDescription(this.props.time)}</Text>
                     </View>
                     <TouchableOpacity style={styles.savedButton}>
@@ -35,8 +41,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         paddingHorizontal: 15,
         paddingVertical: 15,
-        marginBottom: 5,
-        marginHorizontal: 5,
+        marginBottom: 10,
+        marginHorizontal: 10,
         backgroundColor: colors.mainWhite,
         borderRadius: 5,
     },

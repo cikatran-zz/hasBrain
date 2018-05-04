@@ -5,12 +5,17 @@ import {getPublishDateDescription} from "../utils/dateUtils";
 import {colors} from "../constants/colors";
 
 export default class VerticalNotificationRow extends React.PureComponent {
+
+    _getImage = () => {
+        return (this.props.image != null) ? {uri:this.props.image} : require('../assets/ic_hasbrain.png');
+    };
+
     render() {
         return (
             <View style={[styles.cardView, this.props.style]}>
                 <View style={styles.horizontalView}>
                     <Text style={[titleCardStyle, {flex: 2, flexWrap: "wrap"}]}>{this.props.title}</Text>
-                    <Image source={{uri:this.props.image}}
+                    <Image source={this._getImage()}
                            style={styles.thumbnailImage}/>
                 </View>
                 <View style={[styles.horizontalView, {marginTop: 15}]}>
@@ -32,8 +37,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         paddingHorizontal: 15,
         paddingVertical: 15,
-        marginBottom: 5,
-        marginHorizontal: 5,
+        marginBottom: 10,
+        marginHorizontal: 10,
         backgroundColor: colors.mainWhite,
         borderRadius: 5,
     },
@@ -45,10 +50,11 @@ const styles = StyleSheet.create({
     thumbnailImage: {
         aspectRatio: 1.2,
         marginRight: 0,
-        resizeMode: 'contain',
+        resizeMode: 'cover',
         borderRadius: 5,
         flex: 1,
-        alignSelf: 'flex-end'
+        alignSelf: 'flex-end',
+        overflow: 'hidden'
     },
     titleText: {
         marginLeft: 0,

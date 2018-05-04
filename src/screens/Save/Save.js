@@ -3,6 +3,7 @@ import {
     Text, View, FlatList, StyleSheet
 } from 'react-native'
 import VerticalNotificationRow from '../../components/VerticalNotificationRow'
+import {colors} from "../../constants/colors";
 
 export default class Save extends React.Component {
 
@@ -19,24 +20,21 @@ export default class Save extends React.Component {
             <VerticalNotificationRow title={item.title} highlight={item.description}
                                      time={item.created_at} image={item.photo}/>
         )
-    }
+    };
+
+    _keyExtractor = (item, index) => index + "";
 
     render() {
-        const { saved } = this.props
+        const { saved } = this.props;
         return (
-            <View style={{ backgroundColor: '#ECECEC' }}>
+            <View style={{ backgroundColor: colors.mainLightGray }}>
                 <FlatList
                     style={styles.listContainer}
                     keyExtractor={this._keyExtractor}
                     horizontal={false}
                     renderItem={this._renderListItem}
+                    showsVerticalScrollIndicator={false}
                     data={saved.data}
-                    ItemSeparatorComponent={() => <View
-                        style={{
-                            width: '100%',
-                            height: 1,
-                            backgroundColor: '#DADADE'
-                        }}/>}
                 />
             </View>
         )
@@ -50,7 +48,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff'
     },
     listContainer: {
-        marginTop: 0,
+        marginTop: 10,
         marginLeft: 0,
         marginBottom: 0
     },
