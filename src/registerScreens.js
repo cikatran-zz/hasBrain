@@ -8,6 +8,7 @@ import {colors} from "./constants/colors";
 import {strings} from "./constants/strings";
 import {defaultHeaderStyle} from "./constants/theme";
 import Authentication from "./screens/Authentication/Authentication";
+import MeStack from "./screenStacks/MeStack";
 
 const TabNav = TabNavigator({
     EXPLORE: {
@@ -28,6 +29,16 @@ const TabNav = TabNavigator({
             tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_saved.png')} style={[{tintColor: tintColor}, styles.tabBarIcon]}/>),
         }),
     },
+    Me: {
+        screen: MeStack,
+        navigationOptions: ({ navigation }) => ({
+            title: 'Me',
+            tabBarLabel: strings.meHeader,
+            headerTitleStyle: defaultHeaderStyle,
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_hasbrain.png')}
+                                                   style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
+        })
+    },
     NOTIFICATIONS: {
         screen: NotificationStack,
         navigationOptions: ({navigation}) => ({
@@ -36,15 +47,6 @@ const TabNav = TabNavigator({
             headerTitleStyle: defaultHeaderStyle,
             tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_notification.png')} style={[{tintColor: tintColor}, styles.tabBarIcon]}/>),
         }),
-    },
-    Me: {
-        screen: MeStack,
-        navigationOptions: ({ navigation }) => ({
-            title: strings.meHeader,
-            headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_hasbrain.png')}
-                                                   style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
-        })
     },
 }, {
     tabBarPosition: 'bottom',
