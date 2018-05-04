@@ -26,8 +26,10 @@ export default class Notification extends React.Component {
     render() {
         const { notification } = this.props;
         return (
-            <View style={{ backgroundColor: colors.mainLightGray }}>
+            <View style={{ backgroundColor: colors.mainLightGray, flex: 1 }}>
                 <FlatList
+                    refreshing={notification.isFetching}
+                    onRefresh={() => this.props.getNotification()}
                     style={styles.listContainer}
                     keyExtractor={this._keyExtractor}
                     horizontal={false}

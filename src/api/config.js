@@ -44,7 +44,7 @@ query {
 
 export default {
     serverURL: 'http://contentkit-prod.ap-southeast-1.elasticbeanstalk.com/graphql',
-    hasBrainURL: 'http://hasbrain-api.mstage.io/highlight?profile_id=5ad85caf0a553e680e7e28a6',
+    hasBrainURL: 'http://hasbrain-api.mstage.io/',
     hasBrainHeader: {
         'x-hasbrain-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhYjMzNzI1ZTZlOTFlMGNlMDk4OWRlNCIsImlhdCI6MTUxNjIzOTAyMn0.anJXLAhnRxz37NxmiKtzk76KBZCH1RQXV1DuQCy1wMc'
     },
@@ -53,5 +53,9 @@ export default {
     queries: {
         articles: articles,
         playlist: playlist
+    },
+    endPoints: {
+        highlight: 'highlight?profile_id=',
+        bookmark: 'bookmark?profile_id='
     }
 };

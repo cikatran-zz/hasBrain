@@ -4,6 +4,7 @@ import {ApolloClient} from 'apollo-client';
 import {HttpLink} from 'apollo-link-http';
 import {onError} from 'apollo-link-error'
 import {InMemoryCache} from 'apollo-cache-inmemory';
+import {NativeModules} from "react-native";
 const instance = axios.create({
     serverURL: `${config.serverURL}`
 });
@@ -64,22 +65,46 @@ export const getPlaylist = () => {
     })
 };
 
+_getProfileId = ()=> {
+    return new Promise((resolve, reject)=> {
+        NativeModules.RNUserKitIdentity.getProfileInfo((error, result)=> {
+            let profileId = result[0].id;
+            console.log(result);
+            resolve(profileId);
+        })
+    });
+};
+
 export const getNotification = () => {
-    return fetch(config.hasBrainURL, {
-        method: 'GET',
-        headers: config.hasBrainHeader
-    }).then(data => {
-        return data.json()
-    })
+
+    return new Promise((resolve, reject)=>{
+        _getProfileId().then(value => {
+            fetch(config.hasBrainURL+config.endPoints.highlight+value, {
+                method: 'GET',
+                headers: config.hasBrainHeader
+            }).then(data => {
+                resolve(data.json())
+            }).catch((err)=> {
+                reject(err);
+            })
+        });
+    });
+
 };
 
 export const getSaved = () => {
-    return fetch(config.hasBrainURL, {
-        method: 'GET',
-        headers: config.hasBrainHeader
-    }).then(data => {
-        return data.json()
-    })
+    return new Promise((resolve, reject)=> {
+        _getProfileId().then(value => {
+            fetch(config.hasBrainURL + config.endPoints.bookmark + value, {
+                method: 'GET',
+                headers: config.hasBrainHeader
+            }).then(data => {
+                resolve(data.json())
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+    });
 };
 
 

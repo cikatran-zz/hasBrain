@@ -24,16 +24,25 @@ export default class Save extends React.Component {
 
     _keyExtractor = (item, index) => index + "";
 
+    _renderEmptyList = () => {
+        return (
+            <View style={{flex: 1, backgroundColor: colors.mainLightGray, justifyContent: 'center', alignItems: 'center'}}/>
+        )
+    };
+
     render() {
         const { saved } = this.props;
         return (
-            <View style={{ backgroundColor: colors.mainLightGray }}>
+            <View style={{ backgroundColor: colors.mainLightGray, flex: 1 }}>
                 <FlatList
+                    refreshing={saved.isFetching}
+                    onRefresh={() => this.props.getSaved()}
                     style={styles.listContainer}
                     keyExtractor={this._keyExtractor}
                     horizontal={false}
                     renderItem={this._renderListItem}
                     showsVerticalScrollIndicator={false}
+                    ListEmptyComponent={this._renderEmptyList}
                     data={saved.data}
                 />
             </View>

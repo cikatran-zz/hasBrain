@@ -63,6 +63,7 @@ class UserKitIdentityModule: NSObject {
     @objc func profileInfo() -> [String: Any] {
         let profile = module.loginProfiles.first
         let info = [
+            "id": profile?.id ?? "" as Any,
             "name": profile?.name ?? "" as Any,
             "email": profile?.customProperties?["_account_email"] ?? "" as Any,
             "age": profile?.customProperties?["age"] ?? "" as Any,

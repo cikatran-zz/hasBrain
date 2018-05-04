@@ -1,5 +1,8 @@
 import React from 'react'
-import {Text, View, StyleSheet, Image, Platform, TextInput, TouchableOpacity, NativeModules} from 'react-native'
+import {
+    Text, View, StyleSheet, Image, Platform, TextInput, TouchableOpacity, NativeModules,
+    ActivityIndicator
+} from 'react-native'
 import {colors} from "../../constants/colors";
 import {NavigationActions} from "react-navigation";
 import IndicatorModal from "../../components/IndicatorModal";
@@ -12,6 +15,9 @@ export default class Explore extends React.PureComponent {
         this.email = "";
         this.password = "";
         this.indicatorModal = null;
+        this.state = {
+            isChecked: false
+        };
     }
 
     componentDidMount() {
@@ -20,6 +26,7 @@ export default class Explore extends React.PureComponent {
             if (result.is_sign_in) {
                 this._goToHomeScreen();
             }
+            this.setState({isChecked: true});
         });
     }
 
@@ -97,6 +104,13 @@ export default class Explore extends React.PureComponent {
     }
 
     render() {
+        if (!this.state.isChecked) {
+            return (
+                <View style={{justifyContent:'center', alignItems:'center', flex: 1}}>
+                    <ActivityIndicator size="large"/>
+                </View>
+            );
+        }
         return (
             <View style={styles.container}>
                 <IndicatorModal ref={(modal)=>{this.indicatorModal = modal}} onDismiss={this.onDismissIndicatorModal.bind(this)}/>
