@@ -1,6 +1,6 @@
 export const strings = {
-    exploreHeader: "hasBrain",
-    bookmarkHeader: "Bookmark",
-    meHeader: "Me",
-    notificationHeader: "Notification"
+    exploreHeader: "EXPLORE",
+    bookmarkHeader: "BOOKMARK",
+    notificationHeader: "NOTIFICATIONS",
+    meHeader: "ME"
 };

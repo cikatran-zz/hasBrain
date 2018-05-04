@@ -1,9 +1,9 @@
 import {colors} from "./colors";
 
 export const defaultHeaderStyle = {
-    color: colors.mainDarkGray,
-    fontWeight: 'bold',
-    fontSize: 25
+    color: colors.blueText,
+    fontWeight: '300',
+    fontSize: 20
 };
 
 export const titleCardStyle = {

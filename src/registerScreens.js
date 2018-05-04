@@ -1,33 +1,41 @@
-import { StackNavigator, TabNavigator } from 'react-navigation'
+import {StackNavigator, TabNavigator} from 'react-navigation'
 import ExploreStack from './screenStacks/ExploreStack'
-import SaveStack from './screenStacks/SaveStack'
+import SaveStack from "./screenStacks/SaveStack";
 import NotificationStack from './screenStacks/NotificationStack'
-import MeStack from './screenStacks/MeStack'
-import { Image, StyleSheet, NativeModules } from 'react-native'
-import React from 'react'
-import { colors } from './constants/colors'
-import { strings } from './constants/strings'
-import { defaultHeaderStyle } from './constants/theme'
-import Authentication from './screens/Authentication/Authentication'
+import {Image, StyleSheet, NativeModules} from "react-native";
+import React from "react";
+import {colors} from "./constants/colors";
+import {strings} from "./constants/strings";
+import {defaultHeaderStyle} from "./constants/theme";
+import Authentication from "./screens/Authentication/Authentication";
 
 const TabNav = TabNavigator({
-    Explore: {
+    EXPLORE: {
         screen: ExploreStack,
-        navigationOptions: ({ navigation }) => ({
-            title: strings.exploreHeader,
+        navigationOptions: ({navigation}) => ({
+            title: 'Today I learnt',
+            tabBarLabel: strings.exploreHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_explore.png')}
-                                                   style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
-        })
+            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_explore.png')} style={[{tintColor: tintColor}, styles.tabBarIcon]}/>),
+        }),
     },
-    Save: {
+    SAVED: {
         screen: SaveStack,
-        navigationOptions: ({ navigation }) => ({
-            title: strings.bookmarkHeader,
+        navigationOptions: ({navigation}) => ({
+            title: 'Saved',
+            tabBarLabel: strings.bookmarkHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_saved.png')}
-                                                   style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
-        })
+            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_saved.png')} style={[{tintColor: tintColor}, styles.tabBarIcon]}/>),
+        }),
+    },
+    NOTIFICATIONS: {
+        screen: NotificationStack,
+        navigationOptions: ({navigation}) => ({
+            title: 'Following',
+            tabBarLabel: strings.notificationHeader,
+            headerTitleStyle: defaultHeaderStyle,
+            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_notification.png')} style={[{tintColor: tintColor}, styles.tabBarIcon]}/>),
+        }),
     },
     Me: {
         screen: MeStack,
@@ -38,15 +46,6 @@ const TabNav = TabNavigator({
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     },
-    Notification: {
-        screen: NotificationStack,
-        navigationOptions: ({ navigation }) => ({
-            title: strings.notificationHeader,
-            headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_notification.png')}
-                                                   style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
-        })
-    }
 }, {
     tabBarPosition: 'bottom',
     swipeEnabled: false,
@@ -55,12 +54,12 @@ const TabNav = TabNavigator({
         style: {
             backgroundColor: colors.mainWhite
         },
-        showLabel: false,
         showIcon: true,
-        activeTintColor: colors.mainDarkGray,
-        inactiveTintColor: colors.mainLightGray
+        upperCaseLabel: true,
+        activeTintColor: colors.blueText,
+        inactiveTintColor: colors.mainDarkGray
     }
-})
+});
 
 const styles = StyleSheet.create({
     tabBarIcon: {
@@ -68,7 +67,7 @@ const styles = StyleSheet.create({
         height: 20,
         resizeMode: 'contain'
     }
-})
+});
 
 export const ScreenStack = StackNavigator({
 
@@ -83,6 +82,6 @@ export const ScreenStack = StackNavigator({
     }
 }, {
     navigationOptions: {
-        gesturesEnabled: false
+        gesturesEnabled: false,
     }
-})
+});
