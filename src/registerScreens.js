@@ -1,38 +1,51 @@
-import {StackNavigator, TabNavigator} from 'react-navigation'
+import { StackNavigator, TabNavigator } from 'react-navigation'
 import ExploreStack from './screenStacks/ExploreStack'
-import SaveStack from "./screenStacks/SaveStack";
+import SaveStack from './screenStacks/SaveStack'
 import NotificationStack from './screenStacks/NotificationStack'
-import {Image, StyleSheet, NativeModules} from "react-native";
-import React from "react";
-import {colors} from "./constants/colors";
-import {strings} from "./constants/strings";
-import {defaultHeaderStyle} from "./constants/theme";
-import Authentication from "./screens/Authentication/Authentication";
+import MeStack from './screenStacks/MeStack'
+import { Image, StyleSheet, NativeModules } from 'react-native'
+import React from 'react'
+import { colors } from './constants/colors'
+import { strings } from './constants/strings'
+import { defaultHeaderStyle } from './constants/theme'
+import Authentication from './screens/Authentication/Authentication'
 
 const TabNav = TabNavigator({
     Explore: {
         screen: ExploreStack,
-        navigationOptions: ({navigation}) => ({
+        navigationOptions: ({ navigation }) => ({
             title: strings.exploreHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_explore.png')} style={[{tintColor: tintColor}, styles.tabBarIcon]}/>),
-        }),
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_explore.png')}
+                                                   style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
+        })
     },
     Save: {
         screen: SaveStack,
-        navigationOptions: ({navigation}) => ({
+        navigationOptions: ({ navigation }) => ({
             title: strings.bookmarkHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_saved.png')} style={[{tintColor: tintColor}, styles.tabBarIcon]}/>),
-        }),
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_saved.png')}
+                                                   style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
+        })
+    },
+    Me: {
+        screen: MeStack,
+        navigationOptions: ({ navigation }) => ({
+            title: strings.meHeader,
+            headerTitleStyle: defaultHeaderStyle,
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_hasbrain.png')}
+                                                   style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
+        })
     },
     Notification: {
         screen: NotificationStack,
-        navigationOptions: ({navigation}) => ({
+        navigationOptions: ({ navigation }) => ({
             title: strings.notificationHeader,
             headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({tintColor}) => (<Image source={require('./assets/ic_notification.png')} style={[{tintColor: tintColor}, styles.tabBarIcon]}/>),
-        }),
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_notification.png')}
+                                                   style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
+        })
     }
 }, {
     tabBarPosition: 'bottom',
@@ -47,7 +60,7 @@ const TabNav = TabNavigator({
         activeTintColor: colors.mainDarkGray,
         inactiveTintColor: colors.mainLightGray
     }
-});
+})
 
 const styles = StyleSheet.create({
     tabBarIcon: {
@@ -55,7 +68,7 @@ const styles = StyleSheet.create({
         height: 20,
         resizeMode: 'contain'
     }
-});
+})
 
 export const ScreenStack = StackNavigator({
 
@@ -70,6 +83,6 @@ export const ScreenStack = StackNavigator({
     }
 }, {
     navigationOptions: {
-        gesturesEnabled: false,
+        gesturesEnabled: false
     }
-});
+})
