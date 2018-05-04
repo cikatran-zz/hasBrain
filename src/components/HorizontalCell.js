@@ -1,9 +1,22 @@
 import React from "react";
-import {Image, Text, TouchableOpacity, View, StyleSheet, ImageBackground} from "react-native";
+import {
+    Image,
+    Text,
+    TouchableOpacity,
+    View,
+    StyleSheet,
+    ImageBackground,
+    Dimensions
+} from 'react-native'
 import {blackTextStyle, grayTextStyle, titleCardStyle} from "../constants/theme";
 import {getPublishDateDescription} from "../utils/dateUtils";
 import {colors} from "../constants/colors";
 import _ from 'lodash'
+
+const horizontalMargin = 20;
+const slideWidth = 280;
+
+const itemWidth = slideWidth + horizontalMargin * 2;
 
 export default class HorizontalCell extends React.PureComponent {
     render() {
@@ -26,10 +39,10 @@ const styles = StyleSheet.create({
         shadowColor: colors.mainDarkGray,
         shadowOpacity: 0.5,
         flexDirection: 'column',
+        paddingHorizontal: horizontalMargin,
         backgroundColor: colors.mainWhite,
         borderRadius: 5,
-        flex: 1,
-        width: '100%',
+        width: itemWidth,
         marginVertical: 10
     },
     image: {

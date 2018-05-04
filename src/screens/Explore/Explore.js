@@ -6,7 +6,7 @@ import HorizontalCell from "../../components/HorizontalCell";
 import Carousel from 'react-native-snap-carousel';
 
 const horizontalMargin = 20;
-const slideWidth = 280;
+const slideWidth = 200;
 
 const sliderWidth = Dimensions.get('window').width;
 const itemWidth = slideWidth + horizontalMargin * 2;
@@ -57,12 +57,12 @@ export default class Explore extends React.PureComponent {
 
     _renderHorizontalSection = ({item}) => (
         item?<Carousel
-            layout={'default'}
             data={item}
             keyExtractor={this._keyExtractor}
             sliderWidth={sliderWidth}
             itemWidth={itemWidth}
-            layoutCardOffset={40}
+            inactiveSlideOpacity={1}
+            inactiveSlideScale={1}
             ListFooterComponent={this._renderHorizontalFooter}
             renderItem={this._renderHorizontalItem} />:null
     );
