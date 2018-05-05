@@ -4,6 +4,7 @@ import {
 } from 'react-native'
 import VerticalNotificationRow from '../../components/VerticalNotificationRow'
 import {colors} from "../../constants/colors";
+import NoDataView from "../../components/NoDataView";
 
 export default class Notification extends React.Component {
 
@@ -23,6 +24,8 @@ export default class Notification extends React.Component {
 
     _keyExtractor = (item, index) => index + "";
 
+    _renderEmptyList = () => (<NoDataView text={'No notification'}/>);
+
     render() {
         const { notification } = this.props;
         return (
@@ -36,6 +39,7 @@ export default class Notification extends React.Component {
                     renderItem={this._renderListItem}
                     showsVerticalScrollIndicator={false}
                     data={notification.data}
+                    ListEmptyComponent={this._renderEmptyList}
                 />
             </View>
         )
@@ -63,4 +67,4 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         backgroundColor: '#ffffff'
     }
-})
+});

@@ -12,22 +12,23 @@ import {
 import { colors } from '../../constants/colors'
 import VerticalRow from '../../components/VerticalRow'
 import HorizontalCell from '../../components/HorizontalCell'
-import Carousel from 'react-native-snap-carousel'
+import Carousel from '../../components/CustomCarousel'
 
-const horizontalMargin = 20;
+const horizontalMargin = 5;
 
-const sliderWidth = Dimensions.get('window').width
-const itemWidth = sliderWidth - horizontalMargin * 2
+const sliderWidth = Dimensions.get('window').width;
+const itemViewWidth = Dimensions.get('window').width * 0.8;
+const itemWidth = itemViewWidth + horizontalMargin * 2;
 
 export default class Explore extends React.PureComponent {
 
     constructor(props) {
-        super(props)
+        super(props);
         this.currentPage = 1
     }
 
     componentDidMount() {
-        this.props.getArticles(1, 20)
+        this.props.getArticles(1, 20);
         this.props.getPlaylist()
     }
 
@@ -40,7 +41,7 @@ export default class Explore extends React.PureComponent {
             <VerticalRow title={item.title} author={item.author} time={item.sourceCreateAt}
             />
         </TouchableOpacity>
-    )
+    );
 
     _renderVerticalSection = ({ item }) => (
         <FlatList
@@ -56,7 +57,7 @@ export default class Explore extends React.PureComponent {
         if (item == null) {
             return null
         }
-        return (<HorizontalCell style={{alignSelf: 'center'}} title={item.title} author={item.author} time={item.sourceCreateAt} url={item.url} navigation={this.props.navigation}/>)
+        return (<HorizontalCell style={{alignSelf: 'center', width: itemViewWidth}} title={item.title} author={item.author} time={item.sourceCreateAt} url={item.url} navigation={this.props.navigation}/>)
     };
 
     _renderHorizontalFooter = () => (
@@ -77,14 +78,15 @@ export default class Explore extends React.PureComponent {
             inactiveSlideOpacity={1}
             inactiveSlideScale={1}
             layoutCardOffset={10}
+            paddingHorizontal={5}
             ListFooterComponent={this._renderHorizontalFooter}
             renderItem={this._renderHorizontalItem}/> : null
-    )
+    );
 
     _fetchMore = () => {
         this.currentPage += 1
         this.props.getArticles(this.currentPage, 20)
-    }
+    };
 
     _renderListFooter = (isFetching) => {
         return (

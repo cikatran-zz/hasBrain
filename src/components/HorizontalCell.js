@@ -12,11 +12,6 @@ import {blackTextStyle, grayTextStyle, titleCardStyle} from "../constants/theme"
 import {getPublishDateDescription} from "../utils/dateUtils";
 import {colors} from "../constants/colors";
 
-const horizontalMargin = 20;
-const slideWidth = 280;
-
-const itemWidth = slideWidth + horizontalMargin * 2;
-
 export default class HorizontalCell extends React.PureComponent {
     _openWebView = () => {
         this.props.navigation.navigate('Reader', {url: this.props.url})
@@ -44,11 +39,9 @@ const styles = StyleSheet.create({
         shadowColor: colors.mainDarkGray,
         shadowOpacity: 0.5,
         flexDirection: 'column',
-        paddingHorizontal: horizontalMargin,
         backgroundColor: colors.mainWhite,
         borderRadius: 5,
-        width: itemWidth,
-        marginVertical: 10
+        marginVertical: 10,
     },
     image: {
         position: 'absolute',

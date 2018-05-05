@@ -60,12 +60,18 @@ const TabNav = TabNavigator({
         style: {
             backgroundColor: colors.mainWhite
         },
+        labelStyle: {
+            fontSize: 8
+        },
         showIcon: true,
         upperCaseLabel: true,
         activeTintColor: colors.blueText,
-        inactiveTintColor: colors.mainDarkGray
+        inactiveTintColor: colors.mainDarkGray,
+        indicatorStyle: {
+            backgroundColor: 'transparent',
+        }
     }
-})
+});
 
 const styles = StyleSheet.create({
     tabBarIcon: {
@@ -73,7 +79,7 @@ const styles = StyleSheet.create({
         height: 20,
         resizeMode: 'contain'
     }
-})
+});
 
 export const ScreenStack = StackNavigator({
 

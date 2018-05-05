@@ -5,6 +5,7 @@ import {
 import VerticalNotificationRow from '../../components/VerticalNotificationRow'
 import {colors} from "../../constants/colors";
 import VerticalRow from "../../components/VerticalRow";
+import NoDataView from "../../components/NoDataView";
 
 export default class Save extends React.Component {
 
@@ -29,16 +30,7 @@ export default class Save extends React.Component {
 
     _keyExtractor = (item, index) => index + "";
 
-    _renderEmptyList = () => {
-        return (
-            <View style={{
-                flex: 1,
-                backgroundColor: colors.mainLightGray,
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}/>
-        )
-    };
+    _renderEmptyList = () => (<NoDataView text={'No bookmark'}/>);
 
     render() {
         const {saved} = this.props;
@@ -80,4 +72,4 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         backgroundColor: '#ffffff'
     }
-})
+});
