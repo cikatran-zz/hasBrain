@@ -15,40 +15,30 @@ const TabNav = TabNavigator({
     EXPLORE: {
         screen: ExploreStack,
         navigationOptions: ({ navigation }) => ({
-            title: 'Today I learnt',
+            title: '00:00',
             tabBarLabel: strings.exploreHeader,
-            headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_explore_inactive.png')}
+            ...defaultHeaderStyle,
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_explore.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     },
     SAVED: {
         screen: SaveStack,
         navigationOptions: ({ navigation }) => ({
-            title: 'Saved',
+            title: 'SAVED',
             tabBarLabel: strings.bookmarkHeader,
-            headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_saved_inactive.png')}
+            ...defaultHeaderStyle,
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_saved.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     },
     Me: {
         screen: MeStack,
         navigationOptions: ({ navigation }) => ({
-            title: 'Me',
+            title: 'ME',
             tabBarLabel: strings.meHeader,
-            headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_me_inactive.png')}
-                                                   style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
-        })
-    },
-    NOTIFICATIONS: {
-        screen: NotificationStack,
-        navigationOptions: ({ navigation }) => ({
-            title: 'Following',
-            tabBarLabel: strings.notificationHeader,
-            headerTitleStyle: defaultHeaderStyle,
-            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_noti_inactive.png')}
+            ...defaultHeaderStyle,
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_me.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     }
@@ -61,12 +51,13 @@ const TabNav = TabNavigator({
             backgroundColor: colors.mainWhite
         },
         labelStyle: {
-            fontSize: 8
+            fontSize: 8,
+            fontWeight: 'bold'
         },
         showIcon: true,
         upperCaseLabel: true,
         activeTintColor: colors.blueText,
-        inactiveTintColor: colors.mainDarkGray,
+        inactiveTintColor: colors.blackHeader,
         indicatorStyle: {
             backgroundColor: 'transparent',
         }
@@ -99,4 +90,4 @@ export const ScreenStack = StackNavigator({
     navigationOptions: {
         gesturesEnabled: false
     }
-})
+});

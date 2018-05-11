@@ -8,10 +8,11 @@ export function getArticles(page, perPage) {
     }
 }
 
-export function getArticlesSuccess(data) {
+export function getArticlesSuccess(data, page) {
     return {
         type: actionTypes.FETCH_ARTICLE_SUCCESS,
-        data: data.viewer.articlePagination.items
+        data: data.viewer.articlePagination.items,
+        page: page
     }
 }
 

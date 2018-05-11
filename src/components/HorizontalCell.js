@@ -13,15 +13,16 @@ import {getPublishDateDescription} from "../utils/dateUtils";
 import {colors} from "../constants/colors";
 
 export default class HorizontalCell extends React.PureComponent {
-    _openWebView = () => {
-        this.props.navigation.navigate('Reader', {url: this.props.url})
+
+    _getImage = () => {
+        return (this.props.image != null) ? {uri: this.props.image} : require('../assets/ic_hasbrain.png');
     };
 
     render() {
         return (
-            <TouchableOpacity onPress={()=>this._openWebView()}>
+            <TouchableOpacity onPress={this.props.onClicked}>
                 <View style={[styles.cardView, this.props.style]} >
-                    <Image style={styles.image} source={require('../assets/ic_hasbrain.png')}/>
+                    <Image style={styles.image} source={this._getImage()}/>
                     <View style={styles.textView}>
                         <Text numberOfLines={2} style={[titleCardStyle, {height: 60, flexWrap: "wrap", width: '100%', flex: 1}]}>{(this.props.title == null) ? "" : this.props.title}</Text>
                         <Text style={[blackTextStyle, {marginBottom: 5}]}>{(this.props.author == null) ? "" : this.props.author}</Text>
@@ -42,6 +43,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.mainWhite,
         borderRadius: 5,
         marginVertical: 10,
+        elevation: 5
     },
     image: {
         position: 'absolute',
@@ -50,10 +52,11 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         left: 0,
         right: 0,
-        resizeMode: 'contain'
+        bottom: 5,
+        resizeMode: 'cover'
     },
     textView: {
-        marginTop: 50,
+        marginTop: 100,
         width: '100%',
         flexDirection: 'column',
         padding: 15,

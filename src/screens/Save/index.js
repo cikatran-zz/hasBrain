@@ -10,7 +10,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getSaved: () => dispatch(getSaved())
+        getSaved: (page, perPage) => dispatch(getSaved(page, perPage))
     }
 }
 

@@ -69,6 +69,11 @@ public class AndroidUserKitIdentityFramework extends ReactContextBaseJavaModule 
                     } else {
                         map.putString("id", profile.getId());
                     }
+                    if (UserKitIdentity.getInstance().getAccountManager().getAccessToken() == null) {
+                        map.putNull("authToken");
+                    } else {
+                        map.putString("authToken", UserKitIdentity.getInstance().getAccountManager().getAccessToken());
+                    }
 
                     WritableNativeArray array = new WritableNativeArray();
                     array.pushMap(map);

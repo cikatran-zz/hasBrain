@@ -6,45 +6,90 @@ import VerticalNotificationRow from '../../components/VerticalNotificationRow'
 import {colors} from "../../constants/colors";
 import VerticalRow from "../../components/VerticalRow";
 import NoDataView from "../../components/NoDataView";
+import {postUnbookmark} from "../../api";
+import _ from 'lodash'
+import {getImageFromArray} from "../../utils/imageUtils";
 
 export default class Save extends React.Component {
 
     constructor(props) {
-        super(props)
+        super(props);
+        this.currentPage = 1;
+        this.state = {
+            deleteItems: []
+        }
     }
 
     componentDidMount() {
         this.props.getSaved()
     }
 
-    _renderListItem = ({item}) => {
-        return (
-            <TouchableOpacity onPress={() => {
-                this.props.navigation.navigate('Reader', {url: item.url})
-            }}>
-                <VerticalRow title={item.title} author={item.author} time={item.created_at} image={item.photo}
-                />
-            </TouchableOpacity>
-        )
+    _onUnbookmarkItem = (id) => {
+        this.setState({deleteItems: this.state.deleteItems.concat(id)});
+        postUnbookmark(id).then(value => {
+            console.log("DONE BOOKMARK",value);
+        }).catch((err)=> {
+            console.log("ERROR BOOK", err);
+        });
     };
+
+    _renderListItem = ({item}) => {
+        let article = item.article;
+        if (article == null || _.findIndex(this.state.deleteItems, (o)=>(o === item._id)) !== -1 ) {
+            return null;
+        }
+        return (<VerticalRow title={article.title}
+                             author={article.author}
+                             time={article.sourceCreateAt}
+                             readingTime={article.readingTime}
+                             image={getImageFromArray(article.originalImages, null, null)}
+                             onClicked={() => this._openReadingView(article.url)}
+                             onBookmark={()=>this._onUnbookmarkItem(item._id)}
+                             bookmarked={true}/>)
+    }
 
     _keyExtractor = (item, index) => index + "";
 
     _renderEmptyList = () => (<NoDataView text={'No bookmark'}/>);
 
+    _openReadingView = (url) => {
+        this.props.navigation.navigate('Reader', {url: url})
+    };
+
+    _fetchMore = () => {
+        if (this.props.saved.data != null) {
+            if (this.props.saved.data.length % 10 === 0) {
+                console.log(this.props.saved.data);
+                this.currentPage += 1;
+                this.props.getSaved(this.currentPage, 10);
+            }
+        }
+
+    };
+
+    _renderVerticalSeparator = ()=>(
+        <View style={styles.horizontalItemSeparator}/>
+    );
+
     render() {
         const {saved} = this.props;
+        if (saved.isFetching && this.state.deleteItems.length > 0) {
+            this.setState({deleteItems: []})
+        }
         return (
-            <View style={{backgroundColor: colors.mainLightGray, flex: 1}}>
+            <View style={{backgroundColor: colors.mainWhite, flex: 1}}>
                 <FlatList
                     refreshing={saved.isFetching}
-                    onRefresh={() => this.props.getSaved()}
+                    onRefresh={() => this.props.getSaved(1,10)}
                     style={styles.listContainer}
                     keyExtractor={this._keyExtractor}
                     horizontal={false}
                     renderItem={this._renderListItem}
                     showsVerticalScrollIndicator={false}
                     ListEmptyComponent={this._renderEmptyList}
+                    onEndReachedThreshold={20}
+                    onEndReached={this._fetchMore}
+                    ItemSeparatorComponent={()=>this._renderVerticalSeparator()}
                     data={saved.data}
                 />
             </View>
@@ -71,5 +116,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-start',
         backgroundColor: '#ffffff'
+    },
+    horizontalItemSeparator: {
+        backgroundColor: colors.grayLine,
+        flex: 1,
+        marginHorizontal: 20,
+        height: 1
     }
 });
