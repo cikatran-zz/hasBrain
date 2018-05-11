@@ -22,7 +22,7 @@ export default class NoDataView extends React.PureComponent {
 const styles = StyleSheet.create({
     rootView: {
         flex: 1,
-        backgroundColor: colors.mainLightGray,
+        backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',

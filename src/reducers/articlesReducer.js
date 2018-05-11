@@ -9,6 +9,8 @@ const initialState = {
 
 export default function articlesReducer(state = initialState, action) {
 
+
+
     switch (action.type) {
         case actionTypes.FETCHING_ARTICLE:
             return {
@@ -16,11 +18,15 @@ export default function articlesReducer(state = initialState, action) {
                 isFetching: true
             };
         case actionTypes.FETCH_ARTICLE_SUCCESS:
+            let newData = [...((state.data != null) ? state.data: []), ...action.data];
+            if (action.page === 1) {
+                newData = action.data;
+            }
             return {
                 ...state,
                 isFetching: false,
                 fetched: true,
-                data: [...((state.data != null) ? state.data: []), ...action.data]
+                data: newData
             };
         case actionTypes.FETCH_ARTICLE_FAILURE:
             return {

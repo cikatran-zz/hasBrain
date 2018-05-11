@@ -8,7 +8,7 @@ const getArticlesEpic = (action$) =>
     action$.ofType(actionTypes.FETCHING_ARTICLE)
         .mergeMap(action =>
             Observable.from(getArticles(action.page, action.perPage))
-                .map(response => getArticlesSuccess(response.data))
+                .map(response => getArticlesSuccess(response.data, action.page))
                 .catch(error => Observable.of(getArticleFailure(error)))
         );
 

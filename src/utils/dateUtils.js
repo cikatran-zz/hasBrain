@@ -3,6 +3,13 @@ export function getPublishDateDescription(time) {
     return new Date(time).toRelativeTime(5000);
 }
 
+export function getReadingTimeDescription(minutes) {
+    if (typeof(minutes) === "number") {
+        return Math.round(minutes) + ' min read';
+    }
+    return '';
+}
+
 Date.prototype.toRelativeTime = (function() {
 
     var _ = function(options) {

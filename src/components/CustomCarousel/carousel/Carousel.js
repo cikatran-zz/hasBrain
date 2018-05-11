@@ -602,7 +602,6 @@ export default class Carousel extends Component {
 
             interpolators.push(animatedValue);
         });
-        console.log(this._positions);
 
         this.setState({ interpolators });
     }
@@ -1248,7 +1247,6 @@ export default class Carousel extends Component {
             style,
             vertical
         } = this.props;
-
         const containerStyle = [
             containerCustomStyle || style || {},
             hideCarousel ? { opacity: 0 } : {},

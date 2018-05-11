@@ -1,15 +1,18 @@
 import * as actionTypes from './actionTypes'
 
-export function getSaved() {
+export function getSaved(page, perPage) {
     return {
-        type: actionTypes.FETCHING_SAVED
+        type: actionTypes.FETCHING_SAVED,
+        page: page,
+        perPage: perPage
     }
 }
 
-export function getSavedSuccess(data) {
+export function getSavedSuccess(data, page) {
     return {
         type: actionTypes.FETCH_SAVED_SUCCESS,
-        data: data.result
+        data: data.viewer.userbookmarkPagination.items,
+        page: page
     }
 }
 

@@ -15,11 +15,15 @@ export default function savedReducer(state = initialState, action) {
                 isFetching: true
             }
         case actionTypes.FETCH_SAVED_SUCCESS:
+            let newData = [...((state.data != null) ? state.data: []), ...action.data];
+            if (action.page === 1) {
+                newData = action.data;
+            }
             return {
                 ...state,
                 isFetching: false,
                 fetched: true,
-                data: action.data
+                data: newData
             }
         case actionTypes.FETCH_SAVED_FAILURE:
             return {

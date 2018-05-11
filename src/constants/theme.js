@@ -1,9 +1,14 @@
 import {colors} from "./colors";
 
 export const defaultHeaderStyle = {
-    color: colors.blueText,
-    fontWeight: '300',
-    fontSize: 20
+    headerTitleStyle: {
+        color: colors.blackHeader,
+        fontWeight: '300',
+        fontSize: 20,
+    },
+    headerStyle: {
+        backgroundColor: '#ffffff',
+    }
 };
 
 export const titleCardStyle = {

@@ -9,30 +9,83 @@ const instance = axios.create({
     serverURL: `${config.serverURL}`
 });
 
-const httpLinkContentkit = new HttpLink({
-    uri: config.serverURL,
-    headers: {
-        Authorization: config.authenKeyContentKit}
-});
+const getAuthToken = () => {
+    return new Promise((resolve, reject)=> {
+        NativeModules.RNUserKitIdentity.getProfileInfo((error, result)=> {
+            let authToken = result[0].authToken;
+            resolve(authToken);
+        })
+    });
+};
+
+const getApolloClient = () => {
+     return new Promise((resolve, reject)=> {
+         getAuthToken().then((authToken)=> {
+             const httpLinkContentkit = new HttpLink({
+                 uri: config.serverURL,
+                 headers: {
+                     authorization: config.authenKeyContentKit,
+                     usertoken: authToken,
+                 }
+             });
+             resolve(new ApolloClient({
+                 link: errorHandler.concat(httpLinkContentkit),
+                 cache: new InMemoryCache()
+             }))
+         })
+     });
+
+};
+
+const postApolloClient = (body) => {
+    return new Promise((resolve, reject)=> {
+        getAuthToken().then((authToken)=> {
+            const httpLinkContentkit = new HttpLink({
+                uri: config.serverURL,
+                headers: {
+                    authorization: config.authenKeyContentKit,
+                    usertoken: authToken
+                },
+                method: 'POST',
+                body: JSON.stringify(body)
+            });
+            resolve(new ApolloClient({
+                link: httpLinkContentkit,
+                cache: new InMemoryCache()
+            }))
+        })
+    });
+
+};
+
+const post = (query) => {
+    return new Promise((resolve, reject)=> {
+        postApolloClient().then((client)=> {
+            client.mutate(query).then((result)=>{
+                resolve(result)
+            }).catch((err)=> {
+                reject(err)
+            })
+        })
+    });
+};
+
 
 const httpLinkHasbrain = new HttpLink({
     uri: config.serverURL,
     headers: {
-        Authorization: config.authenKeyHasbrain}
+        Authorization: config.authenKeyHasbrain
+    }
 });
 
 const errorHandler = onError(({networkError}) => {
+    console.log(networkError);
     switch (networkError.statusCode) {
         case 404:
             return {error: {message: 'Cannot connect to server'}};
         default:
             return {error: {message: 'Unknown error'}};
     }
-});
-
-const client = new ApolloClient({
-    link: errorHandler.concat(httpLinkContentkit),
-    cache: new InMemoryCache()
 });
 
 const get = (endpoints) => {
@@ -52,16 +105,42 @@ const get = (endpoints) => {
         });
 };
 
+const gqlQuery = (query) => {
+    return new Promise((resolve, reject)=> {
+        getApolloClient().then((client)=> {
+            client.query(query).then((result)=>{
+                resolve(result)
+            }).catch((err)=> {
+                reject(err)
+            })
+        })
+    });
+};
+
 export const getArticles = (page, perPage) => {
-    return client.query({
+    return gqlQuery({
         query: config.queries.articles,
         variables: {page: page, perPage: perPage}
     })
 };
 
 export const getPlaylist = () => {
-    return client.query({
+    return gqlQuery({
         query: config.queries.playlist,
+    })
+};
+
+export const postBookmark = (id) => {
+    return post({
+        mutation: config.queries.postBookmark,
+        variables: {id: id}
+    })
+};
+
+export const postUnbookmark = (id) => {
+    return post({
+        mutation: config.queries.postUnbookmark,
+        variables: {id: id}
     })
 };
 
@@ -69,41 +148,15 @@ _getProfileId = ()=> {
     return new Promise((resolve, reject)=> {
         NativeModules.RNUserKitIdentity.getProfileInfo((error, result)=> {
             let profileId = result[0].id;
-            console.log(result);
             resolve(profileId);
         })
     });
 };
 
-export const getNotification = () => {
-
-    return new Promise((resolve, reject)=>{
-        _getProfileId().then(value => {
-            fetch(config.hasBrainURL+config.endPoints.highlight+value, {
-                method: 'GET',
-                headers: config.hasBrainHeader
-            }).then(data => {
-                resolve(data.json())
-            }).catch((err)=> {
-                reject(err);
-            })
-        });
-    });
-
-};
-
-export const getSaved = () => {
-    return new Promise((resolve, reject)=> {
-        _getProfileId().then(value => {
-            fetch(config.hasBrainURL + config.endPoints.bookmark + value, {
-                method: 'GET',
-                headers: config.hasBrainHeader
-            }).then(data => {
-                resolve(data.json())
-            }).catch((err) => {
-                reject(err);
-            })
-        });
+export const getSaved = (page, perPage) => {
+    return gqlQuery({
+        query: config.queries.getBookmark,
+        variables: {page: page, perPage: perPage}
     });
 };
 
