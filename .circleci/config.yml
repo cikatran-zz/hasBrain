@@ -53,7 +53,7 @@ jobs:
 
       - run:
           name: Check style, lint, and build a debug APK
-          command: ./gradlew clean check copyReports assembleDebug
+          command: ./gradlew clean assembleDebug
 
       - run:
           name: Upload apk staging to slack
