@@ -17,7 +17,7 @@ export default class VerticalRow extends React.PureComponent {
 
     render() {
         return (
-            <TouchableOpacity onClick={this.props.onClicked}>
+            <TouchableOpacity onPress={this.props.onClicked}>
                 <View style={[styles.cardView, this.props.style]}>
                     <View style={styles.horizontalView}>
                         <Text style={[titleCardStyle, {

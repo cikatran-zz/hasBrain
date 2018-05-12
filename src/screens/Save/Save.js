@@ -35,7 +35,7 @@ export default class Save extends React.Component {
 
     _renderListItem = ({item}) => {
         let article = item.article;
-        if (article == null || _.findIndex(this.state.deleteItems, (o)=>(o === item._id)) !== -1 ) {
+        if (article == null) {
             return null;
         }
         return (<VerticalRow title={article.title}
@@ -76,6 +76,12 @@ export default class Save extends React.Component {
         if (saved.isFetching && this.state.deleteItems.length > 0) {
             this.setState({deleteItems: []})
         }
+
+        let data = saved.data;
+        if (data != null) {
+            data = data.filter((x)=>(this.state.deleteItems.indexOf(x._id) < 0))
+        }
+
         return (
             <View style={{backgroundColor: colors.mainWhite, flex: 1}}>
                 <FlatList
@@ -90,7 +96,7 @@ export default class Save extends React.Component {
                     onEndReachedThreshold={20}
                     onEndReached={this._fetchMore}
                     ItemSeparatorComponent={()=>this._renderVerticalSeparator()}
-                    data={saved.data}
+                    data={data}
                 />
             </View>
         )
