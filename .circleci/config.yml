@@ -52,12 +52,12 @@ jobs:
           key: dependenciesCache
 
       - run:
-          name: Check style, lint, and build a debug APK
-          command: ./gradlew clean assembleDebug
+          name: Check style, lint, and build a release APK
+          command: ./gradlew clean assembleRelease
 
       - run:
-          name: Upload apk staging to slack
-          command: curl https://slack.com/api/files.upload -F token="xoxb-284035994838-fnEFcTAsofZx8JqbDyDSXQFp" -F channels="appkit-android-ci" -F title="hasbrain apk demo" -F filename="${apk_name}" -F file=@app/build/outputs/apk/debug/app-debug.apk
+          name: Upload apk release to slack
+          command: curl https://slack.com/api/files.upload -F token="xoxb-284035994838-fnEFcTAsofZx8JqbDyDSXQFp" -F channels="appkit-android-ci" -F title="hasbrain apk release" -F filename="${apk_name}" -F file=@app/build/outputs/apk/release/app-release.apk
 
 workflows:
   version: 2
