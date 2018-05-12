@@ -25,6 +25,11 @@ jobs:
           paths:
             - node_modules
 
+      - persist_to_workspace:
+          root: ~/source
+          paths:
+            - node_modules
+
   android:
     working_directory: ~/source/android
     docker:
@@ -52,7 +57,7 @@ jobs:
 
       - run:
           name: Upload apk staging to slack
-          command: curl https://slack.com/api/files.upload -F token="xoxb-284035994838-fnEFcTAsofZx8JqbDyDSXQFp" -F channels="appkit-android-ci" -F title="appkit apk demo" -F filename="${apk_name}" -F file=@app/build/outputs/apk/debug/app-debug.apk
+          command: curl https://slack.com/api/files.upload -F token="xoxb-284035994838-fnEFcTAsofZx8JqbDyDSXQFp" -F channels="appkit-android-ci" -F title="hasbrain apk demo" -F filename="${apk_name}" -F file=@app/build/outputs/apk/debug/app-debug.apk
 
 workflows:
   version: 2
