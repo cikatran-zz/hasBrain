@@ -217,18 +217,26 @@ dependencies {
 
 
     implementation 'com.android.support:multidex:1.0.3'
-    releaseImplementation("com.mstage.userkit:sdk:${userkitVersion}") {
+
+    implementation("com.mstage.userkit:sdk:${userkitVersion}") {
         transitive = false
     }
-    releaseImplementation("com.mstage.userkit:identity:${userkitVersion}") {
+    implementation("com.mstage.userkit:identity:${userkitVersion}") {
         transitive = false
     }
-    debugImplementation("com.mstage.userkit:sdk:${userkitVersionStaging}") {
-        transitive = false
-    }
-    debugImplementation("com.mstage.userkit:identity:${userkitVersionStaging}") {
-        transitive = false
-    }
+//
+//    releaseImplementation("com.mstage.userkit:sdk:${userkitVersion}") {
+//        transitive = false
+//    }
+//    releaseImplementation("com.mstage.userkit:identity:${userkitVersion}") {
+//        transitive = false
+//    }
+//    debugImplementation("com.mstage.userkit:sdk:${userkitVersionStaging}") {
+//        transitive = false
+//    }
+//    debugImplementation("com.mstage.userkit:identity:${userkitVersionStaging}") {
+//        transitive = false
+//    }
 }
 
 // Run this once to be able to run the application with BUCK
