@@ -1,6 +1,6 @@
-export function getImageFromArray(images, firstImageName, secondImageName) {
-    if (images == null || images.length == 0) {
-        return 'https://i.imgur.com/8tiuMUU.png'
+export function getImageFromArray(images, firstImageName, secondImageName, defaultImage) {
+    if (images == null || images.length === 0) {
+        return defaultImage;//'https://i.imgur.com/8tiuMUU.png'
     }
     let image = null;
     images.forEach((item)=> {
@@ -12,8 +12,8 @@ export function getImageFromArray(images, firstImageName, secondImageName) {
         }
     });
     image = (image == null) ? images[0].url : image;
-    if (image === '') {
-        image = 'https://i.imgur.com/8tiuMUU.png';
-    }
+    // if (image === '') {
+    //     image = 'https://i.imgur.com/8tiuMUU.png';
+    // }
     return image;
 }

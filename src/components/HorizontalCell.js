@@ -8,9 +8,10 @@ import {
     ImageBackground,
     Dimensions
 } from 'react-native'
-import {blackTextStyle, grayTextStyle, titleCardStyle} from "../constants/theme";
-import {getPublishDateDescription} from "../utils/dateUtils";
+import {blackTextStyle, graySmallTextStyle, grayTextStyle, titleCardStyle} from "../constants/theme";
+import {getPublishDateDescription, getReadingTimeDescription} from "../utils/dateUtils";
 import {colors} from "../constants/colors";
+import ArticleButton from "./ArticleButton";
 
 export default class HorizontalCell extends React.PureComponent {
 
@@ -25,8 +26,16 @@ export default class HorizontalCell extends React.PureComponent {
                     <Image style={styles.image} source={this._getImage()}/>
                     <View style={styles.textView}>
                         <Text numberOfLines={2} style={[titleCardStyle, {height: 60, flexWrap: "wrap", width: '100%', flex: 1}]}>{(this.props.title == null) ? "" : this.props.title}</Text>
-                        <Text style={[blackTextStyle, {marginBottom: 5}]}>{(this.props.author == null) ? "" : this.props.author}</Text>
-                        <Text style={grayTextStyle}>{getPublishDateDescription(this.props.time)}</Text>
+                        <View style={[styles.horizontalView, {marginTop: 15}]}>
+                            <View style={styles.subTextView}>
+                                <Text style={[graySmallTextStyle, {marginBottom: 5}]}>{(this.props.author == null) ? "" : this.props.author}</Text>
+                                <Text style={grayTextStyle}>{getPublishDateDescription(this.props.time) + '   *   ' + getReadingTimeDescription(this.props.readingTime)}</Text>
+                            </View>
+                            <ArticleButton style={styles.articleButtonView}
+                                           onShare={this.props.onShare}
+                                           onBookmark={this.props.onBookmark}
+                                           bookmarked={this.props.bookmarked}/>
+                        </View>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -62,5 +71,17 @@ const styles = StyleSheet.create({
         padding: 15,
         backgroundColor: colors.mainWhite,
         marginBottom: 5
-    }
+    },
+    horizontalView: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%'
+    },
+    subTextView: {
+        flexDirection: 'column'
+    },
+    articleButtonView: {
+        marginRight: 0,
+        marginLeft: 'auto'
+    },
 });

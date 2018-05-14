@@ -12,8 +12,8 @@ export const defaultHeaderStyle = {
 };
 
 export const titleCardStyle = {
-    fontSize: 20,
     color: colors.blackText,
+    fontSize: 20,
     fontWeight: 'bold',
 };
 
@@ -24,5 +24,10 @@ export const blackTextStyle = {
 
 export const grayTextStyle = {
     fontSize: 15,
+    color: colors.mainDarkGray
+}
+
+export const graySmallTextStyle = {
+    fontSize: 10,
     color: colors.mainDarkGray
 }
