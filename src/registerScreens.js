@@ -10,12 +10,12 @@ import { defaultHeaderStyle } from './constants/theme'
 import Authentication from './screens/Authentication/Authentication'
 import Reader from './screens/Reader'
 import MeStack from './screenStacks/MeStack'
+import BackNavigationButton from "./components/BackNavigationButton";
 
 const TabNav = TabNavigator({
     EXPLORE: {
         screen: ExploreStack,
         navigationOptions: ({ navigation }) => ({
-            title: '00:00',
             tabBarLabel: strings.exploreHeader,
             ...defaultHeaderStyle,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_explore.png')}
@@ -84,7 +84,19 @@ export const ScreenStack = StackNavigator({
         screen: TabNav
     },
     Reader: {
-        screen: Reader
+        screen: Reader,
+        navigationOptions: ({navigation}) => ({
+            title: Math.round(navigation.state.params.readingTime) + " Min Read",
+            headerStyle: {
+                backgroundColor: colors.mainWhite
+            },
+            headerTitleStyle: {
+                color: colors.blackHeader,
+                fontSize: 25,
+                fontWeight: "bold"
+            },
+            headerLeft: <BackNavigationButton goBack={()=>navigation.goBack()}/>
+        })
     }
 }, {
     navigationOptions: {

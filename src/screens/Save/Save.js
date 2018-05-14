@@ -9,6 +9,7 @@ import NoDataView from "../../components/NoDataView";
 import {postUnbookmark} from "../../api";
 import _ from 'lodash'
 import {getImageFromArray} from "../../utils/imageUtils";
+import {extractRootDomain} from "../../utils/stringUtils";
 
 export default class Save extends React.Component {
 
@@ -39,11 +40,11 @@ export default class Save extends React.Component {
             return null;
         }
         return (<VerticalRow title={article.title}
-                             author={article.author}
-                             time={article.sourceCreateAt}
+                             author={extractRootDomain(article.url)}
+                             time={article.createdAt}
                              readingTime={article.readingTime}
-                             image={getImageFromArray(article.originalImages, null, null)}
-                             onClicked={() => this._openReadingView(article.url)}
+                             image={getImageFromArray(article.originalImages, null, null, article.sourceImage)}
+                             onClicked={() => this._openReadingView(article.url, article.readingTime, article._id)}
                              onBookmark={()=>this._onUnbookmarkItem(item._id)}
                              bookmarked={true}/>)
     }
@@ -52,8 +53,8 @@ export default class Save extends React.Component {
 
     _renderEmptyList = () => (<NoDataView text={'No bookmark'}/>);
 
-    _openReadingView = (url) => {
-        this.props.navigation.navigate('Reader', {url: url})
+    _openReadingView = (url, readingTime, id) => {
+        this.props.navigation.navigate('Reader', {url: url, readingTime: readingTime, articleID: id})
     };
 
     _fetchMore = () => {
