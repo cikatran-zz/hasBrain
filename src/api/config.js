@@ -15,6 +15,7 @@ query getArticles($page: Int!, $perPage: Int!){
         custom
         sourceId
         sourceName
+        sourceImage
         author
         sourceCreateAt
         createdAt

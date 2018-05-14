@@ -1,6 +1,6 @@
 import React from "react";
 import {Image, Text, TouchableOpacity, View, StyleSheet} from "react-native";
-import {blackTextStyle, grayTextStyle, titleCardStyle} from "../constants/theme";
+import {blackTextStyle, graySmallTextStyle, grayTextStyle, titleCardStyle} from "../constants/theme";
 import {getPublishDateDescription, getReadingTimeDescription} from "../utils/dateUtils";
 import {colors} from "../constants/colors";
 import ArticleButton from "./ArticleButton";
@@ -15,22 +15,32 @@ export default class VerticalRow extends React.PureComponent {
         return (this.props.image != null) ? {uri: this.props.image} : require('../assets/ic_hasbrain.png');
     };
 
+    _renderImage = () => {
+        const {image} = this.props;
+        if (image === '' || image == null) {
+            return null;
+        }
+        return (<Image source={{uri: image}}
+                       style={styles.thumbnailImage}/>)
+    };
+
     render() {
         return (
             <TouchableOpacity onPress={this.props.onClicked}>
                 <View style={[styles.cardView, this.props.style]}>
                     <View style={styles.horizontalView}>
-                        <Text style={[titleCardStyle, {
+                        <Text numberOfLines={2} style={[titleCardStyle, {
                             flex: 2,
+                            marginRight: 10,
+                            maxHeight: 100,
                             flexWrap: "wrap"
                         }]}>{(this.props.title == null) ? "" : this.props.title}</Text>
-                        <Image source={this._getImage()}
-                               style={styles.thumbnailImage}/>
+                        {this._renderImage()}
                     </View>
                     <View style={[styles.horizontalView, {marginTop: 15}]}>
                         <View style={styles.subTextView}>
                             <Text
-                                style={[blackTextStyle, {marginBottom: 5}]}>{(this.props.author == null) ? "" : this.props.author}</Text>
+                                style={[graySmallTextStyle, {marginBottom: 5}]}>{(this.props.author == null) ? "" : this.props.author}</Text>
                             <Text style={grayTextStyle}>{getPublishDateDescription(this.props.time) + '   *   ' + getReadingTimeDescription(this.props.readingTime)}</Text>
                         </View>
                         <ArticleButton style={styles.articleButtonView}

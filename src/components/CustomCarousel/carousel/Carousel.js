@@ -491,7 +491,7 @@ export default class Carousel extends Component {
     }
 
     _getContainerInnerMargin (opposite = false, isNotInside=true) {
-        const { sliderWidth, sliderHeight, itemWidth, itemHeight, vertical, activeSlideAlignment, paddingHorizontal } = this.props;
+        const { sliderWidth, sliderHeight, itemWidth, itemHeight, vertical, activeSlideAlignment, superPaddingHorizontal } = this.props;
         if (isNotInside) {
             return 0;
         }
@@ -545,7 +545,7 @@ export default class Carousel extends Component {
     }
 
     _initPositionsAndInterpolators (props = this.props) {
-        const { data, itemWidth, itemHeight, scrollInterpolator, vertical, sliderWidth, paddingHorizontal } = props;
+        const { data, itemWidth, itemHeight, scrollInterpolator, vertical, sliderWidth, superPaddingHorizontal } = props;
         const sizeRef = vertical ? itemHeight : itemWidth;
 
         if (!data.length) {
@@ -562,7 +562,7 @@ export default class Carousel extends Component {
             let startPadding = 0;
             let endPadding = 0;
             if (index != 0 ) {
-                startPadding = centerPadding - paddingHorizontal;
+                startPadding = centerPadding - superPaddingHorizontal;
             }
             if (index == (customData.length - 1)) {
                 startPadding = startPadding * 2;

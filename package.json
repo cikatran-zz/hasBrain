@@ -28,6 +28,7 @@
     "react-navigation-redux-helpers": "^1.0.5",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
+    "react-apollo": "2.1.0-rc.5",
     "redux-logger": "^3.0.6",
     "redux-observable": "^0.18.0",
     "redux-persist": "^5.9.1",
