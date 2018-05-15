@@ -1,5 +1,5 @@
 import React from 'react'
-import {StyleSheet, WebView, Linking, AppState, NativeModules} from 'react-native'
+import {StyleSheet, WebView, Linking, AppState, NativeModules, Platform} from 'react-native'
 import {colors} from "../../constants/colors";
 import {getIDOfCurrentDate} from "../../utils/dateUtils";
 import _ from 'lodash'
@@ -120,8 +120,7 @@ export default class Reader extends React.PureComponent {
         `;
         console.log(scrollingScript);
         if (this.webView != null) {
-            console.log("Continue reading");
-            this.webView.evaluateJavaScript(scrollingScript);
+           (Platform.OS === 'ios') && this.webView.evaluateJavaScript(scrollingScript);
         }
     };
 
