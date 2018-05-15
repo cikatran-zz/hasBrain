@@ -23,6 +23,7 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		36DECD1375A93FF64785D74C /* Pods_hasBrainTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB91D5FCF470029DA1079C6B /* Pods_hasBrainTests.framework */; };
+		38D6A566B4A7401D8D680CA6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B5847E048B9441B482B873B8 /* libz.tbd */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		6927DEC9209C64F100FFA275 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEA4209C64F100FFA275 /* Constants.swift */; };
 		6927DECA209C64F100FFA275 /* LivePlaybackRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEA7209C64F100FFA275 /* LivePlaybackRecorder.swift */; };
@@ -51,6 +52,7 @@
 		6927DF2C209C6FE400FFA275 /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6927DF29209C6FDC00FFA275 /* libART.a */; };
 		69C4DAF620AAA3DC000E4B4F /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69C4DAF320AAA3C2000E4B4F /* libBVLinearGradient.a */; };
 		69C4DAFD20AADC97000E4B4F /* libRCTWKWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69C4DAFC20AADC8C000E4B4F /* libRCTWKWebView.a */; };
+		69C4DB6A20AB2685000E4B4F /* libRNSentry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69C4DB6920AB2667000E4B4F /* libRNSentry.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8784C7BAB3BC8EC83B27C4DF /* Pods_hasBrain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0395669FEDAC5182B67B5C5 /* Pods_hasBrain.framework */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
@@ -337,6 +339,13 @@
 			remoteGlobalIDString = 0974579A1D2A440A000D9368;
 			remoteInfo = RCTWKWebView;
 		};
+		69C4DB6820AB2667000E4B4F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 69C4DB3820AB2667000E4B4F /* RNSentry.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNSentry;
+		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
@@ -417,11 +426,13 @@
 		6927DF23209C6FDC00FFA275 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		69C4DAED20AAA3C2000E4B4F /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		69C4DAF720AADC8C000E4B4F /* RCTWKWebView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWKWebView.xcodeproj; path = "../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView.xcodeproj"; sourceTree = "<group>"; };
+		69C4DB3820AB2667000E4B4F /* RNSentry.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSentry.xcodeproj; path = "../node_modules/react-native-sentry/ios/RNSentry.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8ABE82CC763D4698E642131D /* Pods-hasBrainTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hasBrainTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-hasBrainTests/Pods-hasBrainTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8D2B4A87433FF7DB5D2912C0 /* Pods-hasBrain.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hasBrain.debug.xcconfig"; path = "Pods/Target Support Files/Pods-hasBrain/Pods-hasBrain.debug.xcconfig"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
+		B5847E048B9441B482B873B8 /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		BDC76855000675693051ED2A /* Pods-hasBrain.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hasBrain.release.xcconfig"; path = "Pods/Target Support Files/Pods-hasBrain/Pods-hasBrain.release.xcconfig"; sourceTree = "<group>"; };
 		CB91D5FCF470029DA1079C6B /* Pods_hasBrainTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_hasBrainTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0395669FEDAC5182B67B5C5 /* Pods_hasBrain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_hasBrain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -441,6 +452,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				69C4DB6A20AB2685000E4B4F /* libRNSentry.a in Frameworks */,
 				69C4DAFD20AADC97000E4B4F /* libRCTWKWebView.a in Frameworks */,
 				69C4DAF620AAA3DC000E4B4F /* libBVLinearGradient.a in Frameworks */,
 				6927DF2C209C6FE400FFA275 /* libART.a in Frameworks */,
@@ -458,6 +470,7 @@
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				8784C7BAB3BC8EC83B27C4DF /* Pods_hasBrain.framework in Frameworks */,
+				38D6A566B4A7401D8D680CA6 /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -589,6 +602,7 @@
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 				D0395669FEDAC5182B67B5C5 /* Pods_hasBrain.framework */,
 				CB91D5FCF470029DA1079C6B /* Pods_hasBrainTests.framework */,
+				B5847E048B9441B482B873B8 /* libz.tbd */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -754,6 +768,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		69C4DB3920AB2667000E4B4F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				69C4DB6920AB2667000E4B4F /* libRNSentry.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -766,6 +788,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				69C4DB3820AB2667000E4B4F /* RNSentry.xcodeproj */,
 				69C4DAF720AADC8C000E4B4F /* RCTWKWebView.xcodeproj */,
 				69C4DAED20AAA3C2000E4B4F /* BVLinearGradient.xcodeproj */,
 				6927DF23209C6FDC00FFA275 /* ART.xcodeproj */,
@@ -873,6 +896,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				38C6C8851EC9F93C481D1F36 /* [CP] Embed Pods Frameworks */,
 				9EC5158E99290EDC780425FE /* [CP] Copy Pods Resources */,
+				739E7832FAE64DCB90B9911C /* Upload Debug Symbols to Sentry */,
 			);
 			buildRules = (
 			);
@@ -889,7 +913,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 610;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
@@ -898,7 +922,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 8TP5543C2X;
-						LastSwiftMigration = 0930;
+						LastSwiftMigration = 930;
 					};
 				};
 			};
@@ -973,6 +997,10 @@
 				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+				},
+				{
+					ProductGroup = 69C4DB3920AB2667000E4B4F /* Products */;
+					ProjectRef = 69C4DB3820AB2667000E4B4F /* RNSentry.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -1257,6 +1285,13 @@
 			remoteRef = 69C4DAFB20AADC8C000E4B4F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		69C4DB6920AB2667000E4B4F /* libRNSentry.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNSentry.a;
+			remoteRef = 69C4DB6820AB2667000E4B4F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1312,7 +1347,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\nexport NODE_BINARY=node\n../node_modules/@sentry/cli/bin/sentry-cli react-native xcode ../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
 		38C6C8851EC9F93C481D1F36 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1353,6 +1388,20 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		739E7832FAE64DCB90B9911C /* Upload Debug Symbols to Sentry */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Upload Debug Symbols to Sentry";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export SENTRY_PROPERTIES=sentry.properties\n../node_modules/@sentry/cli/bin/sentry-cli upload-dsym";
 		};
 		9BD4BA396BB86D6D930A3B0E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
