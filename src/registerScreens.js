@@ -13,29 +13,32 @@ import MeStack from './screenStacks/MeStack'
 import BackNavigationButton from "./components/BackNavigationButton";
 
 const TabNav = TabNavigator({
-    EXPLORE: {
+    ExploreTab: {
         screen: ExploreStack,
         navigationOptions: ({ navigation }) => ({
             tabBarLabel: strings.exploreHeader,
+            headerLeft: null,
             ...defaultHeaderStyle,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_explore.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     },
-    SAVED: {
+    SaveTab: {
         screen: SaveStack,
         navigationOptions: ({ navigation }) => ({
             title: 'SAVED',
+            headerLeft: null,
             tabBarLabel: strings.bookmarkHeader,
             ...defaultHeaderStyle,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_saved.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     },
-    Me: {
+    MeTab: {
         screen: MeStack,
         navigationOptions: ({ navigation }) => ({
             title: 'ME',
+            headerLeft: null,
             tabBarLabel: strings.meHeader,
             ...defaultHeaderStyle,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_me.png')}
@@ -60,7 +63,7 @@ const TabNav = TabNavigator({
         inactiveTintColor: colors.blackHeader,
         indicatorStyle: {
             backgroundColor: 'transparent',
-        }
+        },
     }
 });
 
@@ -77,7 +80,7 @@ export const ScreenStack = StackNavigator({
     Root: {
         screen: Authentication,
         navigationOptions: {
-            header: null
+            header: null,
         }
     },
     Home: {
