@@ -14,6 +14,8 @@ target 'hasBrain' do
 
   pod 'react-native-wkwebview', :path => '../node_modules/react-native-wkwebview-reborn'
 
+  pod 'SentryReactNative', :path => '../node_modules/react-native-sentry'
+
   target 'hasBrainTests' do
     inherit! :search_paths
     # Pods for testing
