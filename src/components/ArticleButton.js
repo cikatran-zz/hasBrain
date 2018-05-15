@@ -27,16 +27,17 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     saveButton: {
-        marginRight: 20,
-        marginLeft: 'auto'
+        marginLeft: 'auto',
+        padding: 10
     },
     shareButton: {
         marginRight: 0,
-        marginLeft: 'auto'
+        marginLeft: 'auto',
+        padding: 10
     },
     image: {
-        width: 20,
-        height: 30,
+        width: 15,
+        height: 25,
         resizeMode: 'contain'
     }
 });

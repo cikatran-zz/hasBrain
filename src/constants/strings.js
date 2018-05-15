@@ -4,5 +4,6 @@ export const strings = {
     notificationHeader: "NOTIFICATIONS",
     meHeader: "ME",
     readingHistoryKey: 'reading_history',
-    consumedLengthKey: 'consumed_length'
+    consumedLengthKey: 'consumed_length',
+    readingPositionKey: 'reading_position'
 };

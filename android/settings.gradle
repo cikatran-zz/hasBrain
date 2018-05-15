@@ -1,4 +1,4 @@
 rootProject.name = 'hasBrain'
-
-include ':app', ':react-native-webview-bridge'
-project(':react-native-webview-bridge').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-webview-bridge/android')
+include ':app'
+include ':react-native-linear-gradient'
+project(':react-native-linear-gradient').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-linear-gradient/android')

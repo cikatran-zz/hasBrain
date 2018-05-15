@@ -20,6 +20,7 @@ import {postBookmark, postUnbookmark} from "../../api";
 import {strings} from "../../constants/strings";
 import {formatReadingTimeInMinutes, getIDOfCurrentDate} from "../../utils/dateUtils";
 import {extractRootDomain} from "../../utils/stringUtils";
+import LoadingRow from "../../components/LoadingRow";
 
 const horizontalMargin = 5;
 
@@ -38,7 +39,8 @@ export default class Explore extends React.Component {
 
     constructor(props) {
         super(props);
-        this.currentPage = 1
+        this.currentPage = 1;
+        this.haveMore = true;
         this.state = {
             bookmarked: [],
         }
@@ -173,7 +175,7 @@ export default class Explore extends React.Component {
 
     _fetchMore = () => {
         if (this.props.articles.data != null) {
-            if (this.props.articles.data.length % 20 === 0) {
+            if (this.props.articles.data.length === this.currentPage * 20) {
                 this.currentPage += 1;
                 this.props.getArticles(this.currentPage, 20);
             }
@@ -181,22 +183,22 @@ export default class Explore extends React.Component {
     };
 
     _renderListFooter = (isFetching) => {
-        return (
-            <View style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: 200
-            }}>
-                <ActivityIndicator size="large"/>
-            </View>
-        )
-    }
+        if (isFetching) {
+            return (
+                <LoadingRow/>
+            )
+        } else {
+             return null;
+        }
+
+    };
 
     render() {
         const {articles, playlist} = this.props
         if (articles.error === true || playlist.error === true) {
             return null
         }
+
         return (
             <View style={{
                 flex: 1,
