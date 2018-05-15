@@ -10,6 +10,7 @@ import {postUnbookmark} from "../../api";
 import _ from 'lodash'
 import {getImageFromArray} from "../../utils/imageUtils";
 import {extractRootDomain} from "../../utils/stringUtils";
+import LoadingRow from "../../components/LoadingRow";
 
 export default class Save extends React.Component {
 
@@ -19,6 +20,7 @@ export default class Save extends React.Component {
         this.state = {
             deleteItems: []
         }
+        this.rows = {};
     }
 
     componentDidMount() {
@@ -26,11 +28,15 @@ export default class Save extends React.Component {
     }
 
     _onUnbookmarkItem = (id) => {
-        this.setState({deleteItems: this.state.deleteItems.concat(id)});
+        if (this.rows[id]) {
+            this.rows[id]._onRemove(()=> {
+                this.setState({deleteItems: this.state.deleteItems.concat(id)});
+            })
+        }
         postUnbookmark(id).then(value => {
-            console.log("DONE BOOKMARK",value);
+            //console.log("DONE BOOKMARK",value);
         }).catch((err)=> {
-            console.log("ERROR BOOK", err);
+            //console.log("ERROR BOOK", err);
         });
     };
 
@@ -40,6 +46,7 @@ export default class Save extends React.Component {
             return null;
         }
         return (<VerticalRow title={article.title}
+                             ref={(ref)=> this.rows[item._id] = ref}
                              author={extractRootDomain(article.url)}
                              time={article.createdAt}
                              readingTime={article.readingTime}
@@ -51,7 +58,13 @@ export default class Save extends React.Component {
 
     _keyExtractor = (item, index) => index + "";
 
-    _renderEmptyList = () => (<NoDataView text={'No bookmark'}/>);
+    _renderEmptyList = (isFetching) => {
+        if (isFetching) {
+            return null;
+        }
+        console.log("RENDER EMPTY");
+        return (<NoDataView text={'No bookmark'}/>);
+    }
 
     _openReadingView = (url, readingTime, id) => {
         this.props.navigation.navigate('Reader', {url: url, readingTime: readingTime, articleID: id})
@@ -72,15 +85,30 @@ export default class Save extends React.Component {
         <View style={styles.horizontalItemSeparator}/>
     );
 
+    _renderListFooter = (isFetching) => {
+        if (isFetching) {
+            return (
+                <LoadingRow/>
+            )
+        } else {
+            return null;
+        }
+
+    };
+
     render() {
         const {saved} = this.props;
         if (saved.isFetching && this.state.deleteItems.length > 0) {
             this.setState({deleteItems: []})
         }
 
-        let data = saved.data;
-        if (data != null) {
-            data = data.filter((x)=>(this.state.deleteItems.indexOf(x._id) < 0))
+        let data = [];
+        if (saved.data != null) {
+            data = saved.data.filter((x)=> (_.indexOf(this.state.deleteItems, x._id) < 0))
+        }
+
+        if (data.length === 0) {
+            data = null;
         }
 
         return (
@@ -93,10 +121,11 @@ export default class Save extends React.Component {
                     horizontal={false}
                     renderItem={this._renderListItem}
                     showsVerticalScrollIndicator={false}
-                    ListEmptyComponent={this._renderEmptyList}
+                    ListEmptyComponent={this._renderEmptyList(saved.isFetching)}
                     onEndReachedThreshold={20}
                     onEndReached={this._fetchMore}
                     ItemSeparatorComponent={()=>this._renderVerticalSeparator()}
+                    ListFooterComponent={() => this._renderListFooter(saved.isFetching)}
                     data={data}
                 />
             </View>
