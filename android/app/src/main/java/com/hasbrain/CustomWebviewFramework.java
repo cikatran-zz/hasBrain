@@ -27,7 +27,8 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
     public CustomWebviewFramework(ReactApplicationContext reactContext) {
         super(reactContext);
         mCustomTabActivityHelper = new CustomTabActivityHelper();
-
+        if (getCurrentActivity() != null)
+            mCustomTabActivityHelper.bindCustomTabsService(getCurrentActivity());
     }
 
     @Override
@@ -36,13 +37,7 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void init() {
-        if (getCurrentActivity() != null)
-            mCustomTabActivityHelper.bindCustomTabsService(getCurrentActivity());
-    }
-
-    @ReactMethod
-    public void unDestroy() {
+    public void onDestroy() {
         if (getCurrentActivity() != null)
             mCustomTabActivityHelper.unbindCustomTabsService(getCurrentActivity());
     }
