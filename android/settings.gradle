@@ -1,3 +1,3 @@
 rootProject.name = 'hasBrain'
 
-include ':app'
+include ':app', ':customwebview'
