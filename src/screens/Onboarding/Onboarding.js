@@ -134,15 +134,15 @@ export default class Onboarding extends React.Component {
                                                 }
                                             ]
                                         }
-                                        title={'I am a'}
-                                        subtitle={'Select any expertise that applies to you'}
+                                        pageTitle="I am a"
+                                        subtitle='Select any expertise that applies to you'
                                         icon={require('../../assets/ic_onboarding_briefcase.png')}
                                         onChangedSelected={(selected)=>this._onChangePersona(selected)}/>
                         <OnboardingPage style={{paddingHorizontal: 20}}
                                         data={
                                             this.state.experience
                                         }
-                                        title={'How many years have you been a'}
+                                        pageTitle={'How many years have you been a'}
                                         subtitle={'Rate your expertise level'}
                                         icon={require('../../assets/ic_onboarding_award.png')}
                                         onChangedSelected={(selected)=>this._onChangeExperience(selected)}/>
@@ -156,7 +156,7 @@ export default class Onboarding extends React.Component {
                                                 }
                                             ]
                                         }
-                                        title={'I want to'}
+                                        pageTitle={'I want to'}
                                         subtitle={'Define your goal'}
                                         icon={require('../../assets/ic_onboarding_flag.png')}
                                         onChangedSelected={(selected)=>this._onChangeIntent(selected)}/>
@@ -175,7 +175,8 @@ export default class Onboarding extends React.Component {
 const styles = StyleSheet.create({
     rootView: {
         flex: 1,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backgroundColor: colors.mainWhite
     },
     swiperView: {
         flexDirection: 'column',

@@ -60,7 +60,7 @@ export default class OnboardingPage extends React.Component {
                 <View style={styles.headerView}>
                     <Image source={this.props.icon} style={styles.iconImage}/>
                     <View style={styles.textView}>
-                        <Text style={styles.titleText}>{this.props.title}</Text>
+                        <Text style={styles.titleText}>{this.props.pageTitle}</Text>
                         <Text style={onboardingSubtitleStyle}>{this.props.subtitle}</Text>
                     </View>
                 </View>
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     textView: {
         flexDirection: 'column',
         flex: 4,
-        justifyContent: 'center',
+        justifyContent: 'center'
     },
     titleText: {
         ...onboardingTitleStyle,
