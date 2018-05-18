@@ -1,11 +1,13 @@
 PODS:
   - IQKeyboardManagerSwift (4.0.13)
+  - SwiftyJSON (4.1.0)
   - UserKit (0.19.11)
   - UserKitIdentity (0.19.11):
     - UserKit
 
 DEPENDENCIES:
   - IQKeyboardManagerSwift (= 4.0.13)
+  - SwiftyJSON (~> 4.0)
   - UserKit (from `../../mStage-UserKit-iOS-SDK`)
   - UserKitIdentity (from `../../mStage-UserKit-iOS-SDK`)
 
@@ -17,9 +19,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   IQKeyboardManagerSwift: fb399c4cddcd8d9bbcd2d0c7c81ed290b61c088e
+  SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   UserKit: 1d185a4e80d841a1ed67cf052b165498d6c13911
   UserKitIdentity: b766d7fc2b9afa71440f7c03813e9b825ee0e49e
 
-PODFILE CHECKSUM: 1418b252ed8acd715ee4d6de9ae3259e9e58d2eb
+PODFILE CHECKSUM: c363e0c0181cd6ebcf5614130e321a055f5355c0
 
 COCOAPODS: 1.4.0

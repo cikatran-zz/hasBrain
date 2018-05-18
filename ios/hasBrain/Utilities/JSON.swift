@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 public typealias JSONArr = [Any]
 public typealias JSONObj = [String: Any]
 

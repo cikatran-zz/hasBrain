@@ -8,13 +8,14 @@
 
 import Foundation
 import UserKitIdentity
+import SwiftyJSON
 
 public extension UserKitIdentityProfile {
     
-    public func toJson() -> [String: Any] {
+    public func toJson() -> JSON {
         
         var json = [
-            "_id": (self.id ?? "") as Any,
+            "id": (self.id ?? "") as Any,
             "name": (self.name ?? "") as Any,
             "account_id": (self.accountId ?? "") as Any,
             "account_email": (self.accountEmail ?? "") as Any,
@@ -25,6 +26,6 @@ public extension UserKitIdentityProfile {
             json[key] = String(describing: value)
         }
         
-        return json
+        return JSON(json)
     }
 }

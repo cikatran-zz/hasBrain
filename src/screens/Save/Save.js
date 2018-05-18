@@ -62,7 +62,6 @@ export default class Save extends React.Component {
         if (isFetching) {
             return null;
         }
-        console.log("RENDER EMPTY");
         return (<NoDataView text={'No bookmark'}/>);
     }
 

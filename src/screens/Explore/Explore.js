@@ -8,7 +8,7 @@ import {
     View,
     StyleSheet,
     Dimensions,
-    Share, NativeModules
+    Share, NativeModules, Platform
 } from 'react-native'
 import {colors} from '../../constants/colors'
 import VerticalRow from '../../components/VerticalRow'
@@ -62,7 +62,11 @@ export default class Explore extends React.Component {
     _keyExtractor = (item, index) => index + '';
 
     _openReadingView = (url, readingTime, id) => {
-        this.props.navigation.navigate('Reader', {url: url, readingTime: readingTime, articleID: id})
+        if (Platform.OS === 'ios') {
+            this.props.navigation.navigate('Reader', {url: url, readingTime: readingTime, articleID: id})
+        } else {
+            NativeModules.RNCustomWebview.loadUrl(url, (error, result)=> {});
+        }
     };
 
     _setUpReadingTime = () => {

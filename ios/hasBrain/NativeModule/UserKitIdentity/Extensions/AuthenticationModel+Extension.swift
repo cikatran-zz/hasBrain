@@ -8,23 +8,24 @@
 
 import Foundation
 import UserKitIdentity
+import SwiftyJSON
 
 public extension AutheticationModel {
     
-    public func toJson() -> [String: Any] {
-        return [
-            "token": (authToken ?? "") as Any,
-            "refresh_token": (refreshToken ?? "") as Any,
-            "profiles": (listProfiles ?? []).flatMap{ $0.toJson() } as Any,
-            "new": (isNewAccount ?? false) as Any,
-            "subscribed": (subscribed ?? false) as Any,
-            "affiliate_id": (affiliateID ?? "") as Any,
-            "affiliate_name": (affiliateName ?? "") as Any,
-            "createdAt": (createdAt ?? "") as Any
-        ]
+    public func toJson() -> JSON {
+      return [
+        "token": (authToken ?? "") as Any,
+        "refresh_token": (refreshToken ?? "") as Any,
+        "profiles": (listProfiles ?? []).map{ $0.toJson() } as Any,
+        "new": (isNewAccount ?? false) as Any,
+        "subscribed": (subscribed ?? false) as Any,
+        "affiliate_id": (affiliateID ?? "") as Any,
+        "affiliate_name": (affiliateName ?? "") as Any,
+        "createdAt": (createdAt ?? "") as Any
+      ]
     }
     
     public func toString() -> String? {
-        return asJSONString(self.toJson())
+      return self.toJson().rawString()
     }
 }

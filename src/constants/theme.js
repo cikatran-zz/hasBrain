@@ -30,4 +30,32 @@ export const grayTextStyle = {
 export const graySmallTextStyle = {
     fontSize: 10,
     color: colors.mainDarkGray
-}
+};
+
+export const onboardingTitleStyle = {
+    fontSize: 16,
+    color: colors.blackText,
+    fontWeight: '600'
+};
+
+export const onboardingSectionTitleStyle = {
+    fontSize: 16,
+    color: colors.grayText1,
+    fontWeight: 'normal'
+};
+
+export const onboardingSubtitleStyle = {
+    fontSize: 12,
+    color: colors.grayText,
+    fontWeight: 'normal'
+};
+
+export const onboardingItemStyle = {
+    fontSize: 14,
+    fontWeight: 'normal',
+    width: '100%',
+    alignSelf: 'center',
+    flexWrap: "wrap",
+    paddingHorizontal: 5,
+    textAlign: 'center'
+};

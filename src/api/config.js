@@ -117,23 +117,73 @@ mutation removeBookmark($id: MongoID){
 }
 `;
 
+const postCreateUser = gql`
+mutation createUser($profileId: MongoID, $name: String) {
+  user{
+    userCreate(record: {
+      profileId: $profileId,
+      name: $name
+    }) {
+      recordId
+    }
+  }
+}
+`;
+
+const onboardingInfo = gql`
+query {
+  viewer {
+    personaPagination {
+      count
+      items {
+        _id
+        title
+      }
+    }
+    levelPagination {
+      count
+      items {
+        _id
+        title
+      }
+    }
+    intentPagination {
+      count
+      items {
+        _id
+        title
+      }
+    }
+  }
+}
+`;
+
+const postUserInterest = gql`
+mutation postUserInterest($segments: [UsertypeusertypeSegmentsInput], $intentIds: [MongoID]){
+  user{
+    userInterest(record:{
+      segments: $segments,
+      intentIds: $intentIds
+    }) {
+      recordId
+    }
+  }
+}
+`;
+
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
-    hasBrainURL: 'http://hasbrain-api.mstage.io/',
-    hasBrainHeader: {
-        'x-hasbrain-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhYjMzNzI1ZTZlOTFlMGNlMDk4OWRlNCIsImlhdCI6MTUxNjIzOTAyMn0.anJXLAhnRxz37NxmiKtzk76KBZCH1RQXV1DuQCy1wMc'
-    },
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
-    authenKeyHasbrain: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhYjMzNzI1ZTZlOTFlMGNlMDk4OWRlNCIsImlhdCI6MTUxNjIzOTAyMn0.anJXLAhnRxz37NxmiKtzk76KBZCH1RQXV1DuQCy1wMc',
     queries: {
         articles: articles,
         playlist: playlist,
-        postBookmark: postBookmark,
-        getBookmark: getBookmark,
-        postUnbookmark: postUnbookmark
+        bookmark: getBookmark,
+        onboardingInfo: onboardingInfo
     },
-    endPoints: {
-        highlight: 'highlight?profile_id=',
-        bookmark: 'bookmark?profile_id='
+    mutation: {
+        bookmark: postBookmark,
+        unbookmark: postUnbookmark,
+        createUser: postCreateUser,
+        userInterest: postUserInterest
     }
 };

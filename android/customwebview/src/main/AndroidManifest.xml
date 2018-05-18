@@ -2,4 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hasbrain.lib.customwebview">
 
+    <application
+        >
+        <activity android:name=".helper.WebviewActivity"></activity>
+    </application>
 </manifest>
