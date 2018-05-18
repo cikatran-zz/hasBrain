@@ -8,7 +8,7 @@ import {
     View,
     StyleSheet,
     Dimensions,
-    Share
+    Share, NativeModules
 } from 'react-native'
 import {colors} from '../../constants/colors'
 import VerticalRow from '../../components/VerticalRow'
@@ -17,6 +17,10 @@ import Carousel from '../../components/CustomCarousel'
 import {getImageFromArray} from "../../utils/imageUtils";
 import _ from 'lodash'
 import {postBookmark, postUnbookmark} from "../../api";
+import {strings} from "../../constants/strings";
+import {formatReadingTimeInMinutes, getIDOfCurrentDate} from "../../utils/dateUtils";
+import {extractRootDomain} from "../../utils/stringUtils";
+import LoadingRow from "../../components/LoadingRow";
 
 const horizontalMargin = 5;
 
@@ -24,25 +28,60 @@ const sliderWidth = Dimensions.get('window').width;
 const itemViewWidth = Dimensions.get('window').width * 0.8;
 const itemWidth = itemViewWidth + horizontalMargin * 2;
 
-export default class Explore extends React.PureComponent {
+export default class Explore extends React.Component {
+
+    static navigationOptions = ({ navigation }) => {
+        const { params } = navigation.state;
+        return {
+            title: params ? params.title : '00:00',
+        }
+    };
 
     constructor(props) {
         super(props);
-        this.currentPage = 1
+        this.currentPage = 1;
+        this.haveMore = true;
         this.state = {
-            bookmarked: []
+            bookmarked: [],
         }
     }
 
     componentDidMount() {
         this.props.getArticles(1, 20);
         this.props.getPlaylist()
+        this._navListener = this.props.navigation.addListener('didFocus', () => {
+            this._setUpReadingTime();
+        });
+        this._setUpReadingTime();
+    }
+
+    componentWillUnmount() {
+        this._navListener.remove();
     }
 
     _keyExtractor = (item, index) => index + '';
 
-    _openReadingView = (url) => {
-        this.props.navigation.navigate('Reader', {url: url})
+    _openReadingView = (url, readingTime, id) => {
+        this.props.navigation.navigate('Reader', {url: url, readingTime: readingTime, articleID: id})
+    };
+
+    _setUpReadingTime = () => {
+        NativeModules.RNUserKit.getProperty(strings.readingHistoryKey, (error, result) => {
+            if (!error && result != null) {
+                // Get current date
+                let readingHistory = JSON.parse(result[0]);
+                let dailyReading = _.get(readingHistory, getIDOfCurrentDate(), {});
+                let totalReadingTime = 0;
+                Object.keys(dailyReading).forEach(function(key) {
+                    totalReadingTime += _.get(dailyReading, key+"."+strings.consumedLengthKey, 0);
+                });
+                this.props.navigation.setParams({
+                    title: formatReadingTimeInMinutes(totalReadingTime)
+                });
+            } else {
+                console.log(error);
+            }
+        });
     };
 
     _onShareItem = (item) => {
@@ -51,11 +90,11 @@ export default class Explore extends React.PureComponent {
             title: _.get(item, 'title', ''),
             url: _.get(item, 'url', 'http://www.hasbrain.com/')
         };
-        console.log(content);
         Share.share(content, {subject: 'HasBrain - ' + item.title})
     };
 
     _onBookmarkItem = (id) => {
+        console.log("BOOKMARK", id);
         if (_.findIndex(this.state.bookmarked, (o)=>(o === id)) !== -1) {
             this.setState({bookmarked: _.filter(this.state.bookmarked, (o)=>(o !== id))});
             postUnbookmark(id).then(value => {
@@ -75,14 +114,14 @@ export default class Explore extends React.PureComponent {
 
     _renderVerticalItem = ({item}) => (
         <VerticalRow title={item.title}
-                     author={item.author}
-                     time={item.sourceCreateAt}
+                     author={extractRootDomain(item.url)}
+                     time={item.createdAt}
                      readingTime={item.readingTime}
-                     onClicked={() => this._openReadingView(item.url)}
+                     onClicked={() => this._openReadingView(item.url, item.readingTime, item._id)}
                      onShare={()=>this._onShareItem(item)}
                      onBookmark={()=>this._onBookmarkItem(item._id)}
                      bookmarked={_.findIndex(this.state.bookmarked, (o)=>(o === item._id)) !== -1}
-                     image={getImageFromArray(item.originalImages, null, null)}/>
+                     image={getImageFromArray(item.originalImages, null, null, item.sourceImage)}/>
     );
 
     _renderVerticalSeparator = ()=>(
@@ -107,10 +146,14 @@ export default class Explore extends React.PureComponent {
         return (
             <HorizontalCell style={{alignSelf: 'center', width: itemViewWidth}}
                             title={item.title}
-                            author={item.author}
+                            author={extractRootDomain(item.url)}
                             time={item.sourceCreateAt}
                             url={item.url}
-                            onClicked={() => this._openReadingView(item.url)}
+                            readingTime={item.readingTime}
+                            onClicked={() => this._openReadingView(item.url, item.readingTime, item._id)}
+                            onShare={()=>this._onShareItem(item)}
+                            onBookmark={()=>this._onBookmarkItem(item._id)}
+                            bookmarked={_.findIndex(this.state.bookmarked, (o)=>(o === item._id)) !== -1}
                             image={getImageFromArray(item.originalImages, null, null)}/>)
     };
 
@@ -121,17 +164,18 @@ export default class Explore extends React.PureComponent {
             sliderWidth={sliderWidth}
             itemWidth={itemWidth}
             layout={'default'}
+            shouldOptimizeUpdates={false}
             inactiveSlideOpacity={1}
             inactiveSlideScale={1}
             layoutCardOffset={10}
-            paddingHorizontal={5}
+            superPaddingHorizontal={5}
             renderItem={this._renderHorizontalItem}
             containerCustomStyle={styles.horizontalCarousel}/> : null
     );
 
     _fetchMore = () => {
         if (this.props.articles.data != null) {
-            if (this.props.articles.data.length % 20 === 0) {
+            if (this.props.articles.data.length === this.currentPage * 20) {
                 this.currentPage += 1;
                 this.props.getArticles(this.currentPage, 20);
             }
@@ -139,22 +183,22 @@ export default class Explore extends React.PureComponent {
     };
 
     _renderListFooter = (isFetching) => {
-        return (
-            <View style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: 200
-            }}>
-                <ActivityIndicator size="large"/>
-            </View>
-        )
-    }
+        if (isFetching) {
+            return (
+                <LoadingRow/>
+            )
+        } else {
+             return null;
+        }
+
+    };
 
     render() {
         const {articles, playlist} = this.props
         if (articles.error === true || playlist.error === true) {
             return null
         }
+
         return (
             <View style={{
                 flex: 1,

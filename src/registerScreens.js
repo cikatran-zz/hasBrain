@@ -10,32 +10,35 @@ import { defaultHeaderStyle } from './constants/theme'
 import Authentication from './screens/Authentication/Authentication'
 import Reader from './screens/Reader'
 import MeStack from './screenStacks/MeStack'
+import BackNavigationButton from "./components/BackNavigationButton";
 
 const TabNav = TabNavigator({
-    EXPLORE: {
+    ExploreTab: {
         screen: ExploreStack,
         navigationOptions: ({ navigation }) => ({
-            title: '00:00',
             tabBarLabel: strings.exploreHeader,
+            headerLeft: null,
             ...defaultHeaderStyle,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_explore.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     },
-    SAVED: {
+    SaveTab: {
         screen: SaveStack,
         navigationOptions: ({ navigation }) => ({
             title: 'SAVED',
+            headerLeft: null,
             tabBarLabel: strings.bookmarkHeader,
             ...defaultHeaderStyle,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_saved.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     },
-    Me: {
+    MeTab: {
         screen: MeStack,
         navigationOptions: ({ navigation }) => ({
             title: 'ME',
+            headerLeft: null,
             tabBarLabel: strings.meHeader,
             ...defaultHeaderStyle,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_me.png')}
@@ -60,7 +63,7 @@ const TabNav = TabNavigator({
         inactiveTintColor: colors.blackHeader,
         indicatorStyle: {
             backgroundColor: 'transparent',
-        }
+        },
     }
 });
 
@@ -77,14 +80,26 @@ export const ScreenStack = StackNavigator({
     Root: {
         screen: Authentication,
         navigationOptions: {
-            header: null
+            header: null,
         }
     },
     Home: {
         screen: TabNav
     },
     Reader: {
-        screen: Reader
+        screen: Reader,
+        navigationOptions: ({navigation}) => ({
+            title: Math.round(navigation.state.params.readingTime) + " Min Read",
+            headerStyle: {
+                backgroundColor: colors.mainWhite
+            },
+            headerTitleStyle: {
+                color: colors.blackHeader,
+                fontSize: 25,
+                fontWeight: "bold"
+            },
+            headerLeft: <BackNavigationButton goBack={()=>navigation.goBack()}/>
+        })
     }
 }, {
     navigationOptions: {

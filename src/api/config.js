@@ -3,7 +3,7 @@ import gql from "graphql-tag";
 const articles = gql`
 query getArticles($page: Int!, $perPage: Int!){
   viewer{
-    articlePagination(page: $page, perPage: $perPage) {
+    articleRecommend(page: $page, perPage: $perPage) {
       count
       items {
         _id
@@ -15,6 +15,7 @@ query getArticles($page: Int!, $perPage: Int!){
         custom
         sourceId
         sourceName
+        sourceImage
         author
         sourceCreateAt
         createdAt

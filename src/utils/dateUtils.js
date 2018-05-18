@@ -10,6 +10,26 @@ export function getReadingTimeDescription(minutes) {
     return '';
 }
 
+export function formatReadingTimeInMinutes(totalTimeInSeconds) {
+    let minutes = Math.round(totalTimeInSeconds/60);
+    let hours = Math.round(minutes/60);
+    minutes = Math.round(minutes % 60);
+    return FormatNumberLength(hours,2) + ":" + FormatNumberLength(minutes,2);
+}
+
+export function FormatNumberLength(num, length) {
+    let r = "" + num;
+    while (r.length < length) {
+        r = "0" + r;
+    }
+    return r;
+}
+
+export function getIDOfCurrentDate() {
+    let currentDate = new Date();
+    return FormatNumberLength(currentDate.getFullYear(),4) + FormatNumberLength(currentDate.getMonth() + 1,2) + FormatNumberLength(currentDate.getDate(),2);
+}
+
 Date.prototype.toRelativeTime = (function() {
 
     var _ = function(options) {

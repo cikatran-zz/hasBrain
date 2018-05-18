@@ -26,21 +26,22 @@ export default class Explore extends React.PureComponent {
             let result = JSON.parse(results[0]);
             if (result.is_sign_in) {
                 this._goToHomeScreen();
+                return;
             }
             this.setState({isChecked: true});
         });
     }
 
     _goToHomeScreen = () => {
-        const resetAction = NavigationActions.reset({
-            index: 0,
-            actions: [
-                NavigationActions.navigate({
-                    routeName: 'Home'
-                })
-            ]
-        });
-        this.props.navigation.dispatch(resetAction);
+        // const resetAction = NavigationActions.reset({
+        //     index: 0,
+        //     actions: [
+        //         NavigationActions.navigate({
+        //             routeName: 'Home'
+        //         })
+        //     ]
+        // });
+        this.props.navigation.navigate('Home');
     };
 
     _signUp = () => {
