@@ -7,21 +7,21 @@ const initialState = {
     error: false
 }
 
-export default function notificationReducer(state = initialState, action) {
+export default function onboardingReducer(state = initialState, action) {
     switch (action.type) {
-        case actionTypes.FETCHING_NOTIFICATION:
+        case actionTypes.FETCHING_ONBOARDING:
             return {
                 ...state,
                 isFetching: true
             }
-        case actionTypes.FETCH_NOTIFICATION_SUCCESS:
+        case actionTypes.FETCH_ONBOARDING_SUCCESS:
             return {
                 ...state,
                 isFetching: false,
                 fetched: true,
                 data: action.data
             }
-        case actionTypes.FETCH_NOTIFICATION_FAILURE:
+        case actionTypes.FETCH_ONBOARDING_FAILURE:
             return {
                 ...state,
                 isFetching: false,

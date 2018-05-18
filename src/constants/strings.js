@@ -5,5 +5,7 @@ export const strings = {
     meHeader: "ME",
     readingHistoryKey: 'reading_history',
     consumedLengthKey: 'consumed_length',
-    readingPositionKey: 'reading_position'
+    readingPositionKey: 'reading_position',
+    onboardingKey: 'onboarding',
+    onboardedKey: 'onboarded'
 };

@@ -7,14 +7,13 @@ target 'hasBrain' do
   pod 'UserKit', :path => '../../mStage-UserKit-iOS-SDK'
   pod 'UserKitIdentity', :path => '../../mStage-UserKit-iOS-SDK'
   pod 'IQKeyboardManagerSwift', '4.0.13'
+  pod 'SwiftyJSON', '~> 4.0'
 
-  pod 'react-native-shimmer', :path => '../node_modules/react-native-shimmer'
+#pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
-  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+#pod 'react-native-wkwebview', :path => '../node_modules/react-native-wkwebview-reborn'
 
-  pod 'react-native-wkwebview', :path => '../node_modules/react-native-wkwebview-reborn'
-
-  pod 'SentryReactNative', :path => '../node_modules/react-native-sentry'
+#pod 'SentryReactNative', :path => '../node_modules/react-native-sentry'
 
   target 'hasBrainTests' do
     inherit! :search_paths

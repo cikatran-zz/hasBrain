@@ -4,9 +4,11 @@ import {
     ActivityIndicator
 } from 'react-native'
 import {colors} from "../../constants/colors";
-import {NavigationActions} from "react-navigation";
 import IndicatorModal from "../../components/IndicatorModal";
 import Toast from 'react-native-root-toast';
+import {postCreateUser} from "../../api";
+import _ from 'lodash'
+import {strings} from "../../constants/strings";
 
 export default class Explore extends React.PureComponent {
 
@@ -15,34 +17,11 @@ export default class Explore extends React.PureComponent {
         this.email = "";
         this.password = "";
         this.indicatorModal = null;
-        this.state = {
-            isChecked: false
-        };
         this.callbackMessage = "";
     }
 
     componentDidMount() {
-        NativeModules.RNUserKitIdentity.checkSignIn((error, results) => {
-            let result = JSON.parse(results[0]);
-            if (result.is_sign_in) {
-                this._goToHomeScreen();
-                return;
-            }
-            this.setState({isChecked: true});
-        });
     }
-
-    _goToHomeScreen = () => {
-        // const resetAction = NavigationActions.reset({
-        //     index: 0,
-        //     actions: [
-        //         NavigationActions.navigate({
-        //             routeName: 'Home'
-        //         })
-        //     ]
-        // });
-        this.props.navigation.navigate('Home');
-    };
 
     _signUp = () => {
         if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) {
@@ -51,13 +30,17 @@ export default class Explore extends React.PureComponent {
         }
         this.indicatorModal.setState({isShow: true});
         NativeModules.RNUserKitIdentity.signUpWithEmail(this.email, this.password, {}, (error, results) => {
+            console.log();
             if (error != null) {
                 this.callbackMessage = JSON.parse(error).message;
                 this.indicatorModal.setState({isShow: false});
             } else {
+                this._createUser(_.get(JSON.parse(results[0]), 'profiles[0]', {}));
+
                 this.indicatorModal.setState({isShow: false});
-                this._goToHomeScreen();
+                this._nextScreen()
             }
+
         })
     };
 
@@ -73,9 +56,34 @@ export default class Explore extends React.PureComponent {
                 this.indicatorModal.setState({isShow: false});
             } else {
                 this.indicatorModal.setState({isShow: false});
-                this._goToHomeScreen();
+                this._nextScreen();
             }
         })
+    };
+
+    _createUser = (profile) => {
+        postCreateUser(_.get(profile, 'id', ''), _.get(profile, 'name', '')).then((value)=> {
+            //console.log(value);
+        }).catch((error)=>{
+            //console.log(error);
+        });
+    };
+
+    _nextScreen = () => {
+        NativeModules.RNUserKit.getProperty(strings.onboardingKey, (error, result)=> {
+            if (error == null && result != null) {
+                let onboarding = JSON.parse(result[0]);
+                let isOnboarded = _.get(onboarding, strings.onboardedKey, false);
+                if (isOnboarded) {
+                    this.props.navigation.navigate('Home');
+                } else {
+                    this.props.navigation.navigate('Onboarding');
+                }
+            } else {
+                this.props.navigation.navigate('Onboarding');
+            }
+        });
+
     };
 
     _showMessage = (message) => {
@@ -109,13 +117,6 @@ export default class Explore extends React.PureComponent {
     }
 
     render() {
-        if (!this.state.isChecked) {
-            return (
-                <View style={{justifyContent:'center', alignItems:'center', flex: 1}}>
-                    <ActivityIndicator size="large"/>
-                </View>
-            );
-        }
         return (
             <View style={styles.container}>
                 <IndicatorModal ref={(modal)=>{this.indicatorModal = modal}} onDismiss={this.onDismissIndicatorModal.bind(this)}/>

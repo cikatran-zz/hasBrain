@@ -58,7 +58,7 @@ const postApolloClient = (body) => {
 
 };
 
-const post = (query) => {
+const gqlPost = (query) => {
     return new Promise((resolve, reject)=> {
         postApolloClient().then((client)=> {
             client.mutate(query).then((result)=>{
@@ -79,7 +79,9 @@ const httpLinkHasbrain = new HttpLink({
 });
 
 const errorHandler = onError(({networkError}) => {
-    console.log(networkError);
+    if (networkError == null) {
+        return {error: {message: 'Unknown error'}};
+    }
     switch (networkError.statusCode) {
         case 404:
             return {error: {message: 'Cannot connect to server'}};
@@ -131,16 +133,30 @@ export const getPlaylist = () => {
 };
 
 export const postBookmark = (id) => {
-    return post({
-        mutation: config.queries.postBookmark,
+    return gqlPost({
+        mutation: config.mutation.bookmark,
         variables: {id: id}
     })
 };
 
 export const postUnbookmark = (id) => {
-    return post({
-        mutation: config.queries.postUnbookmark,
+    return gqlPost({
+        mutation: config.mutation.unbookmark,
         variables: {id: id}
+    })
+};
+
+export const postCreateUser = (profileId, name) => {
+    return gqlPost({
+        mutation: config.mutation.createUser,
+        variables: {profileId: profileId, name: name}
+    })
+};
+
+export const postUserInterest = (segments, intents) => {
+    return gqlPost({
+        mutation: config.mutation.userInterest,
+        variables: {segments: segments, intentIds: intents}
     })
 };
 
@@ -153,9 +169,15 @@ _getProfileId = ()=> {
     });
 };
 
+export const getOnboardingInfo = () => {
+    return gqlQuery({
+        query: config.queries.onboardingInfo
+    })
+};
+
 export const getSaved = (page, perPage) => {
     return gqlQuery({
-        query: config.queries.getBookmark,
+        query: config.queries.bookmark,
         variables: {page: page, perPage: perPage}
     });
 };

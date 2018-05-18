@@ -1,14 +1,14 @@
 import { combineReducers } from 'redux'
 import nav from './appReducer'
 import articlesReducer from './articlesReducer'
-import notificationReducer from './notificationReducer'
 import savedReducer from './savedReducer'
 import playlistReducer from './playlistReducer'
+import onboardingReducer from "./onboardingReducer";
 
 export default combineReducers({
     nav,
     articlesReducer,
-    notificationReducer,
     savedReducer,
-    playlistReducer
+    playlistReducer,
+    onboardingReducer
 })

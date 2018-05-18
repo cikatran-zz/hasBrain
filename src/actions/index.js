@@ -1,11 +1,12 @@
-import * as getNotification from './getNotification'
 import * as getSaved from './getSaved'
 import * as getArticles from './getArticles'
 import * as getPlaylist from './getPlaylist'
+import * as getOnboarding from './getOnboarding'
+
 
 export default actions = {
-    getNotification,
     getSaved,
     getArticles,
-    getPlaylist
+    getPlaylist,
+    getOnboarding
 }

@@ -1,7 +1,6 @@
 import { StackNavigator, TabNavigator } from 'react-navigation'
 import ExploreStack from './screenStacks/ExploreStack'
 import SaveStack from './screenStacks/SaveStack'
-import NotificationStack from './screenStacks/NotificationStack'
 import { Image, StyleSheet, NativeModules } from 'react-native'
 import React from 'react'
 import { colors } from './constants/colors'
@@ -11,6 +10,8 @@ import Authentication from './screens/Authentication/Authentication'
 import Reader from './screens/Reader'
 import MeStack from './screenStacks/MeStack'
 import BackNavigationButton from "./components/BackNavigationButton";
+import Launch from "./screens/Launch/Launch";
+import Onboarding from "./screens/Onboarding";
 
 const TabNav = TabNavigator({
     ExploreTab: {
@@ -78,6 +79,12 @@ const styles = StyleSheet.create({
 export const ScreenStack = StackNavigator({
 
     Root: {
+        screen: Launch,
+        navigationOptions: {
+            header: null,
+        }
+    },
+    Authentication: {
         screen: Authentication,
         navigationOptions: {
             header: null,
@@ -85,6 +92,12 @@ export const ScreenStack = StackNavigator({
     },
     Home: {
         screen: TabNav
+    },
+    Onboarding: {
+        screen: Onboarding,
+        navigationOptions: {
+            header: null,
+        }
     },
     Reader: {
         screen: Reader,
