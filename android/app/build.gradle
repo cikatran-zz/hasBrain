@@ -179,14 +179,14 @@ ext {
 }
 
 dependencies {
-    compile project(':react-native-sentry')
-    compile project(':react-native-linear-gradient')
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile "com.android.support:appcompat-v7:${supportVersion}"
-    compile 'com.facebook.react:react-native:+'
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "com.android.support:appcompat-v7:${supportVersion}"
+    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation project(':customwebview')
+    implementation "com.facebook.android:facebook-android-sdk:4.32.0"
+    implementation project(':react-native-sentry')
+    implementation project(':react-native-linear-gradient')
 
-    // From node_modules
-    implementation 'com.facebook.android:facebook-android-sdk:4.32.0'
     implementation "com.android.support:support-v4:${supportVersion}"
     implementation "com.android.support:recyclerview-v7:${supportVersion}"
     implementation "com.android.support:support-annotations:${supportVersion}"

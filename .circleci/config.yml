@@ -1,0 +1,73 @@
+version: 2
+jobs:
+  node:
+    working_directory: ~/source
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+
+      - restore_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+
+      - run: yarn install
+
+      - save_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+          paths:
+            - ~/.cache/yarn
+
+      - save_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+          paths:
+            - node_modules
+
+      - persist_to_workspace:
+          root: ~/source
+          paths:
+            - node_modules
+
+  android:
+    working_directory: ~/source/android
+    docker:
+      - image: circleci/android:api-27-node8-alpha
+    steps:
+      - checkout:
+          path: ~/source
+
+      - attach_workspace:
+          at: ~/source
+
+      - restore_cache:
+          key: dependenciesCache
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: dependenciesCache
+
+      - run:
+          name: Check style, lint, and build a release APK
+          command: ./gradlew clean assembleRelease
+
+      - run:
+          name: Upload apk release to slack ci channel
+          command: curl https://slack.com/api/files.upload -F token="xoxb-284035994838-fnEFcTAsofZx8JqbDyDSXQFp" -F channels="appkit-android-ci" -F title="hasbrain apk release" -F filename="${apk_name}" -F file=@app/build/outputs/apk/release/app-release.apk
+
+      - run:
+          name: Upload apk release to slack product-ideas
+          command: curl https://slack.com/api/files.upload -F token="xoxb-284035994838-fnEFcTAsofZx8JqbDyDSXQFp" -F channels="product_ideas" -F title="hasbrain apk release" -F filename="${apk_name}" -F file=@app/build/outputs/apk/release/app-release.apk
+
+workflows:
+  version: 2
+  node-android:
+    jobs:
+      - node
+      - android:
+          requires:
+            - node
