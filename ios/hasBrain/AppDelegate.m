@@ -6,15 +6,13 @@
  */
 
 #import "AppDelegate.h"
+#import <AppCenterReactNativeCrashes/AppCenterReactNativeCrashes.h>
+#import <AppCenterReactNativeAnalytics/AppCenterReactNativeAnalytics.h>
+#import <AppCenterReactNative/AppCenterReactNative.h>
 #import <CodePush/CodePush.h>
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
-#if __has_include(<React/RNSentry.h>)
-#import <React/RNSentry.h> // This is used for versions of react >= 0.40
-#else
-#import "RNSentry.h" // This is used for versions of react < 0.40
-#endif
 #import "hasBrain-Swift.h"
 
 @implementation AppDelegate
@@ -22,6 +20,12 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   NSURL *jsCodeLocation;
+
+  [AppCenterReactNativeCrashes registerWithAutomaticProcessing];  // Initialize AppCenter crashes
+
+  [AppCenterReactNativeAnalytics registerWithInitiallyEnabled:true];  // Initialize AppCenter analytics
+
+  [AppCenterReactNative register];  // Initialize AppCenter 
 
   
     #ifdef DEBUG
@@ -33,9 +37,6 @@ RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"hasBrain"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
-
-  [RNSentry installWithRootView:rootView];
-
   rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
 
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
