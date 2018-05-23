@@ -1,3 +1,4 @@
+import codePush from "react-native-code-push";
 import React, {Component} from "react";
 import {Provider} from "react-redux";
 import configureStore from './configureStore'
@@ -8,7 +9,7 @@ import {colors} from "./constants/colors";
 const { persistor, store } = configureStore();
 
 const hasBrainPic = require('./assets/ic_hasbrain.png')
-export default class App extends Component {
+class App extends Component {
     render() {
         return (
             <Provider store={store}>
@@ -24,3 +25,6 @@ export default class App extends Component {
         );
     }
 }
+
+let codePushOptions = { checkFrequency: codePush.CheckFrequency.ON_APP_RESUME };
+export default App = codePush(codePushOptions)(App)
