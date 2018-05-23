@@ -13,11 +13,15 @@ target 'hasBrain' do
 
 #pod 'react-native-wkwebview', :path => '../node_modules/react-native-wkwebview-reborn'
 
-#pod 'SentryReactNative', :path => '../node_modules/react-native-sentry'
+  pod 'CodePush', :path => '../node_modules/react-native-code-push'
 
   target 'hasBrainTests' do
     inherit! :search_paths
     # Pods for testing
+  pod 'AppCenter/Crashes', '~> 1.6.1'
+  pod 'AppCenter/Analytics', '~> 1.6.1'
+  pod 'AppCenterReactNativeShared', '~> 1.5.1'
+  platform :ios, '9.0'
   end
 
 end

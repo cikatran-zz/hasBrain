@@ -15,6 +15,7 @@
 package com.hasbrain.lib.customwebview;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.customtabs.CustomTabsClient;
@@ -67,7 +68,7 @@ public class CustomTabActivityHelper implements ServiceConnectionCallback {
      * Unbinds the Activity from the Custom Tabs Service.
      * @param activity the activity that is connected to the service.
      */
-    public void unbindCustomTabsService(Activity activity) {
+    public void unbindCustomTabsService(Context activity) {
         if (mConnection == null) return;
         activity.unbindService(mConnection);
         mClient = null;
@@ -101,7 +102,7 @@ public class CustomTabActivityHelper implements ServiceConnectionCallback {
      * Binds the Activity to the Custom Tabs Service.
      * @param activity the activity to be binded to the service.
      */
-    public void bindCustomTabsService(Activity activity) {
+    public void bindCustomTabsService(Context activity) {
         if (mClient != null) return;
 
         String packageName = CustomTabsHelper.getPackageNameToUse(activity);
