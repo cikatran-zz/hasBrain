@@ -6,6 +6,7 @@ import React from 'react'
 import { colors } from './constants/colors'
 import { strings } from './constants/strings'
 import { defaultHeaderStyle } from './constants/theme'
+import AuthenticationEmail from './screens/Authentication/AuthenticationEmail'
 import Authentication from './screens/Authentication/Authentication'
 import Reader from './screens/Reader'
 import MeStack from './screenStacks/MeStack'
@@ -86,6 +87,12 @@ export const ScreenStack = StackNavigator({
     },
     Authentication: {
         screen: Authentication,
+        navigationOptions: {
+            header: null,
+        }
+    },
+    AuthenticationEmail: {
+        screen: AuthenticationEmail,
         navigationOptions: {
             header: null,
         }

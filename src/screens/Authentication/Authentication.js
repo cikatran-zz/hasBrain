@@ -9,142 +9,65 @@ import Toast from 'react-native-root-toast';
 import {postCreateUser} from "../../api";
 import _ from 'lodash'
 import {strings} from "../../constants/strings";
+import facebookLogin from "../../utils/facebookLogin"
+import NavigationActions from 'react-navigation/src/NavigationActions'
 
-export default class Explore extends React.PureComponent {
+export default class Authentication extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        this.email = "";
-        this.password = "";
-        this.indicatorModal = null;
-        this.callbackMessage = "";
     }
 
-    componentDidMount() {
+    _goToHomeScreen() {
+        const resetAction = NavigationActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({
+                    routeName: "Home"
+                })
+            ]
+        });
+        this.props.navigation.dispatch(resetAction);
     }
 
-    _signUp = () => {
-        if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) {
-            this._showMessage("Invalid email");
-            return;
-        }
-        this.indicatorModal.setState({isShow: true});
-        NativeModules.RNUserKitIdentity.signUpWithEmail(this.email, this.password, {}, (error, results) => {
-            console.log();
-            if (error != null) {
-                this.callbackMessage = JSON.parse(error).message;
-                this.indicatorModal.setState({isShow: false});
-            } else {
-                this._createUser(_.get(JSON.parse(results[0]), 'profiles[0]', {}));
-
-                this.indicatorModal.setState({isShow: false});
-                this._nextScreen()
-            }
-
+    _loginWithFacebook = () => {
+        facebookLogin().then((value) => {
+            this._goToHomeScreen();
+        }).catch((error) => {
+            console.log('Error when login with Facebook', error);
         })
-    };
-
-    _signIn = () => {
-        if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) {
-            this._showMessage("Invalid email");
-            return;
-        }
-        this.indicatorModal.setState({isShow: true});
-        NativeModules.RNUserKitIdentity.signInWithEmail(this.email, this.password, (error, results) => {
-            if (error != null) {
-                this.callbackMessage = JSON.parse(error).message;
-                this.indicatorModal.setState({isShow: false});
-            } else {
-                this.indicatorModal.setState({isShow: false});
-                this._nextScreen();
-            }
-        })
-    };
-
-    _createUser = (profile) => {
-        postCreateUser(_.get(profile, 'id', ''), _.get(profile, 'name', '')).then((value)=> {
-            //console.log(value);
-        }).catch((error)=>{
-            //console.log(error);
-        });
-    };
-
-    _nextScreen = () => {
-        NativeModules.RNUserKit.getProperty(strings.onboardingKey, (error, result)=> {
-            if (error == null && result != null) {
-                let onboarding = JSON.parse(result[0]);
-                let isOnboarded = _.get(onboarding, strings.onboardedKey, false);
-                if (isOnboarded) {
-                    this.props.navigation.navigate('Home');
-                } else {
-                    this.props.navigation.navigate('Onboarding');
-                }
-            } else {
-                this.props.navigation.navigate('Onboarding');
-            }
-        });
-
-    };
-
-    _showMessage = (message) => {
-        if (message === "") {
-            return;
-        }
-        Toast.show(message, {
-            duration: Toast.durations.LONG,
-            position: Toast.positions.BOTTOM,
-            shadow: true,
-            animation: true,
-            hideOnPress: true,
-            delay: 0,
-            onShow: () => {
-
-            },
-            onShown: () => {
-
-            },
-            onHide: () => {
-
-            },
-            onHidden: () => {
-
-            }
-        });
-    };
-
-    onDismissIndicatorModal() {
-        this._showMessage(this.callbackMessage)
     }
 
     render() {
+        const {navigation} = this.props;
+
         return (
             <View style={styles.container}>
-                <IndicatorModal ref={(modal)=>{this.indicatorModal = modal}} onDismiss={this.onDismissIndicatorModal.bind(this)}/>
                 <Image style={styles.image} source={require('../../assets/ic_hasbrain.png')}/>
                 <Text style={styles.text}>hasBrain</Text>
-                <TextInput style={styles.inputText}
-                           placeholder={'Email'}
-                           underlineColorAndroid='rgba(0,0,0,0)'
-                           onChangeText={(text)=> this.email = text}/>
-                <TextInput style={styles.inputText}
-                           placeholder={'Password'}
-                           secureTextEntry={true}
-                           underlineColorAndroid='rgba(0,0,0,0)'
-                           onChangeText={(text)=> this.password = text}/>
                 <TouchableOpacity
-                    style={[styles.colorButton, {backgroundColor: colors.blueButton, marginTop: 44.5}]}
-                    onPress={()=>this._signIn()}>
-                    <Text style={styles.buttonText}>Sign In</Text>
+                    style={[styles.colorButton, {marginTop: 44.5}]}>
+                    <Image source={require('../../assets/ic_gg_plus_icon.png')} style={{height: '100%', resizeMode: 'contain'}}/>
+                    <Text style={styles.buttonText}>Continue with Google</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[styles.colorButton, {backgroundColor: colors.redButton, marginTop: 15}]}
-                    onPress={()=>this._signUp()}>
-                    <Text style={styles.buttonText}>Sign Up</Text>
+                    style={[styles.colorButton, {marginTop: 15}]}
+                    onPress={() => this._loginWithFacebook()}>
+                    <Image source={require('../../assets/ic_fb_logo.png')} style={{height: '100%', resizeMode: 'contain'}}/>
+                    <Text style={styles.buttonText}>Continue with Facebook</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.colorButton, {marginTop: 15}]}
+                    onPress={() => navigation.navigate('AuthenticationEmail')}>
+                    <Image source={require('../../assets/ic_mail.png')} style={{height: '100%', resizeMode: 'contain'}}/>
+                    <Text style={styles.buttonText}>Continue with email</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.forgotPasswordContainer}>
+                    <Text style={styles.forgotPasswordText}>Forgot password ?</Text>
                 </TouchableOpacity>
             </View>
         )
     }
-
 }
 
 const styles = StyleSheet.create({
@@ -168,24 +91,29 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 15
     },
-    inputText: {
-        width: '85%',
-        height: 40,
-        paddingHorizontal: 23.5,
-        borderColor: 'rgba(152,152,152,0.32)',
-        borderWidth: 1,
-        borderRadius: (Platform.OS === 'ios') ? 20 : 40,
-        marginTop: 15
-    },
     colorButton: {
-        borderRadius: (Platform.OS === 'ios') ? 18 : 35,
+        borderRadius: 3,
         width: '65%',
         paddingVertical: 9,
-        alignSelf: 'center'
+        alignSelf: 'center',
+        flexDirection: 'row',
+        backgroundColor: colors.mainWhite,
+        elevation: 3,
+        shadowOffset: {width: 2, height: 2},
+        shadowColor: colors.mainDarkGray,
+        shadowOpacity: 0.5
     },
     buttonText: {
         textAlign: 'center',
-        color: colors.mainWhite,
+        color: colors.blackText,
         fontSize: 17
+    },
+    forgotPasswordContainer: {
+        height: 100
+    },
+    forgotPasswordText: {
+        marginTop: 44.5,
+        color: '#64abab',
+        fontSize: 16
     }
-});
+})
