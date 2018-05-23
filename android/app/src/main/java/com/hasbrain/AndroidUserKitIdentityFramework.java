@@ -1,6 +1,7 @@
 package com.hasbrain;
 
 import android.annotation.SuppressLint;
+import android.telecom.Call;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -121,6 +122,19 @@ public class AndroidUserKitIdentityFramework extends ReactContextBaseJavaModule 
     @ReactMethod
     public void signInWithFacebookAccount(String facebookAuthToken, Callback callback) {
         UserKitIdentity.getInstance().loginWithFacebookAccount(facebookAuthToken)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(accountInfo -> {
+                    WritableNativeArray array = new WritableNativeArray();
+                    array.pushString(gson.toJson(accountInfo));
+                    callback.invoke(null, array);
+                }, throwable -> callback.invoke(((IdentityException) throwable).toJsonString(), null));
+    }
+
+    @SuppressLint("CheckResult")
+    @ReactMethod
+    public void signInWithGooglePlusAccount(String googlePlusToken, Callback callback) {
+        UserKitIdentity.getInstance().loginWithGooglePlusAccount(googlePlusToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(accountInfo -> {
