@@ -23,12 +23,18 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
     private CustomTabActivityHelper mCustomTabActivityHelper;
 
     Gson gson = new Gson();
+    CustomTabsIntent.Builder intentBuilder;
 
     public CustomWebviewFramework(ReactApplicationContext reactContext) {
         super(reactContext);
         mCustomTabActivityHelper = new CustomTabActivityHelper();
-        if (getCurrentActivity() != null)
-            mCustomTabActivityHelper.bindCustomTabsService(getCurrentActivity());
+        if (getReactApplicationContext() != null)
+            mCustomTabActivityHelper.bindCustomTabsService(getReactApplicationContext());
+        intentBuilder = new CustomTabsIntent.Builder();
+        intentBuilder.setToolbarColor(Color.parseColor("#321321"));
+        intentBuilder.setSecondaryToolbarColor(Color.parseColor("#564431"));
+        intentBuilder.setCloseButtonIcon(getBitmapFromDrawable(getReactApplicationContext(), com.hasbrain.lib.customwebview.R.drawable.ic_arrow_back_24dp));
+
     }
 
     @Override
@@ -38,17 +44,15 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void onDestroy() {
-        if (getCurrentActivity() != null)
-            mCustomTabActivityHelper.unbindCustomTabsService(getCurrentActivity());
+        if (getReactApplicationContext() != null)
+            mCustomTabActivityHelper.unbindCustomTabsService(getReactApplicationContext());
     }
+
+
 
     @ReactMethod
     public void loadUrl(String url, Callback callback) {
         if (getCurrentActivity() != null) {
-            CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
-            intentBuilder.setToolbarColor(Color.parseColor("#321321"));
-            intentBuilder.setSecondaryToolbarColor(Color.parseColor("#564431"));
-            intentBuilder.setCloseButtonIcon(getBitmapFromDrawable(getCurrentActivity(), com.hasbrain.lib.customwebview.R.drawable.ic_arrow_back_24dp));
 
             //action button
             //Generally you do not want to decode bitmaps in the UI thread. Decoding it in the
