@@ -1,4 +1,11 @@
 PODS:
+  - AppCenter/Analytics (1.6.1):
+    - AppCenter/Core
+  - AppCenter/Core (1.6.1)
+  - AppCenter/Crashes (1.6.1):
+    - AppCenter/Core
+  - AppCenterReactNativeShared (1.5.1):
+    - AppCenter/Core (= 1.6.1)
   - IQKeyboardManagerSwift (4.0.13)
   - SwiftyJSON (4.1.0)
   - UserKit (0.19.11)
@@ -6,6 +13,9 @@ PODS:
     - UserKit
 
 DEPENDENCIES:
+  - AppCenter/Analytics (~> 1.6.1)
+  - AppCenter/Crashes (~> 1.6.1)
+  - AppCenterReactNativeShared (~> 1.5.1)
   - IQKeyboardManagerSwift (= 4.0.13)
   - SwiftyJSON (~> 4.0)
   - UserKit (from `../../mStage-UserKit-iOS-SDK`)
@@ -18,11 +28,13 @@ EXTERNAL SOURCES:
     :path: ../../mStage-UserKit-iOS-SDK
 
 SPEC CHECKSUMS:
+  AppCenter: f9eb653a45cece34549232f295aec05260dfc24f
+  AppCenterReactNativeShared: 5b40dc5bbaf891697d1982e0ae0e9b1120dd4274
   IQKeyboardManagerSwift: fb399c4cddcd8d9bbcd2d0c7c81ed290b61c088e
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   UserKit: 1d185a4e80d841a1ed67cf052b165498d6c13911
   UserKitIdentity: b766d7fc2b9afa71440f7c03813e9b825ee0e49e
 
-PODFILE CHECKSUM: c363e0c0181cd6ebcf5614130e321a055f5355c0
+PODFILE CHECKSUM: c0706b093772a47d88ba46aa618cf569a9525c41
 
 COCOAPODS: 1.4.0
