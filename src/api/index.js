@@ -21,6 +21,7 @@ const getAuthToken = () => {
 const getApolloClient = () => {
      return new Promise((resolve, reject)=> {
          getAuthToken().then((authToken)=> {
+             console.log("Auth", authToken);
              const httpLinkContentkit = new HttpLink({
                  uri: config.serverURL,
                  headers: {
@@ -69,14 +70,6 @@ const gqlPost = (query) => {
         })
     });
 };
-
-
-const httpLinkHasbrain = new HttpLink({
-    uri: config.serverURL,
-    headers: {
-        Authorization: config.authenKeyHasbrain
-    }
-});
 
 const errorHandler = onError(({networkError}) => {
     if (networkError == null) {
@@ -160,6 +153,13 @@ export const postUserInterest = (segments, intents) => {
     })
 };
 
+export const postArticleCreateIfNotExist = (article) => {
+    return gqlPost({
+        mutation: config.mutation.articleCreateIfNotExist,
+        variables: {record: article}
+    })
+};
+
 _getProfileId = ()=> {
     return new Promise((resolve, reject)=> {
         NativeModules.RNUserKitIdentity.getProfileInfo((error, result)=> {
@@ -180,6 +180,16 @@ export const getSaved = (page, perPage) => {
         query: config.queries.bookmark,
         variables: {page: page, perPage: perPage}
     });
+};
+
+export const getUrlInfo = (url) => {
+    return fetch('https://w4gpgbc6mb.execute-api.ap-southeast-1.amazonaws.com/production/v1/metadata/extract?url='+url, {
+        method: 'GET',
+    }).then(response => {
+        return response.json()
+    }).then((responseJson) => {
+        return responseJson;
+    })
 };
 
 

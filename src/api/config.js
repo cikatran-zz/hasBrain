@@ -109,7 +109,7 @@ const postUnbookmark = gql`
 mutation removeBookmark($id: MongoID){
   user{
     userbookmarkRemoveOne(filter: {
-      _id: $id
+      articleId: $id
     }) {
       recordId
     }
@@ -171,6 +171,42 @@ mutation postUserInterest($segments: [UsertypeusertypeSegmentsInput], $intentIds
 }
 `;
 
+const articleCreateIfNotExist = gql`
+mutation checkAndCreateArticle($record: CreateOnearticletypeInput!) {
+  user{
+    articleCreateIfNotExist(record: $record) {
+      recordId
+      isBookmarked
+      record {
+        _id
+        title
+        longDescription
+        shortDescription
+        url
+        state
+        custom
+        sourceId
+        sourceName
+        sourceImage
+        author
+        sourceCreateAt
+        createdAt
+        updatedAt
+        projectId
+        originalImages {
+          height
+          width
+          url
+          name
+          fileName
+        }
+        readingTime
+      }
+    }
+  }
+}
+`;
+
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
@@ -184,6 +220,7 @@ export default {
         bookmark: postBookmark,
         unbookmark: postUnbookmark,
         createUser: postCreateUser,
-        userInterest: postUserInterest
+        userInterest: postUserInterest,
+        articleCreateIfNotExist: articleCreateIfNotExist
     }
 };
