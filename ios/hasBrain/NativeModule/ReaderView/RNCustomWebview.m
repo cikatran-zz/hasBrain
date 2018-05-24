@@ -15,7 +15,7 @@
 RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"onShare", @"onDismiss", @"onBookmark"];
+    return @[@"onShare", @"onDismiss", @"onBookmark", @"onUrlChange", @"onScroll", @"onScroll", @"onDoneReading"];
 }
 
 RCT_EXPORT_METHOD(open: (NSString *)urlString
@@ -34,15 +34,43 @@ RCT_EXPORT_METHOD(open: (NSString *)urlString
                                                    [self sendEventWithName:@"onShare" body:@{}];
                                                } onDismissed:^{
                                                    [self sendEventWithName:@"onDismiss" body:@{}];
-                                               } onBookmark:^{
-                                                   [self sendEventWithName:@"onBookmark" body:@{}];
+                                               } onBookmark:^(BOOL isBookmarked) {
+                                                   [self sendEventWithName:@"onBookmark" body:@{@"bookmarked": [[NSNumber alloc] initWithBool:isBookmarked] }];
+                                               } onUrlChange:^(NSString *old, NSString *new) {
+                                                   [self sendEventWithName:@"onUrlChange" body:@{@"old": old, @"new": new}];
+                                               } onScroll:^(NSNumber *x, NSNumber *y) {
+                                                   [self sendEventWithName:@"onScroll" body:@{@"x": x, @"y": y}];
+                                               } onDoneReading:^{
+                                                   [self sendEventWithName:@"onDoneReading" body:@{}];
                                                }];
-                [currentWindow.rootViewController presentViewController:vc animated:YES completion:nil];
+                CATransition *transition = [[CATransition alloc] init];
+                transition.duration = 0.35;
+                transition.type = kCATransitionPush;
+                transition.subtype = kCATransitionFromRight;
+                [transition setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+                [currentWindow.layer addAnimation:transition forKey:kCATransition];
+                [currentWindow.rootViewController presentViewController:vc animated:NO completion:nil];
             }
         }
     });
 }
 
+RCT_EXPORT_METHOD(setHeader: (NSString *)header) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.currentWebView setTitle:header];
+    });
+}
 
+RCT_EXPORT_METHOD(scrollToPosition: (NSNumber * __nonnull)x y:(NSNumber * __nonnull)y) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.currentWebView scrollToX:x y:y];
+    });
+}
+
+RCT_EXPORT_METHOD(bookmark: (NSNumber * __nonnull)isBookmarked) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.currentWebView bookmark:isBookmarked];
+    });
+}
 
 @end

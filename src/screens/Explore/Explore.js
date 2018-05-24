@@ -65,16 +65,11 @@ export default class Explore extends React.Component {
     _keyExtractor = (item, index) => index + '';
 
     _openReadingView = (item) => {
-        //if (Platform.OS === 'ios') {
-            //this.props.navigation.navigate('Reader', {url: url, readingTime: readingTime, articleID: id})
-        //} else {
-            //RNCustomWebview.loadUrl(url, Math.round(readingTime) + " Min Read");
-        //}
-        ReaderManager.sharedInstance._open(item);
+        ReaderManager.sharedInstance._open(item, _.findIndex(this.state.bookmarked, (o)=>(o === item._id)) !== -1);
     };
 
     _setUpReadingTime = () => {
-        NativeModules.RNUserKit.getProperty(strings.readingHistoryKey, (error, result) => {
+        NativeModules.RNUserKit.getProperty(strings.continueReadingKey, (error, result) => {
             if (!error && result != null) {
                 // Get current date
                 let readingHistory = JSON.parse(result[0]);

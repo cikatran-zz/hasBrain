@@ -30,45 +30,51 @@
                                         </constraints>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a5n-so-W22" userLabel="prev">
-                                        <rect key="frame" x="20" y="14" width="13" height="22"/>
+                                        <rect key="frame" x="10" y="4" width="42" height="42"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="22" id="7KL-oE-vLa"/>
-                                            <constraint firstAttribute="width" secondItem="a5n-so-W22" secondAttribute="height" multiplier="7:12" id="U0Y-ZS-rNQ"/>
+                                            <constraint firstAttribute="height" constant="42" id="7KL-oE-vLa"/>
+                                            <constraint firstAttribute="width" secondItem="a5n-so-W22" secondAttribute="height" multiplier="1:1" id="U0Y-ZS-rNQ"/>
                                         </constraints>
+                                        <inset key="imageEdgeInsets" minX="15" minY="10" maxX="15" maxY="10"/>
                                         <state key="normal" image="ic_back_button"/>
+                                        <state key="disabled" image="ic_disable_prev_button"/>
                                         <connections>
                                             <action selector="prevButtonTapped:" destination="PRI-cW-Yib" eventType="touchUpInside" id="hdA-BX-3IO"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Tq-UP-8LY" userLabel="next">
-                                        <rect key="frame" x="83" y="14" width="12.666666666666671" height="22"/>
+                                        <rect key="frame" x="82" y="4" width="42" height="42"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="22" id="Dfo-ec-yH7"/>
-                                            <constraint firstAttribute="width" secondItem="8Tq-UP-8LY" secondAttribute="height" multiplier="7:12" id="eVq-wK-RLS"/>
+                                            <constraint firstAttribute="height" constant="42" id="Dfo-ec-yH7"/>
+                                            <constraint firstAttribute="width" secondItem="8Tq-UP-8LY" secondAttribute="height" multiplier="1:1" id="eVq-wK-RLS"/>
                                         </constraints>
+                                        <inset key="imageEdgeInsets" minX="15" minY="10" maxX="15" maxY="10"/>
                                         <state key="normal" title="Button" image="ic_next_button"/>
+                                        <state key="disabled" image="ic_disable_next_button"/>
                                         <connections>
                                             <action selector="nextButtonTapped:" destination="PRI-cW-Yib" eventType="touchUpInside" id="sId-8v-k4L"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oDx-be-KjV">
-                                        <rect key="frame" x="291" y="14" width="22" height="22"/>
+                                        <rect key="frame" x="271" y="4" width="42" height="42"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="22" id="byW-S9-p4L"/>
-                                            <constraint firstAttribute="height" constant="22" id="jKg-Df-W6N"/>
+                                            <constraint firstAttribute="width" constant="42" id="byW-S9-p4L"/>
+                                            <constraint firstAttribute="height" constant="42" id="jKg-Df-W6N"/>
                                         </constraints>
-                                        <state key="normal" title="Button" image="ic_save"/>
+                                        <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                        <state key="normal" image="ic_save"/>
                                         <state key="selected" image="ic_saved"/>
                                         <connections>
                                             <action selector="bookmarkButtonTapped:" destination="PRI-cW-Yib" eventType="touchUpInside" id="lfQ-MF-VtW"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3LL-4D-bf1">
-                                        <rect key="frame" x="333" y="14" width="22" height="22"/>
+                                        <rect key="frame" x="323" y="4" width="42" height="42"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="22" id="F0V-Ae-rYd"/>
-                                            <constraint firstAttribute="width" constant="22" id="vB0-q5-iqN"/>
+                                            <constraint firstAttribute="height" constant="42" id="F0V-Ae-rYd"/>
+                                            <constraint firstAttribute="width" constant="42" id="vB0-q5-iqN"/>
                                         </constraints>
+                                        <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
                                         <state key="normal" image="ic_share"/>
                                         <connections>
                                             <action selector="shareButtonTapped:" destination="PRI-cW-Yib" eventType="touchUpInside" id="bF2-5P-cS2"/>
@@ -79,16 +85,16 @@
                                 <constraints>
                                     <constraint firstItem="oDx-be-KjV" firstAttribute="centerY" secondItem="6fI-dy-zQn" secondAttribute="centerY" id="1dr-Ru-wPU"/>
                                     <constraint firstItem="Wdx-Vo-VDc" firstAttribute="leading" secondItem="6fI-dy-zQn" secondAttribute="leading" id="32M-Td-Wb3"/>
-                                    <constraint firstItem="a5n-so-W22" firstAttribute="leading" secondItem="6fI-dy-zQn" secondAttribute="leading" constant="20" id="8Ea-4M-ib5"/>
+                                    <constraint firstItem="a5n-so-W22" firstAttribute="leading" secondItem="6fI-dy-zQn" secondAttribute="leading" constant="10" id="8Ea-4M-ib5"/>
                                     <constraint firstAttribute="height" constant="50" id="N7i-LW-IXZ"/>
                                     <constraint firstItem="3LL-4D-bf1" firstAttribute="centerY" secondItem="6fI-dy-zQn" secondAttribute="centerY" id="N9E-i7-HkN"/>
-                                    <constraint firstItem="3LL-4D-bf1" firstAttribute="leading" secondItem="oDx-be-KjV" secondAttribute="trailing" constant="20" id="UIk-bB-Qwd"/>
-                                    <constraint firstItem="8Tq-UP-8LY" firstAttribute="leading" secondItem="a5n-so-W22" secondAttribute="trailing" constant="50" id="XQU-gf-abB"/>
+                                    <constraint firstItem="3LL-4D-bf1" firstAttribute="leading" secondItem="oDx-be-KjV" secondAttribute="trailing" constant="10" id="UIk-bB-Qwd"/>
+                                    <constraint firstItem="8Tq-UP-8LY" firstAttribute="leading" secondItem="a5n-so-W22" secondAttribute="trailing" constant="30" id="XQU-gf-abB"/>
                                     <constraint firstItem="8Tq-UP-8LY" firstAttribute="centerY" secondItem="6fI-dy-zQn" secondAttribute="centerY" id="aWt-uY-H7A"/>
                                     <constraint firstAttribute="trailing" secondItem="Wdx-Vo-VDc" secondAttribute="trailing" id="aZW-SA-wv4"/>
                                     <constraint firstItem="Wdx-Vo-VDc" firstAttribute="top" secondItem="6fI-dy-zQn" secondAttribute="top" id="cQ2-KC-lix"/>
                                     <constraint firstItem="a5n-so-W22" firstAttribute="centerY" secondItem="6fI-dy-zQn" secondAttribute="centerY" id="eEm-OR-i1l"/>
-                                    <constraint firstAttribute="trailing" secondItem="3LL-4D-bf1" secondAttribute="trailing" constant="20" id="mZR-LF-EqW"/>
+                                    <constraint firstAttribute="trailing" secondItem="3LL-4D-bf1" secondAttribute="trailing" constant="10" id="mZR-LF-EqW"/>
                                 </constraints>
                             </view>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tbx-EF-Oyn">
@@ -119,6 +125,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="bookmarkButton" destination="oDx-be-KjV" id="tXM-Xf-x9A"/>
                         <outlet property="bottomBarHeight" destination="N7i-LW-IXZ" id="xaA-Af-utx"/>
                         <outlet property="nextButton" destination="8Tq-UP-8LY" id="vxV-uw-JzF"/>
                         <outlet property="prevButton" destination="a5n-so-W22" id="Raa-zI-vlj"/>
@@ -154,6 +161,8 @@
     </scenes>
     <resources>
         <image name="ic_back_button" width="21" height="36"/>
+        <image name="ic_disable_next_button" width="35" height="62"/>
+        <image name="ic_disable_prev_button" width="36" height="62"/>
         <image name="ic_next_button" width="21" height="36"/>
         <image name="ic_save" width="18" height="22"/>
         <image name="ic_saved" width="18" height="22"/>

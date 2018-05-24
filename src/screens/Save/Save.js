@@ -11,6 +11,7 @@ import _ from 'lodash'
 import {getImageFromArray} from "../../utils/imageUtils";
 import {extractRootDomain} from "../../utils/stringUtils";
 import LoadingRow from "../../components/LoadingRow";
+import ReaderManager from "../../modules/ReaderManager";
 
 export default class Save extends React.Component {
 
@@ -19,7 +20,7 @@ export default class Save extends React.Component {
         this.currentPage = 1;
         this.state = {
             deleteItems: []
-        }
+        };
         this.rows = {};
     }
 
@@ -46,13 +47,13 @@ export default class Save extends React.Component {
             return null;
         }
         return (<VerticalRow title={article.title}
-                             ref={(ref)=> this.rows[item._id] = ref}
+                             ref={(ref)=> this.rows[article._id] = ref}
                              author={extractRootDomain(article.url)}
                              time={article.createdAt}
                              readingTime={article.readingTime}
                              image={getImageFromArray(article.originalImages, null, null, article.sourceImage)}
-                             onClicked={() => this._openReadingView(article.url, article.readingTime, article._id)}
-                             onBookmark={()=>this._onUnbookmarkItem(item._id)}
+                             onClicked={() => this._openReadingView(article)}
+                             onBookmark={()=>this._onUnbookmarkItem(article._id)}
                              bookmarked={true}/>)
     }
 
@@ -65,8 +66,8 @@ export default class Save extends React.Component {
         return (<NoDataView text={'No bookmark'}/>);
     }
 
-    _openReadingView = (url, readingTime, id) => {
-        this.props.navigation.navigate('Reader', {url: url, readingTime: readingTime, articleID: id})
+    _openReadingView = (item) => {
+        ReaderManager.sharedInstance._open(item, true);
     };
 
     _fetchMore = () => {
@@ -103,7 +104,7 @@ export default class Save extends React.Component {
 
         let data = [];
         if (saved.data != null) {
-            data = saved.data.filter((x)=> (_.indexOf(this.state.deleteItems, x._id) < 0))
+            data = saved.data.filter((x)=> (_.indexOf(this.state.deleteItems, x.article._id) < 0))
         }
 
         if (data.length === 0) {

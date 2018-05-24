@@ -9,7 +9,7 @@
 import UIKit
 import WebKit
 
-public class CustomWebViewViewController: UIViewController, WKNavigationDelegate {
+public class CustomWebViewViewController: UIViewController {
     
     // MARK: - Components
     var webView: WKWebView!
@@ -17,22 +17,28 @@ public class CustomWebViewViewController: UIViewController, WKNavigationDelegate
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var prevButton: UIButton!
+    @IBOutlet weak var bookmarkButton: UIButton!
     
     // MARK: - Properties
     fileprivate var url: URL!
-    fileprivate var header: String!
     fileprivate var onShareCallback: (()->Void)? = nil
     fileprivate var onDismissCallback: (()->Void)? = nil
+    fileprivate var onUrlChangeCallback: ((String, String)-> Void)? = nil
+    fileprivate var onScrollCallback: ((NSNumber, NSNumber)->Void)? = nil
+    fileprivate var onDoneReadingCallback: (()->Void)? = nil
+    fileprivate var onBookmarkCallback: ((Bool)->Void)? = nil
+    fileprivate var isRedirect = false
+    fileprivate var lastPosition: NSNumber!
+    fileprivate var initBookmarked: Bool = false
     
     override public func viewDidLoad() {
         super.viewDidLoad()
         self.setupWebViewView()
-        self.title = self.header
+        self.bookmarkButton.isSelected = initBookmarked
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        self.title = self.header
     }
     
     private func setupWebViewView() {
@@ -44,6 +50,7 @@ public class CustomWebViewViewController: UIViewController, WKNavigationDelegate
         }
         self.view.insertSubview(webView, at: 0)
         webView.navigationDelegate = self
+        webView.scrollView.delegate = self
         
         if #available(iOS 11, *) {
             let guide = self.view.safeAreaLayoutGuide
@@ -81,8 +88,8 @@ public class CustomWebViewViewController: UIViewController, WKNavigationDelegate
 
 public extension CustomWebViewViewController {
     
-    public func load(urlString: String, header: String, onShare: @escaping ()->Void, onDismissed: @escaping ()->Void, onBookmark: ()-> Void) {
-        self.header = header
+    public func load(urlString: String, header: String, onShare: @escaping ()->Void, onDismissed: @escaping ()->Void, onBookmark: @escaping(Bool)-> Void, onUrlChange: @escaping (String, String)-> Void, onScroll: @escaping (NSNumber, NSNumber)-> Void, onDoneReading: @escaping ()->Void) {
+        self.title = header
         if let url = URL(string: urlString) {
             self.url = url
             if (webView != nil) {
@@ -91,19 +98,72 @@ public extension CustomWebViewViewController {
         }
         self.onShareCallback = onShare
         self.onDismissCallback = onDismissed
-        
+        self.onUrlChangeCallback = onUrlChange
+        self.onScrollCallback = onScroll
+        self.onDoneReadingCallback = onDoneReading
+        self.onBookmarkCallback = onBookmark
+    }
+    
+    public func scrollTo(x: NSNumber, y: NSNumber) {
+        lastPosition = y
+        if (!webView.isLoading) {
+            webView.scrollView.setContentOffset(CGPoint(x: 0, y: CGFloat(y.doubleValue) ), animated: true)
+            lastPosition = -1
+        }
+    }
+    
+    public func bookmark(_ isBookmarked: NSNumber) {
+        if (self.bookmarkButton != nil) {
+            self.bookmarkButton.isSelected = isBookmarked.boolValue
+        } else {
+            self.initBookmarked = isBookmarked.boolValue
+        }
     }
 }
 
-extension CustomWebViewViewController {
+extension CustomWebViewViewController: WKNavigationDelegate {
     
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        nextButton.isEnabled = webView.canGoForward
+        prevButton.isEnabled = webView.canGoBack
         
+        if isRedirect == false {
+            if let _ = webView.url {
+                self.onUrlChangeCallback?(self.url.absoluteString, webView.url!.absoluteString)
+                self.url = webView.url!
+            }
+        }
+        isRedirect = false
+        
+        if (lastPosition != -1) {
+            webView.scrollView.setContentOffset(CGPoint(x: 0, y: CGFloat(lastPosition.doubleValue) ), animated: true)
+            lastPosition = -1
+        }
     }
     
     public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        
         nextButton.isEnabled = webView.canGoForward
         prevButton.isEnabled = webView.canGoBack
+        
+    }
+    
+    public func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
+        
+        isRedirect = true
+    }
+}
+
+extension CustomWebViewViewController: UIScrollViewDelegate {
+    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        let x = Double(scrollView.contentOffset.x)
+        let y = Double(scrollView.contentOffset.y)
+        
+        if (scrollView.contentOffset.y + scrollView.frame.size.height + 50 >= scrollView.contentSize.height) {
+            self.onDoneReadingCallback?()
+        } else {
+            self.onScrollCallback?(NSNumber(value: x), NSNumber(value: y))
+        }
     }
 }
 
@@ -111,14 +171,20 @@ extension CustomWebViewViewController {
 extension CustomWebViewViewController {
     
     @IBAction func backButtonTapped(_ sender: UIBarButtonItem) {
-        
-        self.dismiss(animated: true) {
+        let transition = CATransition()
+        transition.duration = 0.35
+        transition.type = kCATransitionPush
+        transition.subtype = kCATransitionFromLeft
+        transition.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+        self.view.window!.layer.add(transition, forKey: kCATransition)
+        self.dismiss(animated: false) {
             self.onDismissCallback?()
         }
     }
     
     @IBAction func bookmarkButtonTapped(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
+        self.onBookmarkCallback?(sender.isSelected)
     }
     
     @IBAction func shareButtonTapped(_ sender: UIButton) {
