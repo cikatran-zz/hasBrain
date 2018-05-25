@@ -1,6 +1,14 @@
 package com.hasbrain;
 
+import android.content.Intent;
+import android.support.annotation.Nullable;
+
 import com.facebook.react.ReactActivity;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+
 
 public class MainActivity extends ReactActivity {
 
@@ -11,5 +19,26 @@ public class MainActivity extends ReactActivity {
     @Override
     protected String getMainComponentName() {
         return "hasBrain";
+    }
+    static ReactApplicationContext reactContext;
+    public static void setReactContext(ReactApplicationContext context) {
+        reactContext = context;
+    }
+
+    private void sendEvent(ReactContext reactContext,
+                           String eventName,
+                           @Nullable WritableMap params) {
+        reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CustomWebviewFramework.RESULT_CODE){
+            sendEvent(reactContext, "onDismiss", null);
+        }
+
     }
 }
