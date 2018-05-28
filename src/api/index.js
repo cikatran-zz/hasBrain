@@ -12,6 +12,7 @@ const instance = axios.create({
 const getAuthToken = () => {
     return new Promise((resolve, reject)=> {
         NativeModules.RNUserKitIdentity.getProfileInfo((error, result)=> {
+            console.log("Profile", result);
             let authToken = result[0].authToken;
             resolve(authToken);
         })

@@ -17,6 +17,13 @@ export function formatReadingTimeInMinutes(totalTimeInSeconds) {
     return FormatNumberLength(hours,2) + ":" + FormatNumberLength(minutes,2);
 }
 
+export function formatReadingTime(totalTimeInSeconds) {
+    let minutes = Math.round(totalTimeInSeconds/60);
+    let hours = Math.round(minutes/60);
+    minutes = Math.round(minutes % 60);
+    return FormatNumberLength(hours,2) + ":" + FormatNumberLength(minutes,2);
+}
+
 export function FormatNumberLength(num, length) {
     let r = "" + num;
     while (r.length < length) {

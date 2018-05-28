@@ -1,4 +1,4 @@
-import {NativeModules, NativeEventEmitter, Share} from "react-native";
+import {NativeModules, NativeEventEmitter, Share, AppState} from "react-native";
 import _ from 'lodash'
 import {getUrlInfo, postArticleCreateIfNotExist, postBookmark, postUnbookmark} from "../api";
 import {getIDOfCurrentDate} from "../utils/dateUtils";
@@ -13,8 +13,16 @@ export default class ReaderManager {
     _isShowing = false;
     _currentItem = null;
     _scrollOffset = {x: 0, y: 0};
+    _timer = null;
+    _appState = AppState.currentState;
+    _readingTimeInSeconds = 0;
+    _totalReadingTimeInSeconds = 0;
+    _loading = false;
+    _onDismiss = null;
 
     constructor() {
+
+        AppState.addEventListener('change', this._handleAppStateChange);
         customWebViewEmitter.addListener("onShare", (event) => {
             let message = _.get(this._currentItem, 'shortDescription', '');
             let title = _.get(this._currentItem, 'title', '');
@@ -29,8 +37,10 @@ export default class ReaderManager {
 
         customWebViewEmitter.addListener("onDismiss", (event) => {
             this._isShowing = false;
-            // TODO: - update reading event
-
+            this._content_consumed_event();
+            this._updateDailyReadingTime();
+            clearInterval(this._timer);
+            this._onDismiss();
         });
 
         customWebViewEmitter.addListener("onScroll", (event) => {
@@ -59,57 +69,56 @@ export default class ReaderManager {
 
         customWebViewEmitter.addListener("onUrlChange", (event) => {
             let item = _.cloneDeep(this._currentItem);
+            this._content_consumed_event();
+            this._updateDailyReadingTime();
             _.update(item, 'url', event.new);
             this._currentItem = item;
             getUrlInfo(event.new).then((info) => {
                 RNCustomWebview.setHeader(Math.round(info.read) + " Min Read")
                 _.update(item, 'readingTime', info.read);
-                console.log("URL CHANGE",{
+                postArticleCreateIfNotExist({
                     url: event.new,
                     title: _.get(info, 'title', ''),
                     readingTime: _.get(info, 'read', 0),
                     sourceImage: _.get(info, 'img', ''),
                     tags: _.get(info, 'tags', [])
-                })
-                postArticleCreateIfNotExist({
-                    url: event.new,
-                    title: _.get(info, 'title', ''),
-                    readingTime: _.get(info, 'read', 0),
-                    sourceImage: _.get(info, 'img', '')
                 }).then((result) => {
                     console.log(result);
                     let data = _.get(result, 'data.user.articleCreateIfNotExist', {});
                     let isBookmarked = _.get(data, 'isBookmarked', false);
                     this._currentItem = _.get(data, 'record', {});
+                    RNCustomWebview.setHeader(Math.round(_.get(this._currentItem, 'readingTime', 0)) + " Min Read")
                     RNCustomWebview.bookmark(isBookmarked ? isBookmarked : false);
                 })
             });
-
-            // TODO: - update reading event
-
         });
 
         customWebViewEmitter.addListener("onDoneReading", (event) => {
             let id = _.get(this._currentItem, '_id', '');
             this._doneReading(id);
         });
+
+        customWebViewEmitter.addListener("onLoading", (event) => {
+            console.log("Loading", event.loading);
+            this._loading = _.get(event, "loading", false);
+        });
     }
 
     _continueReadingPosition = (contentId) => {
-        RNUserKit.getProperty(strings.continueReadingKey, (error, result) => {
-            let readingHistory = JSON.parse(result[0]);
-            let lastReadingPosition = _.get(readingHistory, contentId, {x: 0, y: 0});
-            console.log("Continue", readingHistory, contentId, lastReadingPosition)
-            RNCustomWebview.scrollToPosition(lastReadingPosition.x, lastReadingPosition.y);
+        RNUserKit.getProperty(strings.readingPositionKey+"."+contentId, (error, result) => {
+            let lastReadingPosition = JSON.parse(result[0]);
+            if (lastReadingPosition != null) {
+                RNCustomWebview.scrollToPosition(lastReadingPosition.x == null ? 0 : lastReadingPosition.x, lastReadingPosition.y == null ? 0 : lastReadingPosition.y);
+            }
         });
     };
 
     _doneReading = (contentId) => {
-        NativeModules.RNUserKit.getProperty(strings.continueReadingKey, (error, result) => {
+        RNUserKit.getProperty(strings.readingPositionKey, (error, result) => {
             if (!error && result != null) {
                 let readingHistory = JSON.parse(result[0]);
                 delete readingHistory[contentId];
-                NativeModules.RNUserKit.storeProperty(strings.continueReadingKey, readingHistory, (e, r) => {
+                NativeModules.RNUserKit.storeProperty(strings.readingPositionKey, readingHistory, (e, r) => {
                 });
             } else {
                 console.log(error);
@@ -118,12 +127,28 @@ export default class ReaderManager {
     };
 
     _updateReading = (contentId) => {
-        NativeModules.RNUserKit.getProperty(strings.continueReadingKey, (error, result) => {
+        console.log("Update reading", contentId, this._scrollOffset);
+        NativeModules.RNUserKit.storeProperty(strings.readingPositionKey+"."+contentId, this._scrollOffset, (e, r) => {
+        });
+    };
+
+    _updateDailyReadingTime = () => {
+        let readingTime = this._readingTimeInSeconds;
+        this._totalReadingTimeInSeconds += readingTime;
+        this._readingTimeInSeconds = 0;
+        RNUserKit.getProperty(strings.dailyReadingTimeKey, (error, result) => {
             if (!error && result != null) {
-                let readingHistory = JSON.parse(result[0]);
-                readingHistory[contentId] = this._scrollOffset;
-                console.log("Update", contentId, readingHistory, this._scrollOffset);
-                NativeModules.RNUserKit.storeProperty(strings.continueReadingKey, readingHistory, (e, r) => {
+                let dailyReadingTime = JSON.parse(result[0]);
+
+                let dateID = getIDOfCurrentDate();
+
+                let dailyReadingTimeValue = readingTime;
+                if (dailyReadingTime[dateID] != null) {
+                    dailyReadingTimeValue += dailyReadingTime[dateID];
+                }
+                dailyReadingTime = {[dateID]: dailyReadingTimeValue};
+                console.log("Update daily reading time", dailyReadingTime);
+                NativeModules.RNUserKit.storeProperty(strings.dailyReadingTimeKey, dailyReadingTime, (e, r) => {
                 });
             } else {
                 console.log(error);
@@ -131,7 +156,58 @@ export default class ReaderManager {
         });
     };
 
-    _open = (item, isBookmarked) => {
+    _intervalCalculateReadingTime = () => {
+        if (this._loading === false && this._appState === 'active') {
+            this._readingTimeInSeconds += 1;
+
+            if (this._readingTimeInSeconds % 10 !== 0) {
+                return;
+            }
+            this._updateDailyReadingTime();
+        }
+    };
+
+    _handleAppStateChange = (nextAppState) => {
+        this._appState = nextAppState;
+    };
+
+    _content_consumed_event = () => {
+        let props = {
+            [strings.contentConsumed.consumedLength]: this._totalReadingTimeInSeconds,
+            [strings.contentConsumed.contentId]: _.get(this._currentItem, '_id', ''),
+            [strings.contentConsumed.mediaType]: strings.articleType
+        };
+
+        if (this._totalReadingTimeInSeconds >= _.get(this._currentItem, 'readingTime', 0) * 60) {
+            RNUserKit.getProperty(strings.readingHistoryKey, (error, result)=> {
+                if (!error && result != null) {
+                    let readingHistory = JSON.parse(result[0]).data;
+                    let contentId = _.get(this._currentItem, '_id', '');
+                    if (_.findIndex(readingHistory, (x)=>x===contentId) === -1) {
+                        readingHistory = (readingHistory == null ? [] : readingHistory).concat([contentId]);
+                        RNUserKit.appendProperty({[strings.readingPositionKey +".data"]: readingHistory}, (e, r) => {
+                        });
+                        // Increase tag score
+                        let tags = _.get(this._currentItem, 'tags', []);
+                        if (tags != null) {
+                            let increment = {}
+                            tags.forEach((x)=>{
+                                increment[strings.readingTagsKey+"."+x] = 1;
+                            });
+                            RNUserKit.incrementProperty(increment, (err, res)=> {});
+                        }
+                    }
+                } else {
+                    console.log(error);
+                }
+            });
+        }
+        this._totalReadingTimeInSeconds = 0;
+
+        RNUserKit.track(strings.contentConsumed.event, props);
+    };
+
+    _open = (item, isBookmarked, onDismiss) => {
         if (!this._isShowing) {
             this._isShowing = true;
             this._currentItem = item;
@@ -139,6 +215,10 @@ export default class ReaderManager {
             RNCustomWebview.open(url, Math.round(_.get(item, 'readingTime', 0)) + " Min Read");
             this._continueReadingPosition(_.get(item, '_id', ''));
             RNCustomWebview.bookmark(isBookmarked);
+
+            this._timer = setInterval(this._intervalCalculateReadingTime, 1000);
+            this._appState = AppState.currentState;
+            this._onDismiss = onDismiss;
         }
     }
 }

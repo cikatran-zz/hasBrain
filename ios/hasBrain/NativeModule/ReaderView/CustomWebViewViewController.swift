@@ -27,6 +27,7 @@ public class CustomWebViewViewController: UIViewController {
     fileprivate var onScrollCallback: ((NSNumber, NSNumber)->Void)? = nil
     fileprivate var onDoneReadingCallback: (()->Void)? = nil
     fileprivate var onBookmarkCallback: ((Bool)->Void)? = nil
+    fileprivate var onLoadingChangeCallback: ((Bool)->Void)? = nil
     fileprivate var isRedirect = false
     fileprivate var lastPosition: NSNumber!
     fileprivate var initBookmarked: Bool = false
@@ -35,6 +36,14 @@ public class CustomWebViewViewController: UIViewController {
         super.viewDidLoad()
         self.setupWebViewView()
         self.bookmarkButton.isSelected = initBookmarked
+        
+        UIMenuController.shared.menuItems = [UIMenuItem(title: "Highlight", action: #selector(recommend))]
+        UIMenuController.shared.update()
+    }
+    
+    func recommend() {
+        let selected = UIPasteboard.general.string
+        print(selected)
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -88,7 +97,7 @@ public class CustomWebViewViewController: UIViewController {
 
 public extension CustomWebViewViewController {
     
-    public func load(urlString: String, header: String, onShare: @escaping ()->Void, onDismissed: @escaping ()->Void, onBookmark: @escaping(Bool)-> Void, onUrlChange: @escaping (String, String)-> Void, onScroll: @escaping (NSNumber, NSNumber)-> Void, onDoneReading: @escaping ()->Void) {
+    public func load(urlString: String, header: String, onShare: @escaping ()->Void, onDismissed: @escaping ()->Void, onBookmark: @escaping(Bool)-> Void, onUrlChange: @escaping (String, String)-> Void, onScroll: @escaping (NSNumber, NSNumber)-> Void, onDoneReading: @escaping ()->Void, onLoadingChange: @escaping (Bool)->Void) {
         self.title = header
         if let url = URL(string: urlString) {
             self.url = url
@@ -102,6 +111,7 @@ public extension CustomWebViewViewController {
         self.onScrollCallback = onScroll
         self.onDoneReadingCallback = onDoneReading
         self.onBookmarkCallback = onBookmark
+        self.onLoadingChangeCallback = onLoadingChange
     }
     
     public func scrollTo(x: NSNumber, y: NSNumber) {
@@ -139,13 +149,14 @@ extension CustomWebViewViewController: WKNavigationDelegate {
             webView.scrollView.setContentOffset(CGPoint(x: 0, y: CGFloat(lastPosition.doubleValue) ), animated: true)
             lastPosition = -1
         }
+        onLoadingChangeCallback?(false)
     }
     
     public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         
         nextButton.isEnabled = webView.canGoForward
         prevButton.isEnabled = webView.canGoBack
-        
+        onLoadingChangeCallback?(true)
     }
     
     public func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
