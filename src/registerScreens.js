@@ -38,8 +38,7 @@ const TabNav = TabNavigator({
     MeTab: {
         screen: MeStack,
         navigationOptions: ({ navigation }) => ({
-            title: 'ME',
-            headerLeft: null,
+            header: null,
             tabBarLabel: strings.meHeader,
             ...defaultHeaderStyle,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_me.png')}
