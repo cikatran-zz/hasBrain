@@ -9,7 +9,7 @@ import Toast from 'react-native-root-toast';
 import {postCreateUser} from "../../api";
 import _ from 'lodash'
 import {strings} from "../../constants/strings";
-import facebookLogin from "../../utils/facebookLogin"
+import { facebookLogin } from '../../utils/facebookLogin'
 import NavigationActions from 'react-navigation/src/NavigationActions'
 
 export default class Authentication extends React.PureComponent {

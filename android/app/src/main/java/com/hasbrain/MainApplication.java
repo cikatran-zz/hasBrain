@@ -4,6 +4,7 @@ import android.app.Application;
 import android.support.multidex.MultiDex;
 
 import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
 import com.facebook.react.ReactApplication;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import io.sentry.RNSentryPackage;
@@ -61,6 +62,8 @@ public class MainApplication extends Application implements ReactApplication {
         super.onCreate();
         MultiDex.install(this);
         SoLoader.init(this, /* native exopackage */ false);
+        FacebookSdk.setApplicationId(getResources().getString(R.string.facebook_app_id));
+        FacebookSdk.sdkInitialize(this);
         String token = "";
 //        if (BuildConfig.BUILD_TYPE == "release") {
             token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0X2lkIjoiNWFkODU4MjRiM2NlYzM0MTUzMDRhZWI2IiwiaWF0IjoxNTI0MTI5MTI2fQ.4HywQhdO-7LEEYcwrAsybLqBArgzHbD0sy2yScU2Rjk";
