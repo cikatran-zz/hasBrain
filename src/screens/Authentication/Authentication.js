@@ -62,9 +62,6 @@ export default class Authentication extends React.PureComponent {
                     <Image source={require('../../assets/ic_mail.png')} style={{height: '100%', resizeMode: 'contain'}}/>
                     <Text style={styles.buttonText}>Continue with email</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.forgotPasswordContainer}>
-                    <Text style={styles.forgotPasswordText}>Forgot password ?</Text>
-                </TouchableOpacity>
             </View>
         )
     }
@@ -94,7 +91,7 @@ const styles = StyleSheet.create({
     colorButton: {
         borderRadius: 3,
         width: '65%',
-        paddingVertical: 9,
+        paddingVertical: 15,
         alignSelf: 'center',
         flexDirection: 'row',
         backgroundColor: colors.mainWhite,
@@ -106,14 +103,6 @@ const styles = StyleSheet.create({
     buttonText: {
         textAlign: 'center',
         color: colors.blackText,
-        fontSize: 17
-    },
-    forgotPasswordContainer: {
-        height: 100
-    },
-    forgotPasswordText: {
-        marginTop: 44.5,
-        color: '#64abab',
-        fontSize: 16
+        fontSize: 14
     }
 })

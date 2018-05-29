@@ -143,6 +143,10 @@ export default class Explore extends React.PureComponent {
                     onPress={()=>this._signUp()}>
                     <Text style={styles.buttonText}>Sign Up</Text>
                 </TouchableOpacity>
+                <TouchableOpacity style={styles.forgotPasswordContainer}
+                    onPress={() => console.log('Forgot password')}>
+                    <Text style={styles.forgotPasswordText}>Forgot password ?</Text>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -180,7 +184,7 @@ const styles = StyleSheet.create({
         marginTop: 15
     },
     colorButton: {
-        borderRadius: (Platform.OS === 'ios') ? 18 : 35,
+        borderRadius: 3,
         width: '65%',
         paddingVertical: 9,
         alignSelf: 'center'
@@ -189,5 +193,18 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: colors.mainWhite,
         fontSize: 17
+    },
+    forgotPasswordContainer: {
+        height: 100,
+        flexDirection: 'row'
+    },
+    forgotPasswordIntroText: {
+        marginTop: 44.5,
+        fontSize: 15
+    },
+    forgotPasswordText: {
+        marginTop: 44.5,
+        color: '#64abab',
+        fontSize: 15
     }
 });
