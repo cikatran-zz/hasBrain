@@ -11,11 +11,11 @@ export function facebookLogin() {
                     reject({message: "Cancelled"});
                 } else {
                     AccessToken.getCurrentAccessToken().then(value => {
-                        NativeModules.RNUserKitIdentity.signInWithFacebookAccount(value.accessToken, (error, result)=> {
+                        NativeModules.RNUserKitIdentity.signInWithFacebookAccount(value.accessToken, (error, events)=> {
                             if (error) {
                                 reject(error);
                             } else {
-
+                                let result = JSON.parse(events[0]);
                                 const infoRequest = new GraphRequest(
                                     '/me',
                                     {parameters: {fields: {string:'last_name,age_range,gender,first_name,email'}}},

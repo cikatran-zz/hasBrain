@@ -4,12 +4,10 @@ import {
     ActivityIndicator
 } from 'react-native'
 import {colors} from "../../constants/colors";
-import IndicatorModal from "../../components/IndicatorModal";
-import Toast from 'react-native-root-toast';
-import {postCreateUser} from "../../api";
 import _ from 'lodash'
 import {strings} from "../../constants/strings";
 import { facebookLogin } from '../../utils/facebookLogin'
+import { googleLogin } from '../../utils/googleLogin'
 import NavigationActions from 'react-navigation/src/NavigationActions'
 
 export default class Authentication extends React.PureComponent {
@@ -18,12 +16,37 @@ export default class Authentication extends React.PureComponent {
         super(props);
     }
 
-    _goToHomeScreen() {
+    componentDidMount() {
+        NativeModules.RNUserKitIdentity.checkSignIn((err, events) => {
+            let result = JSON.parse(events[0]);
+            if (result["is_sign_in"] === true) {
+                this._goToNextScreen();
+            }
+        })
+    }
+
+    _goToNextScreen() {
+        NativeModules.RNUserKit.getProperty(strings.onboardingKey, (error, result)=> {
+            if (error == null && result != null) {
+                let onboarding = JSON.parse(result[0]);
+                let isOnboarded = _.get(onboarding, strings.onboardedKey, false);
+                if (isOnboarded) {
+                    this.props.navigation.navigate('Home');
+                } else {
+                    this._goToOnBoarding();
+                }
+            } else {
+                this._goToOnBoarding();
+            }
+        });
+    }
+
+    _goToOnBoarding = () => {
         const resetAction = NavigationActions.reset({
             index: 0,
             actions: [
                 NavigationActions.navigate({
-                    routeName: "Home"
+                    routeName: "Onboarding"
                 })
             ]
         });
@@ -32,10 +55,19 @@ export default class Authentication extends React.PureComponent {
 
     _loginWithFacebook = () => {
         facebookLogin().then((value) => {
-            this._goToHomeScreen();
+            this._goToNextScreen();
         }).catch((error) => {
             console.log('Error when login with Facebook', error);
         })
+    }
+
+    _loginWithGooglePlus = () => {
+        googleLogin().then((value) => {
+            this._goToNextScreen();
+        })
+            .catch((err) => {
+                console.log('Error', err);
+            })
     }
 
     render() {
@@ -46,7 +78,8 @@ export default class Authentication extends React.PureComponent {
                 <Image style={styles.image} source={require('../../assets/ic_hasbrain.png')}/>
                 <Text style={styles.text}>hasBrain</Text>
                 <TouchableOpacity
-                    style={[styles.colorButton, {marginTop: 44.5}]}>
+                    style={[styles.colorButton, {marginTop: 44.5}]}
+                    onPress={() => this._loginWithGooglePlus()}>
                     <Image source={require('../../assets/ic_gg_plus_icon.png')} style={{height: '100%', resizeMode: 'contain'}}/>
                     <Text style={styles.buttonText}>Continue with Google</Text>
                 </TouchableOpacity>
