@@ -98,7 +98,7 @@ android {
     compileSdkVersion 27
 
     defaultConfig {
-        applicationId "com.hasbrain"
+        applicationId "com.mstage.hasbrain"
         minSdkVersion 19
         targetSdkVersion 27
         multiDexEnabled true
@@ -119,7 +119,7 @@ android {
             keyPassword "android"
         }
         release {
-            storeFile file("../appkit-hasbrain.keystore")
+            storeFile file("../appkit-mstage.hasbrain.keystore")
             storePassword "mStagehasBrain"
             keyAlias "hasBrain"
             keyPassword "mStagehasBrain"
@@ -179,6 +179,10 @@ ext {
 }
 
 dependencies {
+    compile(project(":react-native-google-signin")) {
+        exclude group: "com.google.android.gms"
+    }
+    compile 'com.google.android.gms:play-services-auth:11.8.0'
     implementation project(':react-native-fbsdk')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${supportVersion}"
@@ -262,3 +266,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
+apply plugin: 'com.google.gms.google-services'
