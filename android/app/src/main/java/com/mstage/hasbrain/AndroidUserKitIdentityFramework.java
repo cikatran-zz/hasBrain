@@ -1,7 +1,6 @@
-package com.hasbrain;
+package com.mstage.hasbrain;
 
 import android.annotation.SuppressLint;
-import android.telecom.Call;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;

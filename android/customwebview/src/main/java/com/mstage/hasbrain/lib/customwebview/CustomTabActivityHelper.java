@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.hasbrain.lib.customwebview;
+package com.mstage.hasbrain.lib.customwebview;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -23,8 +23,8 @@ import android.support.customtabs.CustomTabsServiceConnection;
 import android.support.customtabs.CustomTabsSession;
 
 import com.hasbrain.lib.customwebview.helper.CustomTabsHelper;
-import com.hasbrain.lib.customwebview.helper.ServiceConnection;
-import com.hasbrain.lib.customwebview.helper.ServiceConnectionCallback;
+import com.mstage.hasbrain.lib.customwebview.helper.ServiceConnection;
+import com.mstage.hasbrain.lib.customwebview.helper.ServiceConnectionCallback;
 
 import java.util.List;
 

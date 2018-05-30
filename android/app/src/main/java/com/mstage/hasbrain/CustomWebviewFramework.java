@@ -1,4 +1,4 @@
-package com.hasbrain;
+package com.mstage.hasbrain;
 
 import android.graphics.Color;
 import android.net.Uri;
@@ -9,10 +9,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.google.gson.Gson;
-import com.hasbrain.lib.customwebview.CustomTabActivityHelper;
-import com.hasbrain.lib.customwebview.helper.WebviewFallback;
+import com.mstage.hasbrain.lib.customwebview.CustomTabActivityHelper;
+import com.mstage.hasbrain.lib.customwebview.helper.WebviewFallback;
 
-import static com.hasbrain.lib.customwebview.MainActivity.getBitmapFromDrawable;
+import static com.mstage.hasbrain.lib.customwebview.MainActivity.getBitmapFromDrawable;
 
 /**
  * Created by henry on 5/17/18.
@@ -48,12 +48,12 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
             CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
             intentBuilder.setToolbarColor(Color.parseColor("#321321"));
             intentBuilder.setSecondaryToolbarColor(Color.parseColor("#564431"));
-            intentBuilder.setCloseButtonIcon(getBitmapFromDrawable(getCurrentActivity(), com.hasbrain.lib.customwebview.R.drawable.ic_arrow_back_24dp));
+            intentBuilder.setCloseButtonIcon(getBitmapFromDrawable(getCurrentActivity(), com.mstage.hasbrain.lib.customwebview.R.drawable.ic_arrow_back_24dp));
 
             //action button
             //Generally you do not want to decode bitmaps in the UI thread. Decoding it in the
             //UI thread to keep the example short.
-//            String actionLabel = getString(com.hasbrain.lib.customwebview.R.string.label_action);
+//            String actionLabel = getString(com.mstage.hasbrain.lib.customwebview.R.string.label_action);
 //            Bitmap icon = BitmapFactory.decodeResource(getResources(),
 //                    android.R.drawable.ic_menu_share);
 //            PendingIntent pendingIntent =
@@ -61,7 +61,7 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
 //            intentBuilder.setActionButton(icon, actionLabel, pendingIntent);
 
             //add menu
-//            String menuItemTitle = getString(com.hasbrain.lib.customwebview.R.string.menu_item_title);
+//            String menuItemTitle = getString(com.mstage.hasbrain.lib.customwebview.R.string.menu_item_title);
 //            PendingIntent menuItemPendingIntent =
 //                    createPendingIntent(ActionBroadcastReceiver.ACTION_MENU_ITEM);
 //            intentBuilder.addMenuItem(menuItemTitle, menuItemPendingIntent);
@@ -72,7 +72,7 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
             //share button float
             //Generally you do not want to decode bitmaps in the UI thread. Decoding it in the
             //UI thread to keep the example short.
-//            String actionLabel = getString(com.hasbrain.lib.customwebview.R.string.label_action);
+//            String actionLabel = getString(com.mstage.hasbrain.lib.customwebview.R.string.label_action);
 //            Bitmap icon = BitmapFactory.decodeResource(getResources(),
 //                    android.R.drawable.ic_menu_share);
 //            PendingIntent pendingIntent =
@@ -88,7 +88,7 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
 //        if (mCustomBackButtonCheckBox.isChecked()) {
 //        }
 
-            intentBuilder.setStartAnimations(getCurrentActivity(), com.hasbrain.lib.customwebview.R.anim.slide_in_right, com.hasbrain.lib.customwebview.R.anim.slide_out_left);
+            intentBuilder.setStartAnimations(getCurrentActivity(), com.mstage.hasbrain.lib.customwebview.R.anim.slide_in_right, com.mstage.hasbrain.lib.customwebview.R.anim.slide_out_left);
             intentBuilder.setExitAnimations(getCurrentActivity(), android.R.anim.slide_in_left,
                     android.R.anim.slide_out_right);
 
