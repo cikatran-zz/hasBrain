@@ -4,11 +4,13 @@ import articlesReducer from './articlesReducer'
 import savedReducer from './savedReducer'
 import playlistReducer from './playlistReducer'
 import onboardingReducer from "./onboardingReducer";
+import userHighlightReducer from './userHighlightReducer'
 
 export default combineReducers({
     nav,
     articlesReducer,
     savedReducer,
     playlistReducer,
-    onboardingReducer
-})
+    onboardingReducer,
+    userHighlightReducer
+});

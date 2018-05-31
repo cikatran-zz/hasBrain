@@ -1,14 +1,9 @@
 import config from './config';
-import axios from 'axios';
 import {ApolloClient} from 'apollo-client';
 import {HttpLink} from 'apollo-link-http';
 import {onError} from 'apollo-link-error'
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import {NativeModules} from "react-native";
-const instance = axios.create({
-    serverURL: `${config.serverURL}`
-});
-
 const getAuthToken = () => {
     return new Promise((resolve, reject)=> {
         NativeModules.RNUserKitIdentity.getProfileInfo((error, result)=> {
@@ -83,23 +78,6 @@ const errorHandler = onError(({networkError}) => {
     }
 });
 
-const get = (endpoints) => {
-    return instance.get(`${endpoints}`)
-        .then((response) => {
-            switch (response.status) {
-                case 403:
-                    return {error: {message: 'Invalid token'}, kickOut: true};
-                case 404:
-                    return {error: {message: 'Cannot connect to server'}};
-                default:
-                    return response;
-            }
-        })
-        .catch((err) => {
-            throw err;
-        });
-};
-
 const gqlQuery = (query) => {
     return new Promise((resolve, reject)=> {
         getApolloClient().then((client)=> {
@@ -124,6 +102,13 @@ export const getPlaylist = () => {
         query: config.queries.playlist,
     })
 };
+
+export const getUserHighLight = (page, perPage) => {
+    return gqlQuery({
+        query: config.queries.userHighlight,
+        variables: {page: page, perPage: perPage}
+    })
+}
 
 export const postBookmark = (id) => {
     return gqlPost({

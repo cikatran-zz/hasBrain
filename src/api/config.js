@@ -207,6 +207,25 @@ mutation checkAndCreateArticle($record: CreateOnearticletypeInput!) {
 }
 `;
 
+
+const getUserHighLight = gql`
+    query getUserHighLight($page: Int, $perPage: Int) {
+       viewer{
+            userhighlightPagination(page:$page, perPage:$perPage) {
+                count
+                items {
+                    articleId
+                    highlight
+                    state
+                    article {
+                        url
+                        title
+                    }
+                }
+            }
+        }
+    }`;
+
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
@@ -214,7 +233,8 @@ export default {
         articles: articles,
         playlist: playlist,
         bookmark: getBookmark,
-        onboardingInfo: onboardingInfo
+        onboardingInfo: onboardingInfo,
+        userHighlight: getUserHighLight
     },
     mutation: {
         bookmark: postBookmark,

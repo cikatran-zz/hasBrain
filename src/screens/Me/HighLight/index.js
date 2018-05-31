@@ -1,15 +1,16 @@
 import HighLight from './HighLight'
 import { connect } from 'react-redux'
+import {getUserHighLight} from '../../../actions/getUserHighLight'
 
 function mapStateToProps(state) {
     return {
-        // me: state.notificationReducer
+        highLight: state.userHighlightReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        // getMe: () => dispatch(getMe())
+        getHighlight: (page, perPage) => dispatch(getUserHighLight(page, perPage))
     }
 }
 

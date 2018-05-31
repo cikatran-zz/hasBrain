@@ -1,9 +1,8 @@
 import React, {PureComponent} from 'react'
 import {
-    Text, View, StyleSheet, NativeModules, Platform, FlatList, Image
+    Text, View, StyleSheet, NativeModules, Platform, FlatList, ActivityIndicator
 } from 'react-native'
 import { colors } from '../../../constants/colors';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class HighLight extends PureComponent {
 
@@ -12,6 +11,7 @@ export default class HighLight extends PureComponent {
     }
 
     componentDidMount() {
+        this.props.getHighlight(1, 10);
     }
 
 
@@ -27,13 +27,38 @@ export default class HighLight extends PureComponent {
         )
     }
 
+    __renderListFooter = () => {
+        const {highLight} = this.props;
+        if (highLight.isFetching) {
+            return (
+                <View
+                    style={{height: 30, width: '100%' ,justifyContent:'center', alignItems:'center'}}>
+                    <ActivityIndicator size={"small"} color={colors.darkBlue}/>
+                </View>
+            )
+        } else {
+            return null;
+        }
+    };
+
+    _fetchMore = () => {
+        const {highLight} = this.props;
+        let currentPage = highLight.page;
+        currentPage++
+        this.props.getHighlight(currentPage, 10);
+
+    };
+
     render() {
+        const {highLight} = this.props;
         return (
             <View style={styles.container}>
                 <FlatList
                     showsVerticalScrollIndicator={false}
                     renderItem={this._renderListItem}
-                    data={tempData}
+                    ListFooterComponent={this.__renderListFooter}
+                    onEndReached={this._fetchMore}
+                    data={highLight.data}
                     keyExtractor={this._keyExtractor}/>
             </View>
         )
