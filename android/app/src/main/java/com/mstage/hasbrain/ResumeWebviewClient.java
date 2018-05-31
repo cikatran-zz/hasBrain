@@ -1,31 +1,30 @@
-package com.hasbrain;
+package com.mstage.hasbrain;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Picture;
 import android.net.Uri;
 import android.util.Log;
-import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 /**
  * Created by henry on 5/28/18.
  */
+@SuppressLint("LogNotTimber")
 public class ResumeWebviewClient extends WebViewClient implements WebView.PictureListener {
     private float scrollRatio;
     private WebView webView;
-//    private View loadingView;
     private Context context;
     private State state;
     private static final String TAG = "WebViewClient";
 
-    private enum State { LOADING, LOADED, FINISHED };
+    private enum State {LOADING, LOADED, FINISHED}
 
     public ResumeWebviewClient(float scrollRatio, WebView webView, Context context) {
         this.scrollRatio = scrollRatio;
         this.webView = webView;
-//        this.loadingView = loadingView;
         this.context = context;
         webView.setPictureListener(this);
         state = State.LOADING;
@@ -33,9 +32,8 @@ public class ResumeWebviewClient extends WebViewClient implements WebView.Pictur
 
     @Override
     public void onLoadResource(WebView view, String url) {
-        if(state == state.LOADING) {
+        if (state == State.LOADING) {
             Log.i(TAG, "showing loading view...");
-//            loadingView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -58,7 +56,6 @@ public class ResumeWebviewClient extends WebViewClient implements WebView.Pictur
         }
         if (state == State.LOADED) {
             Log.i(TAG, "hiding loading view, and scrolling to ratio " + scrollRatio);
-//            loadingView.setVisibility(View.GONE);
             webView.scrollTo(0, (int) (scrollRatio * webView.getContentHeight() * webView.getScale()));
             state = State.FINISHED;
             webView.setPictureListener(null);
@@ -76,7 +73,7 @@ public class ResumeWebviewClient extends WebViewClient implements WebView.Pictur
         int scrollPosition = webView.getScrollY();
         int height = webView.getContentHeight();
         float scale = webView.getScale();
-        Float ratio = (float) scrollPosition / (float) (scale * height);
+        Float ratio = (float) scrollPosition / (scale * height);
         Log.d(TAG, "scroll ratio of view " + webView + " is " + ratio);
         return ratio;
     }

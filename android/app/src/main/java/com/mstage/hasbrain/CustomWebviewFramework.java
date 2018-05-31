@@ -17,10 +17,10 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.gson.Gson;
-import com.hasbrain.lib.customwebview.CustomTabActivityHelper;
+import com.mstage.hasbrain.lib.customwebview.CustomTabActivityHelper;
 
-import static com.hasbrain.MainActivity.reactContext;
-import static com.hasbrain.MainActivity.setReactContext;
+import static com.mstage.hasbrain.MainActivity.reactContext;
+import static com.mstage.hasbrain.MainActivity.setReactContext;
 
 /**
  * Created by henry on 5/17/18.
