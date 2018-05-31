@@ -72,7 +72,7 @@ export default class Me extends React.Component {
 
                     <View style={styles.profileTextContainer}>
                         <Text numberOfLines={1} style={styles.profileName}>Jang Na Ra</Text>
-                        <TextInput multiline={true} underlineColorAndroid="transparent" numberOfLines={2} style={styles.profileTitle} value={'Software Engineer Paypal'} editable={editMode}/>
+                        <TextInput multiline={true} underlineColorAndroid="transparent" numberOfLines={2} style={styles.profileTitle} value={'Enter your title here'} editable={editMode}/>
                     </View>
 
                     <View style={styles.profileActionButtonContainer}>
