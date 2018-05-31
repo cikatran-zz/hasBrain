@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.hasbrain.lib.customwebview.helper;
+package com.mstage.hasbrain.lib.customwebview.helper;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +21,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.hasbrain.lib.customwebview.R;
+import com.mstage.hasbrain.lib.customwebview.R;
 
 /**
  * This Activity is used as a fallback when there is no browser installed that supports

@@ -11,6 +11,7 @@ target 'hasBrain' do
   pod 'UserKitIdentity', :path => '../../mStage-UserKit-iOS-SDK'
   pod 'IQKeyboardManagerSwift', '4.0.13'
   pod 'SwiftyJSON', '~> 4.0'
+  pod 'GoogleSignIn'
 
 #pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 

@@ -1,4 +1,4 @@
-package com.hasbrain.lib.customwebview.helper;
+package com.mstage.hasbrain.lib.customwebview.helper;
 
 // Copyright 2015 Google Inc. All Rights Reserved.
 //
