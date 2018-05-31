@@ -32,6 +32,18 @@ public class CustomWebViewViewController: UIViewController {
     fileprivate var lastPosition: NSNumber!
     fileprivate var initBookmarked: Bool = false
     
+    let highlightedJs: String = """
+    function selectedText() {
+        var range = window.getSelection().getRangeAt(0);
+        var result = {text:window.getSelection().toString(), startNode: range.startContainer, startOffset: range.startOffset, endNode: range.endContainer, endOffset: range.endOffset};
+        span = document.createElement('span');
+        span.style.backgroundColor = "yellow";
+        span.appendChild(range.extractContents());
+        range.insertNode(span);
+        return JSON.stringify(result);
+    }
+    """
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
         self.setupWebViewView()
@@ -42,8 +54,9 @@ public class CustomWebViewViewController: UIViewController {
     }
     
     func recommend() {
-        let selected = UIPasteboard.general.string
-        print(selected)
+        self.webView.evaluateJavaScript("selectedText()") { (result, error) in
+            print(result)
+        }
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -136,7 +149,7 @@ extension CustomWebViewViewController: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         nextButton.isEnabled = webView.canGoForward
         prevButton.isEnabled = webView.canGoBack
-        
+        webView.evaluateJavaScript(highlightedJs, completionHandler: nil)
         if isRedirect == false {
             if let _ = webView.url {
                 self.onUrlChangeCallback?(self.url.absoluteString, webView.url!.absoluteString)
