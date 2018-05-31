@@ -41,10 +41,11 @@ export default class Onboarding extends React.Component {
         } else {
             // TODO: - Post to server + store to user kit + navigate to Home
             postUserInterest(this.experience, this.intentIds).then((value)=>{
+                console.log("VAL", value);
                 NativeModules.RNUserKit.storeProperty(strings.onboardingKey, {[strings.onboardedKey]: true}, (error, result)=>{});
                 this.props.navigation.navigate('Home');
             }).catch((err)=>{
-                console.log(err);
+                console.log("ERR",err);
                 this.props.navigation.navigate('Home');
             });
         }

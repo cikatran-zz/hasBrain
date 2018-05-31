@@ -41,7 +41,7 @@ export default class Reader extends React.PureComponent {
 
         AppState.addEventListener('change', this._handleAppStateChange);
 
-        NativeModules.RNUserKit.getProperty(strings.readingHistoryKey, (error, result) => {
+        NativeModules.RNUserKit.getProperty(strings.continueReadingKey, (error, result) => {
             let readingHistory = JSON.parse(result[0]);
             let lastReadingPosition = _.get(readingHistory, this.readingPositionPath, 0);
             console.log("HISTORY", _.get(readingHistory, getIDOfCurrentDate() + '.' + articleID))
@@ -75,7 +75,7 @@ export default class Reader extends React.PureComponent {
 
     _updateReadingHistory = () => {
         const {readingTime, articleID} = this.props.navigation.state.params;
-        NativeModules.RNUserKit.getProperty(strings.readingHistoryKey, (error, result) => {
+        NativeModules.RNUserKit.getProperty(strings.continueReadingKey, (error, result) => {
             console.log("userkit props",result);
             if (!error && result != null) {
                 // Get current date
@@ -87,7 +87,7 @@ export default class Reader extends React.PureComponent {
                     _.update(newObject, this.consumedLengthPath, _.constant(newReadingTime));
                     _.update(newObject, this.readingPositionPath, _.constant(this.readingPosition));
                     console.log("UPDATE", newObject);
-                    NativeModules.RNUserKit.storeProperty(strings.readingHistoryKey, newObject, (e, r) => {
+                    NativeModules.RNUserKit.storeProperty(strings.continueReadingKey, newObject, (e, r) => {
                     });
                 }
             } else {

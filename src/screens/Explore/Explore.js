@@ -21,6 +21,9 @@ import {strings} from "../../constants/strings";
 import {formatReadingTimeInMinutes, getIDOfCurrentDate} from "../../utils/dateUtils";
 import {extractRootDomain} from "../../utils/stringUtils";
 import LoadingRow from "../../components/LoadingRow";
+import ReaderManager from "../../modules/ReaderManager";
+
+
 
 const horizontalMargin = 5;
 
@@ -61,16 +64,12 @@ export default class Explore extends React.Component {
 
     _keyExtractor = (item, index) => index + '';
 
-    _openReadingView = (url, readingTime, id) => {
-        if (Platform.OS === 'ios') {
-            this.props.navigation.navigate('Reader', {url: url, readingTime: readingTime, articleID: id})
-        } else {
-            NativeModules.RNCustomWebview.loadUrl(url, (error, result)=> {});
-        }
+    _openReadingView = (item) => {
+        ReaderManager.sharedInstance._open(item, _.findIndex(this.state.bookmarked, (o)=>(o === item._id)) !== -1);
     };
 
     _setUpReadingTime = () => {
-        NativeModules.RNUserKit.getProperty(strings.readingHistoryKey, (error, result) => {
+        NativeModules.RNUserKit.getProperty(strings.continueReadingKey, (error, result) => {
             if (!error && result != null) {
                 // Get current date
                 let readingHistory = JSON.parse(result[0]);
@@ -98,7 +97,6 @@ export default class Explore extends React.Component {
     };
 
     _onBookmarkItem = (id) => {
-        console.log("BOOKMARK", id);
         if (_.findIndex(this.state.bookmarked, (o)=>(o === id)) !== -1) {
             this.setState({bookmarked: _.filter(this.state.bookmarked, (o)=>(o !== id))});
             postUnbookmark(id).then(value => {
@@ -121,7 +119,7 @@ export default class Explore extends React.Component {
                      author={extractRootDomain(item.url)}
                      time={item.createdAt}
                      readingTime={item.readingTime}
-                     onClicked={() => this._openReadingView(item.url, item.readingTime, item._id)}
+                     onClicked={() => this._openReadingView(item)}
                      onShare={()=>this._onShareItem(item)}
                      onBookmark={()=>this._onBookmarkItem(item._id)}
                      bookmarked={_.findIndex(this.state.bookmarked, (o)=>(o === item._id)) !== -1}
@@ -154,7 +152,7 @@ export default class Explore extends React.Component {
                             time={item.sourceCreateAt}
                             url={item.url}
                             readingTime={item.readingTime}
-                            onClicked={() => this._openReadingView(item.url, item.readingTime, item._id)}
+                            onClicked={() => this._openReadingView(item)}
                             onShare={()=>this._onShareItem(item)}
                             onBookmark={()=>this._onBookmarkItem(item._id)}
                             bookmarked={_.findIndex(this.state.bookmarked, (o)=>(o === item._id)) !== -1}
@@ -199,9 +197,9 @@ export default class Explore extends React.Component {
 
     render() {
         const {articles, playlist} = this.props
-        if (articles.error === true || playlist.error === true) {
-            return null
-        }
+        // if (articles.error === true || playlist.error === true) {
+        //     return null
+        // }
 
         return (
             <View style={{

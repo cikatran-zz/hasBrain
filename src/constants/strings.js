@@ -3,7 +3,7 @@ export const strings = {
     bookmarkHeader: "SAVED",
     notificationHeader: "NOTIFICATIONS",
     meHeader: "ME",
-    readingHistoryKey: 'reading_history',
+    continueReadingKey: 'continue_reading',
     consumedLengthKey: 'consumed_length',
     readingPositionKey: 'reading_position',
     onboardingKey: 'onboarding',

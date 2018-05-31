@@ -23,12 +23,18 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
     private CustomTabActivityHelper mCustomTabActivityHelper;
 
     Gson gson = new Gson();
+    CustomTabsIntent.Builder intentBuilder;
 
     public CustomWebviewFramework(ReactApplicationContext reactContext) {
         super(reactContext);
         mCustomTabActivityHelper = new CustomTabActivityHelper();
-        if (getCurrentActivity() != null)
-            mCustomTabActivityHelper.bindCustomTabsService(getCurrentActivity());
+        if (getReactApplicationContext() != null)
+            mCustomTabActivityHelper.bindCustomTabsService(getReactApplicationContext());
+        intentBuilder = new CustomTabsIntent.Builder();
+        intentBuilder.setToolbarColor(Color.parseColor("#321321"));
+        intentBuilder.setSecondaryToolbarColor(Color.parseColor("#564431"));
+        intentBuilder.setCloseButtonIcon(getBitmapFromDrawable(getReactApplicationContext(), com.hasbrain.lib.customwebview.R.drawable.ic_arrow_back_24dp));
+
     }
 
     @Override
@@ -38,22 +44,20 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void onDestroy() {
-        if (getCurrentActivity() != null)
-            mCustomTabActivityHelper.unbindCustomTabsService(getCurrentActivity());
+        if (getReactApplicationContext() != null)
+            mCustomTabActivityHelper.unbindCustomTabsService(getReactApplicationContext());
     }
+
+
 
     @ReactMethod
     public void loadUrl(String url, Callback callback) {
         if (getCurrentActivity() != null) {
-            CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
-            intentBuilder.setToolbarColor(Color.parseColor("#321321"));
-            intentBuilder.setSecondaryToolbarColor(Color.parseColor("#564431"));
-            intentBuilder.setCloseButtonIcon(getBitmapFromDrawable(getCurrentActivity(), com.mstage.hasbrain.lib.customwebview.R.drawable.ic_arrow_back_24dp));
 
             //action button
             //Generally you do not want to decode bitmaps in the UI thread. Decoding it in the
             //UI thread to keep the example short.
-//            String actionLabel = getString(com.mstage.hasbrain.lib.customwebview.R.string.label_action);
+//            String actionLabel = getString(com.hasbrain.lib.customwebview.R.string.label_action);
 //            Bitmap icon = BitmapFactory.decodeResource(getResources(),
 //                    android.R.drawable.ic_menu_share);
 //            PendingIntent pendingIntent =
@@ -61,7 +65,7 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
 //            intentBuilder.setActionButton(icon, actionLabel, pendingIntent);
 
             //add menu
-//            String menuItemTitle = getString(com.mstage.hasbrain.lib.customwebview.R.string.menu_item_title);
+//            String menuItemTitle = getString(com.hasbrain.lib.customwebview.R.string.menu_item_title);
 //            PendingIntent menuItemPendingIntent =
 //                    createPendingIntent(ActionBroadcastReceiver.ACTION_MENU_ITEM);
 //            intentBuilder.addMenuItem(menuItemTitle, menuItemPendingIntent);
@@ -72,7 +76,7 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
             //share button float
             //Generally you do not want to decode bitmaps in the UI thread. Decoding it in the
             //UI thread to keep the example short.
-//            String actionLabel = getString(com.mstage.hasbrain.lib.customwebview.R.string.label_action);
+//            String actionLabel = getString(com.hasbrain.lib.customwebview.R.string.label_action);
 //            Bitmap icon = BitmapFactory.decodeResource(getResources(),
 //                    android.R.drawable.ic_menu_share);
 //            PendingIntent pendingIntent =
@@ -88,7 +92,7 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
 //        if (mCustomBackButtonCheckBox.isChecked()) {
 //        }
 
-            intentBuilder.setStartAnimations(getCurrentActivity(), com.mstage.hasbrain.lib.customwebview.R.anim.slide_in_right, com.mstage.hasbrain.lib.customwebview.R.anim.slide_out_left);
+            intentBuilder.setStartAnimations(getCurrentActivity(), com.hasbrain.lib.customwebview.R.anim.slide_in_right, com.hasbrain.lib.customwebview.R.anim.slide_out_left);
             intentBuilder.setExitAnimations(getCurrentActivity(), android.R.anim.slide_in_left,
                     android.R.anim.slide_out_right);
 

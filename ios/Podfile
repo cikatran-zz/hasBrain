@@ -4,6 +4,9 @@
 target 'hasBrain' do
   # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
   use_frameworks!
+  pod 'AppCenter/Crashes', '~> 1.6.1'
+  pod 'AppCenter/Analytics', '~> 1.6.1'
+  pod 'AppCenterReactNativeShared', '~> 1.5.1'
   pod 'UserKit', :path => '../../mStage-UserKit-iOS-SDK'
   pod 'UserKitIdentity', :path => '../../mStage-UserKit-iOS-SDK'
   pod 'IQKeyboardManagerSwift', '4.0.13'
@@ -14,11 +17,10 @@ target 'hasBrain' do
 
 #pod 'react-native-wkwebview', :path => '../node_modules/react-native-wkwebview-reborn'
 
-#pod 'SentryReactNative', :path => '../node_modules/react-native-sentry'
-
   target 'hasBrainTests' do
     inherit! :search_paths
     # Pods for testing
+  platform :ios, '9.0'
   end
 
 end
