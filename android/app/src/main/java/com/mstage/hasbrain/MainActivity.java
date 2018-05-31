@@ -1,4 +1,6 @@
-package com.hasbrain;
+package com.mstage.hasbrain;
+
+import android.content.Intent;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;
@@ -36,9 +38,11 @@ public class MainActivity extends ReactActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        MainApplication.getCallbackManager().onActivityResult(requestCode, resultCode, data);
         if(requestCode == CustomWebviewFramework.RESULT_CODE){
             sendEvent(reactContext, "onDismiss", null);
         }
 
     }
+
 }

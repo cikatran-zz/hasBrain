@@ -1,4 +1,4 @@
-package com.hasbrain;
+package com.mstage.hasbrain;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;

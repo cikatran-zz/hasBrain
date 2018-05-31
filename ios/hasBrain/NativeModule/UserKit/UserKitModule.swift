@@ -22,6 +22,12 @@ class UserKitModule: NSObject {
     @objc public func initialize(token: String) {
         UserKit.initialize(token: token)
         module = UserKit.mainInstance()
+        if UIDevice.current.model.starts(with: "iPhone") {
+            module.deviceType = DeviceType.Phone.rawValue
+        } else {
+            module.deviceType = DeviceType.Tablet.rawValue
+        }
+        
     }
     
     @objc public func setDeviceType(type: String) {
@@ -38,6 +44,38 @@ class UserKitModule: NSObject {
     
     @objc public func addDeviceToken(_ token: Data) {
         module.deviceToken = token
+    }
+    
+    @objc public func incrementProperty(_ properties: [String: Any], successBlock: @escaping (String?) -> Void, errorBlock: @escaping (String?)->Void) {
+        module.profile.increment(properties: properties, successBlock: { (results) in
+            if let resultsDict = results as? [String: Any] {
+                successBlock(asJSONString(resultsDict))
+            } else {
+                errorBlock(asJSONString(["message": "Unknown error"]))
+            }
+        }) { (error) in
+            if let errorM = error as? ErrorModel {
+                errorBlock(errorM.toString())
+            } else {
+                errorBlock(error as? String)
+            }
+        }
+    }
+    
+    @objc public func appendProperty(_ properties: [String: Any], successBlock: @escaping (String?) -> Void, errorBlock: @escaping (String?)->Void) {
+        module.profile.append(properties: properties, successBlock: { (results) in
+            if let resultsDict = results as? [String: Any] {
+                successBlock(asJSONString(resultsDict))
+            } else {
+                errorBlock(asJSONString(["message": "Unknown error"]))
+            }
+        }) { (error) in
+            if let errorM = error as? ErrorModel {
+                errorBlock(errorM.toString())
+            } else {
+                errorBlock(error as? String)
+            }
+        }
     }
     
     @objc public func storeProperty(key: String, value: [String: Any], successBlock: @escaping (String?) -> Void, errorBlock: @escaping (String?)->Void) {

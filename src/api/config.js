@@ -29,6 +29,7 @@ query getArticles($page: Int!, $perPage: Int!){
           fileName
         }
         readingTime
+        tags
       }
     }
   }
@@ -67,6 +68,7 @@ query getBookmark($page: Int, $perPage: Int){
             name
             fileName
           }
+          tags
         }
       }
     }
@@ -78,17 +80,40 @@ query getBookmark($page: Int, $perPage: Int){
 
 const playlist = gql`
 query {
-  viewer{
-    playlistOne {
+  viewer {
+    listOne(filter: {
+      title: "EXPLORE_TOP"
+    }) {
       title
       longDescription
       shortDescription
+      privacy
       state
       createdAt
       updatedAt
       projectId
-      mediaData
-    } 
+      profileId
+      contentData {
+      _id
+        title
+        longDescription
+        shortDescription
+        state
+        custom
+        createdAt
+        updatedAt
+        projectId
+        kind
+        originalImages {
+          height
+          width
+          url
+          name
+          fileName
+          _id
+        }
+      }
+    }
   }
 }
 `;

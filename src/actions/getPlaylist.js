@@ -9,7 +9,7 @@ export function getPlaylist(page, perPage) {
 export function getArticlesSuccess(data) {
     return {
         type: actionTypes.FETCH_PLAYLIST_SUCCESS,
-        data: data.viewer.playlistOne.mediaData
+        data: data.viewer.listOne.contentData
     }
 }
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.hasbrain.lib.customwebview.helper;
+package com.mstage.hasbrain.lib.customwebview.helper;
 
 import android.support.customtabs.CustomTabsClient;
 

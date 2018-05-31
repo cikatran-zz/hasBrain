@@ -1,4 +1,4 @@
-package com.hasbrain.lib.customwebview;
+package com.mstage.hasbrain.lib.customwebview;
 
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
@@ -25,7 +25,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 //import com.hasbrain.lib.customwebview.helper.ActionBroadcastReceiver;
-import com.hasbrain.lib.customwebview.helper.WebviewFallback;
+import com.mstage.hasbrain.lib.customwebview.helper.WebviewFallback;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "CustChromeTabActivity";

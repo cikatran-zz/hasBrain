@@ -1,4 +1,4 @@
-package com.hasbrain;
+package com.mstage.hasbrain;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
