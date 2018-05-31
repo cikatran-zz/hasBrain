@@ -1,11 +1,17 @@
 import React, {PureComponent} from 'react'
 import {
-    Text, View, StyleSheet, NativeModules, Platform, SectionList, Image
+    Text, View, StyleSheet, NativeModules, Platform, SectionList, TextInput
 } from 'react-native'
 import { colors } from '../../../constants/colors';
 import RadarChart from '../../../components/RadarChart'
+import PropTypes from 'prop-types';
 
-export default class About extends PureComponent {
+type Props = {
+    editMode: PropTypes.bool
+}
+
+
+export default class About extends PureComponent<Props> {
 
     constructor(props) {
         super(props)
@@ -16,9 +22,7 @@ export default class About extends PureComponent {
 
     _renderDescription = () => {
         return (
-            <Text numberOfLines={3} style={styles.descriptionText}>
-                Irish skinny, grinder affogato, dark, sweet carajillo, flavour seasonal aroma single origin cream. Percolator, foam.
-            </Text>
+            <TextInput multiline={true} underlineColorAndroid="transparent" numberOfLines={3} style={styles.descriptionText} value={'Enter your summary here'} editable={this.props.editMode}/>
         )
     }
 

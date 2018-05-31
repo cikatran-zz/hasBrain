@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-    Text, View, StyleSheet, NativeModules, Platform, TouchableWithoutFeedback, Image
+    Text, View, StyleSheet, NativeModules, Platform, TouchableWithoutFeedback, Image, TextInput
 } from 'react-native'
 import { colors } from '../../constants/colors'
 import {NavigationActions} from "react-navigation";
@@ -13,7 +13,8 @@ export default class Me extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            selectedTab: 0
+            selectedTab: 0,
+            editMode: false
         }
     }
 
@@ -32,18 +33,36 @@ export default class Me extends React.Component {
     }
 
     _renderTabContain (){
-        const  {selectedTab} = this.state;
+        const  {selectedTab, editMode} = this.state;
         if (selectedTab == 0) {
             return (
-                <About style={{width:'85%', marginTop: 10}}/>
+                <About editMode={editMode} style={{width:'85%', marginTop: 10}}/>
             )
         } else {
             return  <HighLight style={{width:'85%', marginTop: 10}}/>;
         }
     }
 
+    _renderEditButton () {
+        const {editMode} = this.state;
+        if (editMode) {
+            return (
+                <Image source={require('../../assets/btn_edit_on.png')}/>
+            )
+        } else {
+            return (
+                <Image source={require('../../assets/btn_edit.png')}/>
+            )
+        }
+    }
+
+    _toggleEdit = () => {
+        const {editMode} = this.state;
+        this.setState({editMode: !editMode});
+    }
+
     render() {
-        const  {selectedTab} = this.state;
+        const  {selectedTab, editMode} = this.state;
         return (
             <View style={styles.container}>
                 <View style={styles.profileContainer}>
@@ -53,11 +72,13 @@ export default class Me extends React.Component {
 
                     <View style={styles.profileTextContainer}>
                         <Text numberOfLines={1} style={styles.profileName}>Jang Na Ra</Text>
-                        <Text numberOfLines={2} style={styles.profileTitle}>Software Engineer Paypal</Text>
+                        <TextInput multiline={true} underlineColorAndroid="transparent" numberOfLines={2} style={styles.profileTitle} value={'Software Engineer Paypal'} editable={editMode}/>
                     </View>
 
                     <View style={styles.profileActionButtonContainer}>
-                        <Image source={require('../../assets/btn_edit.png')}/>
+                        <TouchableWithoutFeedback onPress={this._toggleEdit}>
+                            {this._renderEditButton()}
+                        </TouchableWithoutFeedback>
                         <Image style={{marginTop: 15}}source={require('../../assets/ic_settings_gear.png')}/>
                     </View>
                 </View>
@@ -106,13 +127,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '85%',
         height:'20%',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
     },
     profileTextContainer: {
         flexDirection: 'column',
         width: '60%',
         height: 75,
-        alignItems:'stretch'
+        marginTop: -5
     },
     profileName: {
         fontSize: 25,
@@ -121,7 +142,8 @@ const styles = StyleSheet.create({
     },
     profileTitle: {
         color: colors.blackHeader,
-        fontSize: 18
+        fontSize: 18,
+        marginTop: -5
     },
     profileActionButtonContainer: {
         flexDirection: 'column',
