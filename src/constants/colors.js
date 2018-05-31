@@ -12,5 +12,8 @@ export const colors = {
     carouselBackground: '#FAFAFA',
     grayLine: '#D6D6D6',
     blackOnboarding: '#828282',
-    grayOnboarding: '#DADADA'
+    grayOnboarding: '#DADADA',
+    darkBlue: '#002257',
+    grayTextExpYear: '#B1B1B1',
+    grayTextExpTitle: '#828282',
 };

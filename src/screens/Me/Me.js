@@ -1,15 +1,20 @@
 import React from 'react'
 import {
-    Text, View, StyleSheet, NativeModules, Platform, TouchableOpacity, Image
+    Text, View, StyleSheet, NativeModules, Platform, TouchableWithoutFeedback, Image
 } from 'react-native'
 import { colors } from '../../constants/colors'
 import {NavigationActions} from "react-navigation";
 import CircleImage from '../../components/CircleImage'
+import About from './About'
+import HighLight from './HighLight'
 
 export default class Me extends React.Component {
 
     constructor(props) {
         super(props)
+        this.state = {
+            selectedTab: 0
+        }
     }
 
     componentDidMount() {
@@ -21,7 +26,24 @@ export default class Me extends React.Component {
         this.props.navigation.navigate('Root')
     };
 
+    _toggleTab = () => {
+        const {selectedTab} = this.state;
+        selectedTab == 0 ? this.setState({selectedTab: 1}) : this.setState({selectedTab: 0});
+    }
+
+    _renderTabContain (){
+        const  {selectedTab} = this.state;
+        if (selectedTab == 0) {
+            return (
+                <About style={{width:'85%', marginTop: 10}}/>
+            )
+        } else {
+            return  <HighLight style={{width:'85%', marginTop: 10}}/>;
+        }
+    }
+
     render() {
+        const  {selectedTab} = this.state;
         return (
             <View style={styles.container}>
                 <View style={styles.profileContainer}>
@@ -39,6 +61,33 @@ export default class Me extends React.Component {
                         <Image style={{marginTop: 15}}source={require('../../assets/ic_settings_gear.png')}/>
                     </View>
                 </View>
+
+                <View style={styles.toggleButtonContainer}>
+                    <TouchableWithoutFeedback onPress={this._toggleTab}>
+                        <View style={[
+                            styles.toggleTab,
+                            {borderBottomLeftRadius: 3, borderTopLeftRadius: 3},
+                            selectedTab == 0 ? styles.activeTab : styles.inactiveTab]}>
+                            <Text style={[
+                                styles.toggleTabTitle,
+                                selectedTab == 0 ? {color: colors.mainWhite} : {color: colors.darkBlue}
+                            ]}>About</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
+
+                    <TouchableWithoutFeedback onPress={this._toggleTab}>
+                        <View style={[
+                            styles.toggleTab,
+                            {borderBottomRightRadius: 3, borderTopRightRadius: 3},
+                            selectedTab == 1 ? styles.activeTab : styles.inactiveTab]}>
+                            <Text style={[
+                                styles.toggleTabTitle,
+                                selectedTab == 1 ? {color: colors.mainWhite} : {color: colors.darkBlue}
+                            ]}>Highlights</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </View>
+                {this._renderTabContain()}
             </View>
         )
     }
@@ -56,7 +105,7 @@ const styles = StyleSheet.create({
     profileContainer: {
         flexDirection: 'row',
         width: '85%',
-        height: '85%',
+        height:'20%',
         justifyContent: 'space-between'
     },
     profileTextContainer: {
@@ -76,8 +125,12 @@ const styles = StyleSheet.create({
     },
     profileActionButtonContainer: {
         flexDirection: 'column',
-        justifyContent: 'center',
+        alignItems:'center',
         height: 75
+    },
+    toggleButtonContainer: {
+        flexDirection: 'row',
+        marginBottom: 10
     },
     signOut: {
         paddingVertical: 15,
@@ -90,5 +143,22 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         paddingTop: 8,
         paddingBottom: 8
+    },
+    toggleTab: {
+        height: 30,
+        width: 110,
+        borderColor: colors.darkBlue,
+        borderWidth: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    toggleTabTitle: {
+        fontSize: 13
+    },
+    activeTab: {
+        backgroundColor: colors.darkBlue
+    },
+    inactiveTab: {
+        backgroundColor: colors.mainWhite
     }
 })

@@ -31,11 +31,12 @@ type Props = {
         color: PropTypes.string,
         percentage: PropTypes.number
     },
+    size: PropTypes.number
 };
 export default class RadarChart extends Component<Props> {
     middleX = 200;
     middleY = 200;
-    firstAngleX = 200;
+    firstAngleX = 201;
     firstAngleY = 80;
     secondAngleX = 98;
     secondAngleY = 142;
@@ -47,6 +48,54 @@ export default class RadarChart extends Component<Props> {
     fifthAngleY = 263;
     sixthAngleX = 305;
     sixthAngleY = 142;
+    baseSize = 400;
+
+    firstPointX = 199;
+    firstPointY = 70;
+    secondPointX = 90;
+    secondPointY = 140;
+    thirdPointX = 90;
+    thirdPointY = 260;
+    fourthPointX = 199;
+    fourthPointY = 325;
+    fifthPointX = 310;
+    fifthPointY = 260;
+    sixthPointX = 310;
+    sixthPointY = 140;
+
+    constructor(props) {
+        super(props)
+        let ratio = props.size/this.baseSize;
+        this.middleX *= ratio;
+        this.middleY *= ratio;
+
+        this.firstAngleX *= ratio;
+        this.firstAngleY *= ratio;
+        this.secondAngleX *= ratio;
+        this.secondAngleY *= ratio;
+        this.thirdAngleX *= ratio;
+        this.thirdAngleY *= ratio;
+        this.fourthAngleX *= ratio;
+        this.fourthAngleY *= ratio;
+        this.fifthAngleX *= ratio;
+        this.fifthAngleY *= ratio;
+        this.sixthAngleX *= ratio;
+        this.sixthAngleY *= ratio;
+
+        this.firstPointX *= ratio;
+        this.firstPointY *= ratio;
+        this.secondPointX *= ratio;
+        this.secondPointY *= ratio;
+        this.thirdPointX *= ratio;
+        this.thirdPointY *= ratio;
+        this.fourthPointX *= ratio;
+        this.fourthPointY *= ratio;
+        this.fifthPointX *= ratio;
+        this.fifthPointY *= ratio;
+        this.sixthPointX *= ratio;
+        this.sixthPointY *= ratio;
+
+    }
 
     componentDidMount() {
 
@@ -85,9 +134,9 @@ export default class RadarChart extends Component<Props> {
     }
 
     render() {
-        const {firstValue, secondValue, thirdValue, fourthValue, fifthValue, sixthValue} = this.props;
+        const {firstValue, secondValue, thirdValue, fourthValue, fifthValue, sixthValue, size} = this.props;
         return (
-            <Svg width={400} height={400}>
+            <Svg width={size} height={size}>
 
                 <Defs>
                     <LinearGradient id="grad_first" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -155,7 +204,7 @@ export default class RadarChart extends Component<Props> {
                 </Defs>
 
                 <G>
-                    <G x={199} y={70}>
+                    <G x={this.firstPointX} y={this.firstPointY}>
                         <Circle
                             cx="2"
                             cy="2"
@@ -166,25 +215,25 @@ export default class RadarChart extends Component<Props> {
                     </G>
 
                     <Line
-                        x1="201"
-                        y1="80"
-                        x2="98"
-                        y2="142"
+                        x1={`${this.firstAngleX}`}
+                        y1={`${this.firstAngleY}`}
+                        x2={`${this.secondAngleX}`}
+                        y2={`${this.secondAngleY}`}
                         stroke="url(#grad_first)"
                         strokeWidth="1"
                     />
 
                     <Line
-                        x1="201"
-                        y1="80"
-                        x2="201"
-                        y2="200"
+                        x1={`${this.firstAngleX}`}
+                        y1={`${this.firstAngleY}`}
+                        x2={`${this.middleX}`}
+                        y2={`${this.middleY}`}
                         stroke="url(#grad_first_opacity)"
                         strokeWidth="1"
                     />
 
 
-                    <G x={90} y={140}>
+                    <G x={this.secondPointX} y={this.secondPointY}>
                         <Circle
                             cx="2"
                             cy="2"
@@ -195,24 +244,24 @@ export default class RadarChart extends Component<Props> {
                     </G>
 
                     <Line
-                        x1="98"
-                        y1="142"
-                        x2="98"
-                        y2="263"
+                        x1={`${this.secondAngleX}`}
+                        y1={`${this.secondAngleY}`}
+                        x2={`${this.thirdAngleX}`}
+                        y2={`${this.thirdAngleY}`}
                         stroke="url(#grad_second)"
                         strokeWidth="1"
                     />
 
                     <Line
-                        x1="98"
-                        y1="142"
-                        x2="201"
-                        y2="200"
+                        x1={`${this.secondAngleX}`}
+                        y1={`${this.secondAngleY}`}
+                        x2={`${this.middleX}`}
+                        y2={`${this.middleY}`}
                         stroke="url(#grad_second_opacity)"
                         strokeWidth="1"
                     />
 
-                    <G x={90} y={260}>
+                    <G x={this.thirdPointX} y={this.thirdPointY}>
                         <Circle
                             cx="2"
                             cy="2"
@@ -223,24 +272,24 @@ export default class RadarChart extends Component<Props> {
                     </G>
 
                     <Line
-                        x1="98"
-                        y1="263"
-                        x2="201"
-                        y2="320"
+                        x1={`${this.thirdAngleX}`}
+                        y1={`${this.thirdAngleY}`}
+                        x2={`${this.fourthAngleX}`}
+                        y2={`${this.fourthAngleY}`}
                         stroke="url(#grad_third)"
                         strokeWidth="1"
                     />
 
                     <Line
-                        x1="98"
-                        y1="263"
-                        x2="201"
-                        y2="200"
+                        x1={`${this.thirdAngleX}`}
+                        y1={`${this.thirdAngleY}`}
+                        x2={`${this.middleX}`}
+                        y2={`${this.middleY}`}
                         stroke="url(#grad_third_opacity)"
                         strokeWidth="1"
                     />
 
-                    <G x={310} y={260}>
+                    <G x={this.fifthPointX} y={this.fifthPointY}>
                         <Circle
                             cx="2"
                             cy="2"
@@ -251,24 +300,24 @@ export default class RadarChart extends Component<Props> {
                     </G>
 
                     <Line
-                        x1="201"
-                        y1="320"
-                        x2="305"
-                        y2="263"
+                        x1={`${this.fourthAngleX}`}
+                        y1={`${this.fourthAngleY}`}
+                        x2={`${this.fifthAngleX}`}
+                        y2={`${this.fifthAngleY}`}
                         stroke="url(#grad_fourth)"
                         strokeWidth="1"
                     />
 
                     <Line
-                        x1="201"
-                        y1="320"
-                        x2="201"
-                        y2="200"
+                        x1={`${this.fourthAngleX}`}
+                        y1={`${this.fourthAngleY}`}
+                        x2={`${this.middleX}`}
+                        y2={`${this.middleY}`}
                         stroke="url(#grad_fourth_opacity)"
                         strokeWidth="1"
                     />
 
-                    <G x={310} y={140}>
+                    <G x={this.sixthPointX} y={this.sixthPointY}>
                         <Circle
                             cx="2"
                             cy="2"
@@ -279,24 +328,24 @@ export default class RadarChart extends Component<Props> {
                     </G>
 
                     <Line
-                        x1="305"
-                        y1="263"
-                        x2="305"
-                        y2="142"
+                        x1={`${this.fifthAngleX}`}
+                        y1={`${this.fifthAngleY}`}
+                        x2={`${this.sixthAngleX}`}
+                        y2={`${this.sixthAngleY}`}
                         stroke="url(#grad_fifth)"
                         strokeWidth="1"
                     />
 
                     <Line
-                        x2="201"
-                        y2="200"
-                        x1="305"
-                        y1="263"
+                        x2={`${this.middleX}`}
+                        y2={`${this.middleY}`}
+                        x1={`${this.fifthAngleX}`}
+                        y1={`${this.fifthAngleY}`}
                         stroke="url(#grad_fifth_opacity)"
                         strokeWidth="1"
                     />
 
-                    <G x={199} y={325}>
+                    <G x={this.fourthPointX} y={this.fourthPointY}>
                         <Circle
                             cx="2"
                             cy="2"
@@ -307,19 +356,19 @@ export default class RadarChart extends Component<Props> {
                     </G>
 
                     <Line
-                        x1="305"
-                        y1="142"
-                        x2="201"
-                        y2="80"
+                        x1={`${this.sixthAngleX}`}
+                        y1={`${this.sixthAngleY}`}
+                        x2={`${this.firstAngleX}`}
+                        y2={`${this.firstAngleY}`}
                         stroke="url(#grad_sixth)"
                         strokeWidth="1"
                     />
 
                     <Line
-                        x2="201"
-                        y2="200"
-                        x1="305"
-                        y1="142"
+                        x2={`${this.middleX}`}
+                        y2={`${this.middleY}`}
+                        x1={`${this.sixthAngleX}`}
+                        y1={`${this.sixthAngleY}`}
                         stroke="url(#grad_sixth_opacity)"
                         strokeWidth="1"
                     />

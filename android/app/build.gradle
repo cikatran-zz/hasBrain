@@ -181,6 +181,7 @@ ext {
 }
 
 dependencies {
+    compile project(':react-native-svg')
     implementation project(':react-native-linear-gradient')
     implementation project(':appcenter-crashes')
     implementation project(':appcenter-analytics')
