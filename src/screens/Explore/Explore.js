@@ -22,6 +22,7 @@ import {formatReadingTimeInMinutes, getIDOfCurrentDate} from "../../utils/dateUt
 import {extractRootDomain} from "../../utils/stringUtils";
 import LoadingRow from "../../components/LoadingRow";
 import ReaderManager from "../../modules/ReaderManager";
+import * as moment from 'moment';
 
 
 
@@ -51,7 +52,7 @@ export default class Explore extends React.Component {
 
     componentDidMount() {
         this.props.getArticles(1, 20);
-        this.props.getPlaylist()
+        //this.props.getPlaylist();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
         });
@@ -65,22 +66,25 @@ export default class Explore extends React.Component {
     _keyExtractor = (item, index) => index + '';
 
     _openReadingView = (item) => {
-        ReaderManager.sharedInstance._open(item, _.findIndex(this.state.bookmarked, (o)=>(o === item._id)) !== -1);
+        ReaderManager.sharedInstance._open(item, _.findIndex(this.state.bookmarked, (o)=>(o === item._id)) !== -1, ()=> {
+            this._setUpReadingTime();
+        });
     };
 
     _setUpReadingTime = () => {
-        NativeModules.RNUserKit.getProperty(strings.continueReadingKey, (error, result) => {
+        NativeModules.RNUserKit.getProperty(strings.dailyReadingTimeKey, (error, result) => {
             if (!error && result != null) {
                 // Get current date
-                let readingHistory = JSON.parse(result[0]);
-                let dailyReading = _.get(readingHistory, getIDOfCurrentDate(), {});
-                let totalReadingTime = 0;
-                Object.keys(dailyReading).forEach(function(key) {
-                    totalReadingTime += _.get(dailyReading, key+"."+strings.consumedLengthKey, 0);
-                });
-                this.props.navigation.setParams({
-                    title: formatReadingTimeInMinutes(totalReadingTime)
-                });
+                let dailyReadingTime = JSON.parse(result[0]);
+
+                let dateID = getIDOfCurrentDate();
+
+                if (dailyReadingTime[dateID] != null) {
+
+                    this.props.navigation.setParams({
+                        title: moment.utc(dailyReadingTime[dateID]*1000).format('HH:mm:ss')
+                    });
+                }
             } else {
                 console.log(error);
             }

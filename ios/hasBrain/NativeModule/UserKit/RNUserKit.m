@@ -47,4 +47,25 @@ RCT_EXPORT_METHOD(getProperty: (NSString *)key
                                           }];
 }
 
+RCT_EXPORT_METHOD(incrementProperty: (NSDictionary *)props
+                  callback: (RCTResponseSenderBlock)callback) {
+    [[UserKitModule sharedInstance] incrementProperty:props
+                                         successBlock:^(NSString * result) {
+                                             callback(@[[NSNull null], @[result]]);
+                                         } errorBlock:^(NSString * error) {
+                                             callback(@[error, [NSNull null]]);
+                                         }];
+}
+
+RCT_EXPORT_METHOD(appendProperty: (NSDictionary *)props
+                  callback:(RCTResponseSenderBlock)callback) {
+    
+    [[UserKitModule sharedInstance] appendProperty:props
+                                      successBlock:^(NSString * result) {
+                                          callback(@[[NSNull null], @[result]]);
+                                      } errorBlock:^(NSString * error) {
+                                          callback(@[error, [NSNull null]]);
+                                      }];
+}
+
 @end
