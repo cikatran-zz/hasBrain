@@ -56,6 +56,14 @@ class UserKitIdentityModule: NSObject {
         }
     }
     
+    @objc func signInWithGooglePlusAccount(_ googleToken: String, successBlock: @escaping (String?) -> Void, errorBlock: @escaping (String?)->Void) {
+        module.loginWithGooglePlusAccount(googleToken, successBlock: { (authenModel) in
+            successBlock(authenModel?.toString())
+        }) { (error) in
+            errorBlock(error?.toString())
+        }
+    }
+    
     @objc func isLoggedIn() -> String {
       return asJSONString(["is_sign_in": module.accountManager.isLoggedIn()]) ?? ""
     }

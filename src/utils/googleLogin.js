@@ -17,12 +17,11 @@ export function googleLogin () {
                             }
                             else {
                                 let result = JSON.parse(events[0]);
-                                console.log('Google login user info', JSON.parse(events[0]));
+                                console.log('Google login user info', result);
                                 let baseInfo = {
                                     gender: '',
                                     lastName: user.familyName,
                                     firstName: user.givenName,
-                                    age: 0,
                                     email: user.email ? user.email : ""
                                 };
                                 NativeModules.RNUserKit.storeProperty("_base_info", baseInfo, (error, result) => {});
