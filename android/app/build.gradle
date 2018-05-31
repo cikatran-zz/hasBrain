@@ -234,8 +234,6 @@ dependencies {
     }
 
     compile 'org.jsoup:jsoup:1.11.2'
-    compile 'com.github.chimbori:crux:2.0.1'
-    compile 'net.dankito.readability4j:readability4j:1.0'
 
     //
 
