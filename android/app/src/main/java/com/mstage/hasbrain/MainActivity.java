@@ -39,7 +39,7 @@ public class MainActivity extends ReactActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         MainApplication.getCallbackManager().onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CustomWebviewFramework.RESULT_CODE){
+        if(requestCode == 1){
             sendEvent(reactContext, "onDismiss", null);
         }
 

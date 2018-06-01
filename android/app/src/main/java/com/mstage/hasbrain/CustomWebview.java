@@ -34,9 +34,9 @@ public class CustomWebview extends WebView {
                 .emit(eventName, params);
     }
 
-    public CustomWebview(Context context, ReactContext rContext) {
+    public CustomWebview(ReactContext context) {
         super(context, null);
-        reactContext = rContext;
+        reactContext = context;
     }
 
     public CustomWebview(Context context, AttributeSet attrs) {
