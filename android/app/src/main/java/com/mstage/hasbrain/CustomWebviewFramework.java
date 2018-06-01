@@ -33,7 +33,7 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
         intentBuilder = new CustomTabsIntent.Builder();
         intentBuilder.setToolbarColor(Color.parseColor("#321321"));
         intentBuilder.setSecondaryToolbarColor(Color.parseColor("#564431"));
-        intentBuilder.setCloseButtonIcon(getBitmapFromDrawable(getReactApplicationContext(), com.hasbrain.lib.customwebview.R.drawable.ic_arrow_back_24dp));
+        intentBuilder.setCloseButtonIcon(getBitmapFromDrawable(getReactApplicationContext(), com.mstage.hasbrain.lib.customwebview.R.drawable.ic_arrow_back_24dp));
 
     }
 
@@ -92,7 +92,7 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
 //        if (mCustomBackButtonCheckBox.isChecked()) {
 //        }
 
-            intentBuilder.setStartAnimations(getCurrentActivity(), com.hasbrain.lib.customwebview.R.anim.slide_in_right, com.hasbrain.lib.customwebview.R.anim.slide_out_left);
+            intentBuilder.setStartAnimations(getCurrentActivity(), com.mstage.hasbrain.lib.customwebview.R.anim.slide_in_right, com.mstage.hasbrain.lib.customwebview.R.anim.slide_out_left);
             intentBuilder.setExitAnimations(getCurrentActivity(), android.R.anim.slide_in_left,
                     android.R.anim.slide_out_right);
 

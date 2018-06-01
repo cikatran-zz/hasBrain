@@ -181,12 +181,12 @@ ext {
 }
 
 dependencies {
-    compile(project(":react-native-google-signin")) {
+    implementation(project(":react-native-google-signin")) {
         exclude group: "com.google.android.gms"
     }
-    compile 'com.google.android.gms:play-services-auth:11.8.0'
+    implementation 'com.google.android.gms:play-services-auth:11.8.0'
     implementation project(':react-native-fbsdk')
-    compile project(':react-native-svg')
+    implementation project(':react-native-svg')
     implementation project(':react-native-linear-gradient')
     implementation project(':appcenter-crashes')
     implementation project(':appcenter-analytics')
@@ -196,7 +196,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:${supportVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation project(':customwebview')
-    implementation "com.facebook.android:facebook-android-sdk:4.32.0"
+    implementation "com.facebook.android:facebook-android-sdk:4.33.0"
     implementation project(':react-native-linear-gradient')
 
     implementation "com.android.support:support-v4:${supportVersion}"
@@ -275,3 +275,12 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+repositories {
+    google()
+}
+buildscript {
+    repositories {
+        google()
+    }
+}
