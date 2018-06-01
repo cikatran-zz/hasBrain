@@ -11,6 +11,7 @@ import {
     getUserAnalystEpic,
     getUserNameEpic
 } from './userProfileEpic'
+import getLastReadingPositionEpic from "./lastReadingPositionRequestEpic";
 
 const rootEpic = combineEpics(
     getSavedEpic,
@@ -21,7 +22,8 @@ const rootEpic = combineEpics(
     getUserProfileEpic,
     updateUserProfileEpic,
     getUserAnalystEpic,
-    getUserNameEpic
+    getUserNameEpic,
+    getLastReadingPositionEpic
 );
 
 export default rootEpic;

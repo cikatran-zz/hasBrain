@@ -17,6 +17,7 @@ export default class Launch extends React.PureComponent {
             let result = JSON.parse(results[0]);
             if (result.is_sign_in) {
                 NativeModules.RNUserKit.getProperty(strings.mekey+'.'+strings.experienceKey, (error, result)=> {
+                    console.log("LAUNCH", error, result);
                     if (error == null && result != null) {
                         let experience = _.get(result[0], strings.mekey+'.'+strings.experienceKey);
                         if (experience == null) {

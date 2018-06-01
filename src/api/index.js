@@ -150,6 +150,13 @@ export const postArticleCreateIfNotExist = (article) => {
     })
 };
 
+export const postHighlightText = (articleId, text) => {
+    return gqlPost({
+        mutation: config.mutation.highlightText,
+        variables: { articleId: articleId, highlightedText: text}
+    })
+};
+
 _getProfileId = ()=> {
     return new Promise((resolve, reject)=> {
         NativeModules.RNUserKitIdentity.getProfileInfo((error, result)=> {
@@ -233,6 +240,19 @@ export const getUrlInfo = (url) => {
     }).then((responseJson) => {
         return responseJson;
     })
+};
+
+export const getLastReadingPosition = (contentId) => {
+    return new Promise((resolve, reject) => {
+        RNUserKit.getProperty(strings.readingPositionKey+"."+contentId, (error, result) => {
+            if (error == null && result != null) {
+                let lastReadingPosition = _.get(result[0], strings.readingPositionKey+"."+contentId, {x:0, y:0}) ;
+                resolve(lastReadingPosition == null ? {x: 0, y: 0} : lastReadingPosition)
+            } else {
+                reject(error);
+            }
+        });
+    });
 };
 
 

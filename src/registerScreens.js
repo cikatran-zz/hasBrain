@@ -12,6 +12,7 @@ import MeStack from './screenStacks/MeStack'
 import BackNavigationButton from "./components/BackNavigationButton";
 import Launch from "./screens/Launch/Launch";
 import Onboarding from "./screens/Onboarding";
+import Reader from "./screens/Reader";
 
 const TabNav = TabNavigator({
     ExploreTab: {
@@ -103,6 +104,21 @@ export const ScreenStack = StackNavigator({
         navigationOptions: {
             header: null,
         }
+    },
+    Reader: {
+        screen: Reader,
+        navigationOptions: ({navigation}) => ({
+            title: Math.round(navigation.state.params.readingTime) + " Min Read",
+            headerStyle: {
+                backgroundColor: colors.mainWhite
+            },
+            headerTitleStyle: {
+                color: colors.blackHeader,
+                fontSize: 25,
+                fontWeight: "bold"
+            },
+            headerLeft: <BackNavigationButton goBack={()=>navigation.goBack()}/>
+        })
     }
 }, {
     navigationOptions: {

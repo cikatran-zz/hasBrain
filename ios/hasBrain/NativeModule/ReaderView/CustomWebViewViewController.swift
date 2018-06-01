@@ -28,19 +28,20 @@ public class CustomWebViewViewController: UIViewController {
     fileprivate var onDoneReadingCallback: (()->Void)? = nil
     fileprivate var onBookmarkCallback: ((Bool)->Void)? = nil
     fileprivate var onLoadingChangeCallback: ((Bool)->Void)? = nil
+    fileprivate var onHighlightedCallback: ((String)->Void)? = nil
     fileprivate var isRedirect = false
-    fileprivate var lastPosition: NSNumber!
+    fileprivate var lastPosition: NSNumber? = nil
     fileprivate var initBookmarked: Bool = false
     
     let highlightedJs: String = """
     function selectedText() {
         var range = window.getSelection().getRangeAt(0);
-        var result = {text:window.getSelection().toString(), startNode: range.startContainer, startOffset: range.startOffset, endNode: range.endContainer, endOffset: range.endOffset};
+        var result = window.getSelection().toString();
         span = document.createElement('span');
         span.style.backgroundColor = "yellow";
         span.appendChild(range.extractContents());
         range.insertNode(span);
-        return JSON.stringify(result);
+        return result;
     }
     """
     
@@ -49,13 +50,15 @@ public class CustomWebViewViewController: UIViewController {
         self.setupWebViewView()
         self.bookmarkButton.isSelected = initBookmarked
         
-        UIMenuController.shared.menuItems = [UIMenuItem(title: "Highlight", action: #selector(recommend))]
+        UIMenuController.shared.menuItems = [UIMenuItem(title: "Highlight", action: #selector(highlight))]
         UIMenuController.shared.update()
     }
     
-    func recommend() {
+    func highlight() {
         self.webView.evaluateJavaScript("selectedText()") { (result, error) in
-            print(result)
+            if let highlightedText = result as? String {
+                self.onHighlightedCallback?(highlightedText)
+            }
         }
     }
     
@@ -110,7 +113,7 @@ public class CustomWebViewViewController: UIViewController {
 
 public extension CustomWebViewViewController {
     
-    public func load(urlString: String, header: String, onShare: @escaping ()->Void, onDismissed: @escaping ()->Void, onBookmark: @escaping(Bool)-> Void, onUrlChange: @escaping (String, String)-> Void, onScroll: @escaping (NSNumber, NSNumber)-> Void, onDoneReading: @escaping ()->Void, onLoadingChange: @escaping (Bool)->Void) {
+    public func load(urlString: String, header: String, onShare: @escaping ()->Void, onDismissed: @escaping ()->Void, onBookmark: @escaping(Bool)-> Void, onUrlChange: @escaping (String, String)-> Void, onScroll: @escaping (NSNumber, NSNumber)-> Void, onDoneReading: @escaping ()->Void, onLoadingChange: @escaping (Bool)->Void, onHighlighted: @escaping (String)->Void) {
         self.title = header
         if let url = URL(string: urlString) {
             self.url = url
@@ -125,6 +128,7 @@ public extension CustomWebViewViewController {
         self.onDoneReadingCallback = onDoneReading
         self.onBookmarkCallback = onBookmark
         self.onLoadingChangeCallback = onLoadingChange
+        self.onHighlightedCallback = onHighlighted
     }
     
     public func scrollTo(x: NSNumber, y: NSNumber) {
@@ -159,7 +163,7 @@ extension CustomWebViewViewController: WKNavigationDelegate {
         isRedirect = false
         
         if (lastPosition != -1) {
-            webView.scrollView.setContentOffset(CGPoint(x: 0, y: CGFloat(lastPosition.doubleValue) ), animated: true)
+            webView.scrollView.setContentOffset(CGPoint(x: 0, y: CGFloat(lastPosition?.doubleValue ?? 0) ), animated: true)
             lastPosition = -1
         }
         onLoadingChangeCallback?(false)

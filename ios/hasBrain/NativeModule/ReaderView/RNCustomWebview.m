@@ -15,7 +15,7 @@
 RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"onShare", @"onDismiss", @"onBookmark", @"onUrlChange", @"onScroll", @"onScroll", @"onDoneReading", @"onLoading"];
+    return @[@"onShare", @"onDismiss", @"onBookmark", @"onUrlChange", @"onScroll", @"onScroll", @"onDoneReading", @"onLoading", @"onHighlighted"];
 }
 
 RCT_EXPORT_METHOD(open: (NSString *)urlString
@@ -44,7 +44,9 @@ RCT_EXPORT_METHOD(open: (NSString *)urlString
                                                    [self sendEventWithName:@"onDoneReading" body:@{}];
                                                } onLoadingChange:^(BOOL loading) {
                                                    [self sendEventWithName:@"onLoading" body:@{@"loading": [[NSNumber alloc] initWithBool:loading]}];
-                                               } ];
+                                               } onHighlighted:^(NSString * highlightedText) {
+                                                   [self sendEventWithName:@"onHighlighted" body:@{@"text":highlightedText}];
+                                               }];
                 CATransition *transition = [[CATransition alloc] init];
                 transition.duration = 0.35;
                 transition.type = kCATransitionPush;

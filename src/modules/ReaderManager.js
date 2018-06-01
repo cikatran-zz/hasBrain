@@ -1,6 +1,6 @@
 import {NativeModules, NativeEventEmitter, Share, AppState} from "react-native";
 import _ from 'lodash'
-import {getUrlInfo, postArticleCreateIfNotExist, postBookmark, postUnbookmark} from "../api";
+import {getUrlInfo, postArticleCreateIfNotExist, postBookmark, postHighlightText, postUnbookmark} from "../api";
 import {getIDOfCurrentDate} from "../utils/dateUtils";
 import {strings} from "../constants/strings";
 
@@ -26,7 +26,7 @@ export default class ReaderManager {
         customWebViewEmitter.addListener("onShare", (event) => {
             let message = _.get(this._currentItem, 'shortDescription', '');
             let title = _.get(this._currentItem, 'title', '');
-            let url = _.get(this._currentItem, 'url', 'http://www.hasbrain.com/');
+            let url = _.get(this._currentItem, 'contentId', 'http://www.hasbrain.com/');
             let content = {
                 message: message == null ? '' : message,
                 title: title == null ? '' : title,
@@ -41,6 +41,16 @@ export default class ReaderManager {
             this._updateDailyReadingTime();
             clearInterval(this._timer);
             this._onDismiss();
+        });
+
+        customWebViewEmitter.addListener("onHighlighted", (event) => {
+            let highlightedText = event.text;
+            let id = _.get(this._currentItem, '_id', '');
+            postHighlightText(id, highlightedText).then(value => {
+                console.log("SUCCESS highlight");
+            }).catch(err => {
+                console.log("ERROR highlight", err);
+            })
         });
 
         customWebViewEmitter.addListener("onScroll", (event) => {
@@ -71,7 +81,7 @@ export default class ReaderManager {
             let item = _.cloneDeep(this._currentItem);
             this._content_consumed_event();
             this._updateDailyReadingTime();
-            _.update(item, 'url', event.new);
+            _.update(item, 'contentId', event.new);
             this._currentItem = item;
             getUrlInfo(event.new).then((info) => {
                 RNCustomWebview.setHeader(Math.round(info.read) + " Min Read")
@@ -196,7 +206,7 @@ export default class ReaderManager {
         if (!this._isShowing) {
             this._isShowing = true;
             this._currentItem = item;
-            let url = _.get(item, 'url', 'http://www.hasbrain.com/');
+            let url = _.get(item, 'contentId', 'http://www.hasbrain.com/');
             RNCustomWebview.open(url, Math.round(_.get(item, 'readingTime', 0)) + " Min Read");
             this._continueReadingPosition(_.get(item, '_id', ''));
             RNCustomWebview.bookmark(isBookmarked);

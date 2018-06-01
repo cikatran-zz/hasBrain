@@ -10,7 +10,7 @@ query getArticles($page: Int!, $perPage: Int!){
         title
         longDescription
         shortDescription
-        url
+        contentId
         state
         custom
         sourceId
@@ -45,7 +45,7 @@ query getBookmark($page: Int, $perPage: Int){
         _id
         article {
           _id
-          url
+          contentId
           title
           longDescription
           shortDescription
@@ -77,33 +77,28 @@ query getBookmark($page: Int, $perPage: Int){
 `;
 
 
-
 const playlist = gql`
-query {
+query{
   viewer {
-    listOne(filter: {
-      title: "EXPLORE_TOP"
-    }) {
+    listOne(filter: {title: "Graphql Getting Started"}) {
       title
       longDescription
       shortDescription
-      privacy
-      state
-      createdAt
-      updatedAt
-      projectId
-      profileId
       contentData {
-      _id
+        _id
+        contentId
+        content
         title
         longDescription
         shortDescription
+        sourceImage
         state
         custom
         createdAt
         updatedAt
         projectId
         kind
+        readingTime
         originalImages {
           height
           width
@@ -149,6 +144,16 @@ mutation createUser($profileId: MongoID, $name: String) {
       profileId: $profileId,
       name: $name
     }) {
+      recordId
+    }
+  }
+}
+`;
+
+const postHighlightedText = gql`
+mutation highlightedText($articleId: MongoID, $highlightedText: String){
+  user{
+    userhighlightCreate(record: { articleId: $articleId, highlight: $highlightedText}) {
       recordId
     }
   }
@@ -266,6 +271,7 @@ export default {
         unbookmark: postUnbookmark,
         createUser: postCreateUser,
         userInterest: postUserInterest,
-        articleCreateIfNotExist: articleCreateIfNotExist
+        articleCreateIfNotExist: articleCreateIfNotExist,
+        highlightText: postHighlightedText
     }
 };
