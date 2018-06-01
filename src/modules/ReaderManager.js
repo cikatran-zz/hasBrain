@@ -106,7 +106,7 @@ export default class ReaderManager {
 
     _continueReadingPosition = (contentId) => {
         RNUserKit.getProperty(strings.readingPositionKey+"."+contentId, (error, result) => {
-            let lastReadingPosition = _.get(result, "0."+strings.readingPositionKey+"."+contentId, {x:0, y:0}) ;
+            let lastReadingPosition = _.get(result[0], strings.readingPositionKey+"."+contentId, {x:0, y:0}) ;
             if (lastReadingPosition != null) {
                 RNCustomWebview.scrollToPosition(lastReadingPosition.x == null ? 0 : lastReadingPosition.x, lastReadingPosition.y == null ? 0 : lastReadingPosition.y);
             }
