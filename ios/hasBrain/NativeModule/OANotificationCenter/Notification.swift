@@ -56,9 +56,9 @@ class Notification: Equatable {
                 newList.insert(noti, at: 0)
             }
             UIApplication.shared.applicationIconBadgeNumber = (newList.filter{ $0.isRead == false}).count
-            UserKitModule.sharedInstance.storeProperty(key: "notification", value: ["data": newList.map{ $0.toJson()} as Any], successBlock: {success in
+            UserKitModule.sharedInstance.storeProperty(properties: ["notification": newList.map{ $0.toJson()}], successBlock: { (success) in
                 successBlock()
-            }, errorBlock: {error in
+            }, errorBlock: { (error) in
                 errorBlock(error!)
             })
         }) { (error) in
@@ -69,7 +69,7 @@ class Notification: Equatable {
     public static func updateNotifications(notis: [Notification], successBlock: @escaping ()->Void, errorBlock: @escaping (Any)->Void) {
         UserKit.mainInstance().profile.getProperty("notification", successBlock: { (notifications) in
             
-            let list =  asJsonArr(asJsonObj(asJsonObj(notifications)["notification"])["data"])
+            let list =  asJsonArr(asJsonObj(notifications)["notification"])
             var checkedNotis: [Bool] = notis.map{ item in return false }
             var newList = list.map { element  -> Notification in
                 let notification = Notification(jsonObj: asJsonObj(element))
@@ -90,9 +90,9 @@ class Notification: Equatable {
                 }
             }
             UIApplication.shared.applicationIconBadgeNumber = (newList.filter{ $0.isRead == false}).count
-            UserKitModule.sharedInstance.storeProperty(key: "notification", value: ["data": newList.map{ $0.toJson()} as Any], successBlock: {success in
+            UserKitModule.sharedInstance.storeProperty(properties: ["notification": newList.map{ $0.toJson()}], successBlock: { (success) in
                 successBlock()
-            }, errorBlock: {error in
+            }, errorBlock: { (error) in
                 errorBlock(error!)
             })
         }) { (error) in

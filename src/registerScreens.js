@@ -8,7 +8,6 @@ import { strings } from './constants/strings'
 import { defaultHeaderStyle } from './constants/theme'
 import AuthenticationEmail from './screens/Authentication/AuthenticationEmail'
 import Authentication from './screens/Authentication/Authentication'
-import Reader from './screens/Reader'
 import MeStack from './screenStacks/MeStack'
 import BackNavigationButton from "./components/BackNavigationButton";
 import Launch from "./screens/Launch/Launch";
@@ -105,21 +104,6 @@ export const ScreenStack = StackNavigator({
         navigationOptions: {
             header: null,
         }
-    },
-    Reader: {
-        screen: Reader,
-        navigationOptions: ({navigation}) => ({
-            title: Math.round(navigation.state.params.readingTime) + " Min Read",
-            headerStyle: {
-                backgroundColor: colors.mainWhite
-            },
-            headerTitleStyle: {
-                color: colors.blackHeader,
-                fontSize: 25,
-                fontWeight: "bold"
-            },
-            headerLeft: <BackNavigationButton goBack={()=>navigation.goBack()}/>
-        })
     }
 }, {
     navigationOptions: {
