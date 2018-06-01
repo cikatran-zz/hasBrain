@@ -99,6 +99,7 @@ query{
         projectId
         kind
         readingTime
+        tags
         originalImages {
           height
           width

@@ -195,6 +195,7 @@ export default class ReaderManager {
             tags.forEach((x)=>{
                 increment[strings.readingTagsKey+"."+x] = this._totalReadingTimeInSeconds;
             });
+            console.log("INCREMENT", increment);
             RNUserKit.incrementProperty(increment, (err, res)=> {});
         }
         this._totalReadingTimeInSeconds = 0;
