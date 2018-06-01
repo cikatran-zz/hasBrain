@@ -49,7 +49,7 @@ export default class Explore extends React.PureComponent {
             return;
         }
         this.indicatorModal.setState({isShow: true});
-        NativeModules.RNUserKitIdentity.signUpWithEmail(this.email, this.password, {}, (error, results) => {
+        NativeModules.RNUserKitIdentity.signUpWithEmail(this.email, this.password, {_name: this.name}, (error, results) => {
             console.log();
             if (error != null) {
                 this.callbackMessage = JSON.parse(error).message;

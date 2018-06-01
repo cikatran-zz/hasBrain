@@ -55,7 +55,7 @@ export default class Onboarding extends React.Component {
                     });
                     ukExperience = ukExperience.concat({title: persona.title, level: level.title});
                 });
-                NativeModules.RNUserKit.storeProperty(strings.mekey, {[strings.experienceKey]: ukExperience}, (error, result)=>{});
+                NativeModules.RNUserKit.appendProperty({[strings.mekey+ "."+strings.experienceKey]: ukExperience}, (error, result)=>{});
                 this.props.navigation.navigate('Home');
             }).catch((err)=>{
                 console.log("ERR",err);
