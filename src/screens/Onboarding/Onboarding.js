@@ -40,11 +40,25 @@ export default class Onboarding extends React.Component {
             this.currentIndex += 1;
         } else {
             // TODO: - Post to server + store to user kit + navigate to Home
+
             postUserInterest(this.experience, this.intentIds).then((value)=>{
-                NativeModules.RNUserKit.storeProperty(strings.onboardingKey, {[strings.onboardedKey]: true}, (error, result)=>{});
+                const {onboarding} = this.props;
+                let levels = onboarding.data.levelPagination.items;
+                let personas = onboarding.data.personaPagination.items;
+                let ukExperience = [];
+                this.experience.forEach((item)=> {
+                    let level = levels.find(function(element) {
+                        return element._id === item.levelId;
+                    });
+                    let persona = personas.find(function(element) {
+                        return element._id === item.personaId;
+                    });
+                    ukExperience = ukExperience.concat({title: persona.title, level: level.title});
+                });
+                NativeModules.RNUserKit.appendProperty({[strings.mekey+ "."+strings.experienceKey]: ukExperience}, (error, result)=>{});
                 this.props.navigation.navigate('Home');
             }).catch((err)=>{
-                console.log(err);
+                console.log("ERR",err);
                 this.props.navigation.navigate('Home');
             });
         }
@@ -78,6 +92,7 @@ export default class Onboarding extends React.Component {
                 let section = this.experience[sectionIndex];
                 section.levelId = levels[selectedExperience[sectionIndex][0]]._id;
                 this.experience[sectionIndex] = section;
+
             }
         });
         if (_.findIndex(this.experience, x=>x.levelId == null) === -1) {

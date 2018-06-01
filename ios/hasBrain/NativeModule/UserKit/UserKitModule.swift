@@ -22,6 +22,12 @@ class UserKitModule: NSObject {
     @objc public func initialize(token: String) {
         UserKit.initialize(token: token)
         module = UserKit.mainInstance()
+        if UIDevice.current.model.starts(with: "iPhone") {
+            module.deviceType = DeviceType.Phone.rawValue
+        } else {
+            module.deviceType = DeviceType.Tablet.rawValue
+        }
+        
     }
     
     @objc public func setDeviceType(type: String) {
@@ -40,8 +46,8 @@ class UserKitModule: NSObject {
         module.deviceToken = token
     }
     
-    @objc public func storeProperty(key: String, value: [String: Any], successBlock: @escaping (String?) -> Void, errorBlock: @escaping (String?)->Void) {
-        module.profile.set(properties: [key: value], successBlock: { (results) in
+    @objc public func incrementProperty(_ properties: [String: Any], successBlock: @escaping (String?) -> Void, errorBlock: @escaping (String?)->Void) {
+        module.profile.increment(properties: properties, successBlock: { (results) in
             if let resultsDict = results as? [String: Any] {
                 successBlock(asJSONString(resultsDict))
             } else {
@@ -56,14 +62,42 @@ class UserKitModule: NSObject {
         }
     }
     
-    @objc public func getProperty(key: String, successBlock: @escaping (String?) -> Void, errorBlock: @escaping (String?)->Void) {
+    @objc public func appendProperty(_ properties: [String: Any], successBlock: @escaping (String?) -> Void, errorBlock: @escaping (String?)->Void) {
+        module.profile.append(properties: properties, successBlock: { (results) in
+            if let resultsDict = results as? [String: Any] {
+                successBlock(asJSONString(resultsDict))
+            } else {
+                errorBlock(asJSONString(["message": "Unknown error"]))
+            }
+        }) { (error) in
+            if let errorM = error as? ErrorModel {
+                errorBlock(errorM.toString())
+            } else {
+                errorBlock(error as? String)
+            }
+        }
+    }
+    
+    @objc public func storeProperty(properties: [String: Any], successBlock: @escaping ([String: Any]) -> Void, errorBlock: @escaping (String?)->Void) {
+        module.profile.set(properties: properties, successBlock: { (results) in
+            if let resultsDict = results as? [String: Any] {
+                successBlock(resultsDict)
+            } else {
+                errorBlock(asJSONString(["message": "Unknown error"]))
+            }
+        }) { (error) in
+            if let errorM = error as? ErrorModel {
+                errorBlock(errorM.toString())
+            } else {
+                errorBlock(error as? String)
+            }
+        }
+    }
+    
+    @objc public func getProperty(key: String, successBlock: @escaping ([String: Any]?) -> Void, errorBlock: @escaping (String?)->Void) {
         module.profile.getProperty(key, successBlock: { (results) in
             if let resultsDict = results as? [String: Any] {
-                var finalResults = resultsDict
-                if resultsDict[key].debugDescription == "Optional(<null>)" {
-                    finalResults[key] = [String:Any]()
-                }
-                successBlock(asJSONString(finalResults[key] as! [String: Any]))
+                successBlock(resultsDict)
             } else {
                 errorBlock(asJSONString(["message": "Unknown error"]))
             }

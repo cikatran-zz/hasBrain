@@ -25,12 +25,10 @@ RCT_EXPORT_METHOD(track: (NSString *)name properties: (NSDictionary *)properties
     [[UserKitModule sharedInstance] trackWithEvent:name properties:properties];
 }
 
-RCT_EXPORT_METHOD(storeProperty: (NSString *)key
-                  value: (NSDictionary *)value
+RCT_EXPORT_METHOD(storeProperty: (NSDictionary *)properties
                   callback: (RCTResponseSenderBlock)callback) {
-    [[UserKitModule sharedInstance] storePropertyWithKey:key
-                                                   value:value
-                                            successBlock:^(NSString * result) {
+    [[UserKitModule sharedInstance] storePropertyWithProperties: properties
+                                            successBlock:^(NSDictionary * result) {
                                                 callback(@[[NSNull null], @[result]]);
                                             } errorBlock:^(NSString * error) {
                                                 callback(@[error, [NSNull null]]);
@@ -40,11 +38,32 @@ RCT_EXPORT_METHOD(storeProperty: (NSString *)key
 RCT_EXPORT_METHOD(getProperty: (NSString *)key
                   callback: (RCTResponseSenderBlock)callback) {
     [[UserKitModule sharedInstance] getPropertyWithKey:key
-                                          successBlock:^(NSString * result) {
+                                          successBlock:^(NSDictionary * result) {
                                               callback(@[[NSNull null], @[result]]);
                                           } errorBlock:^(NSString * error) {
                                               callback(@[error, [NSNull null]]);
                                           }];
+}
+
+RCT_EXPORT_METHOD(incrementProperty: (NSDictionary *)props
+                  callback: (RCTResponseSenderBlock)callback) {
+    [[UserKitModule sharedInstance] incrementProperty:props
+                                         successBlock:^(NSString * result) {
+                                             callback(@[[NSNull null], @[result]]);
+                                         } errorBlock:^(NSString * error) {
+                                             callback(@[error, [NSNull null]]);
+                                         }];
+}
+
+RCT_EXPORT_METHOD(appendProperty: (NSDictionary *)props
+                  callback:(RCTResponseSenderBlock)callback) {
+    
+    [[UserKitModule sharedInstance] appendProperty:props
+                                      successBlock:^(NSString * result) {
+                                          callback(@[[NSNull null], @[result]]);
+                                      } errorBlock:^(NSString * error) {
+                                          callback(@[error, [NSNull null]]);
+                                      }];
 }
 
 @end

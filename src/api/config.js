@@ -10,7 +10,7 @@ query getArticles($page: Int!, $perPage: Int!){
         title
         longDescription
         shortDescription
-        url
+        contentId
         state
         custom
         sourceId
@@ -29,6 +29,7 @@ query getArticles($page: Int!, $perPage: Int!){
           fileName
         }
         readingTime
+        tags
       }
     }
   }
@@ -44,7 +45,7 @@ query getBookmark($page: Int, $perPage: Int){
         _id
         article {
           _id
-          url
+          contentId
           title
           longDescription
           shortDescription
@@ -67,6 +68,7 @@ query getBookmark($page: Int, $perPage: Int){
             name
             fileName
           }
+          tags
         }
       }
     }
@@ -75,20 +77,39 @@ query getBookmark($page: Int, $perPage: Int){
 `;
 
 
-
 const playlist = gql`
-query {
-  viewer{
-    playlistOne {
+query{
+  viewer {
+    listOne(filter: {title: "Graphql Getting Started"}) {
       title
       longDescription
       shortDescription
-      state
-      createdAt
-      updatedAt
-      projectId
-      mediaData
-    } 
+      contentData {
+        _id
+        contentId
+        content
+        title
+        longDescription
+        shortDescription
+        sourceImage
+        state
+        custom
+        createdAt
+        updatedAt
+        projectId
+        kind
+        readingTime
+        tags
+        originalImages {
+          height
+          width
+          url
+          name
+          fileName
+          _id
+        }
+      }
+    }
   }
 }
 `;
@@ -109,7 +130,7 @@ const postUnbookmark = gql`
 mutation removeBookmark($id: MongoID){
   user{
     userbookmarkRemoveOne(filter: {
-      _id: $id
+      articleId: $id
     }) {
       recordId
     }
@@ -124,6 +145,16 @@ mutation createUser($profileId: MongoID, $name: String) {
       profileId: $profileId,
       name: $name
     }) {
+      recordId
+    }
+  }
+}
+`;
+
+const postHighlightedText = gql`
+mutation highlightedText($articleId: MongoID, $highlightedText: String){
+  user{
+    userhighlightCreate(record: { articleId: $articleId, highlight: $highlightedText}) {
       recordId
     }
   }
@@ -171,6 +202,61 @@ mutation postUserInterest($segments: [UsertypeusertypeSegmentsInput], $intentIds
 }
 `;
 
+const articleCreateIfNotExist = gql`
+mutation checkAndCreateArticle($record: CreateOnearticletypeInput!) {
+  user{
+    articleCreateIfNotExist(record: $record) {
+      recordId
+      isBookmarked
+      record {
+        _id
+        title
+        longDescription
+        shortDescription
+        url
+        state
+        custom
+        sourceId
+        sourceName
+        sourceImage
+        author
+        sourceCreateAt
+        createdAt
+        updatedAt
+        projectId
+        originalImages {
+          height
+          width
+          url
+          name
+          fileName
+        }
+        readingTime
+      }
+    }
+  }
+}
+`;
+
+
+const getUserHighLight = gql`
+    query getUserHighLight($page: Int, $perPage: Int) {
+       viewer{
+            userhighlightPagination(page:$page, perPage:$perPage) {
+                count
+                items {
+                    articleId
+                    highlight
+                    state
+                    article {
+                        url
+                        title
+                    }
+                }
+            }
+        }
+    }`;
+
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
@@ -178,12 +264,15 @@ export default {
         articles: articles,
         playlist: playlist,
         bookmark: getBookmark,
-        onboardingInfo: onboardingInfo
+        onboardingInfo: onboardingInfo,
+        userHighlight: getUserHighLight
     },
     mutation: {
         bookmark: postBookmark,
         unbookmark: postUnbookmark,
         createUser: postCreateUser,
-        userInterest: postUserInterest
+        userInterest: postUserInterest,
+        articleCreateIfNotExist: articleCreateIfNotExist,
+        highlightText: postHighlightedText
     }
 };

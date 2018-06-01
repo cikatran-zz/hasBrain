@@ -73,7 +73,7 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "index.js"
+        entryFile: "index.js"
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -98,7 +98,7 @@ android {
     compileSdkVersion 27
 
     defaultConfig {
-        applicationId "com.hasbrain"
+        applicationId "com.mstage.hasbrain"
         minSdkVersion 19
         targetSdkVersion 27
         multiDexEnabled true
@@ -152,7 +152,7 @@ android {
         variant.outputs.each { output ->
             // For each separate APK per architecture, set a unique version code as described here:
             // http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits
-            def versionCodes = ["armeabi-v7a":1, "x86":2]
+            def versionCodes = ["armeabi-v7a": 1, "x86": 2]
             def abi = output.getFilter(OutputFile.ABI)
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
@@ -181,23 +181,28 @@ ext {
 }
 
 dependencies {
-    compile project(':react-native-linear-gradient')
-    compile project(':appcenter-crashes')
-    compile project(':appcenter-analytics')
-    compile project(':appcenter')
-    compile project(':react-native-code-push')
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation project(':react-native-fbsdk')
+    implementation(project(":react-native-google-signin")) {
+        exclude group: "com.google.android.gms"
+    }
+    implementation project(':react-native-linear-gradient')
+    implementation project(':appcenter-crashes')
+    implementation project(':appcenter-analytics')
+    implementation project(':appcenter')
+    implementation project(':react-native-code-push')
+    implementation project(':customwebview')
+    implementation project(':react-native-svg')
     implementation "com.android.support:appcompat-v7:${supportVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
-    implementation project(':customwebview')
-    implementation "com.facebook.android:facebook-android-sdk:4.32.0"
-    implementation project(':react-native-linear-gradient')
+    implementation "com.facebook.android:facebook-android-sdk:4.33.0"
 
     implementation "com.android.support:support-v4:${supportVersion}"
     implementation "com.android.support:recyclerview-v7:${supportVersion}"
     implementation "com.android.support:support-annotations:${supportVersion}"
 
     /** Google cloud message and Firebase database **/
+    implementation 'com.google.android.gms:play-services-auth:11.8.0'
     implementation 'com.google.android.gms:play-services-gcm:11.8.0'
     implementation 'com.google.firebase:firebase-auth:11.8.0'
     implementation 'com.google.firebase:firebase-database:11.8.0'
@@ -259,6 +264,7 @@ dependencies {
     //        transitive = false
 
     //    }
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 }
 
 // Run this once to be able to run the application with BUCK
@@ -266,4 +272,15 @@ dependencies {
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
+}
+
+apply plugin: 'com.google.gms.google-services'
+
+repositories {
+    google()
+}
+buildscript {
+    repositories {
+        google()
+    }
 }

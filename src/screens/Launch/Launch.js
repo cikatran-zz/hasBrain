@@ -16,14 +16,14 @@ export default class Launch extends React.PureComponent {
         NativeModules.RNUserKitIdentity.checkSignIn((error, results) => {
             let result = JSON.parse(results[0]);
             if (result.is_sign_in) {
-                NativeModules.RNUserKit.getProperty(strings.onboardingKey, (error, result)=> {
+                NativeModules.RNUserKit.getProperty(strings.mekey+'.'+strings.experienceKey, (error, result)=> {
+                    console.log("LAUNCH", error, result);
                     if (error == null && result != null) {
-                        let onboarding = JSON.parse(result[0]);
-                        let isOnboarded = _.get(onboarding, strings.onboardedKey, false);
-                        if (isOnboarded) {
-                            this.props.navigation.navigate('Home');
-                        } else {
+                        let experience = _.get(result[0], strings.mekey+'.'+strings.experienceKey);
+                        if (experience == null) {
                             this.props.navigation.navigate('Onboarding');
+                        } else {
+                            this.props.navigation.navigate("Home");
                         }
                     } else {
                         this.props.navigation.navigate('Onboarding');
