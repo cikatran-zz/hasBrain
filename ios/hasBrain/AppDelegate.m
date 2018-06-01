@@ -15,12 +15,15 @@
 #import <React/RCTRootView.h>
 #import "hasBrain-Swift.h"
 #import <RNGoogleSignin.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     NSURL *jsCodeLocation;
+
+  [AppCenterReactNative register];  // Initialize AppCenter 
     
     [AppCenterReactNativeCrashes registerWithAutomaticProcessing];  // Initialize AppCenter crashes
     
@@ -53,13 +56,25 @@
     [[UserKitModule sharedInstance] initializeWithToken:token];
     [[UserKitIdentityModule sharedInstance] initializeWithToken:token];
     
+    [[FBSDKApplicationDelegate sharedInstance] application:application
+                             didFinishLaunchingWithOptions:launchOptions];
+    
     return YES;
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    [FBSDKAppEvents activateApp];
+}
+
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
     
-    return [RNGoogleSignin application:application openURL:url sourceApplication:sourceApplication annotation:annotation];
+    return [RNGoogleSignin application:application openURL:url sourceApplication:sourceApplication annotation:annotation] || [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                                                                                                                                            openURL:url
+                                                                                                                                                                  sourceApplication:sourceApplication
+                                                                                                                                                                         annotation:annotation];
 }
 
 @end

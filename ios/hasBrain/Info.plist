@@ -42,11 +42,23 @@
 				<string>com.hasBrain.hasBrainApp</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb404720746633348</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>9</string>
+	<string>10</string>
 	<key>CodePushDeploymentKey</key>
 	<string>638bfaf1-b70c-4422-9853-5db95e16fab1</string>
+	<key>FacebookAppID</key>
+	<string>404720746633348</string>
+	<key>FacebookDisplayName</key>
+	<string>hasBrain</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
