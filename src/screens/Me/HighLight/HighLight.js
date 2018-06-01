@@ -21,8 +21,8 @@ export default class HighLight extends PureComponent {
     _renderListItem = ({item}) => {
         return (
             <View style={{flexDirection:'column'}}>
-                <Text style={{fontSize: 18, color: colors.blackHeader, marginTop: 10}}><Text style={{fontSize: 20, color: colors.blackHeader, fontWeight:'bold'}}> &ldquo; </Text>{item.highLight}<Text style={{fontSize: 20, color: colors.blackHeader, fontWeight:'bold'}}> &rdquo; </Text></Text>
-                <Text style={{fontSize: 13, color: colors.blackText, marginVertical: 5}}>{item.title}</Text>
+                <Text style={{fontSize: 18, color: colors.blackHeader, marginTop: 10}}><Text style={{fontSize: 20, color: colors.blackHeader, fontWeight:'bold'}}> &ldquo; </Text>{item.highlight}<Text style={{fontSize: 20, color: colors.blackHeader, fontWeight:'bold'}}> &rdquo; </Text></Text>
+                <Text style={{fontSize: 13, color: colors.blackText, marginVertical: 5}}>{item.article.title}</Text>
             </View>
         )
     }

@@ -7,6 +7,7 @@ import {NavigationActions} from "react-navigation";
 import CircleImage from '../../components/CircleImage'
 import About from './About'
 import HighLight from './HighLight'
+import _ from 'lodash'
 
 export default class Me extends React.Component {
 
@@ -88,7 +89,9 @@ export default class Me extends React.Component {
                         <TouchableWithoutFeedback onPress={this._toggleEdit}>
                             {this._renderEditButton()}
                         </TouchableWithoutFeedback>
-                        <Image style={{marginTop: 15}}source={require('../../assets/ic_settings_gear.png')}/>
+                        <TouchableWithoutFeedback onPress={this._signOut}>
+                            <Image style={{marginTop: 15}}source={require('../../assets/ic_signout.png')}/>
+                        </TouchableWithoutFeedback>
                     </View>
                 </View>
 

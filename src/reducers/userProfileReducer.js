@@ -60,15 +60,18 @@ export default function userProfileReducer(state = initialState, action) {
             let userAnalystData = [];
             if (action.data) {
                 userAnalystData = _.map(action.data, (o, m) => {
-                    return {object: o, time: m};
+                    return {object: m, time: o};
                 })
             }
             userAnalystData = _.orderBy(userAnalystData, ['time'], ['desc']);
             let tempAnalystData = [];
+            let totalTime = _.sumBy(userAnalystData, 'time');
             for (let i = 0; i < 6; i++) {
                 let analystData = userAnalystData[i];
                 if (analystData) {
-                    tempAnalystData = _.concat(tempAnalystData, analystData);
+                    let percentage = (analystData.time / totalTime) * 100;
+                    let newData = {name: analystData.object, percentage: percentage}
+                    tempAnalystData = _.concat(tempAnalystData, newData);
                 } else {
                     tempAnalystData = _.concat(tempAnalystData, {name: "None", percentage: 0});
                 }
