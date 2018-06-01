@@ -88,4 +88,30 @@ public class AndroidUserKitFramework extends ReactContextBaseJavaModule {
             callback.invoke(gson.toJson(error), null);
         } );
     }
+
+    @SuppressLint({"CheckResult", "RxLeakedSubscription"})
+    @ReactMethod
+    public void appendProperty(ReadableMap properties, Callback callback) {
+        UserKit.getInstance().getProfileManager().append().putAll(properties.toHashMap()).commit()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    WritableNativeArray array = new WritableNativeArray();
+                    array.pushString("");
+                    callback.invoke(null, array);
+                }, throwable -> callback.invoke(gson.toJson(throwable), null));
+    }
+
+    @SuppressLint({"CheckResult", "RxLeakedSubscription"})
+    @ReactMethod
+    public void incrementProperty(ReadableMap properties, Callback callback) {
+        UserKit.getInstance().getProfileManager().increment().putAll(properties.toHashMap()).commit()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    WritableNativeArray array = new WritableNativeArray();
+                    array.pushString("");
+                    callback.invoke(null, array);
+                }, throwable -> callback.invoke(gson.toJson(throwable), null));
+    }
 }
