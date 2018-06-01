@@ -172,6 +172,19 @@ export const getUserProfile = () => {
     });
 };
 
+export const getUserName = () => {
+    return new Promise((resolve, reject) => {
+        RNUserKit.getProperty(strings.name, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                let userName = _.get(result[0], strings.name, null);
+                resolve(userName);
+            }
+        });
+    });
+};
+
 //Currently just simple for updating role and summary only. TODO: update user object
 export const updateUserProfile = (role, summary) => {
     return new Promise((resolve, reject) => {

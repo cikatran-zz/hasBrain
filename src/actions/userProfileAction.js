@@ -10,12 +10,34 @@ export function getUserProfileSuccess(data) {
     return {
         type: actionTypes.FETCH_USER_PROFILE_SUCCESS,
         data: data,
+
     }
 }
 
 export function getUserProfileFailure(error) {
     return {
         type: actionTypes.FETCH_USER_PROFILE_FAILURE,
+        errorMessage: error
+    }
+}
+
+export function getUserName() {
+    return {
+        type: actionTypes.FETCHING_USER_NAME,
+    }
+}
+
+export function getUserNameSuccess(data) {
+    return {
+        type: actionTypes.FETCH_USER_NAME_SUCCESS,
+        data: data,
+
+    }
+}
+
+export function getUserNameFailure(error) {
+    return {
+        type: actionTypes.FETCH_USER_NAME_FAILURE,
         errorMessage: error
     }
 }

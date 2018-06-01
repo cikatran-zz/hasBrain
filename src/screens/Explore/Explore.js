@@ -79,6 +79,9 @@ export default class Explore extends React.Component {
                 let dailyReadingTime = _.get(result[0], strings.dailyReadingTimeKey);
 
                 let dateID = getIDOfCurrentDate();
+                if (dailyReadingTime == null) {
+                    return;
+                }
 
                 if (dailyReadingTime[dateID] != null) {
 

@@ -13,7 +13,11 @@ const initialState = {
     updateError: null,
     fetchUserProfileError: null,
     fetchUserAnalystError: null,
-    updateUserProfileError: null
+    updateUserProfileError: null,
+    userName: null,
+    userNameFetching: false,
+    userNameFetched: false,
+    fetchUserNameError: null
 }
 
 export default function userProfileReducer(state = initialState, action) {
@@ -22,6 +26,11 @@ export default function userProfileReducer(state = initialState, action) {
             return {
                 ...state,
                 userProfileFetching: true
+            }
+        case actionTypes.FETCHING_USER_NAME:
+            return {
+                ...state,
+                userNameFetching: true
             }
         case actionTypes.FETCHING_USER_ANALYST:
             return {
@@ -40,12 +49,35 @@ export default function userProfileReducer(state = initialState, action) {
                 userProfileFetched: true,
                 userProfileData: action.data,
             }
+        case actionTypes.FETCH_USER_NAME_SUCCESS:
+            return {
+                ...state,
+                userNameFetching: false,
+                userNameFetched: true,
+                userName: action.data,
+            }
         case actionTypes.FETCH_USER_ANALYST_SUCCESS:
+            let userAnalystData = [];
+            if (action.data) {
+                userAnalystData = _.map(action.data, (o, m) => {
+                    return {object: o, time: m};
+                })
+            }
+            userAnalystData = _.orderBy(userAnalystData, ['time'], ['desc']);
+            let tempAnalystData = [];
+            for (let i = 0; i < 6; i++) {
+                let analystData = userAnalystData[i];
+                if (analystData) {
+                    tempAnalystData = _.concat(tempAnalystData, analystData);
+                } else {
+                    tempAnalystData = _.concat(tempAnalystData, {name: "None", percentage: 0});
+                }
+            }
             return {
                 ...state,
                 userAnalystFetching: false,
                 userAnalystFetched: true,
-                userAnalystData: action.data
+                userAnalystData: tempAnalystData
             }
         case actionTypes.UPDATE_USER_PROFILE_SUCCESS:
             return {
@@ -60,7 +92,13 @@ export default function userProfileReducer(state = initialState, action) {
                 userProfileFetched: true,
                 fetchUserProfileError: action.errorMessage
             }
-
+        case actionTypes.FETCH_USER_NAME_FAILURE:
+            return {
+                ...state,
+                userNameFetching: false,
+                userNameFetched: true,
+                fetchUserNameError: action.errorMessage
+            }
         case actionTypes.FETCH_USER_ANALYST_FAILURE:
             return {
                 ...state,

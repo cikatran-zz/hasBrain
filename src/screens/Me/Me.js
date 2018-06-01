@@ -19,7 +19,8 @@ export default class Me extends React.Component {
     }
 
     componentDidMount() {
-        // this.props.getMe()
+        this.props.getUserProfile();
+        this.props.getUserAnalyst();
     }
 
     _signOut = () => {
@@ -62,7 +63,15 @@ export default class Me extends React.Component {
     }
 
     render() {
-        const  {selectedTab, editMode} = this.state;
+        const {selectedTab, editMode} = this.state;
+        const {user} = this.props;
+        let title = "";
+        if (user.userProfileData) {
+            title = user.userProfileData.role
+        };
+        if (_.isEmpty(title)) {
+            title = "Enter your title here"
+        }
         return (
             <View style={styles.container}>
                 <View style={styles.profileContainer}>
@@ -71,8 +80,8 @@ export default class Me extends React.Component {
                         url="https://ia.media-imdb.com/images/M/MV5BZTRiNTA4MjItNmQzMi00OWJiLWEwOTktNmRlNTAzYzZhN2UyL2ltYWdlL2ltYWdlXkEyXkFqcGdeQXVyMjIyNzU0OA@@._V1_.jpg"/>
 
                     <View style={styles.profileTextContainer}>
-                        <Text numberOfLines={1} style={styles.profileName}>Jang Na Ra</Text>
-                        <TextInput multiline={true} underlineColorAndroid="transparent" numberOfLines={2} style={styles.profileTitle} value={'Enter your title here'} editable={editMode}/>
+                        <Text numberOfLines={1} style={styles.profileName}>{user.userName ? user.userName : ''}</Text>
+                        <TextInput multiline={true} underlineColorAndroid="transparent" numberOfLines={2} style={styles.profileTitle} value={title} editable={editMode}/>
                     </View>
 
                     <View style={styles.profileActionButtonContainer}>

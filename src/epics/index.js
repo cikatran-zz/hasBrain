@@ -8,7 +8,8 @@ import getUserHighLightEpic from './userHighLightRequestEpic'
 import {
     getUserProfileEpic,
     updateUserProfileEpic,
-    getUserAnalystEpic
+    getUserAnalystEpic,
+    getUserNameEpic
 } from './userProfileEpic'
 
 const rootEpic = combineEpics(
@@ -19,7 +20,8 @@ const rootEpic = combineEpics(
     getUserHighLightEpic,
     getUserProfileEpic,
     updateUserProfileEpic,
-    getUserAnalystEpic
+    getUserAnalystEpic,
+    getUserNameEpic
 );
 
 export default rootEpic;

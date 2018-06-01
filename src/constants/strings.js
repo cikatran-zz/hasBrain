@@ -17,5 +17,6 @@ export const strings = {
     },
     articleType: "article",
     mekey: '_me',
-    experienceKey: 'experience'
+    experienceKey: 'experience',
+    name: '_name'
 };

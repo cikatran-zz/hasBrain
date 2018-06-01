@@ -19,14 +19,13 @@ export default class About extends PureComponent<Props> {
     }
 
     componentDidMount() {
-        this.props.getUserProfile();
-        this.props.getUserAnalyst();
+
     }
 
     _renderDescription = () => {
         const {user} = this.props;
         let description = "";
-        if (!user.userProfileData) {
+        if (user.userProfileData) {
             description = user.userProfileData.about
         };
         if (_.isEmpty(description)) {
@@ -38,17 +37,25 @@ export default class About extends PureComponent<Props> {
     }
 
     _renderAnalyst = () => {
+        const {user} = this.props;
+        if (!user.userAnalystData)
+            return (
+                <View style={{alignItems:'center', width: '100%', height: 300, flexDirection:'row', justifyContent: 'center'}}>
+                    <Text style={{color: colors.grayText, fontSize: 15}}>Something went wrongs.Cannot analyse your profile!</Text>
+                </View>
+            );
+
         return (
             <View style={{flexDirection:'column', width:'100%'}}>
                 <View style={{alignItems:'center', width: '100%', flexDirection:'row', marginTop:-20, marginBottom: -20}}>
                     <RadarChart
                         size={300}
-                        firstValue={{name: 'React Native', color: '#F56C2E', percentage: 100}}
-                        secondValue={{name: 'Java', color: '#FAB84A', percentage: 80}}
-                        thirdValue={{name: 'Javascript', color: '#50DE72', percentage: 50}}
-                        fourthValue={{name: 'Python', color: '#41E9F8', percentage: 10}}
-                        fifthValue={{name: 'Golang', color: '#B45D95', percentage: 90}}
-                        sixthValue={{name: 'React', color: '#F43651', percentage: 30}}/>
+                        firstValue={{name: user.userAnalystData[0].name, color: '#F56C2E', percentage: user.userAnalystData[0].percentage}}
+                        secondValue={{name: user.userAnalystData[1].name, color: '#FAB84A', percentage: user.userAnalystData[1].percentage}}
+                        thirdValue={{name: user.userAnalystData[2].name, color: '#50DE72', percentage: user.userAnalystData[2].percentage}}
+                        fourthValue={{name: user.userAnalystData[3].name, color: '#41E9F8', percentage: user.userAnalystData[3].percentage}}
+                        fifthValue={{name: user.userAnalystData[4].name, color: '#B45D95', percentage: user.userAnalystData[4].percentage}}
+                        sixthValue={{name: user.userAnalystData[5].name, color: '#F43651', percentage: user.userAnalystData[5].percentage}}/>
                 </View>
             </View>
         )
@@ -93,7 +100,7 @@ export default class About extends PureComponent<Props> {
     render() {
         const {user} = this.props;
         let experienceArray = [];
-        if (!user.userProfileData) {
+        if (user.userProfileData) {
             experienceArray = user.userProfileData.experience
         };
 
