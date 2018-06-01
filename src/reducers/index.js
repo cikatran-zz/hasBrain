@@ -5,6 +5,7 @@ import savedReducer from './savedReducer'
 import playlistReducer from './playlistReducer'
 import onboardingReducer from "./onboardingReducer";
 import userHighlightReducer from './userHighlightReducer'
+import userProfileReducer from './userProfileReducer'
 
 export default combineReducers({
     nav,
@@ -12,5 +13,6 @@ export default combineReducers({
     savedReducer,
     playlistReducer,
     onboardingReducer,
-    userHighlightReducer
+    userHighlightReducer,
+    userProfileReducer
 });

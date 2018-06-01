@@ -4,6 +4,10 @@ import {HttpLink} from 'apollo-link-http';
 import {onError} from 'apollo-link-error'
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import {NativeModules} from "react-native";
+import {strings} from "../constants/strings";
+import _ from 'lodash';
+
+const {RNCustomWebview, RNUserKit} = NativeModules;
 const getAuthToken = () => {
     return new Promise((resolve, reject)=> {
         NativeModules.RNUserKitIdentity.getProfileInfo((error, result)=> {
@@ -15,22 +19,22 @@ const getAuthToken = () => {
 };
 
 const getApolloClient = () => {
-     return new Promise((resolve, reject)=> {
-         getAuthToken().then((authToken)=> {
-             console.log("Auth", authToken);
-             const httpLinkContentkit = new HttpLink({
-                 uri: config.serverURL,
-                 headers: {
-                     authorization: config.authenKeyContentKit,
-                     usertoken: authToken,
-                 }
-             });
-             resolve(new ApolloClient({
-                 link: errorHandler.concat(httpLinkContentkit),
-                 cache: new InMemoryCache()
-             }))
-         })
-     });
+    return new Promise((resolve, reject)=> {
+        getAuthToken().then((authToken)=> {
+            console.log("Auth", authToken);
+            const httpLinkContentkit = new HttpLink({
+                uri: config.serverURL,
+                headers: {
+                    authorization: config.authenKeyContentKit,
+                    usertoken: authToken,
+                }
+            });
+            resolve(new ApolloClient({
+                link: errorHandler.concat(httpLinkContentkit),
+                cache: new InMemoryCache()
+            }))
+        })
+    });
 
 };
 
@@ -154,6 +158,46 @@ _getProfileId = ()=> {
         })
     });
 };
+
+export const getUserProfile = () => {
+    return new Promise((resolve, reject) => {
+        RNUserKit.getProperty(strings.mekey, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                let userProfile = _.get(result[0], strings.mekey, null);
+                resolve(userProfile);
+            }
+        });
+    });
+};
+
+//Currently just simple for updating role and summary only. TODO: update user object
+export const updateUserProfile = (role, summary) => {
+    return new Promise((resolve, reject) => {
+        RNUserKit.storeProperty([{[`${strings.mekey}.role`]: role}, {[`${strings.mekey}.about`]: summary}], (error) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve("Update Successfully");
+            }
+        });
+    });
+};
+
+
+export const getUserAnalyst = () => {
+    return new Promise((resolve, reject) => {
+       RNUserKit.getProperty(strings.readingTagsKey, (error, result) => {
+           if (error) {
+               reject(error);
+           } else {
+               let userAnalyst = _.get(result[0], strings.readingTagsKey, null);
+               resolve(userAnalyst);
+           }
+        });
+    });
+}
 
 export const getOnboardingInfo = () => {
     return gqlQuery({

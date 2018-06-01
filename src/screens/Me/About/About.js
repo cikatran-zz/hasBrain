@@ -5,6 +5,7 @@ import {
 import { colors } from '../../../constants/colors';
 import RadarChart from '../../../components/RadarChart'
 import PropTypes from 'prop-types';
+import _ from 'lodash'
 
 type Props = {
     editMode: PropTypes.bool
@@ -18,11 +19,21 @@ export default class About extends PureComponent<Props> {
     }
 
     componentDidMount() {
+        this.props.getUserProfile();
+        this.props.getUserAnalyst();
     }
 
     _renderDescription = () => {
+        const {user} = this.props;
+        let description = "";
+        if (!user.userProfileData) {
+            description = user.userProfileData.about
+        };
+        if (_.isEmpty(description)) {
+            description = "Enter your summary here"
+        }
         return (
-            <TextInput multiline={true} underlineColorAndroid="transparent" numberOfLines={3} style={styles.descriptionText} value={'Enter your summary here'} editable={this.props.editMode}/>
+            <TextInput multiline={true} underlineColorAndroid="transparent" numberOfLines={3} style={styles.descriptionText} value={description} editable={this.props.editMode}/>
         )
     }
 
@@ -54,7 +65,7 @@ export default class About extends PureComponent<Props> {
                         {data.title}
                     </Text>
                     <Text style={{fontSize: 10, color: colors.grayTextExpYear, marginVertical: 5, marginLeft: 5}}>
-                        {data.exp}
+                        {data.level}
                     </Text>
                 </View>
             )
@@ -80,6 +91,12 @@ export default class About extends PureComponent<Props> {
     };
 
     render() {
+        const {user} = this.props;
+        let experienceArray = [];
+        if (!user.userProfileData) {
+            experienceArray = user.userProfileData.experience
+        };
+
         return (
             <View style={styles.container}>
                 <SectionList
@@ -101,7 +118,7 @@ export default class About extends PureComponent<Props> {
                             title: "Time Spent"
                         },
                         {
-                            data: [tempExperienceData],
+                            data: [experienceArray],
                             renderItem: this._renderExperience,
                             showHeader: true,
                             title: "Experience"

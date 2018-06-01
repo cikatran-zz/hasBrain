@@ -1,15 +1,18 @@
 import About from './About'
 import { connect } from 'react-redux'
+import {getUserProfile, getUserAnalyst, updateUserProfile} from '../../../actions/userProfileAction'
 
 function mapStateToProps(state) {
     return {
-        // me: state.notificationReducer
+        user: state.userProfileReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        // getMe: () => dispatch(getMe())
+        getUserProfile: () => dispatch(getUserProfile()),
+        getUserAnalyst: () => dispatch(getUserAnalyst()),
+        updateUserProfile: (role, summary) => dispatch(updateUserProfile(role, summary))
     }
 }
 
