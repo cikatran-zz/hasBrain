@@ -26,10 +26,10 @@ export default class Authentication extends React.PureComponent {
     }
 
     _goToNextScreen() {
-        NativeModules.RNUserKit.getProperty(strings.mekey, (error, result)=> {
+        NativeModules.RNUserKit.getProperty(strings.mekey+'.'+strings.experienceKey, (error, result)=> {
             if (error == null && result != null) {
-                let me = JSON.parse(result[0]);
-                if (me == null || _.get(me, strings.experienceKey) == null) {
+                let experience = _.get(result[0], strings.mekey+'.'+strings.experienceKey);
+                if (experience == null) {
                     this._goToOnBoarding();
                 } else {
                     this.props.navigation.navigate("Home");

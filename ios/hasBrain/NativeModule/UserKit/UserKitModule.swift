@@ -78,10 +78,10 @@ class UserKitModule: NSObject {
         }
     }
     
-    @objc public func storeProperty(key: String, value: [String: Any], successBlock: @escaping (String?) -> Void, errorBlock: @escaping (String?)->Void) {
-        module.profile.set(properties: [key: value], successBlock: { (results) in
+    @objc public func storeProperty(properties: [String: Any], successBlock: @escaping ([String: Any]) -> Void, errorBlock: @escaping (String?)->Void) {
+        module.profile.set(properties: properties, successBlock: { (results) in
             if let resultsDict = results as? [String: Any] {
-                successBlock(asJSONString(resultsDict))
+                successBlock(resultsDict)
             } else {
                 errorBlock(asJSONString(["message": "Unknown error"]))
             }
@@ -94,14 +94,10 @@ class UserKitModule: NSObject {
         }
     }
     
-    @objc public func getProperty(key: String, successBlock: @escaping (String?) -> Void, errorBlock: @escaping (String?)->Void) {
+    @objc public func getProperty(key: String, successBlock: @escaping ([String: Any]?) -> Void, errorBlock: @escaping (String?)->Void) {
         module.profile.getProperty(key, successBlock: { (results) in
             if let resultsDict = results as? [String: Any] {
-                var finalResults = resultsDict
-                if resultsDict[key].debugDescription == "Optional(<null>)" {
-                    finalResults[key] = [String:Any]()
-                }
-                successBlock(asJSONString(finalResults[key] as! [String: Any]))
+                successBlock(resultsDict)
             } else {
                 errorBlock(asJSONString(["message": "Unknown error"]))
             }

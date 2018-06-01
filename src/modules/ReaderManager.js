@@ -106,7 +106,7 @@ export default class ReaderManager {
 
     _continueReadingPosition = (contentId) => {
         RNUserKit.getProperty(strings.readingPositionKey+"."+contentId, (error, result) => {
-            let lastReadingPosition = JSON.parse(result[0]);
+            let lastReadingPosition = _.get(result, "0."+strings.readingPositionKey+"."+contentId, {x:0, y:0}) ;
             if (lastReadingPosition != null) {
                 RNCustomWebview.scrollToPosition(lastReadingPosition.x == null ? 0 : lastReadingPosition.x, lastReadingPosition.y == null ? 0 : lastReadingPosition.y);
             }
@@ -116,9 +116,9 @@ export default class ReaderManager {
     _doneReading = (contentId) => {
         RNUserKit.getProperty(strings.readingPositionKey, (error, result) => {
             if (!error && result != null) {
-                let readingHistory = JSON.parse(result[0]);
+                let readingHistory = _.get(result[0], strings.readingPositionKey);
                 delete readingHistory[contentId];
-                NativeModules.RNUserKit.storeProperty(strings.readingPositionKey, readingHistory, (e, r) => {
+                RNUserKit.storeProperty({[strings.readingPositionKey]: readingHistory}, (e, r) => {
                 });
             } else {
                 console.log(error);
@@ -128,7 +128,7 @@ export default class ReaderManager {
 
     _updateReading = (contentId) => {
         console.log("Update reading", contentId, this._scrollOffset);
-        NativeModules.RNUserKit.storeProperty(strings.readingPositionKey+"."+contentId, this._scrollOffset, (e, r) => {
+        RNUserKit.storeProperty({[strings.readingPositionKey+"."+contentId]: this._scrollOffset}, (e, r) => {
         });
     };
 
@@ -138,7 +138,7 @@ export default class ReaderManager {
         this._readingTimeInSeconds = 0;
         RNUserKit.getProperty(strings.dailyReadingTimeKey, (error, result) => {
             if (!error && result != null) {
-                let dailyReadingTime = JSON.parse(result[0]);
+                let dailyReadingTime = _.get(result[0], strings.dailyReadingTimeKey);
 
                 let dateID = getIDOfCurrentDate();
 
@@ -148,7 +148,7 @@ export default class ReaderManager {
                 }
                 dailyReadingTime = {[dateID]: dailyReadingTimeValue};
                 console.log("Update daily reading time", dailyReadingTime);
-                NativeModules.RNUserKit.storeProperty(strings.dailyReadingTimeKey, dailyReadingTime, (e, r) => {
+                RNUserKit.storeProperty({[strings.dailyReadingTimeKey] : dailyReadingTime}, (e, r) => {
                 });
             } else {
                 console.log(error);

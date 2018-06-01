@@ -72,10 +72,11 @@ export default class Explore extends React.Component {
     };
 
     _setUpReadingTime = () => {
+
         NativeModules.RNUserKit.getProperty(strings.dailyReadingTimeKey, (error, result) => {
             if (!error && result != null) {
                 // Get current date
-                let dailyReadingTime = JSON.parse(result[0]);
+                let dailyReadingTime = _.get(result[0], strings.dailyReadingTimeKey);
 
                 let dateID = getIDOfCurrentDate();
 

@@ -48,10 +48,10 @@ export default class Onboarding extends React.Component {
                 let ukExperience = [];
                 this.experience.forEach((item)=> {
                     let level = levels.find(function(element) {
-                        return element._id > item.levelId;
+                        return element._id === item.levelId;
                     });
                     let persona = personas.find(function(element) {
-                        return element._id > item.personaId;
+                        return element._id === item.personaId;
                     });
                     ukExperience = ukExperience.concat({title: persona.title, level: level.title});
                 });
