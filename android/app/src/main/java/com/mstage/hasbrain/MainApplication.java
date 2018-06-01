@@ -36,7 +36,7 @@ public class MainApplication extends Application implements ReactApplication {
 
         @Override
         protected String getJSBundleFile() {
-        return CodePush.getJSBundleFile();
+            return CodePush.getJSBundleFile();
         }
 
         @Override
@@ -48,15 +48,14 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
-            new SvgPackage(),
-            new RNGoogleSigninPackage(),
-            new FBSDKPackage(mCallbackManager),
-            new LinearGradientPackage(),
-            new AppCenterReactNativeCrashesPackage(MainApplication.this, getResources().getString(R.string.appCenterCrashes_whenToSendCrashes)),
-            new AppCenterReactNativeAnalyticsPackage(MainApplication.this, getResources().getString(R.string.appCenterAnalytics_whenToEnableAnalytics)),
-            new AppCenterReactNativePackage(MainApplication.this),
+                    new SvgPackage(),
+                    new RNGoogleSigninPackage(),
+                    new FBSDKPackage(mCallbackManager),
+                    new LinearGradientPackage(),
+                    new AppCenterReactNativeCrashesPackage(MainApplication.this, getResources().getString(R.string.appCenterCrashes_whenToSendCrashes)),
+                    new AppCenterReactNativeAnalyticsPackage(MainApplication.this, getResources().getString(R.string.appCenterAnalytics_whenToEnableAnalytics)),
+                    new AppCenterReactNativePackage(MainApplication.this),
                     new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG),
-            new LinearGradientPackage(),
                     new LinearGradientPackage(),
                     new HasbrainPackage()
             );
@@ -82,7 +81,7 @@ public class MainApplication extends Application implements ReactApplication {
         FacebookSdk.sdkInitialize(this);
         String token = "";
 //        if (BuildConfig.BUILD_TYPE == "release") {
-            token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0X2lkIjoiNWFkODU4MjRiM2NlYzM0MTUzMDRhZWI2IiwiaWF0IjoxNTI0MTI5MTI2fQ.4HywQhdO-7LEEYcwrAsybLqBArgzHbD0sy2yScU2Rjk";
+        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0X2lkIjoiNWFkODU4MjRiM2NlYzM0MTUzMDRhZWI2IiwiaWF0IjoxNTI0MTI5MTI2fQ.4HywQhdO-7LEEYcwrAsybLqBArgzHbD0sy2yScU2Rjk";
 //        } else {
 //            token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0X2lkIjoiNTllMDNhYWEwYmY1Y2MxNTIwODJkY2E4In0.qgCtZ9FA7bPUCRpG4HR8ql0cF1tPssgzaJkMFjkac9U";
 //        }

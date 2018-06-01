@@ -1,26 +1,18 @@
 package com.mstage.hasbrain;
 
 import android.annotation.SuppressLint;
-import android.os.Bundle;
 
-import com.facebook.internal.BundleJSONConverter;
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.google.gson.Gson;
-
-import org.json.JSONObject;
+import com.mstage.hasbrain.helper.MapUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Set;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -77,16 +69,13 @@ public class AndroidUserKitFramework extends ReactContextBaseJavaModule {
     public void getProperty(String key, Callback callback) {
         ArrayList<String> temp = new ArrayList<String>();
         temp.add(key);
-        UserKit.getInstance().getProfileManager().getProperties(temp, (result)->{
+        UserKit.getInstance().getProfileManager().getProperties(temp, (result) -> {
             WritableNativeArray array = new WritableNativeArray();
-
-            BundleJSONConverter bjc = new BundleJSONConverter();
-            Bundle bundle = bjc.convertToBundle(result);
-            array.pushMap(Arguments.fromBundle(bundle));
+            array.pushMap(MapUtil.toWritableMap(MapUtil.toMap(result)));
             callback.invoke(null, array);
-        }, (error)-> {
+        }, (error) -> {
             callback.invoke(gson.toJson(error), null);
-        } );
+        });
     }
 
     @SuppressLint({"CheckResult", "RxLeakedSubscription"})
