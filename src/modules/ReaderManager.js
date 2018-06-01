@@ -117,9 +117,11 @@ export default class ReaderManager {
 
     _continueReadingPosition = (contentId) => {
         RNUserKit.getProperty(strings.readingPositionKey+"."+contentId, (error, result) => {
-            let lastReadingPosition = _.get(result[0], strings.readingPositionKey+"."+contentId, {x:0, y:0}) ;
-            if (lastReadingPosition != null) {
-                RNCustomWebview.scrollToPosition(lastReadingPosition.x == null ? 0 : lastReadingPosition.x, lastReadingPosition.y == null ? 0 : lastReadingPosition.y);
+            if (error == null && result != null) {
+                let lastReadingPosition = _.get(result[0], strings.readingPositionKey + "." + contentId, {x: 0, y: 0});
+                if (lastReadingPosition != null) {
+                    RNCustomWebview.scrollToPosition(lastReadingPosition.x == null ? 0 : lastReadingPosition.x, lastReadingPosition.y == null ? 0 : lastReadingPosition.y);
+                }
             }
         });
     };
@@ -128,6 +130,9 @@ export default class ReaderManager {
         RNUserKit.getProperty(strings.readingPositionKey, (error, result) => {
             if (!error && result != null) {
                 let readingHistory = _.get(result[0], strings.readingPositionKey);
+                if (readingHistory == null) {
+                    return;
+                }
                 delete readingHistory[contentId];
                 RNUserKit.storeProperty({[strings.readingPositionKey]: readingHistory}, (e, r) => {
                 });
@@ -152,6 +157,10 @@ export default class ReaderManager {
                 let dailyReadingTime = _.get(result[0], strings.dailyReadingTimeKey);
 
                 let dateID = getIDOfCurrentDate();
+
+                if (dailyReadingTime == null) {
+                    return;
+                }
 
                 let dailyReadingTimeValue = readingTime;
                 if (dailyReadingTime[dateID] != null) {
