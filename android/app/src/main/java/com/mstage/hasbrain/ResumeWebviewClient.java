@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Picture;
+import android.graphics.Point;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -13,33 +15,31 @@ import android.webkit.WebViewClient;
  * Created by henry on 5/28/18.
  */
 @SuppressLint("LogNotTimber")
-public class ResumeWebviewClient extends WebViewClient implements WebView.PictureListener {
-    private float scrollRatio;
-    private WebView webView;
+public class ResumeWebviewClient extends WebViewClient {
+    private CustomWebview webView;
     private Context context;
     private State state;
     private static final String TAG = "WebViewClient";
+    private Point resume = new Point(0, 0);
 
     private enum State {LOADING, LOADED, FINISHED}
 
-    public ResumeWebviewClient(float scrollRatio, WebView webView, Context context) {
-        this.scrollRatio = scrollRatio;
-        this.webView = webView;
+    public ResumeWebviewClient(CustomWebview webView, Context context) {
         this.context = context;
-        webView.setPictureListener(this);
+        this.webView = webView;
         state = State.LOADING;
+        webView.changeState(state.ordinal());
     }
 
     @Override
     public void onLoadResource(WebView view, String url) {
         if (state == State.LOADING) {
-            Log.i(TAG, "showing loading view...");
+//            Log.i(TAG, "showing loading view...");
         }
     }
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        Log.i(TAG, "overriding URL loading");
         context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
         return true;
     }
@@ -47,34 +47,46 @@ public class ResumeWebviewClient extends WebViewClient implements WebView.Pictur
     @Override
     public void onPageFinished(android.webkit.WebView view, String url) {
         state = State.LOADED;
+        webView.changeState(state.ordinal());
     }
 
-    public void onNewPicture(WebView view, Picture picture) {
-        if (webView != view) {
-            Log.i(TAG, "INCORRECT view - expecting " + webView + ", got " + view);
-            return;
-        }
-        if (state == State.LOADED) {
-            Log.i(TAG, "hiding loading view, and scrolling to ratio " + scrollRatio);
-            webView.scrollTo(0, (int) (scrollRatio * webView.getContentHeight() * webView.getScale()));
+    public void loadContinueReading(Point current) {
+        webView.setPictureListener((view, picture) -> {
+            if (webView != view) {
+                return;
+            }
+            if (state == State.LOADED) {
+                if (resume.x != 0 || resume.y != 0) {
+                    webView.scrollTo(resume.x, resume.y);
+                    state = State.FINISHED;
+                    webView.changeState(state.ordinal());
+                }
+                webView.setPictureListener(null);
+            } else {
+            }
+        });
+
+
+        if (state == State.LOADING) {
+            resume = current;
+        } else if (state == State.LOADED) {
+            resume = current;
+            webView.scrollTo(resume.x, resume.y);
             state = State.FINISHED;
-            webView.setPictureListener(null);
-        } else {
-            Log.d(TAG, "onNewPicture called while state = " + state);
+            webView.changeState(state.ordinal());
         }
     }
 
-    public Float getScrollRatio() {
+    public Point getScrollPosition() {
         if (state != State.FINISHED) {
-            Log.d(TAG, "Not returning any scroll ratio, as webview state is " + state);
             return null;
         }
         webView.computeScroll();
-        int scrollPosition = webView.getScrollY();
-        int height = webView.getContentHeight();
-        float scale = webView.getScale();
-        Float ratio = (float) scrollPosition / (scale * height);
-        Log.d(TAG, "scroll ratio of view " + webView + " is " + ratio);
-        return ratio;
+
+//        int height = webView.getContentHeight();
+//        float scale = webView.getScale();
+//        Float ratio = (float) scrollPositionY / (scale * height);
+//        Log.d(TAG, "scroll ratio of view " + webView + " is " + ratio);
+        return new Point(webView.getScrollX(), webView.getScrollY());
     }
 }

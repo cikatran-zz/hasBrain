@@ -4,9 +4,9 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.graphics.Point;
+import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.customtabs.CustomTabsIntent;
 import android.widget.Toast;
 
 import com.facebook.react.bridge.Arguments;
@@ -16,8 +16,8 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.google.gson.Gson;
-import com.mstage.hasbrain.lib.customwebview.CustomTabActivityHelper;
+
+import java.util.Objects;
 
 import static com.mstage.hasbrain.MainActivity.reactContext;
 import static com.mstage.hasbrain.MainActivity.setReactContext;
@@ -45,6 +45,12 @@ public class CustomWebviewFramework extends ReactContextBaseJavaModule {
         Intent intent = new Intent(getCurrentActivity(), CustomAndroidWebviewActivity.class);
         intent.putExtra("url", url);
         getCurrentActivity().startActivityForResult(intent, RESULT_CODE);
+    }
+
+    @ReactMethod
+    public void scrollToPosition(int x, int y){
+        Point resume = new Point(x, y);
+        //                ((CustomAndroidWebviewActivity) Objects.requireNonNull(getCurrentActivity())).scrollToPosition(resume);
     }
 
     private PendingIntent createPendingIntent(int actionSourceId) {
