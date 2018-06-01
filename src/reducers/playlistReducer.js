@@ -20,7 +20,8 @@ export default function playlistReducer(state = initialState, action) {
                 ...state,
                 isFetching: false,
                 fetched: true,
-                data: action.data
+                data: action.data,
+                title: action.title
             };
         case actionTypes.FETCH_PLAYLIST_FAILURE:
             return {

@@ -77,7 +77,6 @@ query getBookmark($page: Int, $perPage: Int){
 `;
 
 
-
 const playlist = gql`
 query{
   viewer {
@@ -145,6 +144,16 @@ mutation createUser($profileId: MongoID, $name: String) {
       profileId: $profileId,
       name: $name
     }) {
+      recordId
+    }
+  }
+}
+`;
+
+const postHighlightedText = gql`
+mutation highlightedText($articleId: MongoID, $highlightedText: String){
+  user{
+    userhighlightCreate(record: { articleId: $articleId, highlight: $highlightedText}) {
       recordId
     }
   }
@@ -242,6 +251,7 @@ export default {
         unbookmark: postUnbookmark,
         createUser: postCreateUser,
         userInterest: postUserInterest,
-        articleCreateIfNotExist: articleCreateIfNotExist
+        articleCreateIfNotExist: articleCreateIfNotExist,
+        highlightText: postHighlightedText
     }
 };

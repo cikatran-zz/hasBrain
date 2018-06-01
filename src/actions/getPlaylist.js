@@ -6,15 +6,16 @@ export function getPlaylist(page, perPage) {
     }
 }
 
-export function getArticlesSuccess(data) {
+export function getPlaylistSuccess(data) {
     return {
         type: actionTypes.FETCH_PLAYLIST_SUCCESS,
-        data: data.viewer.listOne.contentData
+        data: data.viewer.listOne.contentData,
+        title: data.viewer.listOne.title
     }
 }
 
 
-export function getArticleFailure(error) {
+export function getPlaylistFailure(error) {
     return {
         type: actionTypes.FETCH_PLAYLIST_FAILURE,
         errorMessage: error

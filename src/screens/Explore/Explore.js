@@ -25,7 +25,6 @@ import ReaderManager from "../../modules/ReaderManager";
 import * as moment from 'moment';
 
 
-
 const horizontalMargin = 5;
 
 const sliderWidth = Dimensions.get('window').width;
@@ -34,8 +33,8 @@ const itemWidth = itemViewWidth + horizontalMargin * 2;
 
 export default class Explore extends React.Component {
 
-    static navigationOptions = ({ navigation }) => {
-        const { params } = navigation.state;
+    static navigationOptions = ({navigation}) => {
+        const {params} = navigation.state;
         return {
             title: params ? params.title : '00:00',
         }
@@ -53,6 +52,7 @@ export default class Explore extends React.Component {
     componentDidMount() {
         this.props.getArticles(1, 20);
         this.props.getPlaylist();
+        this.props.getSaved();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
         });
@@ -67,7 +67,7 @@ export default class Explore extends React.Component {
 
     _openReadingView = (item) => {
         if (Platform.OS === "ios") {
-            ReaderManager.sharedInstance._open(item, _.findIndex(this.state.bookmarked, (o)=>(o === item._id)) !== -1, ()=> {
+            ReaderManager.sharedInstance._open(item, _.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1, () => {
                 this._setUpReadingTime();
             });
         } else {
@@ -88,7 +88,7 @@ export default class Explore extends React.Component {
                 if (dailyReadingTime[dateID] != null) {
 
                     this.props.navigation.setParams({
-                        title: moment.utc(dailyReadingTime[dateID]*1000).format('HH:mm:ss')
+                        title: moment.utc(dailyReadingTime[dateID] * 1000).format('HH:mm:ss')
                     });
                 }
             } else {
@@ -107,18 +107,18 @@ export default class Explore extends React.Component {
     };
 
     _onBookmarkItem = (id) => {
-        if (_.findIndex(this.state.bookmarked, (o)=>(o === id)) !== -1) {
-            this.setState({bookmarked: _.filter(this.state.bookmarked, (o)=>(o !== id))});
+        if (_.findIndex(this.state.bookmarked, (o) => (o === id)) !== -1) {
+            this.setState({bookmarked: _.filter(this.state.bookmarked, (o) => (o !== id))});
             postUnbookmark(id).then(value => {
                 //console.log("SUCCESS BOOK");
-            }).catch((err)=> {
+            }).catch((err) => {
                 //console.log("ERROR BOOK", err);
             });
         } else {
             this.setState({bookmarked: this.state.bookmarked.concat(id)});
             postBookmark(id).then(value => {
                 //console.log("SUCCESS BOOK");
-            }).catch((err)=> {
+            }).catch((err) => {
                 //console.log("ERROR BOOK", err);
             });
         }
@@ -130,13 +130,13 @@ export default class Explore extends React.Component {
                      time={item.createdAt}
                      readingTime={item.readingTime}
                      onClicked={() => this._openReadingView(item)}
-                     onShare={()=>this._onShareItem(item)}
-                     onBookmark={()=>this._onBookmarkItem(item._id)}
-                     bookmarked={_.findIndex(this.state.bookmarked, (o)=>(o === item._id)) !== -1}
+                     onShare={() => this._onShareItem(item)}
+                     onBookmark={() => this._onBookmarkItem(item._id)}
+                     bookmarked={_.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1}
                      image={getImageFromArray(item.originalImages, null, null, item.sourceImage)}/>
     );
 
-    _renderVerticalSeparator = ()=>(
+    _renderVerticalSeparator = () => (
         <View style={styles.horizontalItemSeparator}/>
     );
 
@@ -146,7 +146,7 @@ export default class Explore extends React.Component {
             horizontal={false}
             showsVerticalScrollIndicator={false}
             data={item}
-            ItemSeparatorComponent={()=>this._renderVerticalSeparator()}
+            ItemSeparatorComponent={() => this._renderVerticalSeparator()}
             keyExtractor={this._keyExtractor}
             renderItem={this._renderVerticalItem}/>
     );
@@ -162,27 +162,35 @@ export default class Explore extends React.Component {
                             time={item.createdAt}
                             readingTime={item.readingTime}
                             onClicked={() => this._openReadingView(item)}
-                            onShare={()=>this._onShareItem(item)}
-                            onBookmark={()=>this._onBookmarkItem(item._id)}
-                            bookmarked={_.findIndex(this.state.bookmarked, (o)=>(o === item._id)) !== -1}
+                            onShare={() => this._onShareItem(item)}
+                            onBookmark={() => this._onBookmarkItem(item._id)}
+                            bookmarked={_.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1}
                             image={getImageFromArray(item.originalImages, null, null, item.sourceImage)}/>)
     };
 
-    _renderHorizontalSection = ({item}) => (
-        item ? <Carousel
-            data={item}
-            keyExtractor={this._keyExtractor}
-            sliderWidth={sliderWidth}
-            itemWidth={itemWidth}
-            layout={'default'}
-            shouldOptimizeUpdates={false}
-            inactiveSlideOpacity={1}
-            inactiveSlideScale={1}
-            layoutCardOffset={10}
-            superPaddingHorizontal={5}
-            renderItem={this._renderHorizontalItem}
-            containerCustomStyle={styles.horizontalCarousel}/> : null
-    );
+    _renderHorizontalSection = ({item, section}) => {
+        console.log("HORIZONTAL", section.title);
+        if (item == null) {
+            return null;
+        }
+        return (
+            <View>
+                <Text style={styles.sectionTitle}>{section.title.toUpperCase()}</Text>
+                <Carousel
+                    data={item}
+                    keyExtractor={this._keyExtractor}
+                    sliderWidth={sliderWidth}
+                    itemWidth={itemWidth}
+                    layout={'default'}
+                    shouldOptimizeUpdates={false}
+                    inactiveSlideOpacity={1}
+                    inactiveSlideScale={1}
+                    layoutCardOffset={10}
+                    superPaddingHorizontal={5}
+                    renderItem={this._renderHorizontalItem}
+                    containerCustomStyle={styles.horizontalCarousel}/>
+            </View>)
+    };
 
     _fetchMore = () => {
         if (this.props.articles.data != null) {
@@ -199,17 +207,13 @@ export default class Explore extends React.Component {
                 <LoadingRow/>
             )
         } else {
-             return null;
+            return null;
         }
 
     };
 
     render() {
         const {articles, playlist} = this.props
-        // if (articles.error === true || playlist.error === true) {
-        //     return null
-        // }
-
         return (
             <View style={{
                 flex: 1,
@@ -229,6 +233,7 @@ export default class Explore extends React.Component {
                     sections={[
                         {
                             data: [playlist.data ? playlist.data : null],
+                            title: playlist.title == null ? "" : playlist.title,
                             renderItem: this._renderHorizontalSection
                         },
                         {
@@ -257,5 +262,12 @@ const styles = StyleSheet.create({
         flex: 1,
         marginHorizontal: 20,
         height: 1
+    },
+    sectionTitle: {
+        backgroundColor: colors.carouselBackground,
+        textAlign: 'center',
+        color: colors.blackText,
+        fontSize: 20,
+        paddingVertical: 10,
     }
 });

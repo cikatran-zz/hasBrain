@@ -25,7 +25,7 @@ export default class Save extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getSaved()
+        //this.props.getSaved()
     }
 
     _onUnbookmarkItem = (id) => {

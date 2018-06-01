@@ -1,6 +1,6 @@
 import {NativeModules, NativeEventEmitter, Share, AppState} from "react-native";
 import _ from 'lodash'
-import {getUrlInfo, postArticleCreateIfNotExist, postBookmark, postUnbookmark} from "../api";
+import {getUrlInfo, postArticleCreateIfNotExist, postBookmark, postHighlightText, postUnbookmark} from "../api";
 import {getIDOfCurrentDate} from "../utils/dateUtils";
 import {strings} from "../constants/strings";
 
@@ -41,6 +41,16 @@ export default class ReaderManager {
             this._updateDailyReadingTime();
             clearInterval(this._timer);
             this._onDismiss();
+        });
+
+        customWebViewEmitter.addListener("onHighlighted", (event) => {
+            let highlightedText = event.text;
+            let id = _.get(this._currentItem, '_id', '');
+            postHighlightText(id, highlightedText).then(value => {
+                console.log("SUCCESS highlight");
+            }).catch(err => {
+                console.log("ERROR highlight", err);
+            })
         });
 
         customWebViewEmitter.addListener("onScroll", (event) => {

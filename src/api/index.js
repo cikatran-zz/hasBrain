@@ -164,6 +164,13 @@ export const postArticleCreateIfNotExist = (article) => {
     })
 };
 
+export const postHighlightText = (articleId, text) => {
+    return gqlPost({
+        mutation: config.mutation.highlightText,
+        variables: { articleId: articleId, highlightedText: text}
+    })
+};
+
 _getProfileId = ()=> {
     return new Promise((resolve, reject)=> {
         NativeModules.RNUserKitIdentity.getProfileInfo((error, result)=> {
