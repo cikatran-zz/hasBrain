@@ -11,13 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package com.hasbrain.lib.customwebview.helper;
+package com.mstage.hasbrain.lib.customwebview.helper;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.hasbrain.lib.customwebview.CustomTabActivityHelper;
+import com.mstage.hasbrain.lib.customwebview.CustomTabActivityHelper;
 
 /**
  * A Fallback that opens a Webview when Custom Tabs is not available

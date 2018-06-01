@@ -1,16 +1,21 @@
-package com.hasbrain;
+package com.mstage.hasbrain;
 
 import android.app.Application;
 import android.support.multidex.MultiDex;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
 import com.facebook.react.ReactApplication;
 import com.horcrux.svg.SvgPackage;
+import co.apptailor.googlesignin.RNGoogleSigninPackage;
+import co.apptailor.googlesignin.RNGoogleSigninPackage;
+import com.facebook.reactnative.androidsdk.FBSDKPackage;
+import io.sentry.RNSentryPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.microsoft.appcenter.reactnative.crashes.AppCenterReactNativeCrashesPackage;
 import com.microsoft.appcenter.reactnative.analytics.AppCenterReactNativeAnalyticsPackage;
 import com.microsoft.appcenter.reactnative.appcenter.AppCenterReactNativePackage;
 import com.microsoft.codepush.react.CodePush;
-import com.BV.LinearGradient.LinearGradientPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -24,6 +29,11 @@ import userkit.sdk.UserKit;
 import userkit.sdk.identity.UserKitIdentity;
 
 public class MainApplication extends Application implements ReactApplication {
+    private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
+
+    protected static CallbackManager getCallbackManager() {
+        return mCallbackManager;
+    }
 
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
 
@@ -42,6 +52,8 @@ public class MainApplication extends Application implements ReactApplication {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
             new SvgPackage(),
+            new RNGoogleSigninPackage(),
+            new FBSDKPackage(mCallbackManager),
             new LinearGradientPackage(),
             new AppCenterReactNativeCrashesPackage(MainApplication.this, getResources().getString(R.string.appCenterCrashes_whenToSendCrashes)),
             new AppCenterReactNativeAnalyticsPackage(MainApplication.this, getResources().getString(R.string.appCenterAnalytics_whenToEnableAnalytics)),
@@ -69,6 +81,8 @@ public class MainApplication extends Application implements ReactApplication {
         super.onCreate();
         MultiDex.install(this);
         SoLoader.init(this, /* native exopackage */ false);
+        FacebookSdk.setApplicationId(getResources().getString(R.string.facebook_app_id));
+        FacebookSdk.sdkInitialize(this);
         String token = "";
 //        if (BuildConfig.BUILD_TYPE == "release") {
             token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0X2lkIjoiNWFkODU4MjRiM2NlYzM0MTUzMDRhZWI2IiwiaWF0IjoxNTI0MTI5MTI2fQ.4HywQhdO-7LEEYcwrAsybLqBArgzHbD0sy2yScU2Rjk";

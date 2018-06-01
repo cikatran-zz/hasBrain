@@ -15,7 +15,7 @@
 RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"onShare", @"onDismiss", @"onBookmark", @"onUrlChange", @"onScroll", @"onScroll", @"onDoneReading"];
+    return @[@"onShare", @"onDismiss", @"onBookmark", @"onUrlChange", @"onScroll", @"onScroll", @"onDoneReading", @"onLoading"];
 }
 
 RCT_EXPORT_METHOD(open: (NSString *)urlString
@@ -42,7 +42,9 @@ RCT_EXPORT_METHOD(open: (NSString *)urlString
                                                    [self sendEventWithName:@"onScroll" body:@{@"x": x, @"y": y}];
                                                } onDoneReading:^{
                                                    [self sendEventWithName:@"onDoneReading" body:@{}];
-                                               }];
+                                               } onLoadingChange:^(BOOL loading) {
+                                                   [self sendEventWithName:@"onLoading" body:@{@"loading": [[NSNumber alloc] initWithBool:loading]}];
+                                               } ];
                 CATransition *transition = [[CATransition alloc] init];
                 transition.duration = 0.35;
                 transition.type = kCATransitionPush;

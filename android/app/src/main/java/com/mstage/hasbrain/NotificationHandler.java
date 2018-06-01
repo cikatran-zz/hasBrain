@@ -1,4 +1,4 @@
-package com.hasbrain;
+package com.mstage.hasbrain;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;

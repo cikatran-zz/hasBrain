@@ -1,4 +1,4 @@
-package com.hasbrain;
+package com.mstage.hasbrain;
 
 import android.graphics.Color;
 import android.net.Uri;
@@ -9,10 +9,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.google.gson.Gson;
-import com.hasbrain.lib.customwebview.CustomTabActivityHelper;
-import com.hasbrain.lib.customwebview.helper.WebviewFallback;
+import com.mstage.hasbrain.lib.customwebview.CustomTabActivityHelper;
+import com.mstage.hasbrain.lib.customwebview.helper.WebviewFallback;
 
-import static com.hasbrain.lib.customwebview.MainActivity.getBitmapFromDrawable;
+import static com.mstage.hasbrain.lib.customwebview.MainActivity.getBitmapFromDrawable;
 
 /**
  * Created by henry on 5/17/18.

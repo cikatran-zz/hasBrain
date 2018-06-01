@@ -98,7 +98,7 @@ android {
     compileSdkVersion 27
 
     defaultConfig {
-        applicationId "com.hasbrain"
+        applicationId "com.mstage.hasbrain"
         minSdkVersion 19
         targetSdkVersion 27
         multiDexEnabled true
@@ -181,6 +181,11 @@ ext {
 }
 
 dependencies {
+    compile(project(":react-native-google-signin")) {
+        exclude group: "com.google.android.gms"
+    }
+    compile 'com.google.android.gms:play-services-auth:11.8.0'
+    implementation project(':react-native-fbsdk')
     compile project(':react-native-svg')
     implementation project(':react-native-linear-gradient')
     implementation project(':appcenter-crashes')
@@ -268,3 +273,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
+apply plugin: 'com.google.gms.google-services'
