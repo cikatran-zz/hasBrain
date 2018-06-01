@@ -26,6 +26,7 @@ public class HasbrainPackage implements ReactPackage {
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         List<ViewManager> managerList = new ArrayList<>();
+        managerList.add(new ReactWebviewManager());
         return managerList;
     }
 }
