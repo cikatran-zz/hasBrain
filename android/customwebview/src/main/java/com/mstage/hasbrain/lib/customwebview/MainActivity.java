@@ -24,7 +24,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import com.hasbrain.lib.customwebview.helper.ActionBroadcastReceiver;
+//import com.hasbrain.lib.customwebview.helper.ActionBroadcastReceiver;
 import com.mstage.hasbrain.lib.customwebview.helper.WebviewFallback;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -117,40 +117,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intentBuilder.setToolbarColor(color);
         intentBuilder.setSecondaryToolbarColor(secondaryColor);
 
-        intentBuilder.setCloseButtonIcon(getBitmapFromDrawable(this, R.drawable.ic_arrow_back_24dp));
-
-        if (mShowActionButtonCheckbox.isChecked()) {
-            //Generally you do not want to decode bitmaps in the UI thread. Decoding it in the
-            //UI thread to keep the example short.
-            String actionLabel = getString(R.string.label_action);
-            Bitmap icon = BitmapFactory.decodeResource(getResources(),
-                    android.R.drawable.ic_menu_share);
-            PendingIntent pendingIntent =
-                    createPendingIntent(ActionBroadcastReceiver.ACTION_ACTION_BUTTON);
-            intentBuilder.setActionButton(icon, actionLabel, pendingIntent);
-        }
-
-        if (mAddMenusCheckbox.isChecked()) {
-            String menuItemTitle = getString(R.string.menu_item_title);
-            PendingIntent menuItemPendingIntent =
-                    createPendingIntent(ActionBroadcastReceiver.ACTION_MENU_ITEM);
-            intentBuilder.addMenuItem(menuItemTitle, menuItemPendingIntent);
-        }
-
-        if (mAddDefaultShareCheckbox.isChecked()) {
-            intentBuilder.addDefaultShareMenuItem();
-        }
-
-        if (mToolbarItemCheckbox.isChecked()) {
-            //Generally you do not want to decode bitmaps in the UI thread. Decoding it in the
-            //UI thread to keep the example short.
-            String actionLabel = getString(R.string.label_action);
-            Bitmap icon = BitmapFactory.decodeResource(getResources(),
-                    android.R.drawable.ic_menu_share);
-            PendingIntent pendingIntent =
-                    createPendingIntent(ActionBroadcastReceiver.ACTION_TOOLBAR);
-            intentBuilder.addToolbarItem(TOOLBAR_ITEM_ID, icon, actionLabel, pendingIntent);
-        }
+        intentBuilder.setCloseButtonIcon(getBitmapFromDrawable(this, R.drawable.ic_arrow_white_24dp));
+//
+//        if (mShowActionButtonCheckbox.isChecked()) {
+//            //Generally you do not want to decode bitmaps in the UI thread. Decoding it in the
+//            //UI thread to keep the example short.
+//            String actionLabel = getString(R.string.label_action);
+//            Bitmap icon = BitmapFactory.decodeResource(getResources(),
+//                    android.R.drawable.ic_menu_share);
+//            PendingIntent pendingIntent =
+//                    createPendingIntent(ActionBroadcastReceiver.ACTION_ACTION_BUTTON);
+//            intentBuilder.setActionButton(icon, actionLabel, pendingIntent);
+//        }
+//
+//        if (mAddMenusCheckbox.isChecked()) {
+//            String menuItemTitle = getString(R.string.menu_item_title);
+//            PendingIntent menuItemPendingIntent =
+//                    createPendingIntent(ActionBroadcastReceiver.ACTION_MENU_ITEM);
+//            intentBuilder.addMenuItem(menuItemTitle, menuItemPendingIntent);
+//        }
+//
+//        if (mAddDefaultShareCheckbox.isChecked()) {
+//            intentBuilder.addDefaultShareMenuItem();
+//        }
+//
+//        if (mToolbarItemCheckbox.isChecked()) {
+//            //Generally you do not want to decode bitmaps in the UI thread. Decoding it in the
+//            //UI thread to keep the example short.
+//            String actionLabel = getString(R.string.label_action);
+//            Bitmap icon = BitmapFactory.decodeResource(getResources(),
+//                    android.R.drawable.ic_menu_share);
+//            PendingIntent pendingIntent =
+//                    createPendingIntent(ActionBroadcastReceiver.ACTION_TOOLBAR);
+//            intentBuilder.addToolbarItem(TOOLBAR_ITEM_ID, icon, actionLabel, pendingIntent);
+//        }
 
         intentBuilder.setShowTitle(mShowTitleCheckBox.isChecked());
 
@@ -170,9 +170,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private PendingIntent createPendingIntent(int actionSourceId) {
-        Intent actionIntent = new Intent(
-                this.getApplicationContext(), ActionBroadcastReceiver.class);
-        actionIntent.putExtra(ActionBroadcastReceiver.KEY_ACTION_SOURCE, actionSourceId);
+        Intent actionIntent = new Intent();
+//        Intent actionIntent = new Intent(
+//                this.getApplicationContext(), ActionBroadcastReceiver.class);
+//        actionIntent.putExtra(ActionBroadcastReceiver.KEY_ACTION_SOURCE, actionSourceId);
         return PendingIntent.getBroadcast(
                 getApplicationContext(), actionSourceId, actionIntent, 0);
     }

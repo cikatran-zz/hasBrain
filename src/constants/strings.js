@@ -15,5 +15,7 @@ export const strings = {
         contentId: "_content_id",
         mediaType: "_media_type"
     },
-    articleType: "article"
+    articleType: "article",
+    mekey: '_me',
+    experienceKey: 'experience'
 };

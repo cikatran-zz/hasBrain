@@ -18,14 +18,14 @@ public class HasbrainPackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new AndroidUserKitFramework(reactContext));
         modules.add(new AndroidUserKitIdentityFramework(reactContext));
-        modules.add(new CustomWebviewFramework(reactContext));
-
+//        modules.add(new CustomWebviewFramework(reactContext));
         return modules;
     }
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         List<ViewManager> managerList = new ArrayList<>();
+        managerList.add(new ReactWebviewManager());
         return managerList;
     }
 }

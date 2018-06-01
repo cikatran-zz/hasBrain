@@ -12,6 +12,9 @@ target 'hasBrain' do
   pod 'IQKeyboardManagerSwift', '4.0.13'
   pod 'SwiftyJSON', '~> 4.0'
   pod 'GoogleSignIn'
+  pod 'FacebookCore'
+  pod 'FacebookLogin'
+  pod 'FacebookShare'
 
 #pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 

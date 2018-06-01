@@ -26,14 +26,13 @@ export default class Authentication extends React.PureComponent {
     }
 
     _goToNextScreen() {
-        NativeModules.RNUserKit.getProperty(strings.onboardingKey, (error, result)=> {
+        NativeModules.RNUserKit.getProperty(strings.mekey+'.'+strings.experienceKey, (error, result)=> {
             if (error == null && result != null) {
-                let onboarding = JSON.parse(result[0]);
-                let isOnboarded = _.get(onboarding, strings.onboardedKey, false);
-                if (isOnboarded) {
-                    this.props.navigation.navigate('Home');
-                } else {
+                let experience = _.get(result[0], strings.mekey+'.'+strings.experienceKey);
+                if (experience == null) {
                     this._goToOnBoarding();
+                } else {
+                    this.props.navigation.navigate("Home");
                 }
             } else {
                 this._goToOnBoarding();
@@ -51,7 +50,7 @@ export default class Authentication extends React.PureComponent {
             ]
         });
         this.props.navigation.dispatch(resetAction);
-    }
+    };
 
     _loginWithFacebook = () => {
         facebookLogin().then((value) => {
@@ -59,16 +58,18 @@ export default class Authentication extends React.PureComponent {
         }).catch((error) => {
             console.log('Error when login with Facebook', error);
         })
-    }
+    };
 
     _loginWithGooglePlus = () => {
         googleLogin().then((value) => {
+            let isNewAccount = value.new;
+            if (isNewAccount)
             this._goToNextScreen();
         })
-            .catch((err) => {
-                console.log('Error', err);
-            })
-    }
+        .catch((err) => {
+            console.log('Error', err);
+        })
+    };
 
     render() {
         const {navigation} = this.props;
@@ -102,7 +103,7 @@ export default class Authentication extends React.PureComponent {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: colors.mainLightGray,
+        backgroundColor: colors.mainWhite,
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',

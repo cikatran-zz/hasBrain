@@ -17,6 +17,7 @@ buildscript {
 allprojects {
     repositories {
         mavenLocal()
+        maven { url "https://jitpack.io" }
         jcenter()
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm

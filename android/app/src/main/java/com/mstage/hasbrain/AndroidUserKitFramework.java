@@ -1,16 +1,26 @@
 package com.mstage.hasbrain;
 
 import android.annotation.SuppressLint;
+import android.os.Bundle;
 
+import com.facebook.internal.BundleJSONConverter;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.google.gson.Gson;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Set;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -47,15 +57,17 @@ public class AndroidUserKitFramework extends ReactContextBaseJavaModule {
         UserKit.getInstance().track(name, properties.toHashMap());
     }
 
-    @SuppressLint("CheckResult")
+    @SuppressLint({"CheckResult", "RxLeakedSubscription"})
     @ReactMethod
-    public void storeProperty(String key, ReadableMap value, Callback callback) {
-        UserKit.getInstance().getProfileManager().set(key, value.toHashMap())
+    public void storeProperty(ReadableMap properties, Callback callback) {
+        UserKit.getInstance().getProfileManager().set().putAll(properties.toHashMap()).commit()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> {
                     WritableNativeArray array = new WritableNativeArray();
-                    array.pushString(gson.toJson(value.toHashMap()));
+                    WritableNativeMap map = new WritableNativeMap();
+                    map.merge(properties);
+                    array.pushMap(map);
                     callback.invoke(null, array);
                 }, throwable -> callback.invoke(gson.toJson(throwable), null));
     }
@@ -63,19 +75,17 @@ public class AndroidUserKitFramework extends ReactContextBaseJavaModule {
     @SuppressLint("CheckResult")
     @ReactMethod
     public void getProperty(String key, Callback callback) {
-        UserKit.getInstance().getProfileManager().getProperty(key, HashMap.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(value -> {
-                    WritableNativeArray array = new WritableNativeArray();
-                    if (value.isPresent()) {
-                        array.pushString(gson.toJson(value.get()));
-                        callback.invoke(null, array);
-                    } else {
-                        array.pushString("{}");
-                        callback.invoke(null, array);
-                    }
+        ArrayList<String> temp = new ArrayList<String>();
+        temp.add(key);
+        UserKit.getInstance().getProfileManager().getProperties(temp, (result)->{
+            WritableNativeArray array = new WritableNativeArray();
 
-                }, throwable -> callback.invoke(gson.toJson(throwable), null));
+            BundleJSONConverter bjc = new BundleJSONConverter();
+            Bundle bundle = bjc.convertToBundle(result);
+            array.pushMap(Arguments.fromBundle(bundle));
+            callback.invoke(null, array);
+        }, (error)-> {
+            callback.invoke(gson.toJson(error), null);
+        } );
     }
 }
