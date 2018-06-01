@@ -19,7 +19,6 @@ public class ResumeWebviewClient extends WebViewClient {
     private CustomWebview webView;
     private Context context;
     private State state;
-    private static final String TAG = "WebViewClient";
     private Point resume = new Point(0, 0);
 
     private enum State {LOADING, LOADED, FINISHED}
