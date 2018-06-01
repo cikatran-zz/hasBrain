@@ -97,6 +97,7 @@ export default class ReaderManager {
                     let data = _.get(result, 'data.user.articleCreateIfNotExist', {});
                     let isBookmarked = _.get(data, 'isBookmarked', false);
                     this._currentItem = _.get(data, 'record', {});
+                    console.log("NEW URL", this._currentItem);
                     RNCustomWebview.setHeader(Math.round(_.get(this._currentItem, 'readingTime', 0)) + " Min Read")
                     RNCustomWebview.bookmark(isBookmarked ? isBookmarked : false);
                 })

@@ -90,7 +90,7 @@ export default class Me extends React.Component {
                             {this._renderEditButton()}
                         </TouchableWithoutFeedback>
                         <TouchableWithoutFeedback onPress={this._signOut}>
-                            <Image style={{marginTop: 15}}source={require('../../assets/ic_signout.png')}/>
+                            <Image style={{marginTop: 15, tintColor: colors.grayText}}source={require('../../assets/ic_signout.png')}/>
                         </TouchableWithoutFeedback>
                     </View>
                 </View>

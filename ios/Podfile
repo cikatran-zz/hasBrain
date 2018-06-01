@@ -20,8 +20,6 @@ target 'hasBrain' do
 
 #pod 'react-native-wkwebview', :path => '../node_modules/react-native-wkwebview-reborn'
 
-  pod 'RNSVG', :path => '../node_modules/react-native-svg'
-
   target 'hasBrainTests' do
     inherit! :search_paths
     # Pods for testing
