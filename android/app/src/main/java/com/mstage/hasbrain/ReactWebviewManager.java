@@ -21,8 +21,8 @@ public class ReactWebviewManager  extends SimpleViewManager<CustomWebview>{
         return new CustomWebview(reactContext);
     }
 
-    @ReactProp(name = "open")
-    public void open(CustomWebview view, String url){
+    @ReactProp(name = "url")
+    public void setUrl(CustomWebview view, String url){
         view.loadUrl(url);
     }
 

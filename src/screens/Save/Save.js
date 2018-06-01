@@ -48,7 +48,7 @@ export default class Save extends React.Component {
         }
         return (<VerticalRow title={article.title}
                              ref={(ref)=> this.rows[article._id] = ref}
-                             author={extractRootDomain(article.url)}
+                             author={extractRootDomain(article.contentId)}
                              time={article.createdAt}
                              readingTime={article.readingTime}
                              image={getImageFromArray(article.originalImages, null, null, article.sourceImage)}
