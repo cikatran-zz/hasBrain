@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-    Text, View, FlatList, StyleSheet, TouchableOpacity
+    Text, View, FlatList, StyleSheet, TouchableOpacity, Platform
 } from 'react-native'
 import VerticalNotificationRow from '../../components/VerticalNotificationRow'
 import {colors} from "../../constants/colors";
@@ -67,7 +67,11 @@ export default class Save extends React.Component {
     }
 
     _openReadingView = (item) => {
-        ReaderManager.sharedInstance._open(item, true);
+        if (Platform.OS === "ios") {
+            ReaderManager.sharedInstance._open(item, true);
+        } else {
+            this.props.navigation.navigate("Reader", item);
+        }
     };
 
     _fetchMore = () => {
