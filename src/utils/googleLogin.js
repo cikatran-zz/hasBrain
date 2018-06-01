@@ -10,23 +10,12 @@ export function googleLogin () {
             .then(() => {
                 GoogleSignin.signIn()
                     .then((user) => {
-                        console.log('Google user', user);
                         NativeModules.RNUserKitIdentity.signInWithGooglePlusAccount(user.accessToken, (err, events) => {
                             if (err) {
                                 reject({message: err});
                             }
                             else {
-                                let result = JSON.parse(events[0]);
-                                console.log('Google login user info', JSON.parse(events[0]));
-                                let baseInfo = {
-                                    gender: '',
-                                    lastName: user.familyName,
-                                    firstName: user.givenName,
-                                    age: 0,
-                                    email: user.email ? user.email : ""
-                                };
-                                NativeModules.RNUserKit.storeProperty("_base_info", baseInfo, (error, result) => {});
-                                resolve(result);
+                                resolve(JSON.parse(events[0]));
                             }
                         })
                     })

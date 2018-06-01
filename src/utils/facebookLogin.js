@@ -16,25 +16,6 @@ export function facebookLogin() {
                                 reject(error);
                             } else {
                                 let result = JSON.parse(events[0]);
-                                const infoRequest = new GraphRequest(
-                                    '/me',
-                                    {parameters: {fields: {string:'last_name,age_range,gender,first_name,email'}}},
-                                    (error, result)=> {
-                                        if (error) {
-                                            console.log('Error fetching data: ',error);
-                                        } else {
-                                            let baseInfo = {
-                                                gender: (result.gender === "female") ? "Female" : "Male",
-                                                lastName: result.last_name,
-                                                firstName: result.first_name,
-                                                age: _.get(result, 'age_range.min',0).toString(),
-                                                email: result.email ? result.email : ""
-                                            };
-                                            NativeModules.RNUserKit.storeProperty("_base_info", baseInfo, (error, result) => {});
-                                        }
-                                    },
-                                );
-                                new GraphRequestManager().addRequest(infoRequest).start();
                                 resolve(result);
                             }
                         });

@@ -178,29 +178,14 @@ export default class ReaderManager {
             [strings.contentConsumed.mediaType]: strings.articleType
         };
 
-        if (this._totalReadingTimeInSeconds >= _.get(this._currentItem, 'readingTime', 0) * 60) {
-            RNUserKit.getProperty(strings.readingHistoryKey, (error, result)=> {
-                if (!error && result != null) {
-                    let readingHistory = JSON.parse(result[0]).data;
-                    let contentId = _.get(this._currentItem, '_id', '');
-                    if (_.findIndex(readingHistory, (x)=>x===contentId) === -1) {
-                        readingHistory = (readingHistory == null ? [] : readingHistory).concat([contentId]);
-                        RNUserKit.appendProperty({[strings.readingPositionKey +".data"]: readingHistory}, (e, r) => {
-                        });
-                        // Increase tag score
-                        let tags = _.get(this._currentItem, 'tags', []);
-                        if (tags != null) {
-                            let increment = {}
-                            tags.forEach((x)=>{
-                                increment[strings.readingTagsKey+"."+x] = 1;
-                            });
-                            RNUserKit.incrementProperty(increment, (err, res)=> {});
-                        }
-                    }
-                } else {
-                    console.log(error);
-                }
+        // Increase tag score
+        let tags = _.get(this._currentItem, 'tags', []);
+        if (tags != null) {
+            let increment = {};
+            tags.forEach((x)=>{
+                increment[strings.readingTagsKey+"."+x] = this._totalReadingTimeInSeconds;
             });
+            RNUserKit.incrementProperty(increment, (err, res)=> {});
         }
         this._totalReadingTimeInSeconds = 0;
 
