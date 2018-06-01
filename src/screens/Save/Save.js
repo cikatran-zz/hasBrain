@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-    Text, View, FlatList, StyleSheet, TouchableOpacity
+    Text, View, FlatList, StyleSheet, TouchableOpacity, Platform
 } from 'react-native'
 import VerticalNotificationRow from '../../components/VerticalNotificationRow'
 import {colors} from "../../constants/colors";
@@ -48,7 +48,7 @@ export default class Save extends React.Component {
         }
         return (<VerticalRow title={article.title}
                              ref={(ref)=> this.rows[article._id] = ref}
-                             author={extractRootDomain(article.url)}
+                             author={extractRootDomain(article.contentId)}
                              time={article.createdAt}
                              readingTime={article.readingTime}
                              image={getImageFromArray(article.originalImages, null, null, article.sourceImage)}
@@ -67,7 +67,11 @@ export default class Save extends React.Component {
     }
 
     _openReadingView = (item) => {
-        ReaderManager.sharedInstance._open(item, true);
+        if (Platform.OS === "ios") {
+            ReaderManager.sharedInstance._open(item, true);
+        } else {
+            this.props.navigation.navigate("Reader", item);
+        }
     };
 
     _fetchMore = () => {

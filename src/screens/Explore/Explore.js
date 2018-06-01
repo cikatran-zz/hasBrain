@@ -52,7 +52,7 @@ export default class Explore extends React.Component {
 
     componentDidMount() {
         this.props.getArticles(1, 20);
-        //this.props.getPlaylist();
+        this.props.getPlaylist();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
         });
@@ -66,9 +66,14 @@ export default class Explore extends React.Component {
     _keyExtractor = (item, index) => index + '';
 
     _openReadingView = (item) => {
-        ReaderManager.sharedInstance._open(item, _.findIndex(this.state.bookmarked, (o)=>(o === item._id)) !== -1, ()=> {
-            this._setUpReadingTime();
-        });
+        if (Platform.OS === "ios") {
+            ReaderManager.sharedInstance._open(item, _.findIndex(this.state.bookmarked, (o)=>(o === item._id)) !== -1, ()=> {
+                this._setUpReadingTime();
+            });
+        } else {
+            this.props.navigation.navigate("Reader", item);
+        }
+
     };
 
     _setUpReadingTime = () => {
@@ -96,7 +101,7 @@ export default class Explore extends React.Component {
         let content = {
             message: _.get(item, 'shortDescription', ''),
             title: _.get(item, 'title', ''),
-            url: _.get(item, 'url', 'http://www.hasbrain.com/')
+            url: _.get(item, 'contentId', 'http://www.hasbrain.com/')
         };
         Share.share(content, {subject: 'HasBrain - ' + item.title})
     };
@@ -121,7 +126,7 @@ export default class Explore extends React.Component {
 
     _renderVerticalItem = ({item}) => (
         <VerticalRow title={item.title}
-                     author={extractRootDomain(item.url)}
+                     author={extractRootDomain(item.contentId)}
                      time={item.createdAt}
                      readingTime={item.readingTime}
                      onClicked={() => this._openReadingView(item)}
@@ -153,15 +158,14 @@ export default class Explore extends React.Component {
         return (
             <HorizontalCell style={{alignSelf: 'center', width: itemViewWidth}}
                             title={item.title}
-                            author={extractRootDomain(item.url)}
-                            time={item.sourceCreateAt}
-                            url={item.url}
+                            author={extractRootDomain(item.contentId)}
+                            time={item.createdAt}
                             readingTime={item.readingTime}
                             onClicked={() => this._openReadingView(item)}
                             onShare={()=>this._onShareItem(item)}
                             onBookmark={()=>this._onBookmarkItem(item._id)}
                             bookmarked={_.findIndex(this.state.bookmarked, (o)=>(o === item._id)) !== -1}
-                            image={getImageFromArray(item.originalImages, null, null)}/>)
+                            image={getImageFromArray(item.originalImages, null, null, item.sourceImage)}/>)
     };
 
     _renderHorizontalSection = ({item}) => (

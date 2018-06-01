@@ -29,7 +29,7 @@ public class CustomWebViewViewController: UIViewController {
     fileprivate var onBookmarkCallback: ((Bool)->Void)? = nil
     fileprivate var onLoadingChangeCallback: ((Bool)->Void)? = nil
     fileprivate var isRedirect = false
-    fileprivate var lastPosition: NSNumber!
+    fileprivate var lastPosition: NSNumber? = nil
     fileprivate var initBookmarked: Bool = false
     
     let highlightedJs: String = """
@@ -159,7 +159,7 @@ extension CustomWebViewViewController: WKNavigationDelegate {
         isRedirect = false
         
         if (lastPosition != -1) {
-            webView.scrollView.setContentOffset(CGPoint(x: 0, y: CGFloat(lastPosition.doubleValue) ), animated: true)
+            webView.scrollView.setContentOffset(CGPoint(x: 0, y: CGFloat(lastPosition?.doubleValue ?? 0) ), animated: true)
             lastPosition = -1
         }
         onLoadingChangeCallback?(false)
