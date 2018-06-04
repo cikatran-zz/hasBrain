@@ -7,12 +7,6 @@ import com.BV.LinearGradient.LinearGradientPackage;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.react.ReactApplication;
-import com.horcrux.svg.SvgPackage;
-import com.BV.LinearGradient.LinearGradientPackage;
-import co.apptailor.googlesignin.RNGoogleSigninPackage;
-import com.facebook.reactnative.androidsdk.FBSDKPackage;
-import com.microsoft.codepush.react.CodePush;
-
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -55,14 +49,13 @@ public class MainApplication extends Application implements ReactApplication {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
                     new SvgPackage(),
+                    new LinearGradientPackage(),
                     new RNGoogleSigninPackage(),
                     new FBSDKPackage(mCallbackManager),
-                    new LinearGradientPackage(),
+                    new CodePush(null, getApplicationContext(), BuildConfig.DEBUG),
                     new AppCenterReactNativeCrashesPackage(MainApplication.this, getResources().getString(R.string.appCenterCrashes_whenToSendCrashes)),
                     new AppCenterReactNativeAnalyticsPackage(MainApplication.this, getResources().getString(R.string.appCenterAnalytics_whenToEnableAnalytics)),
                     new AppCenterReactNativePackage(MainApplication.this),
-                    new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG),
-                    new LinearGradientPackage(),
                     new HasbrainPackage()
             );
         }
