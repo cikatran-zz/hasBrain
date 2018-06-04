@@ -44,7 +44,7 @@ export default class About extends PureComponent<Props> {
                     <Text style={{color: colors.grayText, fontSize: 15}}>Something went wrongs.Cannot analyse your profile!</Text>
                 </View>
             );
-
+        console.log("ABOUT", user.userAnalystData);
         return (
             <View style={{flexDirection:'column', width:'100%'}}>
                 <View style={{alignItems:'center', width: '100%', flexDirection:'row', marginTop:-20, marginBottom: -20}}>
