@@ -181,14 +181,14 @@ ext {
 }
 
 dependencies {
-    compile project(':react-native-svg')
-    compile project(':react-native-linear-gradient')
-    compile project(':react-native-google-signin')
-    compile project(':react-native-fbsdk')
-    compile project(':react-native-code-push')
-    compile project(':appcenter-crashes')
-    compile project(':appcenter-analytics')
-    compile project(':appcenter')
+    implementation project(':react-native-svg')
+    implementation project(':react-native-linear-gradient')
+    implementation project(':react-native-google-signin')
+    implementation project(':react-native-fbsdk')
+    implementation project(':react-native-code-push')
+    implementation project(':appcenter-crashes')
+    implementation project(':appcenter-analytics')
+    implementation project(':appcenter')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation project(':react-native-fbsdk')
     implementation(project(":react-native-google-signin")) {
@@ -210,10 +210,10 @@ dependencies {
     implementation "com.android.support:support-annotations:${supportVersion}"
 
     /** Google cloud message and Firebase database **/
-    implementation 'com.google.android.gms:play-services-auth:11.8.0'
-    implementation 'com.google.android.gms:play-services-gcm:11.8.0'
-    implementation 'com.google.firebase:firebase-auth:11.8.0'
-    implementation 'com.google.firebase:firebase-database:11.8.0'
+    implementation 'com.google.android.gms:play-services-auth:15.0.1'
+    implementation 'com.google.android.gms:play-services-gcm:15.0.1'
+    implementation 'com.google.firebase:firebase-auth:16.0.1'
+    implementation 'com.google.firebase:firebase-database:16.0.1'
     implementation 'com.mstage.userkit:interaction:0.0.8'
 
     /** Logging **/
