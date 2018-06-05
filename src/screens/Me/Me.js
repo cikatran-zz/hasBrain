@@ -62,11 +62,19 @@ export default class Me extends React.Component {
 
     _toggleEdit = () => {
         const {editMode} = this.state;
+        const {user} = this.props;
         if (editMode) {
-            let title = this._titleTextInput._lastNativeText;
-            let summary = this._about._getSummaryValue();
-            if (title && summary)
-                this.props.updateUserProfile(title, summary);
+            let title = "";
+            let description = "";
+            if (user.userProfileData) {
+                title = user.userProfileData.role;
+                description = user.userProfileData.about;
+            };
+            if (this._titleTextInput._lastNativeText)
+                title = this._titleTextInput._lastNativeText;
+            if (this._about._getSummaryValue())
+                description = this._about._getSummaryValue();
+            this.props.updateUserProfile(title, description);
         }
         this.setState({editMode: !editMode});
     }
