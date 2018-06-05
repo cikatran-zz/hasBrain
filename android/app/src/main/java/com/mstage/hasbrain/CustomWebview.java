@@ -91,6 +91,11 @@ public class CustomWebview extends WebView {
     }
 
     @Override
+    public ActionMode startActionModeForChild(View originalView, ActionMode.Callback callback) {
+        return super.startActionModeForChild(originalView, callback);
+    }
+
+    @Override
     public ActionMode startActionMode(ActionMode.Callback callback) {
         ViewParent parent = getParent();
         if (parent == null) {
