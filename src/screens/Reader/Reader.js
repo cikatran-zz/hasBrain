@@ -38,7 +38,7 @@ export default class Reader extends React.PureComponent {
         return (
             <View style={styles.rootView}>
                 {this._renderProgressBar()}
-                <CustomWebview source={content}
+                <CustomWebview source={contentId}
                                style={styles.webView}
                                onLoadingChanged={(event)=>this._updateProgress(event.nativeEvent)}/>
             </View>
