@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>994897015659-riuo55c2catoa6822c7bi713upqvlqdt.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.994897015659-riuo55c2catoa6822c7bi713upqvlqdt</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDTrPoDoCBHZ0u1qcYJP5buNkt_dKO6Des</string>
+	<key>GCM_SENDER_ID</key>
+	<string>994897015659</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.hasBrain.hasBrainApp</string>
+	<key>PROJECT_ID</key>
+	<string>hasbrain-193107</string>
+	<key>STORAGE_BUCKET</key>
+	<string>hasbrain-193107.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true></true>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false></false>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:994897015659:ios:dbf85b51fca7afa8</string>
+	<key>DATABASE_URL</key>
+	<string>https://hasbrain-193107.firebaseio.com</string>
+</dict>
+</plist>
