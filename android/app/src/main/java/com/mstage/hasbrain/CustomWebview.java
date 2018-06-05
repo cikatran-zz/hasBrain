@@ -208,7 +208,8 @@ public class CustomWebview extends WebView {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             boolean result = mOriginalCallback.onCreateActionMode(mode, menu);
-            menu.add("Highlight")
+
+            menu.add(Menu.NONE, 0, 1, "Highlight")
                     .setEnabled(true)
                     .setVisible(true)
                     .setOnMenuItemClickListener(item -> {
@@ -262,7 +263,7 @@ public class CustomWebview extends WebView {
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             boolean result = mOriginalCallback.onPrepareActionMode(mode, menu);
 
-            menu.add("Highlight")
+            menu.add(Menu.NONE, 0, 1, "Highlight")
                     .setEnabled(true)
                     .setVisible(true)
                     .setOnMenuItemClickListener(item -> {
