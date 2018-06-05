@@ -1,30 +1,25 @@
 package com.mstage.hasbrain;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.v7.view.menu.MenuPresenter;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewParent;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.PopupWindow;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
-import com.google.zxing.common.StringUtils;
 
 import java.util.Map;
 
@@ -91,20 +86,19 @@ public class CustomWebview extends WebView {
     }
 
     @Override
-    public ActionMode startActionModeForChild(View originalView, ActionMode.Callback callback) {
-        return super.startActionModeForChild(originalView, callback);
-    }
-
-    @Override
     public ActionMode startActionMode(ActionMode.Callback callback) {
-        ViewParent parent = getParent();
-        if (parent == null) {
-            return null;
-        }
-
-        mActionActionModeCallback = new CustomActionModeCallback();
-        return parent.startActionModeForChild(this, mActionActionModeCallback);
+        ActionMode.Callback wrapper = new CustomActionModeCallback(callback);
+        return super.startActionMode(wrapper);
     }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    public ActionMode startActionMode(ActionMode.Callback callback, int type) {
+
+        mActionActionModeCallback = new CustomActionModeCallbackAbove23(callback);
+        return super.startActionMode(mActionActionModeCallback, ActionMode.TYPE_FLOATING);
+    }
+
 
     public void sendOnLoadingChanged() {
         WritableMap event = Arguments.createMap();
@@ -201,8 +195,15 @@ public class CustomWebview extends WebView {
 
     class CustomActionModeCallback implements ActionMode.Callback {
 
+        private final ActionMode.Callback mOriginalCallback;
+
+        public CustomActionModeCallback(ActionMode.Callback mOriginalCallback) {
+            this.mOriginalCallback = mOriginalCallback;
+        }
+
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            boolean result = mOriginalCallback.onCreateActionMode(mode, menu);
             menu.add("Highlight")
                     .setEnabled(true)
                     .setVisible(true)
@@ -212,24 +213,86 @@ public class CustomWebview extends WebView {
                                 Log.d("WEBVIEW", value);
                             }
                         });
-                        return true;
+                        return result;
                     });
-            return true;
+            return result;
         }
 
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
+            return mOriginalCallback.onPrepareActionMode(mode, menu);
         }
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            return false;
+            return mOriginalCallback.onActionItemClicked(mode, item);
         }
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
-            clearFocus();
+            mOriginalCallback.onDestroyActionMode(mode);
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    class CustomActionModeCallbackAbove23 extends ActionMode.Callback2 {
+
+        private final ActionMode.Callback mOriginalCallback;
+
+
+        public CustomActionModeCallbackAbove23(ActionMode.Callback mOriginalCallback) {
+            this.mOriginalCallback = mOriginalCallback;
+        }
+
+        @Override
+        public void onGetContentRect(ActionMode mode, View view, Rect outRect) {
+            if(mOriginalCallback instanceof ActionMode.Callback2) {
+                ((ActionMode.Callback2) mOriginalCallback).onGetContentRect(mode, view, outRect);
+            } else {
+                super.onGetContentRect(mode, view, outRect);
+            }
+        }
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            return mOriginalCallback.onCreateActionMode(mode, menu);
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            boolean result = mOriginalCallback.onPrepareActionMode(mode, menu);
+
+            menu.add("Highlight")
+                    .setEnabled(true)
+                    .setVisible(true)
+                    .setOnMenuItemClickListener(item -> {
+                        evaluateJavascript("selectedText()", value -> {
+                            if (value != null) {
+                                Log.d("WEBVIEW", value);
+                            }
+                        });
+                        return result;
+                    });
+            return result;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            return mOriginalCallback.onActionItemClicked(mode, item);
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mOriginalCallback.onDestroyActionMode(mode);
+        }
+    }
+
+    public static MenuItem findByTitle(Menu menu, String regex) {
+        for(int i = 0; i < menu.size(); ++i) {
+            String title = menu.getItem(i).getTitle().toString();
+            if(title.matches(regex))
+                return menu.getItem(i);
+        }
+        return null;
     }
 }
