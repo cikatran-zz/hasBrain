@@ -6,7 +6,6 @@
 //  Copyright © 2018 Facebook. All rights reserved.
 //
 
-#import "RCTViewManager.h"
 #import <React/RCTViewManager.h>
 
 @interface RNCustomWebviewManager : RCTViewManager

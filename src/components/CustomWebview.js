@@ -6,6 +6,11 @@ let customWebview = {
     propTypes: {
         source: PropTypes.string,
         initPosition: PropTypes.object,
+        onHighlight: PropTypes.func,
+        onUrlChanged: PropTypes.func,
+        onLoadingChanged: PropTypes.func,
+        onNavigationChanged: PropTypes.func,
+        onScrollEnd: PropTypes.func,
         ...ViewPropTypes, // include the default view properties
     },
 };

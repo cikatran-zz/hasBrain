@@ -67,11 +67,11 @@ export default class Save extends React.Component {
     }
 
     _openReadingView = (item) => {
-        if (Platform.OS === "ios") {
-            ReaderManager.sharedInstance._open(item, true);
-        } else {
+        // if (Platform.OS === "ios") {
+        //     ReaderManager.sharedInstance._open(item, true);
+        // } else {
             this.props.navigation.navigate("Reader", item);
-        }
+        //}
     };
 
     _fetchMore = () => {

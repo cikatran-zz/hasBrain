@@ -69,7 +69,7 @@ class CustomWebView: WKWebView {
         self.removeObserver(self, forKeyPath: "canGoBack")
         self.removeObserver(self, forKeyPath: "canGoForward")
         self.removeObserver(self, forKeyPath: "estimatedProgress")
-        self.removeObserver(self, forKeyPath: "isLoading")
+        self.removeObserver(self, forKeyPath: "loading")
         
         NotificationCenter.default.removeObserver(self)
     }
@@ -83,7 +83,7 @@ class CustomWebView: WKWebView {
         self.addObserver(self, forKeyPath: "canGoBack", options: .new, context: &webViewContext)
         self.addObserver(self, forKeyPath: "canGoForward", options: .new, context: &webViewContext)
         self.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: &webViewContext)
-        self.addObserver(self, forKeyPath: "isLoading", options: .new, context: &webViewContext)
+        self.addObserver(self, forKeyPath: "loading", options: .new, context: &webViewContext)
         
         NotificationCenter.default.addObserver(self, selector: #selector(reloadWebView), name: NSNotification.Name("com.hasbrain.customwebview.reload"), object: nil)
     }
@@ -147,7 +147,7 @@ extension CustomWebView {
             }
         }
         
-        if keyPath == "isLoading" {
+        if keyPath == "loading" {
             if let newValue = (change[NSKeyValueChangeKey.newKey] as AnyObject).boolValue {
                 onLoadingChanged(["progress": self.estimatedProgress, "isLoading": newValue])
             }

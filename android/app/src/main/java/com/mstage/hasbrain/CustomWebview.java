@@ -52,25 +52,14 @@ public class CustomWebview extends WebView {
             "    }";
 
     public CustomWebview(ReactContext context) {
-        super(context, null);
+        super(context);
         reactContext = context;
+        initSetting();
     }
 
     public CustomWebview(Context context, AttributeSet attrs) {
         super(context, attrs);
         initSetting();
-
-        this.setWebChromeClient(new WebChromeClient(){
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                super.onProgressChanged(view, newProgress);
-                currentProgress = ((double)newProgress)/100;
-                sendOnLoadingChanged();
-            }
-        });
-
-        webViewClient = new ResumeWebviewClient(this, context);
-        setWebViewClient(webViewClient);
     }
 
     public void changeState(int state) {
@@ -140,6 +129,20 @@ public class CustomWebview extends WebView {
     }
 
     public void initSetting() {
+
+        this.setWebChromeClient(new WebChromeClient(){
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                currentProgress = ((double)newProgress)/100;
+                Log.d("CURRENT_PROGRESS", String.format("%f",currentProgress));
+                sendOnLoadingChanged();
+            }
+        });
+        if (webViewClient == null) {
+            webViewClient = new ResumeWebviewClient(this, getContext());
+            setWebViewClient(webViewClient);
+        }
         WebSettings settings = this.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setBuiltInZoomControls(true);
@@ -173,19 +176,20 @@ public class CustomWebview extends WebView {
 
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-        int height = (int) Math.floor(this.getContentHeight() * this.getScale());
-        int webViewHeight = this.getMeasuredHeight();
-        if(this.getScrollY() + webViewHeight >= height){
+        try {
             WritableMap event = Arguments.createMap();
-            event.putDouble("x", webViewClient.getScrollPosition().x);
-            event.putDouble("y", webViewClient.getScrollPosition().y);
-            event.putDouble("scale", this.getScale());
+            event.putDouble("x", this.getScrollX());
+            event.putDouble("y", this.getScrollY());
+            event.putDouble("scale", this.getScaleY());
             ReactContext reactContext = (ReactContext)getContext();
             reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
                     getId(),
                     "scrollEnd",
                     event);
+        }catch (Exception e) {
+            Log.d("WEBVIEW", e.getMessage());
         }
+
         super.onScrollChanged(l, t, oldl, oldt);
 
     }
