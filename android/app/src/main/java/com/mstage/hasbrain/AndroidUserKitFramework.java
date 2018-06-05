@@ -10,9 +10,13 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mstage.hasbrain.helper.MapUtil;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -61,6 +65,19 @@ public class AndroidUserKitFramework extends ReactContextBaseJavaModule {
                     map.merge(properties);
                     array.pushMap(map);
                     callback.invoke(null, array);
+                }, throwable -> callback.invoke(gson.toJson(throwable), null));
+    }
+
+    @ReactMethod
+    public void storeProperties(String properties, Callback callback) {
+        Type type = new TypeToken<Map<String, Object>>(){}.getType();
+        Gson gson = new Gson();
+        Map<String, Object> propertiesMap = new HashMap(gson.fromJson(properties, type));
+        UserKit.getInstance().getProfileManager().set().putAll(propertiesMap).commit()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    callback.invoke(null, properties);
                 }, throwable -> callback.invoke(gson.toJson(throwable), null));
     }
 

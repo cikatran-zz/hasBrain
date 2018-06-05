@@ -19,12 +19,21 @@ export default class About extends PureComponent<Props> {
     }
 
     componentDidMount() {
+        this.props.onRef(this)
+    }
 
+    componentWillUnmount() {
+        this.props.onRef(undefined)
+    }
+
+
+    _getSummaryValue() {
+        return this._summaryTextInput._lastNativeText;
     }
 
     _renderDescription = () => {
         const {user} = this.props;
-        let description = "";
+        let description = null;
         if (user.userProfileData) {
             description = user.userProfileData.about
         };
@@ -32,7 +41,7 @@ export default class About extends PureComponent<Props> {
             description = "Enter your summary here"
         }
         return (
-            <TextInput multiline={true} underlineColorAndroid="transparent" numberOfLines={3} style={styles.descriptionText} value={description} editable={this.props.editMode}/>
+            <TextInput ref={component => this._summaryTextInput = component} multiline={true} underlineColorAndroid="transparent" numberOfLines={3} style={styles.descriptionText} defaultValue={description} editable={this.props.editMode}/>
         )
     }
 

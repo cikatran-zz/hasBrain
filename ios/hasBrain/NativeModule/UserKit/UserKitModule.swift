@@ -94,6 +94,16 @@ class UserKitModule: NSObject {
         }
     }
     
+    @objc public func storeProperties(properties: String, successBlock: @escaping ([String: Any]) -> Void, errorBlock: @escaping (String?)->Void) {
+        self.storeProperty(properties: asJsonObj(properties), successBlock: { (results) in
+            successBlock(results)
+        }) { (error) in
+             errorBlock(error)
+        }
+    }
+    
+    
+    
     @objc public func getProperty(key: String, successBlock: @escaping ([String: Any]?) -> Void, errorBlock: @escaping (String?)->Void) {
         module.profile.getProperty(key, successBlock: { (results) in
             if let resultsDict = results as? [String: Any] {
