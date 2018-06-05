@@ -11,7 +11,6 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -36,7 +35,7 @@ public class CustomWebview extends WebView {
     boolean isLoading = false;
     double currentProgress = 0.0;
 
-    String highlightJS = "function selectedText() {\n" +
+    String highlightJS = "javascript: (function selectedText() {\n" +
             "        var range = window.getSelection().getRangeAt(0);\n" +
             "        var result = window.getSelection().toString();\n" +
             "        span = document.createElement('span');\n" +
@@ -44,7 +43,7 @@ public class CustomWebview extends WebView {
             "        span.appendChild(range.extractContents());\n" +
             "        range.insertNode(span);\n" +
             "        return result;\n" +
-            "    }";
+            "    })()";
 
     public CustomWebview(ReactContext context) {
         super(context);
@@ -64,14 +63,16 @@ public class CustomWebview extends WebView {
             isLoading = false;
         }
         sendOnLoadingChanged();
-        if (state == 2) {
-            this.evaluateJavascript(highlightJS, new ValueCallback<String>() {
-                @Override
-                public void onReceiveValue(String value) {
+//        if (state == 1) {
+//            Log.d("stateChange", "evaluate javascript");
+//            this.evaluateJavascript(highlightJS, null);
+            //this.evaluateJavascript(highlightJS, new ValueCallback<String>() {
+            //    @Override
+            //    public void onReceiveValue(String value) {
 
-                }
-            });
-        }
+            //    }
+            //});
+//        }
     }
 
     @Override
@@ -91,9 +92,9 @@ public class CustomWebview extends WebView {
 
     public void sendOnLoadingChanged() {
         WritableMap event = Arguments.createMap();
-        event.putDouble("progress",currentProgress);
+        event.putDouble("progress", currentProgress);
         event.putBoolean("isLoading", isLoading);
-        ReactContext reactContext = (ReactContext)getContext();
+        ReactContext reactContext = (ReactContext) getContext();
         reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
                 getId(),
                 "loadingChanged",
@@ -102,9 +103,9 @@ public class CustomWebview extends WebView {
 
     public void sendOnNavigationChanged() {
         WritableMap event = Arguments.createMap();
-        event.putBoolean("canGoBack",this.canGoBack());
+        event.putBoolean("canGoBack", this.canGoBack());
         event.putBoolean("canGoForward", this.canGoForward());
-        ReactContext reactContext = (ReactContext)getContext();
+        ReactContext reactContext = (ReactContext) getContext();
         reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
                 getId(),
                 "navigationChanged",
@@ -112,10 +113,9 @@ public class CustomWebview extends WebView {
     }
 
     public void sendOnUrlChanged() {
-
         WritableMap event = Arguments.createMap();
-        event.putString("url",this.getUrl());
-        ReactContext reactContext = (ReactContext)getContext();
+        event.putString("url", this.getUrl());
+        ReactContext reactContext = (ReactContext) getContext();
         reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
                 getId(),
                 "urlChanged",
@@ -124,12 +124,12 @@ public class CustomWebview extends WebView {
 
     public void initSetting() {
 
-        this.setWebChromeClient(new WebChromeClient(){
+        this.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
-                currentProgress = ((double)newProgress)/100;
-                Log.d("CURRENT_PROGRESS", String.format("%f",currentProgress));
+                currentProgress = ((double) newProgress) / 100;
+                Log.d("CURRENT_PROGRESS", String.format("%f", currentProgress));
                 sendOnLoadingChanged();
             }
         });
@@ -165,7 +165,7 @@ public class CustomWebview extends WebView {
         if (webViewClient == null) {
             webViewClient = new ResumeWebviewClient(this, getContext());
         }
-        webViewClient.loadContinueReading(resume, (float)current.get("scale"));
+        webViewClient.loadContinueReading(resume, (float) current.get("scale"));
     }
 
     @Override
@@ -175,12 +175,12 @@ public class CustomWebview extends WebView {
             event.putDouble("x", this.getScrollX());
             event.putDouble("y", this.getScrollY());
             event.putDouble("scale", this.getScaleY());
-            ReactContext reactContext = (ReactContext)getContext();
+            ReactContext reactContext = (ReactContext) getContext();
             reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
                     getId(),
                     "scrollEnd",
                     event);
-        }catch (Exception e) {
+        } catch (Exception e) {
             Log.d("WEBVIEW", e.getMessage());
         }
 
@@ -212,11 +212,7 @@ public class CustomWebview extends WebView {
                     .setEnabled(true)
                     .setVisible(true)
                     .setOnMenuItemClickListener(item -> {
-                        evaluateJavascript("selectedText()", value -> {
-                            if (value != null) {
-                                Log.d("WEBVIEW", value);
-                            }
-                        });
+                        executeHighlight();
                         return result;
                     });
             return result;
@@ -250,7 +246,7 @@ public class CustomWebview extends WebView {
 
         @Override
         public void onGetContentRect(ActionMode mode, View view, Rect outRect) {
-            if(mOriginalCallback instanceof ActionMode.Callback2) {
+            if (mOriginalCallback instanceof ActionMode.Callback2) {
                 ((ActionMode.Callback2) mOriginalCallback).onGetContentRect(mode, view, outRect);
             } else {
                 super.onGetContentRect(mode, view, outRect);
@@ -270,11 +266,7 @@ public class CustomWebview extends WebView {
                     .setEnabled(true)
                     .setVisible(true)
                     .setOnMenuItemClickListener(item -> {
-                        evaluateJavascript("selectedText()", value -> {
-                            if (value != null) {
-                                Log.d("WEBVIEW", value);
-                            }
-                        });
+                        executeHighlight();
                         return result;
                     });
             return result;
@@ -291,10 +283,18 @@ public class CustomWebview extends WebView {
         }
     }
 
+    public void executeHighlight(){
+        evaluateJavascript(highlightJS, value -> {
+            if (value != null) {
+                Log.d("WEBVIEW", value);
+            }
+        });
+    }
+
     public static MenuItem findByTitle(Menu menu, String regex) {
-        for(int i = 0; i < menu.size(); ++i) {
+        for (int i = 0; i < menu.size(); ++i) {
             String title = menu.getItem(i).getTitle().toString();
-            if(title.matches(regex))
+            if (title.matches(regex))
                 return menu.getItem(i);
         }
         return null;

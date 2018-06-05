@@ -3,11 +3,8 @@ package com.mstage.hasbrain;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Picture;
 import android.graphics.Point;
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -20,6 +17,7 @@ public class ResumeWebviewClient extends WebViewClient {
     private Context context;
     private State state;
     private Point resume = new Point(0, 0);
+    private float scaleResume = 1f;
 
     private enum State {LOADING, LOADED, FINISHED}
 
@@ -28,6 +26,24 @@ public class ResumeWebviewClient extends WebViewClient {
         this.webView = webView;
         state = State.LOADING;
         webView.changeState(state.ordinal());
+
+        webView.setPictureListener((view, picture) -> {
+            if (webView != view) {
+                return;
+            }
+            if (state == State.LOADED) {
+                if (resume.x != 0 || resume.y != 0) {
+                    webView.scrollTo(resume.x, resume.y);
+                    webView.setScaleX(scaleResume);
+                    webView.setScaleY(scaleResume);
+                    state = State.FINISHED;
+                    webView.sendOnUrlChanged();
+                    webView.sendOnNavigationChanged();
+                    webView.changeState(state.ordinal());
+                }
+                webView.setPictureListener(null);
+            }
+        });
     }
 
     @Override
@@ -53,33 +69,15 @@ public class ResumeWebviewClient extends WebViewClient {
     }
 
     public void loadContinueReading(Point current, float scale) {
-        webView.setPictureListener((view, picture) -> {
-            if (webView != view) {
-                return;
-            }
-            if (state == State.LOADED) {
-                if (resume.x != 0 || resume.y != 0) {
-                    webView.scrollTo(resume.x, resume.y);
-                    webView.setScaleX(scale);
-                    webView.setScaleY(scale);
-                    state = State.FINISHED;
-                    webView.sendOnUrlChanged();
-                    webView.sendOnNavigationChanged();
-                    webView.changeState(state.ordinal());
-                }
-                webView.setPictureListener(null);
-            } else {
-            }
-        });
-
-
         if (state == State.LOADING) {
             resume = current;
+            scaleResume = scale;
         } else if (state == State.LOADED) {
             resume = current;
+            scaleResume = scale;
             webView.scrollTo(resume.x, resume.y);
-            webView.setScaleX(scale);
-            webView.setScaleY(scale);
+            webView.setScaleX(scaleResume);
+            webView.setScaleY(scaleResume);
             state = State.FINISHED;
             webView.sendOnUrlChanged();
             webView.sendOnNavigationChanged();
