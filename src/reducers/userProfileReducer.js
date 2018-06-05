@@ -70,7 +70,7 @@ export default function userProfileReducer(state = initialState, action) {
                 let analystData = userAnalystData[i];
                 if (analystData) {
                     let percentage = (analystData.time / totalTime) * 100;
-                    let newData = {name: analystData.object, percentage: percentage}
+                    let newData = {name: analystData.object, percentage: percentage ? percentage : 0}
                     tempAnalystData = _.concat(tempAnalystData, newData);
                 } else {
                     tempAnalystData = _.concat(tempAnalystData, {name: "None", percentage: 0});
