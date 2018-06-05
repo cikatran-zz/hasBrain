@@ -20,7 +20,7 @@ RCT_EXPORT_MODULE();
 }
 
 RCT_EXPORT_METHOD(reload) {
-    [NSNotificationCenter.defaultCenter postNotificationName:@"com.hasbrain.customwebview.reload" object:NULL]
+    [NSNotificationCenter.defaultCenter postNotificationName:@"com.hasbrain.customwebview.reload" object:NULL];
 }
 
 @end

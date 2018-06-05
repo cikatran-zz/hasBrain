@@ -66,13 +66,13 @@ export default class Explore extends React.Component {
     _keyExtractor = (item, index) => index + '';
 
     _openReadingView = (item) => {
-        if (Platform.OS === "ios") {
-            ReaderManager.sharedInstance._open(item, _.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1, () => {
-                this._setUpReadingTime();
-            });
-        } else {
+        // if (Platform.OS === "ios") {
+        //     ReaderManager.sharedInstance._open(item, _.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1, () => {
+        //         this._setUpReadingTime();
+        //     });
+        // } else {
             this.props.navigation.navigate("Reader", item);
-        }
+        //}
 
     };
 
