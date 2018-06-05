@@ -14,7 +14,7 @@ export default class Reader extends React.PureComponent {
         const {contentId} = this.props.navigation.state.params;
         return (
             <View style={{flex: 1}}>
-                <CustomWebview url={contentId}
+                <CustomWebview source={contentId}
                                style={styles.webView}/>
             </View>
 

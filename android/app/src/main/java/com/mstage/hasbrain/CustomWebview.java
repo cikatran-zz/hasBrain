@@ -4,16 +4,27 @@ import android.content.Context;
 import android.graphics.Point;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.v7.view.menu.MenuPresenter;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewParent;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.PopupWindow;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.uimanager.events.RCTEventEmitter;
+import com.google.zxing.common.StringUtils;
 
 import java.util.Map;
 
@@ -25,14 +36,20 @@ public class CustomWebview extends WebView {
     Point resume = new Point();
 
     ReactContext reactContext;
+    private ActionMode.Callback mActionActionModeCallback;
 
-    private void sendEvent(ReactContext reactContext,
-                           String eventName,
-                           @Nullable WritableMap params) {
-        reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
-    }
+    boolean isLoading = false;
+    double currentProgress = 0.0;
+
+    String highlightJS = "function selectedText() {\n" +
+            "        var range = window.getSelection().getRangeAt(0);\n" +
+            "        var result = window.getSelection().toString();\n" +
+            "        span = document.createElement('span');\n" +
+            "        span.style.backgroundColor = \"yellow\";\n" +
+            "        span.appendChild(range.extractContents());\n" +
+            "        range.insertNode(span);\n" +
+            "        return result;\n" +
+            "    }";
 
     public CustomWebview(ReactContext context) {
         super(context, null);
@@ -43,14 +60,78 @@ public class CustomWebview extends WebView {
         super(context, attrs);
         initSetting();
 
+        this.setWebChromeClient(new WebChromeClient(){
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                currentProgress = ((double)newProgress)/100;
+                sendOnLoadingChanged();
+            }
+        });
+
         webViewClient = new ResumeWebviewClient(this, context);
         setWebViewClient(webViewClient);
     }
 
     public void changeState(int state) {
-        WritableMap params = Arguments.createMap();
-        params.putInt("loading", state);
-        sendEvent(reactContext, "onLoading", params);
+        if (state == 0) {
+            isLoading = true;
+        } else {
+            isLoading = false;
+        }
+        sendOnLoadingChanged();
+        if (state == 2) {
+            this.evaluateJavascript(highlightJS, new ValueCallback<String>() {
+                @Override
+                public void onReceiveValue(String value) {
+
+                }
+            });
+        }
+    }
+
+    @Override
+    public ActionMode startActionMode(ActionMode.Callback callback) {
+        ViewParent parent = getParent();
+        if (parent == null) {
+            return null;
+        }
+
+        mActionActionModeCallback = new CustomActionModeCallback();
+        return parent.startActionModeForChild(this, mActionActionModeCallback);
+    }
+
+    public void sendOnLoadingChanged() {
+        WritableMap event = Arguments.createMap();
+        event.putDouble("progress",currentProgress);
+        event.putBoolean("isLoading", isLoading);
+        ReactContext reactContext = (ReactContext)getContext();
+        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+                getId(),
+                "loadingChanged",
+                event);
+    }
+
+    public void sendOnNavigationChanged() {
+        WritableMap event = Arguments.createMap();
+        event.putBoolean("canGoBack",this.canGoBack());
+        event.putBoolean("canGoForward", this.canGoForward());
+        ReactContext reactContext = (ReactContext)getContext();
+        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+                getId(),
+                "navigationChanged",
+                event);
+    }
+
+    public void sendOnUrlChanged() {
+
+        WritableMap event = Arguments.createMap();
+        event.putString("url",this.getUrl());
+        ReactContext reactContext = (ReactContext)getContext();
+        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+                getId(),
+                "urlChanged",
+                event);
     }
 
     public void initSetting() {
@@ -82,7 +163,26 @@ public class CustomWebview extends WebView {
         if (webViewClient == null) {
             webViewClient = new ResumeWebviewClient(this, getContext());
         }
-        webViewClient.loadContinueReading(resume);
+        webViewClient.loadContinueReading(resume, (float)current.get("scale"));
+    }
+
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        int height = (int) Math.floor(this.getContentHeight() * this.getScale());
+        int webViewHeight = this.getMeasuredHeight();
+        if(this.getScrollY() + webViewHeight >= height){
+            WritableMap event = Arguments.createMap();
+            event.putDouble("x", webViewClient.getScrollPosition().x);
+            event.putDouble("y", webViewClient.getScrollPosition().y);
+            event.putDouble("scale", this.getScale());
+            ReactContext reactContext = (ReactContext)getContext();
+            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+                    getId(),
+                    "scrollEnd",
+                    event);
+        }
+        super.onScrollChanged(l, t, oldl, oldt);
+
     }
 
     public void saveScrollPosition() {
@@ -94,15 +194,37 @@ public class CustomWebview extends WebView {
         }
     }
 
-//    public CustomWebview(Context context, AttributeSet attrs, int defStyleAttr) {
-//        super(context, attrs, defStyleAttr);
-//    }
-//
-//    public CustomWebview(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-//        super(context, attrs, defStyleAttr, defStyleRes);
-//    }
-//
-//    public CustomWebview(Context context, AttributeSet attrs, int defStyleAttr, boolean privateBrowsing) {
-//        super(context, attrs, defStyleAttr, privateBrowsing);
-//    }
+    class CustomActionModeCallback implements ActionMode.Callback {
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            menu.add("Highlight")
+                    .setEnabled(true)
+                    .setVisible(true)
+                    .setOnMenuItemClickListener(item -> {
+                        evaluateJavascript("selectedText()", value -> {
+                            if (value != null) {
+                                Log.d("WEBVIEW", value);
+                            }
+                        });
+                        return true;
+                    });
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            clearFocus();
+        }
+    }
 }

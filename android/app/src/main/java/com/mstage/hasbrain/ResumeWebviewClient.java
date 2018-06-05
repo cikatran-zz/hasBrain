@@ -34,6 +34,7 @@ public class ResumeWebviewClient extends WebViewClient {
     public void onLoadResource(WebView view, String url) {
         if (state == State.LOADING) {
 //            Log.i(TAG, "showing loading view...");
+            webView.sendOnNavigationChanged();
         }
     }
 
@@ -47,9 +48,11 @@ public class ResumeWebviewClient extends WebViewClient {
     public void onPageFinished(android.webkit.WebView view, String url) {
         state = State.LOADED;
         webView.changeState(state.ordinal());
+        webView.sendOnNavigationChanged();
+        webView.sendOnUrlChanged();
     }
 
-    public void loadContinueReading(Point current) {
+    public void loadContinueReading(Point current, float scale) {
         webView.setPictureListener((view, picture) -> {
             if (webView != view) {
                 return;
@@ -57,7 +60,11 @@ public class ResumeWebviewClient extends WebViewClient {
             if (state == State.LOADED) {
                 if (resume.x != 0 || resume.y != 0) {
                     webView.scrollTo(resume.x, resume.y);
+                    webView.setScaleX(scale);
+                    webView.setScaleY(scale);
                     state = State.FINISHED;
+                    webView.sendOnUrlChanged();
+                    webView.sendOnNavigationChanged();
                     webView.changeState(state.ordinal());
                 }
                 webView.setPictureListener(null);
@@ -71,7 +78,11 @@ public class ResumeWebviewClient extends WebViewClient {
         } else if (state == State.LOADED) {
             resume = current;
             webView.scrollTo(resume.x, resume.y);
+            webView.setScaleX(scale);
+            webView.setScaleY(scale);
             state = State.FINISHED;
+            webView.sendOnUrlChanged();
+            webView.sendOnNavigationChanged();
             webView.changeState(state.ordinal());
         }
     }

@@ -106,6 +106,10 @@ class CustomWebView: WKWebView {
         }
         if let x = initPosition["x"] as? Double, let y = initPosition["y"] as? Double {
             let scale = initPosition["scale"] as? Double ?? 1.0
+            if (x == 0 && y == 0) {
+                initPosition = [:]
+                return
+            }
             self.scrollView.setContentOffset(CGPoint(x: x, y: y), animated: true)
             self.contentScaleFactor = CGFloat(scale)
         }
@@ -175,7 +179,6 @@ extension CustomWebView: UIScrollViewDelegate {
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let x = Double(scrollView.contentOffset.x)
         let y = Double(scrollView.contentOffset.y)
-        
         onScrollEnd(["x": x, "y": y, "scale": Double(self.contentScaleFactor)])
     }
 }
