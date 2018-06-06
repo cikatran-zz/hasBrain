@@ -1,21 +1,21 @@
-import About from './About'
+import UserPath from './UserPath'
 import { connect } from 'react-redux'
-import {getUserAnalyst} from '../../../actions/userProfileAction'
+import {getUserPath} from '../../actions/getUserPath'
 
 
 function mapStateToProps(state) {
     return {
-        user: state.userProfileReducer
+        userPath: state.userPathReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getUserAnalyst: () => dispatch(getUserAnalyst()),
+        getUserPath: () => dispatch(getUserPath())
     }
 }
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(About)
+)(UserPath)

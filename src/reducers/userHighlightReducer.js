@@ -6,7 +6,8 @@ const initialState = {
     fetched: false,
     isFetching: false,
     error: false,
-    page: 1
+    page: 1,
+    noMore: false
 }
 
 export default function userHighlightReducer(state = initialState, action) {
@@ -18,6 +19,7 @@ export default function userHighlightReducer(state = initialState, action) {
             }
         case actionTypes.FETCH_USER_HIGHLIGHT_SUCCESS:
             let tempData = null;
+            let noMore = _.isEmpty(action.data);
             if (action.page === 1) {
                 tempData = action.data
             } else {
@@ -28,7 +30,8 @@ export default function userHighlightReducer(state = initialState, action) {
                 isFetching: false,
                 fetched: true,
                 data: tempData,
-                page: action.page
+                page: action.page,
+                noMore: noMore
             }
         case actionTypes.FETCH_USER_HIGHLIGHT_FAILURE:
             return {

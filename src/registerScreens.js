@@ -1,6 +1,7 @@
 import { StackNavigator, TabNavigator } from 'react-navigation'
 import ExploreStack from './screenStacks/ExploreStack'
 import SaveStack from './screenStacks/SaveStack'
+import UserPathStack from './screenStacks/UserPathStack'
 import { Image, StyleSheet, NativeModules } from 'react-native'
 import React from 'react'
 import { colors } from './constants/colors'
@@ -33,6 +34,16 @@ const TabNav = TabNavigator({
             tabBarLabel: strings.bookmarkHeader,
             ...defaultHeaderStyle,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_saved.png')}
+                                                   style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
+        })
+    },
+    UserPathTab: {
+        screen: UserPathStack,
+        navigationOptions: ({ navigation }) => ({
+            header: null,
+            tabBarLabel: strings.userPathHeader,
+            ...defaultHeaderStyle,
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_path.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     },

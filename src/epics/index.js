@@ -4,7 +4,8 @@ import getArticlesEpic from "./articlesRequestEpic";
 import getSavedEpic from "./savedRequestEpic"
 import getPlaylistEpic from "./playlistRequestEpic";
 import getOnboardingEpic from "./onboardingRequestEpic";
-import getUserHighLightEpic from './userHighLightRequestEpic'
+import getUserHighLightEpic from './userHighLightRequestEpic';
+import getUserPathEpic from './userPathRequestEpic';
 import {
     getUserProfileEpic,
     updateUserProfileEpic,
@@ -23,7 +24,8 @@ const rootEpic = combineEpics(
     updateUserProfileEpic,
     getUserAnalystEpic,
     getUserNameEpic,
-    getLastReadingPositionEpic
+    getLastReadingPositionEpic,
+    getUserPathEpic
 );
 
 export default rootEpic;

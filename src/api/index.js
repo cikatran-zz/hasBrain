@@ -257,3 +257,9 @@ export const getLastReadingPosition = (contentId) => {
 };
 
 
+export const getUserPath = () => {
+    return gqlQuery({
+        query: config.queries.userPath
+    })
+}
+

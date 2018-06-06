@@ -116,6 +116,8 @@ export default class About extends PureComponent<Props> {
         return (
             <View style={styles.container}>
                 <SectionList
+                    refreshing={user.userAnalystFetching}
+                    onRefresh={() => this.props.getUserAnalyst()}
                     keyExtractor={this._keyExtractor}
                     stickySectionHeadersEnabled={false}
                     showsVerticalScrollIndicator={false}
