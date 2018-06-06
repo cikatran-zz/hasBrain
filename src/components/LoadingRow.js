@@ -12,7 +12,7 @@ export default class LoadingRow extends React.PureComponent {
 
     render() {
         return (
-            <View style={[styles.rootView, this.props.style]}>
+            <View style={[styles.alertWindow, this.props.style]}>
                 <View style={{flex: 2, flexDirection: 'column'}}>
                     <ShimmerPlaceHolder
                         autoRun={true}
@@ -40,7 +40,7 @@ export default class LoadingRow extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
-    rootView: {
+    alertWindow: {
         flex: 1,
         backgroundColor: 'transparent',
         justifyContent: 'center',

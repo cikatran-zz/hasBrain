@@ -37,7 +37,6 @@ public class ResumeWebviewClient extends WebViewClient {
                     webView.setScaleX(scaleResume);
                     webView.setScaleY(scaleResume);
                     state = State.FINISHED;
-                    webView.sendOnUrlChanged();
                     webView.sendOnNavigationChanged();
                     webView.changeState(state.ordinal());
                 }
@@ -56,12 +55,18 @@ public class ResumeWebviewClient extends WebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+//        context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+        view.loadUrl(url);
+        state = State.LOADING;
+        webView.sendOnNavigationChanged();
         return true;
     }
 
     @Override
     public void onPageFinished(android.webkit.WebView view, String url) {
+        if (url.equals("about:blank")) {
+            return;
+        }
         state = State.LOADED;
         webView.changeState(state.ordinal());
         webView.sendOnNavigationChanged();

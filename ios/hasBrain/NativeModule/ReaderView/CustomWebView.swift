@@ -85,7 +85,9 @@ class CustomWebView: WKWebView {
         self.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: &webViewContext)
         self.addObserver(self, forKeyPath: "loading", options: .new, context: &webViewContext)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadWebView), name: NSNotification.Name("com.hasbrain.customwebview.reload"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadWebview), name: NSNotification.Name("com.hasbrain.customwebview.reload"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(goBackWebview), name: NSNotification.Name("com.hasbrain.customwebview.goback"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(goForwardWebview), name: NSNotification.Name("com.hasbrain.customwebview.goforward"), object: nil)
     }
     
     func highlight() {
@@ -96,8 +98,22 @@ class CustomWebView: WKWebView {
         }
     }
     
-    func reloadWebView() {
-        self.reload()
+    func reloadWebview() {
+        DispatchQueue.main.async {
+            self.reload()
+        }
+    }
+    
+    func goBackWebview() {
+        DispatchQueue.main.async {
+            self.goBack()
+        }
+    }
+    
+    func goForwardWebview() {
+        DispatchQueue.main.async {
+            self.goForward()
+        }
     }
     
     func scrollToLastPosition() {
@@ -143,13 +159,18 @@ extension CustomWebView {
         
         if keyPath == "estimatedProgress" {
             if let newValue = (change[NSKeyValueChangeKey.newKey] as AnyObject).floatValue {
-                onLoadingChanged(["progress": newValue, "isLoading": self.isLoading])
+                DispatchQueue.main.async {
+                    self.onLoadingChanged(["progress": newValue, "isLoading": self.isLoading])
+                }
+                
             }
         }
         
         if keyPath == "loading" {
             if let newValue = (change[NSKeyValueChangeKey.newKey] as AnyObject).boolValue {
-                onLoadingChanged(["progress": self.estimatedProgress, "isLoading": newValue])
+                DispatchQueue.main.async {
+                    self.onLoadingChanged(["progress": self.estimatedProgress, "isLoading": newValue])
+                }
             }
         }
     }

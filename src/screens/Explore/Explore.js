@@ -71,7 +71,7 @@ export default class Explore extends React.Component {
         //         this._setUpReadingTime();
         //     });
         // } else {
-            this.props.navigation.navigate("Reader", item);
+            this.props.navigation.navigate("Reader", {...item, bookmarked: _.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1});
         //}
 
     };
@@ -225,7 +225,7 @@ export default class Explore extends React.Component {
                 <SectionList
                     refreshing={articles.isFetching}
                     onRefresh={() => this.props.getArticles(1, 20)}
-                    style={styles.rootView}
+                    style={styles.alertWindow}
                     keyExtractor={this._keyExtractor}
                     stickySectionHeadersEnabled={false}
                     showsVerticalScrollIndicator={false}
@@ -252,7 +252,7 @@ export default class Explore extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    rootView: {
+    alertWindow: {
         backgroundColor: colors.mainWhite,
         position: 'relative',
         flex: 1

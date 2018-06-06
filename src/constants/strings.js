@@ -16,6 +16,15 @@ export const strings = {
         contentId: "_content_id",
         mediaType: "_media_type"
     },
+    contentBookmarked: {
+        event: "_content_bookmarked",
+        consumedLength: "_consumed_length_in_seconds",
+        contentId: "_content_id",
+        mediaType: "_media_type"
+    },
+    contentUnbookmarked: {
+
+    },
     articleType: "article",
     mekey: '_me',
     experienceKey: 'experience',

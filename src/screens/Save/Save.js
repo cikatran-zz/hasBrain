@@ -70,7 +70,7 @@ export default class Save extends React.Component {
         // if (Platform.OS === "ios") {
         //     ReaderManager.sharedInstance._open(item, true);
         // } else {
-            this.props.navigation.navigate("Reader", item);
+            this.props.navigation.navigate("Reader", {...item, bookmarked: true});
         //}
     };
 

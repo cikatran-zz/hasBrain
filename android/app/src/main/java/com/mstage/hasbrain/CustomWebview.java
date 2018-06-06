@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ActionMode;
@@ -19,13 +21,15 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+import com.mstage.hasbrain.notification.NotificationCenter;
+import com.mstage.hasbrain.notification.NotificationObserver;
 
 import java.util.Map;
 
 /**
  * Created by henry on 6/1/18.
  */
-public class CustomWebview extends WebView {
+public class CustomWebview extends WebView implements NotificationObserver {
     ResumeWebviewClient webViewClient;
     Point resume = new Point();
 
@@ -56,6 +60,14 @@ public class CustomWebview extends WebView {
         initSetting();
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        NotificationCenter.shared.removeObserver(this,getResources().getString(R.string.webview_reload));
+        NotificationCenter.shared.removeObserver(this,getResources().getString(R.string.webview_goBack));
+        NotificationCenter.shared.removeObserver(this,getResources().getString(R.string.webview_goForward));
+        super.finalize();
+    }
+
     public void changeState(int state) {
         if (state == 0) {
             isLoading = true;
@@ -63,16 +75,6 @@ public class CustomWebview extends WebView {
             isLoading = false;
         }
         sendOnLoadingChanged();
-//        if (state == 1) {
-//            Log.d("stateChange", "evaluate javascript");
-//            this.evaluateJavascript(highlightJS, null);
-            //this.evaluateJavascript(highlightJS, new ValueCallback<String>() {
-            //    @Override
-            //    public void onReceiveValue(String value) {
-
-            //    }
-            //});
-//        }
     }
 
     @Override
@@ -93,7 +95,7 @@ public class CustomWebview extends WebView {
     public void sendOnLoadingChanged() {
         WritableMap event = Arguments.createMap();
         event.putDouble("progress", currentProgress);
-        event.putBoolean("isLoading", isLoading);
+        event.putBoolean("isLoading", !(currentProgress == 0) && !(currentProgress == 1));
         ReactContext reactContext = (ReactContext) getContext();
         reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
                 getId(),
@@ -122,6 +124,16 @@ public class CustomWebview extends WebView {
                 event);
     }
 
+    public void sendOnHighlight(String text) {
+        WritableMap event = Arguments.createMap();
+        event.putString("text", text);
+        ReactContext reactContext = (ReactContext) getContext();
+        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+                getId(),
+                "highlight",
+                event);
+    }
+
     public void initSetting() {
 
         this.setWebChromeClient(new WebChromeClient() {
@@ -137,6 +149,10 @@ public class CustomWebview extends WebView {
             webViewClient = new ResumeWebviewClient(this, getContext());
             setWebViewClient(webViewClient);
         }
+
+        NotificationCenter.shared.addObserver(this,getResources().getString(R.string.webview_reload));
+        NotificationCenter.shared.addObserver(this,getResources().getString(R.string.webview_goBack));
+        NotificationCenter.shared.addObserver(this,getResources().getString(R.string.webview_goForward));
         WebSettings settings = this.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setBuiltInZoomControls(true);
@@ -161,11 +177,14 @@ public class CustomWebview extends WebView {
     }
 
     public void scrollToPosition(Map<String, Object> current) {
-        resume = new Point((int) current.get("x"), (int) current.get("y"));
+        if (current.get("x") == null || current.get("y") == null || current.get("scale") == null) {
+            return;
+        }
+        resume = new Point(((Double)current.get("x")).intValue(), ((Double) current.get("y")).intValue());
         if (webViewClient == null) {
             webViewClient = new ResumeWebviewClient(this, getContext());
         }
-        webViewClient.loadContinueReading(resume, (float) current.get("scale"));
+        webViewClient.loadContinueReading(resume, ((Double) current.get("scale")).floatValue());
     }
 
     @Override
@@ -194,6 +213,32 @@ public class CustomWebview extends WebView {
         if (scrollRatio != null) {
             Log.d("current-progress", scrollRatio.toString());
 //            save scrollRatio
+        }
+    }
+
+    @Override
+    public void receiveNotification(String name) {
+        if (name.equals(getResources().getString(R.string.webview_reload))) {
+            new Handler(Looper.getMainLooper()).post(new Runnable () {
+                @Override
+                public void run () {
+                    reload();
+                }
+            });
+        } else if (name.equals(getResources().getString(R.string.webview_goBack))) {
+            new Handler(Looper.getMainLooper()).post(new Runnable () {
+                @Override
+                public void run () {
+                    goBack();
+                }
+            });
+        } else if (name.equals(getResources().getString(R.string.webview_goForward))) {
+            new Handler(Looper.getMainLooper()).post(new Runnable () {
+                @Override
+                public void run () {
+                    goForward();
+                }
+            });
         }
     }
 
@@ -287,7 +332,8 @@ public class CustomWebview extends WebView {
     public void executeHighlight(){
         evaluateJavascript(highlightJS, value -> {
             if (value != null) {
-                Log.d("WEBVIEW", value);
+                String text = value.substring(1, value.length()-1);
+                sendOnHighlight(text);
             }
         });
     }

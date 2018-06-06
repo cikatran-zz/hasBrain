@@ -23,4 +23,12 @@ RCT_EXPORT_METHOD(reload) {
     [NSNotificationCenter.defaultCenter postNotificationName:@"com.hasbrain.customwebview.reload" object:NULL];
 }
 
+RCT_EXPORT_METHOD(goBack) {
+    [NSNotificationCenter.defaultCenter postNotificationName:@"com.hasbrain.customwebview.goback" object:NULL];
+}
+
+RCT_EXPORT_METHOD(goForward) {
+    [NSNotificationCenter.defaultCenter postNotificationName:@"com.hasbrain.customwebview.goforward" object:NULL];
+}
+
 @end
