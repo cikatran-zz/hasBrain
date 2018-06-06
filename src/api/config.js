@@ -257,6 +257,51 @@ const getUserHighLight = gql`
         }
     }`;
 
+const getUserPath = gql`
+query {
+    viewer{
+    listOne(filter: {
+      type: "Path"
+    }) {
+      title
+      shortDescription
+      contentData {
+        contentId
+        content
+        readingTime
+        title
+        longDescription
+        shortDescription
+        sourceImage
+        state
+        custom
+        createdAt
+        updatedAt
+        projectId
+        type
+        kind
+        contentData {
+          contentId
+          content
+          readingTime
+          title
+          longDescription
+          shortDescription
+          sourceImage
+          state
+          custom
+          createdAt
+          updatedAt
+          projectId
+          type
+          kind
+        }
+      }
+    }
+  }
+ }
+`
+
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
@@ -265,7 +310,8 @@ export default {
         playlist: playlist,
         bookmark: getBookmark,
         onboardingInfo: onboardingInfo,
-        userHighlight: getUserHighLight
+        userHighlight: getUserHighLight,
+        userPath: getUserPath
     },
     mutation: {
         bookmark: postBookmark,

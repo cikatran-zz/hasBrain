@@ -38,13 +38,12 @@ const TabNav = TabNavigator({
         })
     },
     UserPathTab: {
-        screen: UserP,
+        screen: UserPathStack,
         navigationOptions: ({ navigation }) => ({
-            title: 'SAVED',
-            headerLeft: null,
-            tabBarLabel: strings.bookmarkHeader,
+            header: null,
+            tabBarLabel: strings.userPathHeader,
             ...defaultHeaderStyle,
-            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_saved.png')}
+            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_path.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     },

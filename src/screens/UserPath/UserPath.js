@@ -13,6 +13,7 @@ export default class UserPath extends Component {
     }
 
     componentDidMount() {
+        this.props.getUserPath();
     }
 
     _renderSection = ({item}) => {
@@ -26,7 +27,7 @@ export default class UserPath extends Component {
                     style={{marginTop: 15}}
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
-                    data={item}
+                    data={item.contentData}
                     keyExtractor={this._keyExtractor}
                     renderItem={this._renderSeriesItem}/>
             </View>
@@ -35,12 +36,16 @@ export default class UserPath extends Component {
 
     _renderSeriesItem = ({item}) => {
         return (
-            <View style={{flexDirection:'row', marginRight: 20}}>
+            <View style={{flexDirection:'column', marginRight: 20, width: 217}}>
+                <View style={styles.placeHolder}>
+                    <Text style={styles.textPlaceHolder}>hasBrain</Text>
+                </View>
                 <Image style={styles.seriesItemImage} source={{uri: item.sourceImage}}/>
                 <Text style={styles.seriesItemText}>{item.title}</Text>
             </View>
         )
     }
+
 
     _keyExtractor = (item, index) => index.toString();
 
@@ -49,29 +54,30 @@ export default class UserPath extends Component {
         return (
             <View style={styles.sectionHeader}>
                 <View style={styles.circlePoint}/>
-                <Text style={styles.seriesTitle}>{title}</Text>
+                <Text ellipsizeMode="tail" numberOfLines={1} style={styles.seriesTitle}>{title}</Text>
             </View>
         )
     };
     render() {
-        //TODO: Move this data process to reducer
-        let sections = [];
-        for (let data in fakeData) {
-            let section = {
+        const {userPath} = this.props;
+        if (!userPath.data)
+            return null;
+        let sections = userPath.data.contentData.map(data => {
+            return {
                 data: [data],
                 renderItem: this._renderSection,
                 showHeader: true,
                 title: data.title
             }
-            sections.push(section);
-        }
+        })
         return (
             <View style={styles.container}>
                 <View style={styles.pathInfoContainer}>
-                    <Text style={styles.pathInfoTitle}>{fakeData.title}</Text>
-                    <Text style={styles.pathInfoDescription}>{fakeData.longDescription}</Text>
+                    <Text style={styles.pathInfoTitle}>{userPath.data.title}</Text>
+                    <Text style={styles.pathInfoDescription}>{userPath.data.shortDescription}</Text>
+                </View>
                     <SectionList
-                        style={{flex: 1}}
+                        style={{marginTop: 20, marginRight: 2}}
                         keyExtractor={this._keyExtractor}
                         stickySectionHeadersEnabled={false}
                         showsVerticalScrollIndicator={false}
@@ -79,8 +85,6 @@ export default class UserPath extends Component {
                         bounces={true}
                         sections={sections}
                     />
-                </View>
-
             </View>
         )
     }
@@ -93,7 +97,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: colors.mainWhite,
         alignItems:'center',
-        paddingTop: 50
+        paddingTop: 30,
+        width: '100%'
     },
     pathInfoContainer: {
         flexDirection: 'column',
@@ -115,7 +120,7 @@ const styles = StyleSheet.create({
         height: 24,
         width: 24,
         marginLeft: 30,
-        marginRight: 20
+        marginRight: 15
     },
     seriesTitle: {
         color: colors.darkBlue,
@@ -123,17 +128,22 @@ const styles = StyleSheet.create({
     },
     sectionHeader: {
         flexDirection: 'row',
-        justifyContent: 'center'
+        alignItems: 'center',
+        marginVertical:-1.5,
+        width: '70%'
     },
     sectionContainer: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        width: '90%'
     },
     verticalLine: {
         backgroundColor: colors.darkBlue,
-        marginLeft: 42,
-        marginRight: 32,
+        marginLeft: 40.5,
+        marginRight: 18,
         width: 3,
-        height:'100%'
+        height:'100%',
+        paddingTop: -2,
+        paddingBottom: -2
     },
     seriesItemImage: {
         borderRadius: 3,
@@ -144,52 +154,23 @@ const styles = StyleSheet.create({
     seriesItemText: {
         color: colors.blackText,
         fontSize: 15,
-        marginVertical: 20
+        marginVertical: 20,
+        width: 217
+    },
+    placeHolder: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: 115,
+        zIndex: -1,
+        borderWidth: 0.5,
+        borderColor: colors.grayText,
+        borderRadius: 3,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    textPlaceHolder: {
+        color: colors.grayText
     }
 })
-
-
-const fakeData = `{
-    title: "System Design for Fresh Graduates", 
-    longDescription: "Follow this series from the collaboration  of tech gurus to demyth data engineering.", 
-    contentData: [
-        {
-            title: "Introduction", 
-            contentData: [
-                    {
-                      title: "What is System Design?",
-                      sourceImage: "https://cdn-images-1.medium.com/max/2000/0*W3LI86Xp8u_JEGfc.jpg"
-                    }, 
-                    {
-                       title: "Scalability Lectue at Harvard",
-                       sourceImage: "https://cdn-images-1.medium.com/max/2000/0*W3LI86Xp8u_JEGfc.jpg"
-                    },
-            ]
-        },
-        {
-            title: "Application Layers",
-            contentData: [
-                    {
-                      title: "What are Application Layer?",
-                      sourceImage: "https://cdn-images-1.medium.com/max/2000/0*W3LI86Xp8u_JEGfc.jpg"
-                    },
-                    {
-                      title: "How does Microservices work in real life?",
-                      sourceImage: "https://cdn-images-1.medium.com/max/2000/0*W3LI86Xp8u_JEGfc.jpg"  
-                    }
-            ]            
-        }, 
-        {
-            title: "Database",
-            contentData: [
-                    {
-                      title: "What is Database?",
-                      sourceImage: "https://cdn-images-1.medium.com/max/2000/0*W3LI86Xp8u_JEGfc.jpg"
-                    },
-                    {
-                      title: "How does Database work in real life?",
-                      sourceImage: "https://cdn-images-1.medium.com/max/2000/0*W3LI86Xp8u_JEGfc.jpg"  
-                    }
-            ]   
-        }]
-    }`
