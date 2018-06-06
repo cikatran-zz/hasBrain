@@ -78,6 +78,8 @@ export default class UserPath extends Component {
                 </View>
                     <SectionList
                         style={{marginTop: 20, marginRight: 2}}
+                        refreshing={userPath.isFetching}
+                        onRefresh={() => this.props.getUserPath()}
                         keyExtractor={this._keyExtractor}
                         stickySectionHeadersEnabled={false}
                         showsVerticalScrollIndicator={false}
