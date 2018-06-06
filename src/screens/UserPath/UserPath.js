@@ -4,6 +4,7 @@ import {
 } from 'react-native'
 import { colors } from '../../constants/colors'
 import {NavigationActions} from "react-navigation";
+import ReaderManager from "../../modules/ReaderManager";
 import _ from 'lodash'
 
 export default class UserPath extends Component {
@@ -36,13 +37,16 @@ export default class UserPath extends Component {
 
     _renderSeriesItem = ({item}) => {
         return (
-            <View style={{flexDirection:'column', marginRight: 20, width: 217}}>
-                <View style={styles.placeHolder}>
-                    <Text style={styles.textPlaceHolder}>hasBrain</Text>
+            <TouchableWithoutFeedback onPress={() => this._openReadingView(item)}>
+                <View style={{flexDirection:'column', marginRight: 20, width: 217}}>
+
+                    <View style={styles.placeHolder}>
+                        <Text style={styles.textPlaceHolder}>hasBrain</Text>
+                    </View>
+                    <Image style={styles.seriesItemImage} source={{uri: item.sourceImage}}/>
+                    <Text style={styles.seriesItemText}>{item.title}</Text>
                 </View>
-                <Image style={styles.seriesItemImage} source={{uri: item.sourceImage}}/>
-                <Text style={styles.seriesItemText}>{item.title}</Text>
-            </View>
+            </TouchableWithoutFeedback>
         )
     }
 
@@ -57,6 +61,17 @@ export default class UserPath extends Component {
                 <Text ellipsizeMode="tail" numberOfLines={1} style={styles.seriesTitle}>{title}</Text>
             </View>
         )
+    };
+
+    _openReadingView = (item) => {
+        if (Platform.OS === "ios") {
+            ReaderManager.sharedInstance._open(item, _.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1, () => {
+                this._setUpReadingTime();
+            });
+        } else {
+            this.props.navigation.navigate("Reader", item);
+        }
+
     };
     render() {
         const {userPath} = this.props;
@@ -76,17 +91,17 @@ export default class UserPath extends Component {
                     <Text style={styles.pathInfoTitle}>{userPath.data.title}</Text>
                     <Text style={styles.pathInfoDescription}>{userPath.data.shortDescription}</Text>
                 </View>
-                    <SectionList
-                        style={{marginTop: 20, marginRight: 2}}
-                        refreshing={userPath.isFetching}
-                        onRefresh={() => this.props.getUserPath()}
-                        keyExtractor={this._keyExtractor}
-                        stickySectionHeadersEnabled={false}
-                        showsVerticalScrollIndicator={false}
-                        renderSectionHeader={this._renderSectionHeader}
-                        bounces={true}
-                        sections={sections}
-                    />
+                <SectionList
+                    style={{marginTop: 20, marginRight: 2}}
+                    refreshing={userPath.isFetching}
+                    onRefresh={() => this.props.getUserPath()}
+                    keyExtractor={this._keyExtractor}
+                    stickySectionHeadersEnabled={false}
+                    showsVerticalScrollIndicator={false}
+                    renderSectionHeader={this._renderSectionHeader}
+                    bounces={true}
+                    sections={sections}
+                />
             </View>
         )
     }
