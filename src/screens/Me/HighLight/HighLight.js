@@ -5,9 +5,14 @@ import {
 import { colors } from '../../../constants/colors';
 
 export default class HighLight extends PureComponent {
+    _currentPage = 1;
 
     constructor(props) {
         super(props)
+        this.state = {
+            loadMore: false,
+            refresh: true
+        }
     }
 
     componentDidMount() {
@@ -29,7 +34,8 @@ export default class HighLight extends PureComponent {
 
     __renderListFooter = () => {
         const {highLight} = this.props;
-        if (highLight.isFetching) {
+        const {loadMore} = this.state;
+        if (highLight.isFetching && loadMore) {
             return (
                 <View
                     style={{height: 30, width: '100%' ,justifyContent:'center', alignItems:'center'}}>
@@ -43,21 +49,33 @@ export default class HighLight extends PureComponent {
 
     _fetchMore = () => {
         const {highLight} = this.props;
+        if (highLight.noMore)
+            return;
+        this.setState({loadMore: true, refresh: false})
         let currentPage = highLight.page;
         currentPage++
         this.props.getHighlight(currentPage, 10);
 
     };
 
+    _onRefresh = () => {
+        this.setState({loadMore: false, refresh: true})
+        this.props.getHighlight(1, 10)
+    }
+
     render() {
         const {highLight} = this.props;
+        const {refresh} = this.state
         return (
             <View style={styles.container}>
                 <FlatList
+                    refreshing={highLight.isFetching && refresh}
+                    onRefresh={this._onRefresh}
                     showsVerticalScrollIndicator={false}
                     renderItem={this._renderListItem}
                     ListFooterComponent={this.__renderListFooter}
                     onEndReached={this._fetchMore}
+                    onEndReachedThreshold={0.5}
                     data={highLight.data}
                     keyExtractor={this._keyExtractor}/>
             </View>
