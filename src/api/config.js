@@ -224,6 +224,8 @@ mutation checkAndCreateArticle($record: CreateOnearticletypeInput!) {
         createdAt
         updatedAt
         projectId
+        content
+        contentId
         originalImages {
           height
           width
