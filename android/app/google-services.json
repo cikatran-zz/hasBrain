@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "994897015659-hbvdkajurlh5gbad2ockha693m20n04t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mstage.hasbrain",
+            "certificate_hash": "ce5b1faa45013717db1d9d12915ec8485ba85b62"
+          }
+        },
+        {
           "client_id": "994897015659-b5hil077844l19cfq87gri7mneul43gl.apps.googleusercontent.com",
           "client_type": 3
         },
@@ -55,6 +63,13 @@
         "appinvite_service": {
           "status": 2,
           "other_platform_oauth_client": [
+            {
+              "client_id": "994897015659-riuo55c2catoa6822c7bi713upqvlqdt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hasBrain.hasBrainApp"
+              }
+            },
             {
               "client_id": "994897015659-b5hil077844l19cfq87gri7mneul43gl.apps.googleusercontent.com",
               "client_type": 3

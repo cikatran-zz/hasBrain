@@ -19,12 +19,21 @@ export default class About extends PureComponent<Props> {
     }
 
     componentDidMount() {
+        this.props.onRef(this)
+    }
 
+    componentWillUnmount() {
+        this.props.onRef(undefined)
+    }
+
+
+    _getSummaryValue() {
+        return this._summaryTextInput._lastNativeText;
     }
 
     _renderDescription = () => {
         const {user} = this.props;
-        let description = "";
+        let description = null;
         if (user.userProfileData) {
             description = user.userProfileData.about
         };
@@ -32,7 +41,7 @@ export default class About extends PureComponent<Props> {
             description = "Enter your summary here"
         }
         return (
-            <TextInput multiline={true} underlineColorAndroid="transparent" numberOfLines={3} style={styles.descriptionText} value={description} editable={this.props.editMode}/>
+            <TextInput ref={component => this._summaryTextInput = component} multiline={true} underlineColorAndroid="transparent" numberOfLines={3} style={styles.descriptionText} defaultValue={description} editable={this.props.editMode}/>
         )
     }
 
@@ -44,7 +53,7 @@ export default class About extends PureComponent<Props> {
                     <Text style={{color: colors.grayText, fontSize: 15}}>Something went wrongs.Cannot analyse your profile!</Text>
                 </View>
             );
-
+        console.log("ABOUT", user.userAnalystData);
         return (
             <View style={{flexDirection:'column', width:'100%'}}>
                 <View style={{alignItems:'center', width: '100%', flexDirection:'row', marginTop:-20, marginBottom: -20}}>
@@ -107,6 +116,8 @@ export default class About extends PureComponent<Props> {
         return (
             <View style={styles.container}>
                 <SectionList
+                    refreshing={user.userAnalystFetching}
+                    onRefresh={() => this.props.getUserAnalyst()}
                     keyExtractor={this._keyExtractor}
                     stickySectionHeadersEnabled={false}
                     showsVerticalScrollIndicator={false}

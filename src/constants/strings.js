@@ -3,6 +3,7 @@ export const strings = {
     bookmarkHeader: "SAVED",
     notificationHeader: "NOTIFICATIONS",
     meHeader: "ME",
+    userPathHeader:"Path",
     dailyReadingTimeKey: 'daily_reading_time',
     readingPositionKey: 'reading_position',
     readingHistoryKey: 'reading_history',
@@ -14,6 +15,15 @@ export const strings = {
         consumedLength: "_consumed_length_in_seconds",
         contentId: "_content_id",
         mediaType: "_media_type"
+    },
+    contentBookmarked: {
+        event: "_content_bookmarked",
+        consumedLength: "_consumed_length_in_seconds",
+        contentId: "_content_id",
+        mediaType: "_media_type"
+    },
+    contentUnbookmarked: {
+
     },
     articleType: "article",
     mekey: '_me',

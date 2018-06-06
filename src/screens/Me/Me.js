@@ -10,6 +10,8 @@ import HighLight from './HighLight'
 import _ from 'lodash'
 
 export default class Me extends React.Component {
+    _titleTextInput = null;
+    _about = null;
 
     constructor(props) {
         super(props)
@@ -38,7 +40,7 @@ export default class Me extends React.Component {
         const  {selectedTab, editMode} = this.state;
         if (selectedTab == 0) {
             return (
-                <About editMode={editMode} style={{width:'85%', marginTop: 10}}/>
+                <About onRef={component => this._about = component} editMode={editMode} style={{width:'85%', marginTop: 10}}/>
             )
         } else {
             return  <HighLight style={{width:'85%', marginTop: 10}}/>;
@@ -60,13 +62,27 @@ export default class Me extends React.Component {
 
     _toggleEdit = () => {
         const {editMode} = this.state;
+        const {user} = this.props;
+        if (editMode) {
+            let title = "";
+            let description = "";
+            if (user.userProfileData) {
+                title = user.userProfileData.role;
+                description = user.userProfileData.about;
+            };
+            if (this._titleTextInput._lastNativeText)
+                title = this._titleTextInput._lastNativeText;
+            if (this._about._getSummaryValue())
+                description = this._about._getSummaryValue();
+            this.props.updateUserProfile(title, description);
+        }
         this.setState({editMode: !editMode});
     }
 
     render() {
         const {selectedTab, editMode} = this.state;
         const {user} = this.props;
-        let title = "";
+        let title = null;
         if (user.userProfileData) {
             title = user.userProfileData.role
         };
@@ -82,7 +98,7 @@ export default class Me extends React.Component {
 
                     <View style={styles.profileTextContainer}>
                         <Text numberOfLines={1} style={styles.profileName}>{user.userName ? user.userName : ''}</Text>
-                        <TextInput multiline={true} underlineColorAndroid="transparent" numberOfLines={2} style={styles.profileTitle} value={title} editable={editMode}/>
+                        <TextInput ref={component => this._titleTextInput = component}  multiline={true} underlineColorAndroid="transparent" numberOfLines={2} style={styles.profileTitle} defaultValue={title} editable={editMode}/>
                     </View>
 
                     <View style={styles.profileActionButtonContainer}>

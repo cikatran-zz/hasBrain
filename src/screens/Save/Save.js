@@ -67,19 +67,20 @@ export default class Save extends React.Component {
     }
 
     _openReadingView = (item) => {
-        if (Platform.OS === "ios") {
-            ReaderManager.sharedInstance._open(item, true);
-        } else {
-            this.props.navigation.navigate("Reader", item);
-        }
+        // if (Platform.OS === "ios") {
+        //     ReaderManager.sharedInstance._open(item, true);
+        // } else {
+            this.props.navigation.navigate("Reader", {...item, bookmarked: true});
+        //}
     };
 
     _fetchMore = () => {
         if (this.props.saved.data != null) {
-            if (this.props.saved.data.length % 10 === 0) {
+            if (this.props.saved.data.length === this.currentPage * 10) {
                 console.log(this.props.saved.data);
                 this.currentPage += 1;
                 this.props.getSaved(this.currentPage, 10);
+                this.setState({deleteItems: []});
             }
         }
 
@@ -102,9 +103,6 @@ export default class Save extends React.Component {
 
     render() {
         const {saved} = this.props;
-        if (saved.isFetching && this.state.deleteItems.length > 0) {
-            this.setState({deleteItems: []})
-        }
 
         let data = [];
         if (saved.data != null) {
@@ -119,14 +117,17 @@ export default class Save extends React.Component {
             <View style={{backgroundColor: colors.mainWhite, flex: 1}}>
                 <FlatList
                     refreshing={saved.isFetching}
-                    onRefresh={() => this.props.getSaved(1,10)}
+                    onRefresh={() => {
+                        this.setState({deleteItems: []});
+                        this.props.getSaved(1,10);
+                    }}
                     style={styles.listContainer}
                     keyExtractor={this._keyExtractor}
                     horizontal={false}
                     renderItem={this._renderListItem}
                     showsVerticalScrollIndicator={false}
                     ListEmptyComponent={this._renderEmptyList(saved.isFetching)}
-                    onEndReachedThreshold={20}
+                    onEndReachedThreshold={0.5}
                     onEndReached={this._fetchMore}
                     ItemSeparatorComponent={()=>this._renderVerticalSeparator()}
                     ListFooterComponent={() => this._renderListFooter(saved.isFetching)}

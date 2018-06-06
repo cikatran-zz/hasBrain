@@ -62,8 +62,6 @@ export default class Authentication extends React.PureComponent {
 
     _loginWithGooglePlus = () => {
         googleLogin().then((value) => {
-            let isNewAccount = value.new;
-            if (isNewAccount)
             this._goToNextScreen();
         })
         .catch((err) => {

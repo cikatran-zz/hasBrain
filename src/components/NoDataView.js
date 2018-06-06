@@ -12,7 +12,7 @@ export default class NoDataView extends React.PureComponent {
 
     render() {
         return (
-            <View style={[styles.rootView, this.props.style]}>
+            <View style={[styles.alertWindow, this.props.style]}>
                 <Text style={styles.message}>{_.get(this.props, 'text', '')}</Text>
             </View>
         )
@@ -20,7 +20,7 @@ export default class NoDataView extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
-    rootView: {
+    alertWindow: {
         flex: 1,
         backgroundColor: 'transparent',
         justifyContent: 'center',

@@ -1,5 +1,6 @@
 import About from './About'
 import { connect } from 'react-redux'
+import {getUserAnalyst} from '../../../actions/userProfileAction'
 
 
 function mapStateToProps(state) {
@@ -10,7 +11,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-
+        getUserAnalyst: () => dispatch(getUserAnalyst()),
     }
 }
 

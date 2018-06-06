@@ -132,7 +132,7 @@ export default class Onboarding extends React.Component {
         }
 
         return (
-            <View style={styles.rootView}>
+            <View style={styles.alertWindow}>
                 <View style={styles.swiperView}>
                     <Swiper horizontal={true}
                             ref={(swiper) => this.swiper = swiper}
@@ -188,7 +188,7 @@ export default class Onboarding extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    rootView: {
+    alertWindow: {
         flex: 1,
         flexDirection: 'column',
         backgroundColor: colors.mainWhite

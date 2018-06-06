@@ -4,10 +4,15 @@ import {requireNativeComponent, ViewPropTypes} from 'react-native';
 let customWebview = {
     name: 'CustomWebview',
     propTypes: {
-        url: PropTypes.string,
-        continueReading: PropTypes.object,
+        source: PropTypes.string,
+        initPosition: PropTypes.object,
+        onHighlight: PropTypes.func,
+        onUrlChanged: PropTypes.func,
+        onLoadingChanged: PropTypes.func,
+        onNavigationChanged: PropTypes.func,
+        onScrollEnd: PropTypes.func,
         ...ViewPropTypes, // include the default view properties
     },
 };
 
-module.exports = requireNativeComponent('RNTCustomWebview', customWebview);
+module.exports = requireNativeComponent('RNCustomWebview', customWebview);

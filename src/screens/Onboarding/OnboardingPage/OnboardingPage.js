@@ -56,7 +56,7 @@ export default class OnboardingPage extends React.Component {
             sections = sections.concat({...item, renderItem: this._renderSection, sectionIndex: index});
         });
         return (
-            <View style={[this.props.style, styles.rootView]}>
+            <View style={[this.props.style, styles.alertWindow]}>
                 <View style={styles.headerView}>
                     <Image source={this.props.icon} style={styles.iconImage}/>
                     <View style={styles.textView}>
@@ -78,7 +78,7 @@ export default class OnboardingPage extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    rootView: {
+    alertWindow: {
         backgroundColor: 'transparent',
         flex: 1,
         flexDirection: 'column'

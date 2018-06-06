@@ -18,6 +18,7 @@ public class HasbrainPackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new AndroidUserKitFramework(reactContext));
         modules.add(new AndroidUserKitIdentityFramework(reactContext));
+        modules.add(new ReactWebviewModule(reactContext));
         return modules;
     }
 
