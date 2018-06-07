@@ -6,6 +6,7 @@ import { colors } from '../../constants/colors'
 import {NavigationActions} from "react-navigation";
 import ReaderManager from "../../modules/ReaderManager";
 import _ from 'lodash'
+import {rootViewTopPadding} from '../../utils/paddingUtils'
 
 export default class UserPath extends Component {
 
@@ -92,12 +93,15 @@ export default class UserPath extends Component {
                     <Text style={styles.pathInfoDescription}>{userPath.data.shortDescription}</Text>
                 </View>
                 <SectionList
-                    style={{marginTop: 20, marginRight: 2}}
+                    style={{marginTop: 20, marginRight: 2, width:'100%', paddingTop: 2}}
                     refreshing={userPath.isFetching}
                     onRefresh={() => this.props.getUserPath()}
                     keyExtractor={this._keyExtractor}
                     stickySectionHeadersEnabled={false}
                     showsVerticalScrollIndicator={false}
+                    showsHorizontalIndicator={false}
+                    horizontal={false}
+                    alwaysBounceHorizontal={false}
                     renderSectionHeader={this._renderSectionHeader}
                     bounces={true}
                     sections={sections}
@@ -114,7 +118,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: colors.mainWhite,
         alignItems:'center',
-        paddingTop: 30,
+        paddingTop: 30 + rootViewTopPadding(),
         width: '100%'
     },
     pathInfoContainer: {
@@ -147,11 +151,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical:-1.5,
-        width: '70%'
+        width: '80%'
     },
     sectionContainer: {
         flexDirection: 'row',
-        width: '90%'
     },
     verticalLine: {
         backgroundColor: colors.darkBlue,

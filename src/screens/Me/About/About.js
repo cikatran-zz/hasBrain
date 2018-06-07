@@ -41,7 +41,9 @@ export default class About extends PureComponent<Props> {
             description = "Enter your summary here"
         }
         return (
-            <TextInput ref={component => this._summaryTextInput = component} multiline={true} underlineColorAndroid="transparent" numberOfLines={3} style={styles.descriptionText} defaultValue={description} editable={this.props.editMode}/>
+            <View pointerEvents={this.props.editMode ? 'auto' : 'none'}>
+                <TextInput ref={component => this._summaryTextInput = component} multiline={true} underlineColorAndroid="transparent" numberOfLines={3} style={styles.descriptionText} defaultValue={description} editable={this.props.editMode}/>
+            </View>
         )
     }
 
@@ -121,7 +123,7 @@ export default class About extends PureComponent<Props> {
                     keyExtractor={this._keyExtractor}
                     stickySectionHeadersEnabled={false}
                     showsVerticalScrollIndicator={false}
-                    bounces={false}
+                    bounces={true}
                     renderSectionHeader={this._renderSectionHeader}
                     sections={[
                         {

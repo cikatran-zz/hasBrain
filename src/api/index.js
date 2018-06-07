@@ -194,7 +194,7 @@ export const getUserName = () => {
 
 //Currently just simple for updating role and summary only. TODO: update user object
 export const updateUserProfile = (role, summary) => {
-    let jsonString = `{ ${strings.mekey}.role: ${role}, ${strings.mekey}.about: ${summary} }`;
+    let jsonString = `{ "${strings.mekey}.role": "${role}", "${strings.mekey}.about": "${summary}" }`;
     return new Promise((resolve, reject) => {
         RNUserKit.storeProperties(jsonString, (error) => {
             if (error) {
