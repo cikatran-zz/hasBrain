@@ -42,7 +42,7 @@ export default class Save extends React.Component {
     };
 
     _renderListItem = ({item}) => {
-        let article = item.article;
+        let {article} = item;
         if (article == null) {
             return null;
         }
@@ -106,7 +106,7 @@ export default class Save extends React.Component {
 
         let data = [];
         if (saved.data != null) {
-            data = saved.data.filter((x)=> (_.indexOf(this.state.deleteItems, x.article._id) < 0))
+            data = saved.data.filter((x)=> (x.article != null && _.indexOf(this.state.deleteItems, x.article._id) < 0))
         }
 
         if (data.length === 0) {
