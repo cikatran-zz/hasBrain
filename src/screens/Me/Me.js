@@ -94,7 +94,7 @@ export default class Me extends React.Component {
                 <View style={styles.profileContainer}>
                     <CircleImage
                         size={75}
-                        url="https://ia.media-imdb.com/images/M/MV5BZTRiNTA4MjItNmQzMi00OWJiLWEwOTktNmRlNTAzYzZhN2UyL2ltYWdlL2ltYWdlXkEyXkFqcGdeQXVyMjIyNzU0OA@@._V1_.jpg"/>
+                        source={require('../../assets/ic_hasbrain.png')}/>
 
                     <View style={styles.profileTextContainer}>
                         <Text numberOfLines={1} style={styles.profileName}>{user.userName ? user.userName : ''}</Text>

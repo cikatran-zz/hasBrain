@@ -10,11 +10,11 @@ type Props = {
 export default class CircleImage extends PureComponent<Props> {
 
     render() {
-        const {url, size} = this.props;
+        const {source, size} = this.props;
         let borderRadius = size/2;
         return (
             <View style={{width: size, height: size, borderRadius: borderRadius, overflow: 'hidden'}}>
-                <Image style={{width: size, height: size}} source={{uri: url}}/>
+                <Image style={{width: size, height: size}} source={source}/>
             </View>
         )
 
