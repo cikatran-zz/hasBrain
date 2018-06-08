@@ -4,7 +4,8 @@ const initialState = {
     data: null,
     fetched: false,
     isFetching: false,
-    errorMessage: null
+    errorMessage: null,
+    chosenSources: null
 }
 
 export default function sourcelistReducer(state = initialState, action) {
@@ -19,7 +20,8 @@ export default function sourcelistReducer(state = initialState, action) {
                 ...state,
                 isFetching: false,
                 fetched: true,
-                data: action.data
+                data: action.data.sourceList,
+                chosenSources: action.data.chosenSources
             }
         case actionTypes.FETCH_SOURCE_LIST_FAILURE:
             return {

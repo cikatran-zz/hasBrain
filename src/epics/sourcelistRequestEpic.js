@@ -9,7 +9,7 @@ const getSourceListEpic = (action$) =>
         .mergeMap(action =>
             Observable.from(getSourceList())
                 .map(response => {
-                    return getSourceListSuccess(response.data)
+                    return getSourceListSuccess(response)
                 })
                 .catch(error => Observable.of(getSourceListFailure(error)))
         )

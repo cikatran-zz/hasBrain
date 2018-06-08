@@ -266,6 +266,22 @@ export const getUserPath = () => {
 export const getSourceList = () => {
     return gqlQuery({
         query: config.queries.sourceList
+    }).then((response) => {
+        return new Promise((resolve, reject) => {
+            RNUserKit.getProperty(strings.articleFilter, (error, result) => {
+                if (error) {
+                    reject(error)
+                } else {
+                    let sourceList = response.data.viewer.sourcePagination;
+                    let chosenSources = _.get(result[0], strings.articleFilter, null);
+                    let responseResult = {
+                        sourceList: sourceList,
+                        chosenSources: chosenSources
+                    }
+                    resolve(responseResult);
+                }
+            })
+        })
     })
 }
 

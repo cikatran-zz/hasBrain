@@ -9,7 +9,7 @@ export function getSourceList() {
 export function getSourceListSuccess(data) {
     return {
         type: actionTypes.FETCH_SOURCE_LIST_SUCCESS,
-        data: data.viewer.sourcePagination,
+        data: data,
     }
 }
 

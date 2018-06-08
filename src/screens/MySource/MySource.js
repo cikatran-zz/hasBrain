@@ -46,13 +46,21 @@ export default class MySource extends React.Component {
     _keyExtractor = (item, index) => index.toString();
     _renderListItem = ({item}) => {
         const {checkedState} = this.state;
-        let checkedItem = checkedState.get(item._id);
+        const {source} = this.props;
+        const {chosenSources} = source;
+        let checkedItem = false;
+        if (_.isEmpty(checkedState)) {
+            checkedItem = _.get(chosenSources, item.sourceId, undefined);
+        } else {
+            checkedItem = checkedState.get(item.sourceId);
+        }
+
         return (
             <View style={styles.listRow}>
                 <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.sourceImage, width: 30, height: 30}}/>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginLeft: 20, alignItems: 'center', width: '80%', height: 30}}>
                     <Text style={styles.sourceText}>{item.title}</Text>
-                    <CheckComponent id={item._id} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
+                    <CheckComponent id={item.sourceId} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
                 </View>
             </View>
         )
