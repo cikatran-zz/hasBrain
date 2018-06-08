@@ -8,7 +8,8 @@ import {
     View,
     StyleSheet,
     Dimensions,
-    Share, NativeModules, Platform, Image
+    Share, NativeModules, Platform, Image,
+    Alert
 } from 'react-native'
 import {colors} from '../../constants/colors'
 import _ from 'lodash'
@@ -34,11 +35,35 @@ export default class MySource extends React.Component {
     }
 
     _onPressItem = (id) => {
+        const {source} = this.props;
+        const {chosenSources} = source;
 
         this.setState((state) => {
             let checkedState = state.checkedState;
-            let checked = !checkedState.get(id);
-            checkedState.set(id, checked);
+            if (_.isEmpty(checkedState)) {
+                let keys = _.keys(chosenSources);
+                for (let key of keys) {
+                    checkedState.set(key, true);
+                }
+            }
+            let checkedSourcesValues = Array.from(checkedState.values());
+            checkedSourcesValues = _.filter(checkedSourcesValues, (item) => {
+                return item == true;
+            })
+            if (checkedSourcesValues.length < 2) {
+                if (checkedState.get(id)) {
+                    Alert.alert('Error', 'You must have at least 1 source', [
+                        {text: 'OK'},
+                    ])
+                } else {
+                    let checked = !checkedState.get(id);
+                    checkedState.set(id, checked);
+
+                }
+            } else {
+                let checked = !checkedState.get(id);
+                checkedState.set(id, checked);
+            }
             return {checkedState}
         });
     }
