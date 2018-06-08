@@ -13,6 +13,7 @@ import {
     getUserNameEpic
 } from './userProfileEpic'
 import getLastReadingPositionEpic from "./lastReadingPositionRequestEpic";
+import getSourceListEpic from './sourcelistRequestEpic'
 
 const rootEpic = combineEpics(
     getSavedEpic,
@@ -25,7 +26,8 @@ const rootEpic = combineEpics(
     getUserAnalystEpic,
     getUserNameEpic,
     getLastReadingPositionEpic,
-    getUserPathEpic
+    getUserPathEpic,
+    getSourceListEpic
 );
 
 export default rootEpic;

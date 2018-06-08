@@ -263,3 +263,9 @@ export const getUserPath = () => {
     })
 }
 
+export const getSourceList = () => {
+    return gqlQuery({
+        query: config.queries.sourceList
+    })
+}
+

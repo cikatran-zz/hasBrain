@@ -1,16 +1,15 @@
 import MySource from './MySource'
 import {connect} from 'react-redux';
-import {getArticles} from "../../actions/getArticles";
-import {getPlaylist} from "../../actions/getPlaylist";
-import {getSaved} from "../../actions/getSaved";
-
+import {getSourceList} from "../../actions/getSourceList";
 function mapStateToProps(state) {
     return {
+        source: state.sourcelistReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
+        getSourceList: () => dispatch(getSourceList())
     }
 }
 

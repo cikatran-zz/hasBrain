@@ -304,6 +304,23 @@ query {
  }
 `
 
+const getSourceList = gql`
+    query{
+        viewer{
+            sourcePagination {
+                count
+                items {
+                    _id
+                    title
+                    sourceImage
+                    sourceId
+                    categories
+                }
+            }
+         }
+    }
+`
+
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
@@ -313,7 +330,8 @@ export default {
         bookmark: getBookmark,
         onboardingInfo: onboardingInfo,
         userHighlight: getUserHighLight,
-        userPath: getUserPath
+        userPath: getUserPath,
+        sourceList: getSourceList
     },
     mutation: {
         bookmark: postBookmark,
