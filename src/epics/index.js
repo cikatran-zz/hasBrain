@@ -13,6 +13,10 @@ import {
     getUserNameEpic
 } from './userProfileEpic'
 import getLastReadingPositionEpic from "./lastReadingPositionRequestEpic";
+import getIntentsEpic from "./intentRequestEpic";
+import getPathRecommendEpic from "./pathRecommendEpic";
+import getPathBookmarkedEpic from "./pathBookmarkedEpic";
+import updateRecommendSourceEpic from "./updateRecommendSourceEpic";
 import getSourceListEpic from './sourcelistRequestEpic';
 import updateSourceListEpic from './updateSourceListEpic'
 
@@ -28,6 +32,10 @@ const rootEpic = combineEpics(
     getUserNameEpic,
     getLastReadingPositionEpic,
     getUserPathEpic,
+    getIntentsEpic,
+    getPathRecommendEpic,
+    getPathBookmarkedEpic,
+    updateRecommendSourceEpic,
     getSourceListEpic,
     updateSourceListEpic
 );

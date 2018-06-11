@@ -7,7 +7,7 @@ import { getSavedFailure, getSavedSuccess } from '../actions/getSaved'
 const getSavedEpic = (action$) =>
     action$.ofType(actionTypes.FETCHING_SAVED)
         .mergeMap(action =>
-            Observable.from(getSaved(action.page, action.perPage))
+            Observable.from(getSaved(action.page, action.perPage, "articletype"))
                 .map(response => {
                     return getSavedSuccess(response.data, action.page)
                 })

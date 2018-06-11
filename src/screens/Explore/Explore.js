@@ -16,7 +16,7 @@ import HorizontalCell from '../../components/HorizontalCell'
 import Carousel from '../../components/CustomCarousel'
 import {getImageFromArray} from "../../utils/imageUtils";
 import _ from 'lodash'
-import {postBookmark, postUnbookmark} from "../../api";
+import {postCreateBookmark, postRemoveBookmark} from "../../api";
 import {strings} from "../../constants/strings";
 import {formatReadingTimeInMinutes, getIDOfCurrentDate} from "../../utils/dateUtils";
 import {extractRootDomain} from "../../utils/stringUtils";
@@ -107,14 +107,14 @@ export default class Explore extends React.Component {
     _onBookmarkItem = (id) => {
         if (_.findIndex(this.state.bookmarked, (o) => (o === id)) !== -1) {
             this.setState({bookmarked: _.filter(this.state.bookmarked, (o) => (o !== id))});
-            postUnbookmark(id).then(value => {
+            postRemoveBookmark(id, "articletype").then(value => {
                 //console.log("SUCCESS BOOK");
             }).catch((err) => {
                 //console.log("ERROR BOOK", err);
             });
         } else {
             this.setState({bookmarked: this.state.bookmarked.concat(id)});
-            postBookmark(id).then(value => {
+            postCreateBookmark(id, "articletype").then(value => {
                 //console.log("SUCCESS BOOK");
             }).catch((err) => {
                 //console.log("ERROR BOOK", err);

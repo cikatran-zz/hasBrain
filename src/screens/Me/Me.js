@@ -8,6 +8,7 @@ import CircleImage from '../../components/CircleImage'
 import About from './About'
 import HighLight from './HighLight'
 import _ from 'lodash'
+import {rootViewTopPadding} from '../../utils/paddingUtils'
 
 export default class Me extends React.Component {
     _titleTextInput = null;
@@ -96,7 +97,7 @@ export default class Me extends React.Component {
                         size={75}
                         source={require('../../assets/ic_hasbrain.png')}/>
 
-                    <View style={styles.profileTextContainer}>
+                    <View pointerEvents={editMode ? 'auto' : 'none'} style={styles.profileTextContainer}>
                         <Text numberOfLines={1} style={styles.profileName}>{user.userName ? user.userName : ''}</Text>
                         <TextInput ref={component => this._titleTextInput = component}  multiline={true} underlineColorAndroid="transparent" numberOfLines={2} style={styles.profileTitle} defaultValue={title} editable={editMode}/>
                     </View>
@@ -149,7 +150,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: colors.mainWhite,
         alignItems:'center',
-        paddingTop: 50
+        paddingTop: 50 + rootViewTopPadding()
     },
     profileContainer: {
         flexDirection: 'row',
