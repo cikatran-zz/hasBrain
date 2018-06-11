@@ -285,3 +285,30 @@ export const getSourceList = () => {
     })
 }
 
+export const getExploreArticles = (limit, skip, sources, tags) => {
+
+    if (_.isEmpty(sources) || _.isEmpty(tags)) {
+        return new Promise((resolve, reject) => {
+            RNUserKit.getProperty(strings.articleFilter, (error, result) => {
+                if (error) {
+                    reject(error)
+                } else {
+                    let chosenSources = _.get(result[0], strings.articleFilter, null);
+                    let newSources = _.keys(chosenSources);
+                    let newTags = _.uniq(_.flatten(_.values(chosenSources)));
+                    resolve(getExploreFunc(limit, skip, newSources, newTags));
+                }
+            })
+        })
+    } else {
+        return getExploreFunc(limit, skip, sources, tags);
+    }
+
+}
+
+const  getExploreFunc = (limit, skip, sources, tags) => {
+    return gqlQuery({
+        query: config.queries.exploreArticles,
+        variables: {skip: skip, limit: 10, sources: sources, tags: tags}
+    })
+}

@@ -51,8 +51,8 @@ export default class Explore extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getArticles(1, 20);
-        this.props.getPlaylist();
+        this.props.getArticles(10, 0, "", "");
+        // this.props.getPlaylist();
         this.props.getSaved();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
@@ -123,15 +123,15 @@ export default class Explore extends React.Component {
     };
 
     _renderVerticalItem = ({item}) => (
-        <VerticalRow title={item.title}
-                     author={extractRootDomain(item.contentId)}
-                     time={item.createdAt}
-                     readingTime={item.readingTime}
-                     onClicked={() => this._openReadingView(item)}
-                     onShare={() => this._onShareItem(item)}
+        <VerticalRow title={item._source.title}
+                     author={item._source.author}
+                     time={item._source.sourceCreateAt}
+                     readingTime={item._source.readingTime}
+                     onClicked={() => this._openReadingView(item._source)}
+                     onShare={() => this._onShareItem(item._source)}
                      onBookmark={() => this._onBookmarkItem(item._id)}
                      bookmarked={_.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1}
-                     image={getImageFromArray(item.originalImages, null, null, item.sourceImage)}/>
+                     image={item._source.sourceImage}/>
     );
 
     _renderVerticalSeparator = () => (
@@ -223,7 +223,7 @@ export default class Explore extends React.Component {
                 </View>
                 <SectionList
                     refreshing={articles.isFetching}
-                    onRefresh={() => this.props.getArticles(1, 20)}
+                    onRefresh={() => this.props.getArticles(10, 0, "", "")}
                     style={styles.alertWindow}
                     keyExtractor={this._keyExtractor}
                     stickySectionHeadersEnabled={false}

@@ -321,6 +321,44 @@ const getSourceList = gql`
     }
 `
 
+const getExploreArticles = gql`
+query getExploreArticles($skip: Int, $limit: Int, $sources: [JSON], $tags: [JSON]){
+  viewer{
+    articleSearch(query: {
+      bool: {
+        filter: [
+          {
+              terms: {
+              sourceName: $sources
+            }
+          },
+          {
+            terms:{
+              category: $tags
+            }
+          }
+        ]
+      }
+    }, limit: $limit, skip: $skip) {
+      count
+      took
+      hits {
+        _id
+        _source{
+  				title
+          category
+          author
+          authorImage
+          readingTime
+          sourceImage
+          sourceCreateAt
+        }
+      }
+    }
+  }
+}
+`
+
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
@@ -331,7 +369,8 @@ export default {
         onboardingInfo: onboardingInfo,
         userHighlight: getUserHighLight,
         userPath: getUserPath,
-        sourceList: getSourceList
+        sourceList: getSourceList,
+        exploreArticles: getExploreArticles
     },
     mutation: {
         bookmark: postBookmark,
