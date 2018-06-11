@@ -21,29 +21,33 @@ export default class OnboardingPageIntent extends React.Component {
     }
 
     _getFilterData = () => {
-        const { data } = this.props;
+        const {data} = this.props;
 
         let intents = [];
-        data.forEach((intent)=> {
+        data.forEach((intent) => {
             if (intent.intentType === "non_type") {
-                intent.children.forEach((childIntent)=>{
+                intent.children.forEach((childIntent) => {
                     intents = intents.concat({_id: childIntent._id, group: false, displayName: childIntent.displayName})
                 });
             } else {
-                intent.children.forEach((childIntent)=>{
-                    intents = intents.concat({_id: childIntent._id, group: true, displayName: intent.intentType + " " + childIntent.displayName})
+                intent.children.forEach((childIntent) => {
+                    intents = intents.concat({
+                        _id: childIntent._id,
+                        group: true,
+                        displayName: intent.intentType + " " + childIntent.displayName
+                    })
                 });
             }
         });
         return intents;
     };
 
-    _findIntent = (query)=>{
+    _findIntent = (query) => {
         if (query === '') {
             return [];
         }
 
-        const { data } = this.props;
+        const {data} = this.props;
         const regex = new RegExp(`${query.trim()}`, 'i');
         let results = this._getFilterData().filter(intent => intent.displayName.search(regex) >= 0);
         if (results.length === 0 && query.trim() !== '') {
@@ -53,29 +57,35 @@ export default class OnboardingPageIntent extends React.Component {
     };
 
     _renderTags = () => {
-        return this.state.selectedIntentions.map((item, index)=><TouchableOpacity onPress={()=>this._onClickedTag(item._id)}><View style={styles.tagView}><Text style={styles.tagText}>{item.displayName}</Text></View></TouchableOpacity>)
+        return this.state.selectedIntentions.map((item, index) => <TouchableOpacity
+            onPress={() => this._onClickedTag(item._id)}><View style={styles.tagView}><Text
+            style={styles.tagText}>{item.displayName}</Text></View></TouchableOpacity>)
     };
 
     _onClickedTag = (id) => {
         let {selectedIntentions} = this.state;
-        let newIntentions = selectedIntentions.filter((intent)=>intent._id !== id);
+        let newIntentions = selectedIntentions.filter((intent) => intent._id !== id);
         this.setState({selectedIntentions: newIntentions});
         this.props.onSelectedChanged(newIntentions);
     };
 
     _onChooseIntent = (item) => {
         let intents = _.cloneDeep(this.state.selectedIntentions);
-        if (item._id !== "_create_new" && intents.find((x)=>x.displayName === item.displayName) == null) {
+        if (item._id !== "_create_new" && intents.find((x) => x.displayName === item.displayName) == null) {
             intents = intents.concat([item]);
         }
         this.setState({selectedIntentions: intents, query: ''});
         if (item._id === "_create_new") {
-            postCreateIntent(item.displayName).then((value)=>{
-                intents = intents.concat([{_id: value.data.user.intentCreate.recordId, group: false, displayName: item.displayName}]);
+            postCreateIntent(item.displayName).then((value) => {
+                intents = intents.concat([{
+                    _id: value.data.user.intentCreate.recordId,
+                    group: false,
+                    displayName: item.displayName
+                }]);
                 this.setState({selectedIntentions: intents, query: ''});
                 console.log("Create INTENT success ", value);
                 this.props.onSelectedChanged(intents);
-            }).catch((e)=>{
+            }).catch((e) => {
                 console.log("Create INTENT failed ", item.displayName)
             })
         } else {
@@ -91,33 +101,34 @@ export default class OnboardingPageIntent extends React.Component {
 
         return (
             <View style={styles.rootView}>
-                <View zIndex={-1} style={styles.tagsView}>
+                <Autocomplete
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    containerStyle={styles.autocompleteContainer}
+                    inputContainerStyle={styles.inputContainer}
+                    data={intents}
+                    defaultValue={''}
+                    onChangeText={text => this.setState({query: text, isSearching: true})}
+                    placeholder="Search for intention"
+                    renderItem={({_id, group, displayName}) => (
+                        <TouchableOpacity zIndex={1000} style={styles.autocompleteButton}
+                                          onPress={() => this._onChooseIntent({
+                                              _id: _id,
+                                              group: group,
+                                              displayName: displayName
+                                          })}>
+                            <Text style={[styles.autocompleteText, group ? {fontWeight: 'bold'} : {}]}>
+                                {_id === "_create_new" ? "New intent \"" + displayName + "\"" : displayName}
+                            </Text>
+                        </TouchableOpacity>
+                    )}
+                    renderSeparator={() => (
+                        <View style={styles.separatorLine}/>
+                    )}
+                />
+                <View style={styles.tagsView}>
                     {this._renderTags()}
                 </View>
-                <View style={styles.autocompleteView}>
-                    <Autocomplete
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        containerStyle={styles.autocompleteContainer}
-                        inputContainerStyle={styles.inputContainer}
-                        data={intents}
-                        defaultValue={''}
-                        onChangeText={text => this.setState({ query: text, isSearching: true })}
-                        placeholder="Search for intention"
-                        renderItem={({_id, group, displayName}) => (
-                            <TouchableOpacity zIndex={1000} style={styles.autocompleteButton} onPress={()=>this._onChooseIntent({_id: _id, group: group, displayName: displayName})}>
-                                <Text style={[styles.autocompleteText, group ? {fontWeight: 'bold'} : {}]}>
-                                    {_id === "_create_new" ? "New intent \""+displayName + "\"" : displayName}
-                                </Text>
-                            </TouchableOpacity>
-                        )}
-                        renderSeparator={()=>(
-                            <View style={styles.separatorLine}/>
-                        )}
-                    />
-                </View>
-
-
             </View>
         );
     }
@@ -127,17 +138,20 @@ export default class OnboardingPageIntent extends React.Component {
 const styles = StyleSheet.create({
     rootView: {
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
+        flex: 1,
+        height: Dimensions.get('window').height/2
     },
     autocompleteView: {
-        position: 'absolute',
-        marginTop: 20,
-        width: '100%'
+        flex: 1
     },
     autocompleteContainer: {
-        width: '100%',
-        height: 50,
-        backgroundColor: colors.mainWhite
+        flex: 1,
+        left: 0,
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        zIndex: 1
     },
     inputContainer: {
         borderWidth: 1,
@@ -161,7 +175,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '100%',
         flexWrap: 'wrap',
-        marginTop: 100
+        marginTop: 50
     },
     tagView: {
         borderRadius: 20,
