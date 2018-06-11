@@ -20,10 +20,6 @@ export default class OnboardingPageIntent extends React.Component {
         }
     }
 
-    _onChangeSelected = () => {
-        this.props.onSelectedChanged(this.tag.itemsSelected.map(x => x.id - 1));
-    };
-
     _getFilterData = () => {
         const { data } = this.props;
 
@@ -57,7 +53,14 @@ export default class OnboardingPageIntent extends React.Component {
     };
 
     _renderTags = () => {
-        return this.state.selectedIntentions.map((item, index)=><TouchableOpacity><View style={styles.tagView}><Text style={styles.tagText}>{item.displayName}</Text></View></TouchableOpacity>)
+        return this.state.selectedIntentions.map((item, index)=><TouchableOpacity onPress={()=>this._onClickedTag(item._id)}><View style={styles.tagView}><Text style={styles.tagText}>{item.displayName}</Text></View></TouchableOpacity>)
+    };
+
+    _onClickedTag = (id) => {
+        let {selectedIntentions} = this.state;
+        let newIntentions = selectedIntentions.filter((intent)=>intent._id !== id);
+        this.setState({selectedIntentions: newIntentions});
+        this.props.onSelectedChanged(newIntentions);
     };
 
     _onChooseIntent = (item) => {

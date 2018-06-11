@@ -379,6 +379,14 @@ mutation removeBookmark($contentId: MongoID, $kind: String){
 }
 `;
 
+const getRecommendSource = gql`
+query getRecommendSource($ids: [ID]!){
+  viewer{
+    sourceRecommend(_ids: $ids)
+  }
+}
+`;
+
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
@@ -390,7 +398,8 @@ export default {
         userHighlight: getUserHighLight,
         userPath: getUserPath,
         intents: intentMany,
-        pathRecommend: getPathRecommend
+        pathRecommend: getPathRecommend,
+        sourceRecommend: getRecommendSource
     },
     mutation: {
         bookmark: postBookmark,

@@ -62,7 +62,9 @@ export default class OnboardingPage extends React.Component {
         return (
             <View style={[this.props.style, styles.alertWindow]}>
                 <View style={styles.headerView}>
-                    <Image source={this.props.icon} style={styles.iconImage}/>
+                    <View style={styles.iconView}>
+                        <Image source={this.props.icon} style={styles.iconImage}/>
+                    </View>
                     <View style={styles.textView}>
                         <Text style={styles.titleText}>{this.props.pageTitle}</Text>
                         <Text style={onboardingSubtitleStyle}>{this.props.subtitle}</Text>
@@ -90,7 +92,8 @@ const styles = StyleSheet.create({
     headerView: {
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginBottom: 10
     },
     lineView: {
         height: 2,
@@ -98,14 +101,19 @@ const styles = StyleSheet.create({
         width: '100%',
         marginBottom: 25
     },
-    iconImage: {
+    iconView: {
         flex: 1,
-        resizeMode: 'center',
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    iconImage: {
+        resizeMode: 'contain',
         aspectRatio: 1
     },
     textView: {
-        flexDirection: 'column',
         flex: 4,
+        flexDirection: 'column',
         justifyContent: 'center'
     },
     titleText: {

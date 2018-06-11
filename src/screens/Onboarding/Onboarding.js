@@ -10,68 +10,6 @@ import _ from 'lodash'
 import {postUserInterest} from '../../api'
 import {strings} from "../../constants/strings";
 
-const fakeIntents = [
-    {
-        "intentType": "Start learning",
-        "children": [
-            {
-                "_id": "5b19021d3201c9001fe73916",
-                "title": "iOS development beginner",
-                "intentType": "[object Object]",
-                "displayName": "iOS development",
-                "createdAt": "2018-06-07T09:59:57.978Z",
-                "updatedAt": "2018-06-07T09:59:57.978Z",
-                "projectId": "5adf74c77ff44e001eb82539"
-            },
-            {
-                "_id": "5b19022c3201c9001fe73917",
-                "title": "Android development beginner",
-                "intentType": "[object Object]",
-                "displayName": "Android development",
-                "createdAt": "2018-06-07T10:00:12.753Z",
-                "updatedAt": "2018-06-07T10:00:12.753Z",
-                "projectId": "5adf74c77ff44e001eb82539"
-            }
-        ]
-    },
-    {
-        "intentType": "non_type",
-        "children": [
-            {
-                "_id": "5b19051f3201c9001fe7392f",
-                "title": "Start an idea",
-                "intentType": "[object Object]",
-                "displayName": "Start an idea",
-                "createdAt": "2018-06-07T10:12:47.520Z",
-                "updatedAt": "2018-06-07T10:12:47.520Z",
-                "projectId": "5adf74c77ff44e001eb82539"
-            },
-            {
-                "_id": "5b1905373201c9001fe73930",
-                "title": "Work oversea",
-                "intentType": "[object Object]",
-                "displayName": "Work oversea",
-                "createdAt": "2018-06-07T10:13:11.218Z",
-                "updatedAt": "2018-06-07T10:13:11.218Z",
-                "projectId": "5adf74c77ff44e001eb82539"
-            }
-        ]
-    },
-    {
-        "intentType": "Improving",
-        "children": [
-            {
-                "_id": "5b1902a53201c9001fe73922",
-                "title": "Data science basic",
-                "intentType": "[object Object]",
-                "displayName": "Data science",
-                "createdAt": "2018-06-07T10:02:13.298Z",
-                "updatedAt": "2018-06-07T10:02:13.298Z",
-                "projectId": "5adf74c77ff44e001eb82539"
-            }
-        ]
-    }
-];
 export default class Onboarding extends React.Component {
 
     constructor(props) {
@@ -93,6 +31,10 @@ export default class Onboarding extends React.Component {
     }
 
     _onNextPage = () => {
+        if (this.currentIndex === 0) {
+            let personaIds = this.experience.map((ex)=>ex.personaId);
+            this.props.updateRecommendSource(personaIds);
+        }
         if (this.currentIndex === 1) {
             this.setState({nextText: 'Done'})
         }

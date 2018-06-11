@@ -10,6 +10,7 @@ import userPathReducer from './userPathReducer'
 import intentionsReducer from "./intentionsReducer";
 import pathRecommendReducer from "./pathRecommendReducer";
 import pathBookmarkedReducer from "./pathBookmarkedReducer";
+import updateRecommendSourceReducer from "./updateRecommendSourceReducer";
 
 export default combineReducers({
     nav,
@@ -22,5 +23,6 @@ export default combineReducers({
     userPathReducer,
     intentionsReducer,
     pathRecommendReducer,
-    pathBookmarkedReducer
+    pathBookmarkedReducer,
+    updateRecommendSourceReducer
 });

@@ -16,6 +16,7 @@ import getLastReadingPositionEpic from "./lastReadingPositionRequestEpic";
 import getIntentsEpic from "./intentRequestEpic";
 import getPathRecommendEpic from "./pathRecommendEpic";
 import getPathBookmarkedEpic from "./pathBookmarkedEpic";
+import updateRecommendSourceEpic from "./updateRecommendSourceEpic";
 
 const rootEpic = combineEpics(
     getSavedEpic,
@@ -31,7 +32,8 @@ const rootEpic = combineEpics(
     getUserPathEpic,
     getIntentsEpic,
     getPathRecommendEpic,
-    getPathBookmarkedEpic
+    getPathBookmarkedEpic,
+    updateRecommendSourceEpic
 );
 
 export default rootEpic;

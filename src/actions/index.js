@@ -6,7 +6,7 @@ import * as getLastReadingPosition from './getLastReadingPosition'
 import * as getIntention from './getIntention'
 import * as getPathRecommend from './getPathRecommend'
 import * as getPathBookmarked from './getPathBookmarked'
-
+import * as updateRecommendSource from './updateRecommendSource'
 
 export default actions = {
     getSaved,
@@ -16,5 +16,6 @@ export default actions = {
     getLastReadingPosition,
     getIntention,
     getPathRecommend,
-    getPathBookmarked
+    getPathBookmarked,
+    updateRecommendSource
 }

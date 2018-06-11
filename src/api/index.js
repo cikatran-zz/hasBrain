@@ -298,3 +298,27 @@ export const postRemoveBookmark = (contentId, kind) => {
     });
 };
 
+export const getRecommendSource = (ids) => {
+    return gqlQuery({
+        query: config.queries.sourceRecommend,
+        variables: {ids: ids}
+    })
+};
+
+export const updateRecommendSoureToProfile = (ids) => {
+    return new Promise((resolve, reject) => {
+        getRecommendSource(ids).then(value => {
+            let articleFilter = {[strings.articleFilter]: value.data.viewer.sourceRecommend};
+            RNUserKit.storeProperty(articleFilter,(err, results)=>{
+                if (err == null && results != null) {
+                    resolve(articleFilter);
+                } else {
+                    reject(err);
+                }
+            })
+        }).catch(err=>{
+            reject(err);
+        });
+    });
+};
+
