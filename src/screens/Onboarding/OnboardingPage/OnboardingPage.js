@@ -8,6 +8,8 @@ import {
 } from "../../../constants/theme";
 import OnboardingSectionList from "./OnboardingSectionList";
 import OnboardingSectionTags from "./OnboardingSectionTags";
+import PathSlider from "../../../components/PathSlider";
+import OnboardingPageIntent from "./OnboardingPageIntent";
 
 export default class OnboardingPage extends React.Component {
 
@@ -31,17 +33,19 @@ export default class OnboardingPage extends React.Component {
 
     _onItemSelectedChanged = (sectionIndex, itemIndexes) => {
         const {onChangedSelected} = this.props;
-        let result = {}
-        result[sectionIndex] = itemIndexes
+        let result = {};
+        result[sectionIndex] = itemIndexes;
         onChangedSelected(result);
     };
 
-    _renderSection = ({item,index, section: {numColumns, multipleSelection, sectionIndex}}) => {
+    _renderSection = ({item,index, section: {numColumns, multipleSelection, searchable, sectionIndex}}) => {
         if (multipleSelection) {
             return (<OnboardingSectionTags data={item}
                                            onSelectedChanged={(selected) => this._onItemSelectedChanged(sectionIndex, selected)}/>)
         } else {
-            console.log(index);
+            if (searchable) {
+                return (<OnboardingPageIntent data={item} onSelectedChanged={(selected) => this._onItemSelectedChanged(sectionIndex, selected)}/>)
+            }
             return (<OnboardingSectionList style={this.props.style}
                                            data={item}
                                            numColumns={numColumns}

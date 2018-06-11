@@ -6,12 +6,11 @@ import VerticalNotificationRow from '../../components/VerticalNotificationRow'
 import {colors} from "../../constants/colors";
 import VerticalRow from "../../components/VerticalRow";
 import NoDataView from "../../components/NoDataView";
-import {postUnbookmark} from "../../api";
+import {postRemoveBookmark} from "../../api";
 import _ from 'lodash'
 import {getImageFromArray} from "../../utils/imageUtils";
 import {extractRootDomain} from "../../utils/stringUtils";
 import LoadingRow from "../../components/LoadingRow";
-import ReaderManager from "../../modules/ReaderManager";
 
 export default class Save extends React.Component {
 
@@ -34,7 +33,7 @@ export default class Save extends React.Component {
                 this.setState({deleteItems: this.state.deleteItems.concat(id)});
             })
         }
-        postUnbookmark(id).then(value => {
+        postRemoveBookmark(id, "articletype").then(value => {
             //console.log("DONE BOOKMARK",value);
         }).catch((err)=> {
             //console.log("ERROR BOOK", err);
@@ -42,18 +41,18 @@ export default class Save extends React.Component {
     };
 
     _renderListItem = ({item}) => {
-        let {article} = item;
-        if (article == null) {
+        let {content} = item;
+        if (content == null) {
             return null;
         }
-        return (<VerticalRow title={article.title}
-                             ref={(ref)=> this.rows[article._id] = ref}
-                             author={extractRootDomain(article.contentId)}
-                             time={article.createdAt}
-                             readingTime={article.readingTime}
-                             image={getImageFromArray(article.originalImages, null, null, article.sourceImage)}
-                             onClicked={() => this._openReadingView(article)}
-                             onBookmark={()=>this._onUnbookmarkItem(article._id)}
+        return (<VerticalRow title={content.title}
+                             ref={(ref)=> this.rows[content._id] = ref}
+                             author={extractRootDomain(content.contentId)}
+                             time={content.createdAt}
+                             readingTime={content.readingTime}
+                             image={getImageFromArray(content.originalImages, null, null, content.sourceImage)}
+                             onClicked={() => this._openReadingView(content)}
+                             onBookmark={()=>this._onUnbookmarkItem(content._id)}
                              bookmarked={true}/>)
     }
 
@@ -106,7 +105,7 @@ export default class Save extends React.Component {
 
         let data = [];
         if (saved.data != null) {
-            data = saved.data.filter((x)=> (x.article != null && _.indexOf(this.state.deleteItems, x.article._id) < 0))
+            data = saved.data.filter((x)=> (x.content != null && _.indexOf(this.state.deleteItems, x.content._id) < 0))
         }
 
         if (data.length === 0) {
@@ -120,6 +119,7 @@ export default class Save extends React.Component {
                     onRefresh={() => {
                         this.setState({deleteItems: []});
                         this.props.getSaved(1,10);
+                        this.currentPage = 1;
                     }}
                     style={styles.listContainer}
                     keyExtractor={this._keyExtractor}

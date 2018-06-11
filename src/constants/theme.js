@@ -41,7 +41,7 @@ export const onboardingTitleStyle = {
 export const onboardingSectionTitleStyle = {
     fontSize: 16,
     color: colors.grayText1,
-    fontWeight: 'normal'
+    fontWeight: 'bold'
 };
 
 export const onboardingSubtitleStyle = {
