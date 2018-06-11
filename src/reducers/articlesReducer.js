@@ -20,7 +20,7 @@ export default function articlesReducer(state = initialState, action) {
             };
         case actionTypes.FETCH_ARTICLE_SUCCESS:
             let newData = action.data;
-            if (state.data != null) {
+            if (state.data != null && action.skip > 0) {
                 newData = _.concat(state.data, newData);
             }
             let skip = newData.length;

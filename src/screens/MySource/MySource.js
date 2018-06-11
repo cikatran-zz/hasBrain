@@ -109,7 +109,8 @@ export default class MySource extends React.Component {
             newSourcesArray = _.concat(newSourcesArray, Object.keys(item));
             newTagsArray = _.uniq(_.flatten(_.concat(newTagsArray, Object.values(item))));
         }
-        this.props.updateSourceList(newSourcesMap);
+        if (!_.isEmpty(newSourcesMap))
+            this.props.updateSourceList(newSourcesMap);
         this.props.getArticles(10, 0, newSourcesArray, newTagsArray)
         this.props.navigation.goBack();
     }
@@ -129,6 +130,8 @@ export default class MySource extends React.Component {
                 <View>
                 </View>
                 <FlatList
+                    refreshing={source.isFetching}
+                    onRefresh={() => this.props.getSourceList()}
                     style={{marginHorizontal:20}}
                     keyExtractor={this._keyExtractor}
                     horizontal={false}
