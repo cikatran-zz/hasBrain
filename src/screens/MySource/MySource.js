@@ -91,6 +91,29 @@ export default class MySource extends React.Component {
         )
     }
 
+    _onBackPress = () => {
+        const {checkedState} = this.state;
+        const {source} = this.props;
+        let newSources = source.data.items.map((item) => {
+            if (checkedState.get(item.sourceId)) {
+                return {[item.sourceId]: item.categories};
+            }
+        });
+        newSources = _.compact(newSources);
+        let newSourcesMap = {};
+
+        let newSourcesArray = [];
+        let newTagsArray = [];
+        for (let item of newSources) {
+            newSourcesMap[Object.keys(item)[0]] = Object.values(item)[0];
+            newSourcesArray = _.concat(newSourcesArray, Object.keys(item));
+            newTagsArray = _.uniq(_.flatten(_.concat(newTagsArray, Object.values(item))));
+        }
+        this.props.updateSourceList(newSourcesMap);
+        this.props.getArticles(10, 0, newSourcesArray, newTagsArray)
+        this.props.navigation.goBack();
+    }
+
     render() {
         const {source} = this.props;
         if (!source.data)
@@ -98,7 +121,7 @@ export default class MySource extends React.Component {
         return (
             <View style={styles.rootView}>
                 <View style={styles.headerView}>
-                    <TouchableOpacity style={styles.backButton} onPress={()=>this.props.navigation.goBack()}>
+                    <TouchableOpacity style={styles.backButton} onPress={() => this._onBackPress()}>
                         <Image style={styles.backIcon} source={require('../../assets/ic_back_button.png')}/>
                     </TouchableOpacity>
                     <Text style={navigationTitleStyle}>My source</Text>

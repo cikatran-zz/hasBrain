@@ -285,6 +285,18 @@ export const getSourceList = () => {
     })
 }
 
+export const updateSourceList = (sources) => {
+    return new Promise((resolve, reject) => {
+        RNUserKit.storeProperty({[strings.articleFilter]: sources}, (error, result) => {
+            if (error){
+                reject(error);
+            } else {
+                resolve("Successfully Update sources");
+            }
+        })
+    })
+}
+
 export const getExploreArticles = (limit, skip, sources, tags) => {
 
     if (_.isEmpty(sources) || _.isEmpty(tags)) {
@@ -312,3 +324,4 @@ const  getExploreFunc = (limit, skip, sources, tags) => {
         variables: {skip: skip, limit: 10, sources: sources, tags: tags}
     })
 }
+
