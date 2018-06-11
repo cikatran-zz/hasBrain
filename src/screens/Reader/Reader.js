@@ -11,7 +11,7 @@ const {RNCustomWebview, RNUserKit} = NativeModules;
 import _ from 'lodash'
 import {strings} from "../../constants/strings";
 import {getIDOfCurrentDate} from "../../utils/dateUtils";
-import {getUrlInfo, postArticleCreateIfNotExist, postBookmark, postHighlightText, postUnbookmark} from "../../api";
+import {getUrlInfo, postArticleCreateIfNotExist, postCreateBookmark, postHighlightText, postRemoveBookmark} from "../../api";
 import ContinueReadingModal from "../../components/ContinueReadingModal";
 
 
@@ -188,7 +188,7 @@ export default class Reader extends React.Component {
         if (this.state.isBookmarked) {
             this.setState({isBookmarked: false});
             // Unbookmark
-            postUnbookmark(_.get(this.state.currentItem,"_id", "")).then(value => {
+            postRemoveBookmark(_.get(this.state.currentItem,"_id", ""), "articletype").then(value => {
                 console.log("SUCCESS UNBOOK");
             }).catch((err)=> {
                 console.log("ERROR UNBOOK", err);
@@ -196,7 +196,7 @@ export default class Reader extends React.Component {
         } else {
             this.setState({isBookmarked: true});
             // Bookmark
-            postBookmark(_.get(this.state.currentItem,"_id", "")).then(value => {
+            postCreateBookmark(_.get(this.state.currentItem,"_id", ""), "articletype").then(value => {
                 console.log("SUCCESS BOOK");
             }).catch((err)=> {
                 console.log("ERROR BOOK", err);

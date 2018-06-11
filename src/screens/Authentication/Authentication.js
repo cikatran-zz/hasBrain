@@ -9,6 +9,7 @@ import {strings} from "../../constants/strings";
 import { facebookLogin } from '../../utils/facebookLogin'
 import { googleLogin } from '../../utils/googleLogin'
 import NavigationActions from 'react-navigation/src/NavigationActions'
+import PathSlider from "../../components/PathSlider";
 
 export default class Authentication extends React.PureComponent {
 

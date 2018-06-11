@@ -129,6 +129,13 @@ export const postUnbookmark = (id) => {
     })
 };
 
+export const postCreateIntent = (name) => {
+    return gqlPost({
+        mutation: config.mutation.createIntent,
+        variables: {name: name}
+    });
+};
+
 export const postCreateUser = (profileId, name) => {
     return gqlPost({
         mutation: config.mutation.createUser,
@@ -226,10 +233,17 @@ export const getOnboardingInfo = () => {
     })
 };
 
-export const getSaved = (page, perPage) => {
+export const getSaved = (page, perPage, kind) => {
     return gqlQuery({
         query: config.queries.bookmark,
-        variables: {page: page, perPage: perPage}
+        variables: {page: page, perPage: perPage, kind: kind}
+    });
+};
+
+export const getIntents = (segments) => {
+    return gqlQuery({
+        query: config.queries.intents,
+        variables: {segments: segments}
     });
 };
 
@@ -261,5 +275,50 @@ export const getUserPath = () => {
     return gqlQuery({
         query: config.queries.userPath
     })
-}
+};
+
+export const getPathRecommend = (page, perPage) => {
+    return gqlQuery({
+        query: config.queries.pathRecommend,
+        variables: {page: page, perPage: perPage}
+    })
+};
+
+export const postCreateBookmark = (contentId, kind) => {
+    return gqlPost({
+        mutation: config.mutation.createBookmark,
+        variables: {contentId: contentId, kind: kind}
+    });
+};
+
+export const postRemoveBookmark = (contentId, kind) => {
+    return gqlPost({
+        mutation: config.mutation.removeBookmark,
+        variables: {contentId: contentId, kind: kind}
+    });
+};
+
+export const getRecommendSource = (ids) => {
+    return gqlQuery({
+        query: config.queries.sourceRecommend,
+        variables: {ids: ids}
+    })
+};
+
+export const updateRecommendSoureToProfile = (ids) => {
+    return new Promise((resolve, reject) => {
+        getRecommendSource(ids).then(value => {
+            let articleFilter = {[strings.articleFilter]: value.data.viewer.sourceRecommend};
+            RNUserKit.storeProperty(articleFilter,(err, results)=>{
+                if (err == null && results != null) {
+                    resolve(articleFilter);
+                } else {
+                    reject(err);
+                }
+            })
+        }).catch(err=>{
+            reject(err);
+        });
+    });
+};
 
