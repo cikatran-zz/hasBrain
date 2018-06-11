@@ -6,7 +6,12 @@ import playlistReducer from './playlistReducer'
 import onboardingReducer from "./onboardingReducer";
 import userHighlightReducer from './userHighlightReducer'
 import userProfileReducer from './userProfileReducer';
-import userPathReducer from './userPathReducer'
+import userPathReducer from './userPathReducer';
+import sourcelistReducer from './sourcelistReducer';
+import intentionsReducer from "./intentionsReducer";
+import pathRecommendReducer from "./pathRecommendReducer";
+import pathBookmarkedReducer from "./pathBookmarkedReducer";
+import updateRecommendSourceReducer from "./updateRecommendSourceReducer";
 
 export default combineReducers({
     nav,
@@ -16,5 +21,10 @@ export default combineReducers({
     onboardingReducer,
     userHighlightReducer,
     userProfileReducer,
-    userPathReducer
+    userPathReducer,
+    sourcelistReducer,
+    intentionsReducer,
+    pathRecommendReducer,
+    pathBookmarkedReducer,
+    updateRecommendSourceReducer
 });

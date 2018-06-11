@@ -14,7 +14,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getArticles: (page, perPage) => dispatch(getArticles(page, perPage)),
+        getArticles: (limit, skip, sources, tags) => dispatch(getArticles(limit, skip, sources, tags)),
         getPlaylist: ()=> dispatch(getPlaylist()),
         getSaved: () => dispatch(getSaved(1, 10))
     }

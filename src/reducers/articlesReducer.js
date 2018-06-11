@@ -1,15 +1,16 @@
 import * as actionTypes from '../actions/actionTypes';
+import _ from 'lodash';
 
 const initialState = {
     data: null,
     fetched: false,
     isFetching: false,
     error: false,
+    skip: 0,
+    count: 0
 };
 
 export default function articlesReducer(state = initialState, action) {
-
-
 
     switch (action.type) {
         case actionTypes.FETCHING_ARTICLE:
@@ -18,15 +19,18 @@ export default function articlesReducer(state = initialState, action) {
                 isFetching: true
             };
         case actionTypes.FETCH_ARTICLE_SUCCESS:
-            let newData = [...((state.data != null) ? state.data: []), ...action.data];
-            if (action.page === 1) {
-                newData = action.data;
+            let newData = action.data;
+            if (state.data != null && action.skip > 0) {
+                newData = _.concat(state.data, newData);
             }
+            let skip = newData.length;
             return {
                 ...state,
+                count: action.count,
                 isFetching: false,
                 fetched: true,
-                data: newData
+                data: newData,
+                skip: skip
             };
         case actionTypes.FETCH_ARTICLE_FAILURE:
             return {

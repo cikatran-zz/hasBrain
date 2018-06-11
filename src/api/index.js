@@ -129,6 +129,13 @@ export const postUnbookmark = (id) => {
     })
 };
 
+export const postCreateIntent = (name) => {
+    return gqlPost({
+        mutation: config.mutation.createIntent,
+        variables: {name: name}
+    });
+};
+
 export const postCreateUser = (profileId, name) => {
     return gqlPost({
         mutation: config.mutation.createUser,
@@ -194,7 +201,7 @@ export const getUserName = () => {
 
 //Currently just simple for updating role and summary only. TODO: update user object
 export const updateUserProfile = (role, summary) => {
-    let jsonString = `{ ${strings.mekey}.role: ${role}, ${strings.mekey}.about: ${summary} }`;
+    let jsonString = `{ "${strings.mekey}.role": "${role}", "${strings.mekey}.about": "${summary}" }`;
     return new Promise((resolve, reject) => {
         RNUserKit.storeProperties(jsonString, (error) => {
             if (error) {
@@ -226,10 +233,17 @@ export const getOnboardingInfo = () => {
     })
 };
 
-export const getSaved = (page, perPage) => {
+export const getSaved = (page, perPage, kind) => {
     return gqlQuery({
         query: config.queries.bookmark,
-        variables: {page: page, perPage: perPage}
+        variables: {page: page, perPage: perPage, kind: kind}
+    });
+};
+
+export const getIntents = (segments) => {
+    return gqlQuery({
+        query: config.queries.intents,
+        variables: {segments: segments}
     });
 };
 
@@ -260,6 +274,113 @@ export const getLastReadingPosition = (contentId) => {
 export const getUserPath = () => {
     return gqlQuery({
         query: config.queries.userPath
+    })
+};
+
+export const getPathRecommend = (page, perPage) => {
+    return gqlQuery({
+        query: config.queries.pathRecommend,
+        variables: {page: page, perPage: perPage}
+    })
+};
+
+export const postCreateBookmark = (contentId, kind) => {
+    return gqlPost({
+        mutation: config.mutation.createBookmark,
+        variables: {contentId: contentId, kind: kind}
+    });
+};
+
+export const postRemoveBookmark = (contentId, kind) => {
+    return gqlPost({
+        mutation: config.mutation.removeBookmark,
+        variables: {contentId: contentId, kind: kind}
+    });
+};
+
+export const getRecommendSource = (ids) => {
+    return gqlQuery({
+        query: config.queries.sourceRecommend,
+        variables: {ids: ids}
+    })
+};
+
+export const updateRecommendSoureToProfile = (ids) => {
+    return new Promise((resolve, reject) => {
+        getRecommendSource(ids).then(value => {
+            let articleFilter = {[strings.articleFilter]: value.data.viewer.sourceRecommend};
+            RNUserKit.storeProperty(articleFilter,(err, results)=>{
+                if (err == null && results != null) {
+                    resolve(articleFilter);
+                } else {
+                    reject(err);
+                }
+            })
+        }).catch(err=>{
+            reject(err);
+        });
+    });
+};
+
+export const getSourceList = () => {
+    return gqlQuery({
+        query: config.queries.sourceList
+    }).then((response) => {
+        return new Promise((resolve, reject) => {
+            RNUserKit.getProperty(strings.articleFilter, (error, result) => {
+                if (error) {
+                    reject(error)
+                } else {
+                    let sourceList = response.data.viewer.sourcePagination;
+                    let chosenSources = _.get(result[0], strings.articleFilter, null);
+                    let responseResult = {
+                        sourceList: sourceList,
+                        chosenSources: chosenSources
+                    }
+                    resolve(responseResult);
+                }
+            })
+        })
+    })
+}
+
+export const updateSourceList = (sources) => {
+    return new Promise((resolve, reject) => {
+        RNUserKit.storeProperty({[strings.articleFilter]: sources}, (error, result) => {
+            if (error){
+                reject(error);
+            } else {
+                resolve("Successfully Update sources");
+            }
+        })
+    })
+}
+
+export const getExploreArticles = (limit, skip, sources, tags) => {
+
+    if (_.isEmpty(sources) || _.isEmpty(tags)) {
+        return new Promise((resolve, reject) => {
+            RNUserKit.getProperty(strings.articleFilter, (error, result) => {
+                if (error) {
+                    reject(error)
+                } else {
+                    let chosenSources = _.get(result[0], strings.articleFilter, null);
+                    let newSources = _.keys(chosenSources);
+                    let newTags = _.uniq(_.flatten(_.values(chosenSources)));
+                    resolve(getExploreFunc(limit, skip, newSources, newTags));
+                }
+            })
+        })
+    } else {
+        return getExploreFunc(limit, skip, sources, tags);
+    }
+
+}
+
+const  getExploreFunc = (limit, skip, sources, tags) => {
+    return gqlQuery({
+        query: config.queries.exploreArticles,
+        variables: {skip: skip, limit: 10, sources: sources, tags: tags}
     })
 }
 

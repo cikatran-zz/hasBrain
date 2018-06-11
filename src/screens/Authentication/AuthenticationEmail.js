@@ -163,6 +163,7 @@ export default class Explore extends React.PureComponent {
         <Animated.View style={[styles.formView, {opacity: this._signInShown}]}>
             <TextInput style={styles.inputText}
                        placeholder={'Email'}
+                       secureTextEntry={false}
                        underlineColorAndroid='rgba(0,0,0,0)'
                        onChangeText={(text) => this.email = text}/>
             <TextInput style={styles.inputText}
@@ -185,10 +186,12 @@ export default class Explore extends React.PureComponent {
         <Animated.View style={[styles.formView, {opacity: this._signUpShown}]}>
             <TextInput style={styles.inputText}
                        placeholder={'Name'}
+                       secureTextEntry={false}
                        underlineColorAndroid='rgba(0,0,0,0)'
                        onChangeText={(text) => this.name = text}/>
             <TextInput style={styles.inputText}
                        placeholder={'Email'}
+                       secureTextEntry={false}
                        underlineColorAndroid='rgba(0,0,0,0)'
                        onChangeText={(text) => this.email = text}/>
             <TextInput style={styles.inputText}

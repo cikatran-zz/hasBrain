@@ -8,7 +8,7 @@ import {
     View,
     StyleSheet,
     Dimensions,
-    Share, NativeModules, Platform
+    Share, NativeModules, Platform, Image
 } from 'react-native'
 import {colors} from '../../constants/colors'
 import VerticalRow from '../../components/VerticalRow'
@@ -16,13 +16,14 @@ import HorizontalCell from '../../components/HorizontalCell'
 import Carousel from '../../components/CustomCarousel'
 import {getImageFromArray} from "../../utils/imageUtils";
 import _ from 'lodash'
-import {postBookmark, postUnbookmark} from "../../api";
+import {postCreateBookmark, postRemoveBookmark} from "../../api";
 import {strings} from "../../constants/strings";
 import {formatReadingTimeInMinutes, getIDOfCurrentDate} from "../../utils/dateUtils";
 import {extractRootDomain} from "../../utils/stringUtils";
 import LoadingRow from "../../components/LoadingRow";
 import ReaderManager from "../../modules/ReaderManager";
 import * as moment from 'moment';
+import {rootViewTopPadding} from "../../utils/paddingUtils";
 
 
 const horizontalMargin = 5;
@@ -50,8 +51,8 @@ export default class Explore extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getArticles(1, 20);
-        this.props.getPlaylist();
+        this.props.getArticles(10, 0, "", "");
+        // this.props.getPlaylist();
         this.props.getSaved();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
@@ -66,14 +67,8 @@ export default class Explore extends React.Component {
     _keyExtractor = (item, index) => index + '';
 
     _openReadingView = (item) => {
-        // if (Platform.OS === "ios") {
-        //     ReaderManager.sharedInstance._open(item, _.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1, () => {
-        //         this._setUpReadingTime();
-        //     });
-        // } else {
-            this.props.navigation.navigate("Reader", {...item, bookmarked: _.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1});
-        //}
 
+        this.props.navigation.navigate("Reader", {...item, bookmarked: _.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1});
     };
 
     _setUpReadingTime = () => {
@@ -112,14 +107,14 @@ export default class Explore extends React.Component {
     _onBookmarkItem = (id) => {
         if (_.findIndex(this.state.bookmarked, (o) => (o === id)) !== -1) {
             this.setState({bookmarked: _.filter(this.state.bookmarked, (o) => (o !== id))});
-            postUnbookmark(id).then(value => {
+            postRemoveBookmark(id, "articletype").then(value => {
                 //console.log("SUCCESS BOOK");
             }).catch((err) => {
                 //console.log("ERROR BOOK", err);
             });
         } else {
             this.setState({bookmarked: this.state.bookmarked.concat(id)});
-            postBookmark(id).then(value => {
+            postCreateBookmark(id, "articletype").then(value => {
                 //console.log("SUCCESS BOOK");
             }).catch((err) => {
                 //console.log("ERROR BOOK", err);
@@ -128,15 +123,15 @@ export default class Explore extends React.Component {
     };
 
     _renderVerticalItem = ({item}) => (
-        <VerticalRow title={item.title}
-                     author={extractRootDomain(item.contentId)}
-                     time={item.createdAt}
-                     readingTime={item.readingTime}
-                     onClicked={() => this._openReadingView(item)}
-                     onShare={() => this._onShareItem(item)}
+        <VerticalRow title={item._source.title}
+                     author={item._source.author}
+                     time={item._source.sourceCreateAt}
+                     readingTime={item._source.readingTime}
+                     onClicked={() => this._openReadingView({...item._source, _id: item._id})}
+                     onShare={() => this._onShareItem(item._source)}
                      onBookmark={() => this._onBookmarkItem(item._id)}
                      bookmarked={_.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1}
-                     image={getImageFromArray(item.originalImages, null, null, item.sourceImage)}/>
+                     image={item._source.sourceImage}/>
     );
 
     _renderVerticalSeparator = () => (
@@ -216,15 +211,19 @@ export default class Explore extends React.Component {
     };
 
     render() {
-        const {articles, playlist} = this.props
+        const {articles, playlist} = this.props;
         return (
-            <View style={{
-                flex: 1,
-                flexDirection: 'column'
-            }}>
+            <View style={styles.rootView}>
+                <View style={styles.searchBar}>
+                    <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
+                    <Text style={styles.searchText}>For You</Text>
+                    <TouchableOpacity style={{marginRight: 0, marginLeft: 'auto', padding: 10}} onPress={()=>this.props.navigation.navigate('MySource')}>
+                        <Image style={[styles.searchIcon]} source={require('../../assets/ic_filter.png')}/>
+                    </TouchableOpacity>
+                </View>
                 <SectionList
                     refreshing={articles.isFetching}
-                    onRefresh={() => this.props.getArticles(1, 20)}
+                    onRefresh={() => this.props.getArticles(10, 0, "", "")}
                     style={styles.alertWindow}
                     keyExtractor={this._keyExtractor}
                     stickySectionHeadersEnabled={false}
@@ -252,6 +251,11 @@ export default class Explore extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    rootView: {
+        flex: 1,
+        flexDirection: 'column',
+        backgroundColor: colors.mainWhite
+    },
     alertWindow: {
         backgroundColor: colors.mainWhite,
         position: 'relative',
@@ -272,5 +276,32 @@ const styles = StyleSheet.create({
         color: colors.blackText,
         fontSize: 20,
         paddingVertical: 10,
+    },
+    searchBar: {
+        flexDirection: 'row',
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: colors.grayLine,
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        marginTop: rootViewTopPadding() + 10,
+        marginBottom: 15,
+        marginHorizontal: 25,
+        elevation: 2,
+        shadowOffset: {width: 1, height: 1},
+        shadowColor: colors.mainDarkGray,
+        shadowOpacity: 0.5,
+        backgroundColor: colors.mainWhite,
+        alignItems: 'center'
+    },
+    searchIcon: {
+        width: 20,
+        resizeMode: 'contain',
+        aspectRatio: 1
+    },
+    searchText: {
+        marginLeft: 15,
+        fontSize: 20,
+        color: colors.grayTextSearch
     }
 });

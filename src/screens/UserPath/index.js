@@ -11,7 +11,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getUserPath: () => dispatch(getUserPath())
+        getUserPath: (pathId) => dispatch(getUserPath(pathId))
     }
 }
 

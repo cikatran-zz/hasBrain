@@ -1,18 +1,21 @@
 import * as actionTypes from './actionTypes';
 
-export function getArticles(page, perPage) {
+export function getArticles(limit, skip, sources, tags) {
     return {
         type: actionTypes.FETCHING_ARTICLE,
-        page: page,
-        perPage: perPage
+        limit: limit,
+        skip: skip,
+        sources: sources,
+        tags: tags
     }
 }
 
-export function getArticlesSuccess(data, page) {
+export function getArticlesSuccess(data, skip) {
     return {
         type: actionTypes.FETCH_ARTICLE_SUCCESS,
-        data: data.viewer.articleRecommend.items,
-        page: page
+        count:data.viewer.articleSearch.count,
+        data: data.viewer.articleSearch.hits,
+        skip: skip
     }
 }
 

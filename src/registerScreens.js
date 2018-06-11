@@ -14,14 +14,14 @@ import BackNavigationButton from "./components/BackNavigationButton";
 import Launch from "./screens/Launch/Launch";
 import Onboarding from "./screens/Onboarding";
 import Reader from "./screens/Reader";
+import MySource from "./screens/MySource";
 
 const TabNav = TabNavigator({
     ExploreTab: {
         screen: ExploreStack,
         navigationOptions: ({ navigation }) => ({
             tabBarLabel: strings.exploreHeader,
-            headerLeft: null,
-            ...defaultHeaderStyle,
+            header: null,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_explore.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
@@ -112,6 +112,12 @@ export const ScreenStack = StackNavigator({
     },
     Onboarding: {
         screen: Onboarding,
+        navigationOptions: {
+            header: null,
+        }
+    },
+    MySource: {
+        screen: MySource,
         navigationOptions: {
             header: null,
         }

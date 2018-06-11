@@ -41,12 +41,18 @@ export const onboardingTitleStyle = {
 export const onboardingSectionTitleStyle = {
     fontSize: 16,
     color: colors.grayText1,
-    fontWeight: 'normal'
+    fontWeight: 'bold'
 };
 
 export const onboardingSubtitleStyle = {
     fontSize: 12,
     color: colors.grayText,
+    fontWeight: 'normal'
+};
+
+export const navigationTitleStyle = {
+    fontSize: 20,
+    color: colors.blackText,
     fontWeight: 'normal'
 };
 
@@ -59,3 +65,4 @@ export const onboardingItemStyle = {
     paddingHorizontal: 5,
     textAlign: 'center'
 };
+
