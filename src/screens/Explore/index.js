@@ -3,12 +3,15 @@ import {connect} from 'react-redux';
 import {getArticles} from "../../actions/getArticles";
 import {getPlaylist} from "../../actions/getPlaylist";
 import {getSaved} from "../../actions/getSaved";
+import {getSourceList} from "../../actions/getSourceList";
+import {updateUserSourceTag} from '../../actions/updateUserSources'
 
 function mapStateToProps(state) {
     return {
         articles: state.articlesReducer,
         playlist: state.playlistReducer,
-        saved: state.savedReducer
+        saved: state.savedReducer,
+        source: state.sourcelistReducer
     }
 }
 
@@ -16,7 +19,9 @@ function mapDispatchToProps(dispatch) {
     return {
         getArticles: (limit, skip, sources, tags) => dispatch(getArticles(limit, skip, sources, tags)),
         getPlaylist: ()=> dispatch(getPlaylist()),
-        getSaved: () => dispatch(getSaved(1, 10))
+        getSaved: () => dispatch(getSaved(1, 10)),
+        getSourceList: () => dispatch(getSourceList()),
+        updateUserSourceTag: (tagMap) => dispatch(updateUserSourceTag(tagMap))
     }
 }
 

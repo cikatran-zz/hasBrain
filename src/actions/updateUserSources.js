@@ -20,3 +20,10 @@ export function updateSourceListFailure(error) {
         errorMessage: error
     }
 }
+
+export function updateUserSourceTag(tagMap) {
+    return {
+        type: actionTypes.UPDATE_USER_SOURCE_TAG,
+        tagMap: tagMap
+    }
+}

@@ -8,7 +8,8 @@ import {
     View,
     StyleSheet,
     Dimensions,
-    Share, NativeModules, Platform, Image
+    Share, NativeModules, Platform, Image,
+    TouchableWithoutFeedback
 } from 'react-native'
 import {colors} from '../../constants/colors'
 import VerticalRow from '../../components/VerticalRow'
@@ -24,7 +25,7 @@ import LoadingRow from "../../components/LoadingRow";
 import ReaderManager from "../../modules/ReaderManager";
 import * as moment from 'moment';
 import {rootViewTopPadding} from "../../utils/paddingUtils";
-
+import ToggleTagComponent from '../../components/ToggleTagComponent'
 
 const horizontalMargin = 5;
 
@@ -54,6 +55,7 @@ export default class Explore extends React.Component {
         this.props.getArticles(10, 0, "", "");
         // this.props.getPlaylist();
         this.props.getSaved();
+        this.props.getSourceList();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
         });
@@ -210,8 +212,25 @@ export default class Explore extends React.Component {
 
     };
 
+    _renderTagsItem = ({item}) => {
+        const {source} = this.props;
+        if (item == null)
+            return null;
+        return (
+            <ToggleTagComponent id={item} onPressItem={this._onTagItemPress} isOn={source.tagMap.get(item)}/>
+        )
+    }
+
+    _onTagItemPress = (id) => {
+        const {source} = this.props;
+        let isOn = source.tagMap.get(id);
+        let tagMap = new Map(source.tagMap);
+        tagMap.set(id, !isOn);
+        this.props.updateUserSourceTag(tagMap);
+    }
+
     render() {
-        const {articles, playlist} = this.props;
+        const {articles, playlist, source} = this.props;
         return (
             <View style={styles.rootView}>
                 <View style={styles.searchBar}>
@@ -221,6 +240,14 @@ export default class Explore extends React.Component {
                         <Image style={[styles.searchIcon]} source={require('../../assets/ic_filter.png')}/>
                     </TouchableOpacity>
                 </View>
+                <FlatList
+                    style={{marginLeft: 25, marginVertical: 10, height: 50}}
+                    keyExtractor={this._keyExtractor}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    data={source.tags}
+                    renderItem={this._renderTagsItem}
+                />
                 <SectionList
                     refreshing={articles.isFetching}
                     onRefresh={() => this.props.getArticles(10, 0, "", "")}
@@ -259,7 +286,6 @@ const styles = StyleSheet.create({
     alertWindow: {
         backgroundColor: colors.mainWhite,
         position: 'relative',
-        flex: 1
     },
     horizontalCarousel: {
         backgroundColor: colors.carouselBackground,
@@ -303,5 +329,5 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         fontSize: 20,
         color: colors.grayTextSearch
-    }
+    },
 });

@@ -133,6 +133,7 @@ export default class MySource extends React.Component {
                     refreshing={source.isFetching}
                     onRefresh={() => this.props.getSourceList()}
                     style={{marginHorizontal:20}}
+                    extraData={this.state}
                     keyExtractor={this._keyExtractor}
                     horizontal={false}
                     data={source.data.items}
