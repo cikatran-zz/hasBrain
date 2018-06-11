@@ -7,8 +7,8 @@
     "test": "jest",
     "bundle-ios": "node node_modules/react-native/local-cli/cli.js bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'",
     "bundle-android": "node node_modules/react-native/local-cli/cli.js bundle --entry-file='index.js' --bundle-output='./android/app/src/main/assets/index.android.bundle' --dev=false --platform='android' --assets-dest='./android/app/src/main/res'",
-    "codepush-ios": "code-push release-react mstage/hasbrain-ios ios -d Production -m true -t \"1.0\"",
-    "codepush-android": "code-push release-react mstage/hasbrain-android android -d Production -m true -t \"1.0\""
+    "codepush-ios": "code-push release-react mstage/hasbrain-ios ios -d Production -m true -t \"1.1\"",
+    "codepush-android": "code-push release-react mstage/hasbrain-android android -d Production -m true -t \"1.1\""
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.5",

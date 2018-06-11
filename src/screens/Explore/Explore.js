@@ -127,7 +127,7 @@ export default class Explore extends React.Component {
                      author={item._source.author}
                      time={item._source.sourceCreateAt}
                      readingTime={item._source.readingTime}
-                     onClicked={() => this._openReadingView(item._source)}
+                     onClicked={() => this._openReadingView({...item._source, _id: item._id})}
                      onShare={() => this._onShareItem(item._source)}
                      onBookmark={() => this._onBookmarkItem(item._id)}
                      bookmarked={_.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1}

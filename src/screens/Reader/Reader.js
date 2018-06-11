@@ -90,6 +90,7 @@ export default class Reader extends React.Component {
         AppState.addEventListener('change', this._handleAppStateChange);
 
         const {content, bookmarked} = this.props.navigation.state.params;
+        console.log("Reader", this.props.navigation.state.params);
         this.setState({currentItem: this.props.navigation.state.params, currentUrl: content, isBookmarked: bookmarked});
         this._requestContinueReading(this.props.navigation.state.params);
     }
@@ -320,6 +321,9 @@ export default class Reader extends React.Component {
         let tags = _.get(this.state.currentItem, 'tags', []);
         if (tags != null) {
             let increment = {};
+            if (typeof(tags) === "string") {
+                tags = [tags];
+            }
             tags.forEach((x)=>{
                 increment[strings.readingTagsKey+"."+x] = this._totalReadingTimeInSeconds;
             });
