@@ -7,7 +7,7 @@ import { getUserPathSuccess, getUserPathFailure } from '../actions/getUserPath'
 const getUserPathEpic = (action$) =>
     action$.ofType(actionTypes.FETCHING_USER_PATH)
         .mergeMap(action =>
-            Observable.from(getUserPath())
+            Observable.from(getUserPath(action.pathId))
                 .map(response => {
                     return getUserPathSuccess(response.data)
                 })

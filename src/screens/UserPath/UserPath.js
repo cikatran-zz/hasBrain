@@ -15,7 +15,8 @@ export default class UserPath extends Component {
     }
 
     componentDidMount() {
-        this.props.getUserPath();
+        const {_id} = this.props.navigation.state.params;
+        this.props.getUserPath(_id);
     }
 
     _renderSection = ({item}) => {
@@ -65,13 +66,7 @@ export default class UserPath extends Component {
     };
 
     _openReadingView = (item) => {
-        if (Platform.OS === "ios") {
-            ReaderManager.sharedInstance._open(item, _.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1, () => {
-                this._setUpReadingTime();
-            });
-        } else {
-            this.props.navigation.navigate("Reader", item);
-        }
+        this.props.navigation.navigate("Reader", {...item, bookmarked: false});
 
     };
     render() {

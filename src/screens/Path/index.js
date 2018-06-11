@@ -1,4 +1,4 @@
-import UserPath from './UserPath'
+import Path from './Path'
 import { connect } from 'react-redux'
 import {getUserPath} from '../../actions/getUserPath'
 
@@ -11,11 +11,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getUserPath: (pathId) => dispatch(getUserPath(pathId))
+        getUserPath: () => dispatch(getUserPath())
     }
 }
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(UserPath)
+)(Path)

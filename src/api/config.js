@@ -37,13 +37,15 @@ query getArticles($page: Int!, $perPage: Int!){
 `;
 
 const getBookmark = gql`
-query getBookmark($page: Int, $perPage: Int){
+query getBookmark($page: Int, $perPage: Int, $kind: String){
   viewer{
-    userbookmarkPagination(page: $page, perPage: $perPage) {
+    userbookmarkPagination(filter: {
+      kind: $kind
+    }, page: $page, perPage: $perPage) {
       count
       items {
         _id
-        article {
+        content {
           _id
           contentId
           title
@@ -52,11 +54,7 @@ query getBookmark($page: Int, $perPage: Int){
           readingTime
           state
           custom
-          author
-          sourceId
-          sourceName
           sourceImage
-          sourceCreateAt
           createdAt
           updatedAt
           projectId
@@ -74,6 +72,7 @@ query getBookmark($page: Int, $perPage: Int){
     }
   }
 }
+
 `;
 
 
@@ -164,26 +163,13 @@ mutation highlightedText($articleId: MongoID, $highlightedText: String){
 const onboardingInfo = gql`
 query {
   viewer {
-    personaPagination {
-      count
-      items {
-        _id
-        title
-      }
+    personaMany {
+      _id
+      title
     }
-    levelPagination {
-      count
-      items {
-        _id
-        title
-      }
-    }
-    intentPagination {
-      count
-      items {
-        _id
-        title
-      }
+    levelMany {
+      _id
+      title
     }
   }
 }
@@ -260,11 +246,9 @@ const getUserHighLight = gql`
     }`;
 
 const getUserPath = gql`
-query {
-    viewer{
-    listOne(filter: {
-      type: "Path"
-    }) {
+query getUserPath($id: MongoID){
+  viewer {
+    pathOne(filter: {_id: $id}) {
       title
       shortDescription
       contentData {
@@ -301,8 +285,107 @@ query {
       }
     }
   }
- }
-`
+}
+`;
+
+const getPathRecommend = gql`
+query pathRecommend($page: Int, $perPage: Int) {
+  viewer {
+    pathRecommend(page: $page, perPage: $perPage) {
+      count
+      items {
+        _id
+        privacy
+        profileId
+        contentId
+        content
+        readingTime
+        title
+        longDescription
+        shortDescription
+        sourceImage
+        state
+        custom
+        createdAt
+        updatedAt
+        projectId
+        type
+        kind
+      }
+    }
+	}
+}
+`;
+
+const intentMany = gql`
+query getIntent($segments: [PersonaLevel]) {
+  viewer {
+    intentMany(filter: {
+      segments: $segments
+    }) {
+      intentType
+      children {
+        _id
+        title
+        intentType
+        displayName
+        createdAt
+        updatedAt
+        projectId
+      }
+    }
+  }
+}
+`;
+
+const intentCreate = gql`
+mutation createIntent($name: String) {
+  user {
+    intentCreate(record: {
+      title: $name
+			displayName: $name
+    }) {
+      recordId
+      
+    }
+  }
+}
+`;
+
+const createBookmark = gql`
+mutation createBookmark($contentId: MongoID, $kind: String){
+  user{
+    userbookmarkCreate(record: {
+      contentId: $contentId,
+      kind: $kind
+    }) {
+      recordId
+    }
+  },
+  
+}
+`;
+
+const removeBookmark = gql`
+mutation removeBookmark($contentId: MongoID, $kind: String){
+  user{
+    userbookmarkRemoveOne(filter: {
+      contentId: $contentId,
+      kind: $kind
+    }) {
+      recordId
+    }
+  }
+}
+`;
+
+const getRecommendSource = gql`
+query getRecommendSource($ids: [ID]!){
+  viewer{
+    sourceRecommend(_ids: $ids)
+  }
+}
+`;
 
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
@@ -313,7 +396,10 @@ export default {
         bookmark: getBookmark,
         onboardingInfo: onboardingInfo,
         userHighlight: getUserHighLight,
-        userPath: getUserPath
+        userPath: getUserPath,
+        intents: intentMany,
+        pathRecommend: getPathRecommend,
+        sourceRecommend: getRecommendSource
     },
     mutation: {
         bookmark: postBookmark,
@@ -321,6 +407,9 @@ export default {
         createUser: postCreateUser,
         userInterest: postUserInterest,
         articleCreateIfNotExist: articleCreateIfNotExist,
-        highlightText: postHighlightedText
+        highlightText: postHighlightedText,
+        createIntent: intentCreate,
+        createBookmark: createBookmark,
+        removeBookmark: removeBookmark
     }
 };
