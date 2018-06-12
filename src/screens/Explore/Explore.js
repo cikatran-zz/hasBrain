@@ -9,7 +9,8 @@ import {
     StyleSheet,
     Dimensions,
     Share, NativeModules, Platform, Image,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    Alert
 } from 'react-native'
 import {colors} from '../../constants/colors'
 import VerticalRow from '../../components/VerticalRow'
@@ -252,8 +253,14 @@ export default class Explore extends React.Component {
                 }
             });
             newTagsArray = _.compact(newTagsArray);
-            this._debounceReloadAndSave(chosenSourceArray, newTagsArray);
-            tagMap.set(id, !isOn);
+            if (newTagsArray.length < 2) {
+                Alert.alert('Oops!', 'You must select at least 1 tag', [
+                    {text: 'Got it!'},
+                ])
+            } else {
+                this._debounceReloadAndSave(chosenSourceArray, newTagsArray);
+                tagMap.set(id, !isOn);
+            }
         }
         this.props.updateUserSourceTag(tagMap);
     }

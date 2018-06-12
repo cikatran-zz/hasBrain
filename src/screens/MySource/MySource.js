@@ -52,8 +52,8 @@ export default class MySource extends React.Component {
             })
             if (checkedSourcesValues.length < 2) {
                 if (checkedState.get(id)) {
-                    Alert.alert('Error', 'You must have at least 1 source', [
-                        {text: 'OK'},
+                    Alert.alert('Oops!', 'You must have at least 1 source', [
+                        {text: 'Got it!'},
                     ])
                 } else {
                     let checked = !checkedState.get(id);
