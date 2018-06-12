@@ -225,7 +225,23 @@ export default class Explore extends React.Component {
         const {source} = this.props;
         let isOn = source.tagMap.get(id);
         let tagMap = new Map(source.tagMap);
-        tagMap.set(id, !isOn);
+
+        if (id == 'All') {
+            if (!isOn) {
+                tagMap.set(id, !isOn);
+                let tagKeyArray = Array.from(tagMap.keys());
+                for (let tagKey of tagKeyArray) {
+                    if (tagKey != 'All') {
+                        tagMap.set(tagKey, false);
+                    }
+                }
+            }
+        } else {
+            if (tagMap.get('All')){
+                tagMap.set('All', false);
+            }
+            tagMap.set(id, !isOn);
+        }
         this.props.updateUserSourceTag(tagMap);
     }
 
