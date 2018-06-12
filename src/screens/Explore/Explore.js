@@ -49,6 +49,7 @@ export default class Explore extends React.Component {
         this.state = {
             bookmarked: [],
         }
+        this._debounceReloadAndSave = _.debounce(this._reloadAndSaveTag, 500);
     }
 
     componentDidMount() {
@@ -216,6 +217,8 @@ export default class Explore extends React.Component {
         const {source} = this.props;
         if (item == null)
             return null;
+        if (!source.tagMap)
+            return null;
         return (
             <ToggleTagComponent id={item} onPressItem={this._onTagItemPress} isOn={source.tagMap.get(item)}/>
         )
@@ -223,13 +226,16 @@ export default class Explore extends React.Component {
 
     _onTagItemPress = (id) => {
         const {source} = this.props;
+        const {tags, chosenSources} = source;
         let isOn = source.tagMap.get(id);
         let tagMap = new Map(source.tagMap);
+        let chosenSourceArray = Array.from(Object.keys(chosenSources));
 
         if (id == 'All') {
             if (!isOn) {
                 tagMap.set(id, !isOn);
                 let tagKeyArray = Array.from(tagMap.keys());
+                this._debounceReloadAndSave(chosenSourceArray, _.drop(tags));
                 for (let tagKey of tagKeyArray) {
                     if (tagKey != 'All') {
                         tagMap.set(tagKey, false);
@@ -240,9 +246,20 @@ export default class Explore extends React.Component {
             if (tagMap.get('All')){
                 tagMap.set('All', false);
             }
+            let newTagsArray = tags.map((item) => {
+                if (tagMap.get(item)) {
+                    return item;
+                }
+            });
+            newTagsArray = _.compact(newTagsArray);
+            this._debounceReloadAndSave(chosenSourceArray, newTagsArray);
             tagMap.set(id, !isOn);
         }
         this.props.updateUserSourceTag(tagMap);
+    }
+
+    _reloadAndSaveTag = (sources, tags) => {
+        this.props.getArticles(10, 0, sources, tags);
     }
 
     render() {

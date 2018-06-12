@@ -11,7 +11,7 @@ const initialState = {
     updated: false,
     updateError: null,
     tags: null,
-    tagMap: null
+    tagMap: new Map()
 }
 
 export default function sourcelistReducer(state = initialState, action) {
@@ -61,7 +61,8 @@ export default function sourcelistReducer(state = initialState, action) {
         case actionTypes.UPDATING_USER_SOURCES:
             return {
                 ...state,
-                updating: true
+                updating: true,
+                chosenSources: action.sources
             }
         case actionTypes.UPDATE_USER_SOURCES_SUCCESS:
             return {
