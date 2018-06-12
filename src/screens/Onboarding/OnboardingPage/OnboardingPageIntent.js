@@ -94,6 +94,33 @@ export default class OnboardingPageIntent extends React.Component {
 
     };
 
+    componentWillReceiveProps(nextProps) {
+        let {selected} = this.props;
+        if (selected == null) {
+            return;
+        }
+        let intents = [];
+        selected[0].forEach((intent) => {
+            if (intent.intentType === "non_type") {
+                intent.children.forEach((childIntent) => {
+                    intents = intents.concat({_id: childIntent._id, group: false, displayName: childIntent.displayName})
+                });
+            } else {
+                intent.children.forEach((childIntent) => {
+                    intents = intents.concat({
+                        _id: childIntent._id,
+                        group: true,
+                        displayName: intent.intentType + " " + childIntent.displayName
+                    })
+                });
+            }
+        });
+        if (_.isEqual(intents, this.state.selectedIntentions) === false) {
+            this.setState({selectedIntentions: intents});
+            this.props.onSelectedChanged(intents);
+        }
+    }
+
     render() {
 
         const {query} = this.state;

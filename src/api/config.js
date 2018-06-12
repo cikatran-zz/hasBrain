@@ -428,13 +428,17 @@ query getExploreArticles($skip: Int, $limit: Int, $sources: [JSON], $tags: [JSON
       hits {
         _id
         _source{
-  				title
+  		  title
           category
           author
+          content
+          contentId
           authorImage
           readingTime
           sourceImage
           sourceCreateAt
+          shortDescription
+          tags
         }
       }
     }

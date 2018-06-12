@@ -7,6 +7,7 @@ import * as getIntention from './getIntention'
 import * as getPathRecommend from './getPathRecommend'
 import * as getPathBookmarked from './getPathBookmarked'
 import * as updateRecommendSource from './updateRecommendSource'
+import * as getAllIntention from './getAllIntention'
 
 export default actions = {
     getSaved,
@@ -15,6 +16,7 @@ export default actions = {
     getOnboarding,
     getLastReadingPosition,
     getIntention,
+    getAllIntention,
     getPathRecommend,
     getPathBookmarked,
     updateRecommendSource
