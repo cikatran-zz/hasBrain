@@ -258,15 +258,27 @@ export default class Explore extends React.Component {
                     {text: 'Got it!'},
                 ])
             } else {
-                this._debounceReloadAndSave(chosenSourceArray, newTagsArray);
                 tagMap.set(id, !isOn);
+                newTagsArray.push(id);
+                this._debounceReloadAndSave(chosenSourceArray, newTagsArray);
             }
         }
         this.props.updateUserSourceTag(tagMap);
     }
 
     _reloadAndSaveTag = (sources, tags) => {
+        const {source} = this.props;
+        const {data} = source;
+        const {items} = data;
         this.props.getArticles(10, 0, sources, tags);
+        let newSource = {};
+        for (let item of items) {
+            let defaultTagArray = item.categories;
+            let newChosenSourceTagArray = _.intersection(tags, defaultTagArray);
+            newSource[item.sourceId] = newChosenSourceTagArray;
+        }
+        if (!_.isEmpty(newSource))
+            this.props.updateSourceList(newSource);
     }
 
     render() {

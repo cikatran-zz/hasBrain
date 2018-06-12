@@ -4,7 +4,8 @@ import {getArticles} from "../../actions/getArticles";
 import {getPlaylist} from "../../actions/getPlaylist";
 import {getSaved} from "../../actions/getSaved";
 import {getSourceList} from "../../actions/getSourceList";
-import {updateUserSourceTag} from '../../actions/updateUserSources'
+import {updateUserSourceTag} from '../../actions/updateUserSources';
+import {updateSourceList} from '../../actions/updateUserSources';
 
 function mapStateToProps(state) {
     return {
@@ -21,7 +22,8 @@ function mapDispatchToProps(dispatch) {
         getPlaylist: ()=> dispatch(getPlaylist()),
         getSaved: () => dispatch(getSaved(1, 10)),
         getSourceList: () => dispatch(getSourceList()),
-        updateUserSourceTag: (tagMap) => dispatch(updateUserSourceTag(tagMap))
+        updateUserSourceTag: (tagMap) => dispatch(updateUserSourceTag(tagMap)),
+        updateSourceList: (sources) => dispatch(updateSourceList(sources)),
     }
 }
 
