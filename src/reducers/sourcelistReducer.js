@@ -28,11 +28,20 @@ export default function sourcelistReducer(state = initialState, action) {
             })));
             let tagMap = new Map();
             tagMap.set("All", false);
+            let count = 0;
             for(let tag of tags) {
                 if (_.indexOf(chosentags, tag) < 0) {
                     tagMap.set(tag, false);
                 } else {
                     tagMap.set(tag, true);
+                    count++;
+                }
+            }
+            //increase the count to check if all tags are chosen, then turn on All tag
+            if (count == tags.length){
+                tagMap.set("All", true);
+                for(let tag of tags) {
+                    tagMap.set(tag, false);
                 }
             }
             tags = _.concat("All", tags);

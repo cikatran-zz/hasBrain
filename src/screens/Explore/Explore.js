@@ -244,16 +244,14 @@ export default class Explore extends React.Component {
                 }
             }
         } else {
-            if (tagMap.get('All')){
-                tagMap.set('All', false);
-            }
+
             let newTagsArray = tags.map((item) => {
                 if (tagMap.get(item)) {
                     return item;
                 }
             });
             newTagsArray = _.compact(newTagsArray);
-            if (newTagsArray.length < 2) {
+            if (isOn && newTagsArray.length < 2) {
                 Alert.alert('Oops!', 'You must select at least 1 tag', [
                     {text: 'Got it!'},
                 ])
@@ -261,6 +259,9 @@ export default class Explore extends React.Component {
                 tagMap.set(id, !isOn);
                 newTagsArray.push(id);
                 this._debounceReloadAndSave(chosenSourceArray, newTagsArray);
+            }
+            if (tagMap.get('All')){
+                tagMap.set('All', false);
             }
         }
         this.props.updateUserSourceTag(tagMap);
