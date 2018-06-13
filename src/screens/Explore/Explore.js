@@ -269,14 +269,16 @@ export default class Explore extends React.Component {
 
     _reloadAndSaveTag = (sources, tags) => {
         const {source} = this.props;
-        const {data} = source;
+        const {data, chosenSources} = source;
         const {items} = data;
         this.props.getArticles(10, 0, sources, tags);
         let newSource = {};
         for (let item of items) {
-            let defaultTagArray = item.categories;
-            let newChosenSourceTagArray = _.intersection(tags, defaultTagArray);
-            newSource[item.sourceId] = newChosenSourceTagArray;
+            if (_.get(chosenSources, item.sourceId, undefined)) {
+                let defaultTagArray = item.categories;
+                let newChosenSourceTagArray = _.intersection(tags, defaultTagArray);
+                newSource[item.sourceId] = newChosenSourceTagArray;
+            }
         }
         if (!_.isEmpty(newSource))
             this.props.updateSourceList(newSource);
