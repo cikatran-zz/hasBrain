@@ -27,7 +27,7 @@ export default class CheckComponent extends PureComponent<Props> {
             checkImage = require('../assets/ic_plus.png');
         }
         return (
-            <TouchableWithoutFeedback style={{width: 50}} onPress={this._onPress}>
+            <TouchableWithoutFeedback style={{width: 50, height: 30}} onPress={this._onPress}>
                 <View>
                     <Image source={checkImage} />
                 </View>
