@@ -1,7 +1,7 @@
 import React from 'react'
 import {
     Text, View, StyleSheet, Image, Platform, TextInput, TouchableOpacity, NativeModules,
-    ActivityIndicator, Animated
+    ActivityIndicator, Animated, ScrollView, FlatList
 } from 'react-native'
 import {colors} from "../../constants/colors";
 import IndicatorModal from "../../components/IndicatorModal";
@@ -9,7 +9,7 @@ import Toast from 'react-native-root-toast';
 import {postCreateUser} from "../../api";
 import _ from 'lodash'
 import {strings} from "../../constants/strings";
-import {rootViewTopPadding} from "../../utils/paddingUtils";
+import {rootViewBottomPadding, rootViewTopPadding} from "../../utils/paddingUtils";
 
 export default class Explore extends React.PureComponent {
 
@@ -31,8 +31,8 @@ export default class Explore extends React.PureComponent {
     componentDidMount() {
     }
 
-    trim(s){
-        return ( s || '' ).replace( /^\s+|\s+$/g, '' );
+    trim(s) {
+        return (s || '').replace(/^\s+|\s+$/g, '');
     }
 
     _signUp = () => {
@@ -89,9 +89,9 @@ export default class Explore extends React.PureComponent {
     };
 
     _nextScreen = () => {
-        NativeModules.RNUserKit.getProperty(strings.mekey+'.'+strings.experienceKey, (error, result)=> {
+        NativeModules.RNUserKit.getProperty(strings.mekey + '.' + strings.experienceKey, (error, result) => {
             if (error == null && result != null) {
-                let experience = _.get(result[0], strings.mekey+'.'+strings.experienceKey);
+                let experience = _.get(result[0], strings.mekey + '.' + strings.experienceKey);
                 if (experience == null) {
                     this.props.navigation.navigate('Onboarding');
                 } else {
@@ -137,7 +137,7 @@ export default class Explore extends React.PureComponent {
         Animated.timing(this._signUpShown, {
             toValue: 0,
             duration: 100,
-        }).start(()=>{
+        }).start(() => {
             this.setState({signUp: false});
             Animated.timing(this._signInShown, {
                 toValue: 1,
@@ -150,7 +150,7 @@ export default class Explore extends React.PureComponent {
         Animated.timing(this._signInShown, {
             toValue: 0,
             duration: 100,
-        }).start(()=>{
+        }).start(() => {
             this.setState({signUp: true});
             Animated.timing(this._signUpShown, {
                 toValue: 1,
@@ -161,63 +161,80 @@ export default class Explore extends React.PureComponent {
 
     _signInForm = () => (
         <Animated.View style={[styles.formView, {opacity: this._signInShown}]}>
-            <TextInput style={styles.inputText}
-                       placeholder={'Email'}
-                       secureTextEntry={false}
-                       underlineColorAndroid='rgba(0,0,0,0)'
-                       onChangeText={(text) => this.email = text}/>
-            <TextInput style={styles.inputText}
-                       placeholder={'Password'}
-                       secureTextEntry={true}
-                       underlineColorAndroid='rgba(0,0,0,0)'
-                       onChangeText={(text) => this.password = text}/>
-            <TouchableOpacity
-                style={[styles.colorButton, {marginTop: 44.5}]}
-                onPress={() => this._signIn()}>
-                <Image source={require('../../assets/ic_signin.png')} style={{height: '100%', width: 64, resizeMode: 'contain'}}/>
-                <Text style={styles.buttonText}>Sign in</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.forgotPasswordContainer} onPress={()=>this._showSignUp()}>
-                <Text style={styles.forgotPasswordText}>Create new account?</Text>
-            </TouchableOpacity>
+            <View style={styles.inputView}>
+                <TextInput style={styles.inputText}
+                           placeholder={'Email'}
+                           secureTextEntry={false}
+                           underlineColorAndroid='rgba(0,0,0,0)'
+                           onChangeText={(text) => this.email = text}/>
+                <TextInput style={styles.inputText}
+                           placeholder={'Password'}
+                           secureTextEntry={true}
+                           underlineColorAndroid='rgba(0,0,0,0)'
+                           onChangeText={(text) => this.password = text}/>
+            </View>
+            <View style={styles.interactionView}>
+                <TouchableOpacity
+                    style={[styles.colorButton]}
+                    onPress={() => this._signIn()}>
+                    <Image source={require('../../assets/ic_signin.png')}
+                           style={{height: '100%', width: 64, resizeMode: 'contain'}}/>
+                    <Text style={styles.buttonText}>Sign in</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.forgotPasswordContainer} onPress={() => this._showSignUp()}>
+                    <Text style={styles.forgotPasswordText}>Create new account?</Text>
+                </TouchableOpacity>
+            </View>
         </Animated.View>);
+
+    _renderSignUpItem = ({item}) => {
+        if (item === "name") {
+            return (<TextInput style={styles.inputText}
+                               placeholder={'Name'}
+                               secureTextEntry={false}
+                               underlineColorAndroid='rgba(0,0,0,0)'
+                               onChangeText={(text) => this.name = text}/>);
+        } else if (item === "email") {
+            return (<TextInput style={styles.inputText}
+                               placeholder={'Email'}
+                               secureTextEntry={false}
+                               underlineColorAndroid='rgba(0,0,0,0)'
+                               onChangeText={(text) => this.email = text}/>);
+        } else if (item === "password") {
+            return (<TextInput style={styles.inputText}
+                               placeholder={'Password'}
+                               secureTextEntry={true}
+                               underlineColorAndroid='rgba(0,0,0,0)'
+                               onChangeText={(text) => this.password = text}/>);
+        } else {
+            return (<TextInput style={styles.inputText}
+                               placeholder={'Confirm password'}
+                               secureTextEntry={true}
+                               underlineColorAndroid='rgba(0,0,0,0)'
+                               onChangeText={(text) => this.confirmPassword = text}/>)
+        }
+    };
 
     _signUpForm = () => (
         <Animated.View style={[styles.formView, {opacity: this._signUpShown}]}>
-            <TextInput style={styles.inputText}
-                       placeholder={'Name'}
-                       secureTextEntry={false}
-                       underlineColorAndroid='rgba(0,0,0,0)'
-                       onChangeText={(text) => this.name = text}/>
-            <TextInput style={styles.inputText}
-                       placeholder={'Email'}
-                       secureTextEntry={false}
-                       underlineColorAndroid='rgba(0,0,0,0)'
-                       onChangeText={(text) => this.email = text}/>
-            <TextInput style={styles.inputText}
-                       placeholder={'Password'}
-                       secureTextEntry={true}
-                       underlineColorAndroid='rgba(0,0,0,0)'
-                       onChangeText={(text) => this.password = text}/>
-            <TextInput style={styles.inputText}
-                       placeholder={'Confirm password'}
-                       secureTextEntry={true}
-                       underlineColorAndroid='rgba(0,0,0,0)'
-                       onChangeText={(text) => this.confirmPassword = text}/>
-            {/*<TouchableOpacity*/}
-                {/*style={[styles.colorButton, {backgroundColor: colors.redButton, marginTop: 44.5}]}*/}
-                {/*onPress={() => this._signUp()}>*/}
-                {/*<Text style={styles.buttonText}>Sign Up</Text>*/}
-            {/*</TouchableOpacity>*/}
-            <TouchableOpacity
-                style={[styles.colorButton, {marginTop: 44.5}]}
-                onPress={() => this._signUp()}>
-                <Image source={require('../../assets/ic_signup.png')} style={{height: '100%', width: 64, resizeMode: 'contain'}}/>
-                <Text style={styles.buttonText}>Sign up</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.forgotPasswordContainer} onPress={()=>this._showSignIn()}>
-                <Text style={styles.forgotPasswordText}>Already have account?</Text>
-            </TouchableOpacity>
+            <View style={styles.inputView}>
+                <FlatList style={{flex: 1}}
+                          data={["name", "email", "password", "confirm"]}
+                          bounces={false}
+                          renderItem={this._renderSignUpItem}/>
+            </View>
+            <View style={styles.interactionView}>
+                <TouchableOpacity
+                    style={[styles.colorButton]}
+                    onPress={() => this._signUp()}>
+                    <Image source={require('../../assets/ic_signup.png')}
+                           style={{height: '100%', width: 64, resizeMode: 'contain'}}/>
+                    <Text style={styles.buttonText}>Sign up</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.forgotPasswordContainer} onPress={() => this._showSignIn()}>
+                    <Text style={styles.forgotPasswordText}>Already have account?</Text>
+                </TouchableOpacity>
+            </View>
         </Animated.View>);
 
     render() {
@@ -249,10 +266,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%'
     },
+    inputView: {
+        flex: 4,
+        width: '100%',
+        flexDirection: 'column',
+    },
+    interactionView: {
+        flex: 2,
+        width: '100%',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        marginBottom: rootViewBottomPadding()
+    },
     formView: {
         flexDirection: 'column',
+        flex: 4,
         width: '100%',
         alignItems: 'center',
+        justifyContent: 'space-between'
     },
     backButton: {
         position: 'absolute',
@@ -267,11 +299,11 @@ const styles = StyleSheet.create({
         tintColor: colors.grayText
     },
     image: {
-        width: '50%',
+        flex: 1,
         aspectRatio: 1,
         resizeMode: 'contain',
         marginBottom: 15,
-        marginTop: rootViewTopPadding() + 50
+        marginTop: rootViewTopPadding() + 10
     },
     text: {
         color: colors.mainDarkGray,
@@ -286,7 +318,8 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(152,152,152,0.32)',
         borderWidth: 1,
         borderRadius: (Platform.OS === 'ios') ? 3 : 6,
-        marginTop: 15
+        marginTop: 15,
+        alignSelf: 'center'
     },
     colorButton: {
         borderRadius: 3,
@@ -301,7 +334,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5
     },
     forgotPasswordContainer: {
-        height: 100,
+        padding: 10,
         flexDirection: 'row'
     },
     forgotPasswordIntroText: {
@@ -309,7 +342,6 @@ const styles = StyleSheet.create({
         fontSize: 15
     },
     forgotPasswordText: {
-        marginTop: 44.5,
         color: '#64abab',
         fontSize: 15
     },
