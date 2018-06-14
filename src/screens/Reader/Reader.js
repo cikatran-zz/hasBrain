@@ -11,7 +11,7 @@ const {RNCustomWebview, RNUserKit} = NativeModules;
 import _ from 'lodash'
 import {strings} from "../../constants/strings";
 import {getIDOfCurrentDate} from "../../utils/dateUtils";
-import {getUrlInfo, postArticleCreateIfNotExist, postCreateBookmark, postHighlightText, postRemoveBookmark} from "../../api";
+import {getUrlInfo, postArticleCreateIfNotExist, postHighlightText, postRemoveBookmark} from "../../api";
 import ContinueReadingModal from "../../components/ContinueReadingModal";
 
 

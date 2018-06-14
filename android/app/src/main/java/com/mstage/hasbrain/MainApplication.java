@@ -52,7 +52,7 @@ public class MainApplication extends Application implements ReactApplication {
                     new LinearGradientPackage(),
                     new RNGoogleSigninPackage(),
                     new FBSDKPackage(mCallbackManager),
-                    new CodePush(null, getApplicationContext(), BuildConfig.DEBUG),
+                    new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG),
                     new AppCenterReactNativeCrashesPackage(MainApplication.this, getResources().getString(R.string.appCenterCrashes_whenToSendCrashes)),
                     new AppCenterReactNativeAnalyticsPackage(MainApplication.this, getResources().getString(R.string.appCenterAnalytics_whenToEnableAnalytics)),
                     new AppCenterReactNativePackage(MainApplication.this),
