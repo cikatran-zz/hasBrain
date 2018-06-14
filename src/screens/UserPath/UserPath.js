@@ -3,8 +3,6 @@ import {
     Text, View, StyleSheet, NativeModules, Platform, TouchableWithoutFeedback, Image, SectionList, FlatList
 } from 'react-native'
 import { colors } from '../../constants/colors'
-import {NavigationActions} from "react-navigation";
-import ReaderManager from "../../modules/ReaderManager";
 import _ from 'lodash'
 import {rootViewTopPadding} from '../../utils/paddingUtils'
 
