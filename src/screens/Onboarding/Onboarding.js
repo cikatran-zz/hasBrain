@@ -44,7 +44,7 @@ export default class Onboarding extends React.Component {
             this.setState({isNextEnable: true});
             this.currentIndex += 1;
         }  else {
-
+            console.log("Post user interest", this.experience, this.intentIds);
             postUserInterest(this.experience, this.intentIds).then((value)=>{
                 const {onboarding} = this.props;
                 let levels = onboarding.data.levelMany;
