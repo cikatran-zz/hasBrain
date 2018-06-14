@@ -379,9 +379,11 @@ export const getExploreArticles = (limit, skip, sources, tags) => {
 }
 
 const  getExploreFunc = (limit, skip, sources, tags) => {
+    let destSources = sources.map((source)=> ({value: source}));
+    let destTags = tags.map((tag)=>({value: tag}));
     return gqlQuery({
         query: config.queries.exploreArticles,
-        variables: {skip: skip, limit: 10, sources: sources, tags: tags}
+        variables: {skip: skip, limit: limit, sources: destSources, tags: destTags}
     })
 }
 
