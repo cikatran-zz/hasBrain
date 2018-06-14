@@ -139,12 +139,12 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
-            buildConfigField "String", "CODEPUSH_KEY", '"jUcyL7rKesZsRkV1uG-NiGIIQd2r46f1de64-eb3a-4a54-97d5-827a4c0e31f9"'
+            buildConfigField "String", "CODEPUSH_KEY", '"yc3GJIYkRPbjqevomEvxg1J9DOne46f1de64-eb3a-4a54-97d5-827a4c0e31f9"'
         }
 
         debug {
             signingConfig signingConfigs.debug
-            buildConfigField "String", "CODEPUSH_KEY", '"Eb9bqLwKPRvAk_OqY8KGjL7MKSPr46f1de64-eb3a-4a54-97d5-827a4c0e31f9"'
+            buildConfigField "String", "CODEPUSH_KEY", '"qS1MigVh02Tcwe4CTuS6_5xEa8O-46f1de64-eb3a-4a54-97d5-827a4c0e31f9"'
         }
     }
     // applicationVariants are e.g. debug, release
@@ -275,12 +275,3 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply plugin: 'com.google.gms.google-services'
-
-repositories {
-    google()
-}
-buildscript {
-    repositories {
-        google()
-    }
-}
