@@ -23,7 +23,6 @@ import {strings} from "../../constants/strings";
 import {formatReadingTimeInMinutes, getIDOfCurrentDate} from "../../utils/dateUtils";
 import {extractRootDomain} from "../../utils/stringUtils";
 import LoadingRow from "../../components/LoadingRow";
-import ReaderManager from "../../modules/ReaderManager";
 import * as moment from 'moment';
 import {rootViewTopPadding} from "../../utils/paddingUtils";
 import ToggleTagComponent from '../../components/ToggleTagComponent'
@@ -59,6 +58,7 @@ export default class Explore extends React.Component {
         this.props.getSaved();
         this.props.getSourceList();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
+            this.props.getSourceList();
             this._setUpReadingTime();
         });
         this._setUpReadingTime();
@@ -271,16 +271,19 @@ export default class Explore extends React.Component {
         const {source} = this.props;
         const {data} = source;
         const {items} = data;
+        console.log(sources, tags);
         this.props.getArticles(10, 0, sources, tags);
         let newSource = {};
         for (let item of items) {
             let defaultTagArray = item.categories;
             let newChosenSourceTagArray = _.intersection(tags, defaultTagArray);
-            newSource[item.sourceId] = newChosenSourceTagArray;
+            if (sources.find((s)=>(item.sourceId === s)) != null) {
+                newSource[item.sourceId] = newChosenSourceTagArray;
+            }
         }
         if (!_.isEmpty(newSource))
             this.props.updateSourceList(newSource);
-    }
+    };
 
     render() {
         const {articles, playlist, source} = this.props;

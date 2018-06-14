@@ -12,6 +12,6 @@ const getUserPathEpic = (action$) =>
                     return getUserPathSuccess(response.data)
                 })
                 .catch(error => Observable.of(getUserPathFailure(error)))
-        )
+        );
 
 export default getUserPathEpic

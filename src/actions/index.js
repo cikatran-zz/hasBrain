@@ -8,6 +8,8 @@ import * as getPathRecommend from './getPathRecommend'
 import * as getPathBookmarked from './getPathBookmarked'
 import * as updateRecommendSource from './updateRecommendSource'
 import * as getAllIntention from './getAllIntention'
+import * as getUserPath from './getUserPath'
+import * as createBookmark from './createBookmark'
 
 export default actions = {
     getSaved,
@@ -19,5 +21,7 @@ export default actions = {
     getAllIntention,
     getPathRecommend,
     getPathBookmarked,
-    updateRecommendSource
+    updateRecommendSource,
+    getUserPath,
+    createBookmark
 }

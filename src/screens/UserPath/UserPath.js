@@ -3,8 +3,6 @@ import {
     Text, View, StyleSheet, NativeModules, Platform, TouchableWithoutFeedback, Image, SectionList, FlatList
 } from 'react-native'
 import { colors } from '../../constants/colors'
-import {NavigationActions} from "react-navigation";
-import ReaderManager from "../../modules/ReaderManager";
 import _ from 'lodash'
 import {rootViewTopPadding} from '../../utils/paddingUtils'
 
@@ -15,6 +13,7 @@ export default class UserPath extends Component {
     }
 
     componentDidMount() {
+        console.log("UserPath", this.props.navigation.state.params);
         const {_id} = this.props.navigation.state.params;
         this.props.getUserPath(_id);
     }

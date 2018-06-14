@@ -18,7 +18,6 @@ export const strings = {
     },
     contentBookmarked: {
         event: "_content_bookmarked",
-        consumedLength: "_consumed_length_in_seconds",
         contentId: "_content_id",
         mediaType: "_media_type"
     },
