@@ -1,6 +1,7 @@
 import * as actionTypes from './actionTypes';
 import {strings} from "../constants/strings";
-import {trackEvent} from "./trackEvent";
+import {NativeModules} from "react-native";
+const {RNUserKit} = NativeModules;
 
 export function createBookmark(contentId, bookmarkType, trackingType) {
     return {
@@ -17,7 +18,7 @@ export function createBookmarkSuccess(contentId, trackingType) {
             [strings.contentConsumed.contentId]: contentId,
             [strings.contentConsumed.mediaType]: trackingType
         };
-        dispatch(trackEvent(strings.contentBookmarked.event, props));
+        RNUserKit.trackEvent(strings.contentBookmarked.event, props);
     }
 
     return {
