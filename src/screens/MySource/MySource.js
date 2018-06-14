@@ -111,7 +111,7 @@ export default class MySource extends React.Component {
         }
         if (!_.isEmpty(newSourcesMap))
             this.props.updateSourceList(newSourcesMap);
-        this.props.getArticles(10, 0, newSourcesArray, newTagsArray)
+        this.props.getArticles(10, 0, newSourcesArray, newTagsArray);
         this.props.navigation.goBack();
     }
 
