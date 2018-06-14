@@ -15,6 +15,7 @@ export default class UserPath extends Component {
     }
 
     componentDidMount() {
+        console.log("UserPath", this.props.navigation.state.params);
         const {_id} = this.props.navigation.state.params;
         this.props.getUserPath(_id);
     }
