@@ -23,7 +23,6 @@ import {strings} from "../../constants/strings";
 import {formatReadingTimeInMinutes, getIDOfCurrentDate} from "../../utils/dateUtils";
 import {extractRootDomain} from "../../utils/stringUtils";
 import LoadingRow from "../../components/LoadingRow";
-import ReaderManager from "../../modules/ReaderManager";
 import * as moment from 'moment';
 import {rootViewTopPadding} from "../../utils/paddingUtils";
 import ToggleTagComponent from '../../components/ToggleTagComponent'

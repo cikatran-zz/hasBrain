@@ -197,11 +197,12 @@ export default class Reader extends React.Component {
         } else {
             this.setState({isBookmarked: true});
             // Bookmark
-            postCreateBookmark(_.get(this.state.currentItem,"_id", ""), "articletype").then(value => {
-                console.log("SUCCESS BOOK");
-            }).catch((err)=> {
-                console.log("ERROR BOOK", err);
-            });
+            this.props.createBookmark(_.get(this.state.currentItem,"_id", ""), "articletype", strings.articleType);
+            // postCreateBookmark(_.get(this.state.currentItem,"_id", ""), "articletype").then(value => {
+            //     console.log("SUCCESS BOOK");
+            // }).catch((err)=> {
+            //     console.log("ERROR BOOK", err);
+            // });
         }
     };
 
@@ -260,7 +261,6 @@ export default class Reader extends React.Component {
     _onConfirmContinueReading = () => {
         this.setState({initPosition: this._last_reading});
         this.modal.setState({isShow: false});
-        //RNUserKit.track(strings.contentConsumed.event, props);
     };
 
     _onCancelContinueReading = () => {
@@ -286,7 +286,6 @@ export default class Reader extends React.Component {
                     dailyReadingTimeValue += dailyReadingTime[dateID];
                 }
                 dailyReadingTime = {[dateID]: dailyReadingTimeValue};
-                console.log("Update daily reading time", dailyReadingTime);
                 RNUserKit.storeProperty({[strings.dailyReadingTimeKey] : dailyReadingTime}, (e, r) => {
                 });
             } else {
@@ -327,15 +326,14 @@ export default class Reader extends React.Component {
             tags.forEach((x)=>{
                 increment[strings.readingTagsKey+"."+x] = this._totalReadingTimeInSeconds;
             });
-            console.log("INCREMENT", increment);
             RNUserKit.incrementProperty(increment, (err, res)=> {});
         }
         this._totalReadingTimeInSeconds = 0;
-
-        RNUserKit.track(strings.contentConsumed.event, props);
+        this.props.trackEvent(strings.contentConsumed.event, props);
     };
 
     render() {
+
         return (
             <View style={styles.alertWindow}>
                 <ContinueReadingModal ref={(ref)=>this.modal=ref}
