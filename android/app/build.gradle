@@ -181,6 +181,7 @@ ext {
 }
 
 dependencies {
+    compile project(':react-native-code-push')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation project(':react-native-fbsdk')
     implementation(project(":react-native-google-signin")) {
@@ -190,7 +191,6 @@ dependencies {
     implementation project(':appcenter-crashes')
     implementation project(':appcenter-analytics')
     implementation project(':appcenter')
-    implementation project(':react-native-code-push')
     implementation project(':customwebview')
     implementation project(':react-native-svg')
     implementation "com.android.support:appcompat-v7:${supportVersion}"
