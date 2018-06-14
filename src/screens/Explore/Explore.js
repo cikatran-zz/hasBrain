@@ -271,6 +271,7 @@ export default class Explore extends React.Component {
         const {source} = this.props;
         const {data} = source;
         const {items} = data;
+        console.log(sources, tags);
         this.props.getArticles(10, 0, sources, tags);
         let newSource = {};
         for (let item of items) {
