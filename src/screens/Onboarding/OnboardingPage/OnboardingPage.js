@@ -40,7 +40,6 @@ export default class OnboardingPage extends React.Component {
 
     _renderSection = ({item,index, section: {numColumns, multipleSelection, searchable, sectionIndex, selectedData}}) => {
         if (multipleSelection) {
-            console.log("Selected data", selectedData);
             return (<OnboardingSectionTags data={item}
                                            onSelectedChanged={(selected) => this._onItemSelectedChanged(sectionIndex, selected)}/>)
         } else {
