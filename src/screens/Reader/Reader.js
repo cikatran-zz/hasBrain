@@ -106,7 +106,6 @@ export default class Reader extends React.Component {
         if (this.state.progress === 0) {
             return null;
         }
-        console.log("Render progress");
         if (Platform.OS === "ios") {
             return (<ProgressViewIOS style={styles.progress} progress={this.state.progress}
                                      progressTintColor={colors.blueText}/>)
@@ -117,7 +116,6 @@ export default class Reader extends React.Component {
     };
 
     _updateProgress = (progressObj) => {
-        console.log("Progress", progressObj.progress, progressObj.isLoading);
         if (progressObj.isLoading) {
             this.setState({progress: progressObj.progress})
         } else {
@@ -230,32 +228,34 @@ export default class Reader extends React.Component {
 
     _requestContinueReading = (item) => {
         let currentId = _.get(item, '_id', '');
-        RNUserKit.getProperty(strings.readingHistoryKey, (error, result)=> {
-            if (error == null && result != null) {
-                let readingHistory = _.get(result[0], strings.readingHistoryKey, []);
-                if (readingHistory == null) {
-                    return;
-                }
-
-                // Get last reading position
-                let foundIndex = _.findIndex(readingHistory, {id: currentId});
-                if (foundIndex === -1) {
-                    return;
-                }
-
-                this._last_reading = readingHistory[foundIndex];
-                this.modal.setState({isShow: true});
-            }
-        });
+        this.props.getWatchingHistory(currentId);
+        // RNUserKit.getProperty(strings.readingHistoryKey, (error, result)=> {
+        //     if (error == null && result != null) {
+        //         let readingHistory = _.get(result[0], strings.readingHistoryKey, []);
+        //         if (readingHistory == null) {
+        //             return;
+        //         }
+        //
+        //         // Get last reading position
+        //         let foundIndex = _.findIndex(readingHistory, {id: currentId});
+        //         if (foundIndex === -1) {
+        //             return;
+        //         }
+        //
+        //         this._last_reading = readingHistory[foundIndex];
+        //         this.setState({initPosition: this._last_reading});
+        //         //this.modal.setState({isShow: true});
+        //     }
+        // });
     };
 
     _onConfirmContinueReading = () => {
         this.setState({initPosition: this._last_reading});
-        this.modal.setState({isShow: false});
+        //this.modal.setState({isShow: false});
     };
 
     _onCancelContinueReading = () => {
-        this.modal.setState({isShow: false});
+        //this.modal.setState({isShow: false});
     };
 
     _updateDailyReadingTime = () => {
@@ -324,15 +324,16 @@ export default class Reader extends React.Component {
     };
 
     render() {
-
+        const {watchingHistory} = this.props;
+        console.log("Scroll to: ", watchingHistory.data);
         return (
             <View style={styles.alertWindow}>
-                <ContinueReadingModal ref={(ref)=>this.modal=ref}
-                                      onYes={this._onConfirmContinueReading}
-                                      onNo={this._onCancelContinueReading}/>
+                {/*<ContinueReadingModal ref={(ref)=>this.modal=ref}*/}
+                                      {/*onYes={this._onConfirmContinueReading}*/}
+                                      {/*onNo={this._onCancelContinueReading}/>*/}
                 {this._renderProgressBar()}
                 <CustomWebview source={this.state.currentUrl}
-                               initPosition={this.state.initPosition}
+                               initPosition={watchingHistory.data ? watchingHistory.data : {}}
                                style={styles.webView}
                                onLoadingChanged={(event) => this._updateProgress(event.nativeEvent)}
                                onNavigationChanged={(event) => this._updateNavigation(event.nativeEvent)}
