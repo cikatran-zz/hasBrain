@@ -35,7 +35,6 @@ export default class PathRecommend extends React.Component {
     _keyExtractor = (item, index) => index + '';
 
     _openPathDetail = (item) => {
-        console.log()
         this.props.navigation.navigate("UserPath", item);
     };
 

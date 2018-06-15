@@ -1,23 +1,25 @@
 import React, {Component} from 'react'
 import {
-    Text, View, StyleSheet, NativeModules, Platform, TouchableWithoutFeedback, Image, SectionList, FlatList
+    Text, View, StyleSheet, NativeModules, ActivityIndicator, TouchableWithoutFeedback, Image, SectionList, FlatList
 } from 'react-native'
 import { colors } from '../../constants/colors'
 import _ from 'lodash'
 import {rootViewTopPadding} from '../../utils/paddingUtils'
+import { NavigationActions } from 'react-navigation';
 
 export default class UserPath extends Component {
 
     constructor(props) {
         super(props)
+        this.state = {
+            firstLoad: true
+        };
     }
 
     componentDidMount() {
-        console.log("UserPath", this.props.navigation.state.params);
         const {_id} = this.props.navigation.state.params;
         this.props.getUserPath(_id);
     }
-
     _renderSection = ({item}) => {
         if (item == null || _.isEmpty(item)) {
             return null;
@@ -68,9 +70,20 @@ export default class UserPath extends Component {
         this.props.navigation.navigate("Reader", {...item, bookmarked: false});
 
     };
+
+    _onClosePress = () => {
+        this.props.navigation.goBack();
+    }
     render() {
         const {userPath} = this.props;
+        const {firstLoad} = this.state;
         const {_id} = this.props.navigation.state.params;
+        if (firstLoad && userPath.isFetching)
+            return (
+                <View style={styles.container}>
+                    <ActivityIndicator color={colors.blueText}/>
+                </View>
+            );
         if (!userPath.data)
             return null;
         let sections = userPath.data.contentData.map(data => {
@@ -83,14 +96,19 @@ export default class UserPath extends Component {
         })
         return (
             <View style={styles.container}>
+                <TouchableWithoutFeedback onPress={this._onClosePress} style={{height: 30, width: 30}}>
+                    <Image style={{width:25, height: 25, position: 'absolute', right: 30, top: 30}} source={require('../../assets/ic_close.png')}/>
+                </TouchableWithoutFeedback>
                 <View style={styles.pathInfoContainer}>
                     <Text style={styles.pathInfoTitle}>{userPath.data.title}</Text>
                     <Text style={styles.pathInfoDescription}>{userPath.data.shortDescription}</Text>
                 </View>
                 <SectionList
                     style={{marginTop: 20, marginRight: 2, width:'100%', paddingTop: 2}}
-                    refreshing={userPath.isFetching}
-                    onRefresh={() => this.props.getUserPath(_id)}
+                    refreshing={!firstLoad && userPath.isFetching}
+                    onRefresh={() => {
+                        this.setState({firstLoad: false});
+                        this.props.getUserPath(_id)}}
                     keyExtractor={this._keyExtractor}
                     stickySectionHeadersEnabled={false}
                     showsVerticalScrollIndicator={false}
