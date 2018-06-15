@@ -393,12 +393,14 @@ export const getWatchingHistory = (contentId) => {
                 let readingHistory = _.get(result[0], strings.readingHistoryKey, []);
                 if (readingHistory == null) {
                     resolve({});
+                    return;
                 }
 
                 // Get last reading position
                 let foundIndex = _.findIndex(readingHistory, {id: contentId});
                 if (foundIndex === -1) {
                     resolve({});
+                    return;
                 }
                 resolve(readingHistory[foundIndex]);
             } else {
