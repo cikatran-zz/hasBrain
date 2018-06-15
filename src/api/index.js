@@ -11,8 +11,12 @@ const {RNCustomWebview, RNUserKit} = NativeModules;
 const getAuthToken = () => {
     return new Promise((resolve, reject)=> {
         NativeModules.RNUserKitIdentity.getProfileInfo((error, result)=> {
-            let authToken = result[0].authToken;
-            resolve(authToken);
+            if (error) {
+                reject(error)
+            } else {
+                let authToken = result[0].authToken;
+                resolve(authToken);
+            }
         })
     });
 };
