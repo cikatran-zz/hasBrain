@@ -1,6 +1,7 @@
 import PathBookmarked from './PathBookmarked'
 import {connect} from 'react-redux';
 import {getPathBookmarked} from "../../../actions/getPathBookmarked";
+import {removeBookmark} from "../../../actions/removeBookmark";
 
 function mapStateToProps(state) {
     return {
@@ -10,7 +11,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getPathBookmarked: (page, perPage) => dispatch(getPathBookmarked(page, perPage))
+        getPathBookmarked: (page, perPage) => dispatch(getPathBookmarked(page, perPage)),
+        removeBookmark: (id, type, trackingType) => (dispatch(removeBookmark(id, type, trackingType)))
     }
 }
 

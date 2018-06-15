@@ -176,7 +176,7 @@ query {
 `;
 
 const postUserInterest = gql`
-mutation postUserInterest($segments: [UsertypeusertypeSegmentsInput], $intentIds: [MongoID]){
+mutation postUserInterest($segments: [UsertypedevelopertypeSegmentsInput], $intentIds: [MongoID]){
   user{
     userInterest(record:{
       segments: $segments,

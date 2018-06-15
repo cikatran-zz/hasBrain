@@ -10,6 +10,7 @@ import { facebookLogin } from '../../utils/facebookLogin'
 import { googleLogin } from '../../utils/googleLogin'
 import NavigationActions from 'react-navigation/src/NavigationActions'
 import PathSlider from "../../components/PathSlider";
+import {postCreateUser} from "../../api";
 
 export default class Authentication extends React.PureComponent {
 
@@ -53,8 +54,19 @@ export default class Authentication extends React.PureComponent {
         this.props.navigation.dispatch(resetAction);
     };
 
+    _createUser = (profile) => {
+        postCreateUser(_.get(profile, 'id', ''), _.get(profile, '_name', '')).then((value) => {
+            //console.log(value);
+        }).catch((error) => {
+            //console.log(error);
+        });
+    };
+
     _loginWithFacebook = () => {
         facebookLogin().then((value) => {
+            if (value.new) {
+                this._createUser(_.get(value, 'profiles[0]', {}));
+            }
             this._goToNextScreen();
         }).catch((error) => {
             console.log('Error when login with Facebook', error);
@@ -63,6 +75,9 @@ export default class Authentication extends React.PureComponent {
 
     _loginWithGooglePlus = () => {
         googleLogin().then((value) => {
+            if (value.new) {
+                this._createUser(_.get(value, 'profiles[0]', {}));
+            }
             this._goToNextScreen();
         })
         .catch((err) => {

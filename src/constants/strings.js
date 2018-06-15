@@ -10,22 +10,28 @@ export const strings = {
     readingTagsKey: 'reading_tags',
     onboardingKey: 'onboarding',
     onboardedKey: 'onboarded',
+    contentEvent: {
+        contentId: "_content_id",
+        mediaType: "_media_type"
+    },
     contentConsumed: {
         event: "_content_consumed",
-        consumedLength: "_consumed_length_in_seconds",
-        contentId: "_content_id",
-        mediaType: "_media_type"
+        consumedLength: "_consumed_length_in_seconds"
     },
     contentBookmarked: {
-        event: "_content_bookmarked",
-        consumedLength: "_consumed_length_in_seconds",
-        contentId: "_content_id",
-        mediaType: "_media_type"
+        event: "_content_bookmarked"
     },
     contentUnbookmarked: {
-
+        event: "_content_unbookmarked"
     },
-    articleType: "article",
+    trackingType: {
+        article: "article",
+        path: "path"
+    },
+    bookmarkType: {
+        article: "articletype",
+        path: "pathtype"
+    },
     mekey: '_me',
     experienceKey: 'experience',
     name: '_name',

@@ -73,8 +73,10 @@ export default class Me extends React.Component {
             };
             if (this._titleTextInput._lastNativeText)
                 title = this._titleTextInput._lastNativeText;
-            if (this._about._getSummaryValue())
-                description = this._about._getSummaryValue();
+            if (this._about != null) {
+                let summary = this._about._getSummaryValue();
+                description = summary ? summary : "";
+            }
             this.props.updateUserProfile(title, description);
         }
         this.setState({editMode: !editMode});

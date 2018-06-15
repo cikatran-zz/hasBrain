@@ -1,15 +1,17 @@
 import Reader from './Reader'
 import { connect } from 'react-redux'
+import {createBookmark} from "../../actions/createBookmark";
+import {removeBookmark} from "../../actions/removeBookmark";
 
 function mapStateToProps(state) {
     return {
-        // Reader: state.ReaderReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        // getReader: () => dispatch(getReader())
+        createBookmark: (id, type, trackingType) => dispatch(createBookmark(id, type, trackingType)),
+        removeBookmark: (id, type, trackingType) => (dispatch(removeBookmark(id, type, trackingType)))
     }
 }
 
