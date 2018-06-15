@@ -96,13 +96,14 @@ export default class UserPath extends Component {
         })
         return (
             <View style={styles.container}>
-                <TouchableWithoutFeedback onPress={this._onClosePress} style={{height: 30, width: 30}}>
-                    <Image style={{width:25, height: 25, position: 'absolute', right: 30, top: 30}} source={require('../../assets/ic_close.png')}/>
-                </TouchableWithoutFeedback>
+
                 <View style={styles.pathInfoContainer}>
                     <Text style={styles.pathInfoTitle}>{userPath.data.title}</Text>
                     <Text style={styles.pathInfoDescription}>{userPath.data.shortDescription}</Text>
                 </View>
+                <TouchableWithoutFeedback onPress={this._onClosePress} style={{height: 30, width: 30}}>
+                    <Image style={{width:25, height: 25, position: 'absolute', right: 30, top: 30 + rootViewTopPadding()}} source={require('../../assets/ic_close.png')}/>
+                </TouchableWithoutFeedback>
                 <SectionList
                     style={{marginTop: 20, marginRight: 2, width:'100%', paddingTop: 2}}
                     refreshing={!firstLoad && userPath.isFetching}
