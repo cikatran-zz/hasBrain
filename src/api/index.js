@@ -384,5 +384,27 @@ const  getExploreFunc = (limit, skip, sources, tags) => {
         query: config.queries.exploreArticles,
         variables: {skip: skip, limit: limit, sources: destSources, tags: destTags}
     })
-}
+};
+
+export const getWatchingHistory = (contentId) => {
+    return new Promise((resolve, reject) => {
+        RNUserKit.getProperty(strings.readingHistoryKey, (error, result)=> {
+            if (error == null && result != null) {
+                let readingHistory = _.get(result[0], strings.readingHistoryKey, []);
+                if (readingHistory == null) {
+                    resolve({});
+                }
+
+                // Get last reading position
+                let foundIndex = _.findIndex(readingHistory, {id: contentId});
+                if (foundIndex === -1) {
+                    resolve({});
+                }
+                resolve(readingHistory[foundIndex]);
+            } else {
+                reject(error);
+            }
+        });
+    });
+};
 

@@ -15,6 +15,7 @@ import updateRecommendSourceReducer from "./updateRecommendSourceReducer";
 import allIntentionsReducer from "./allIntentionsReducer";
 import createBookmarkReducer from "./createBookmarkReducer";
 import removeBookmarkReducer from "./removeBookmarkReducer";
+import watchingHistoryReducer from "./watchingHistoryReducer";
 
 export default combineReducers({
     nav,
@@ -32,5 +33,6 @@ export default combineReducers({
     pathBookmarkedReducer,
     updateRecommendSourceReducer,
     createBookmarkReducer,
-    removeBookmarkReducer
+    removeBookmarkReducer,
+    watchingHistoryReducer
 });

@@ -11,6 +11,7 @@ import * as getAllIntention from './getAllIntention'
 import * as getUserPath from './getUserPath'
 import * as createBookmark from './createBookmark'
 import * as removeBookmark from './removeBookmark'
+import * as getWatchingHistory from './getWatchingHistory'
 
 export default actions = {
     getSaved,
@@ -25,5 +26,6 @@ export default actions = {
     updateRecommendSource,
     getUserPath,
     createBookmark,
-    removeBookmark
+    removeBookmark,
+    getWatchingHistory
 }
