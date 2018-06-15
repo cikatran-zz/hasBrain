@@ -17,7 +17,7 @@ query getArticles($page: Int!, $perPage: Int!){
         sourceName
         sourceImage
         author
-        sourceCreateAt
+        sourceCreatedAt
         createdAt
         updatedAt
         projectId
@@ -206,7 +206,7 @@ mutation checkAndCreateArticle($record: CreateOnearticletypeInput!) {
         sourceName
         sourceImage
         author
-        sourceCreateAt
+        sourceCreatedAt
         createdAt
         updatedAt
         projectId
@@ -436,7 +436,7 @@ query getExploreArticles($skip: Int, $limit: Int, $sources: [JSON], $tags: [JSON
           authorImage
           readingTime
           sourceImage
-          sourceCreateAt
+          sourceCreatedAt
           shortDescription
           tags
         }
