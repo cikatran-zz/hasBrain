@@ -70,6 +70,7 @@ export default class UserPath extends Component {
     };
     render() {
         const {userPath} = this.props;
+        const {_id} = this.props.navigation.state.params;
         if (!userPath.data)
             return null;
         let sections = userPath.data.contentData.map(data => {
@@ -89,7 +90,7 @@ export default class UserPath extends Component {
                 <SectionList
                     style={{marginTop: 20, marginRight: 2, width:'100%', paddingTop: 2}}
                     refreshing={userPath.isFetching}
-                    onRefresh={() => this.props.getUserPath()}
+                    onRefresh={() => this.props.getUserPath(_id)}
                     keyExtractor={this._keyExtractor}
                     stickySectionHeadersEnabled={false}
                     showsVerticalScrollIndicator={false}
