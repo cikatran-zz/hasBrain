@@ -18,6 +18,7 @@ export default class OnboardingPageIntent extends React.Component {
             selectedIntentions: [],
             isSearching: false,
         }
+        this.chosen = false
     }
 
     _getFilterData = () => {
@@ -64,9 +65,12 @@ export default class OnboardingPageIntent extends React.Component {
 
     _onClickedTag = (id) => {
         let {selectedIntentions} = this.state;
+        console.log("Selected intents",selectedIntentions);
         let newIntentions = selectedIntentions.filter((intent) => intent._id !== id);
+        console.log("New intents", newIntentions);
         this.setState({selectedIntentions: newIntentions});
         this.props.onSelectedChanged(newIntentions);
+        this.chosen = true
     };
 
     _onChooseIntent = (item) => {
@@ -115,7 +119,8 @@ export default class OnboardingPageIntent extends React.Component {
                 });
             }
         });
-        if (_.isEqual(intents, this.state.selectedIntentions) === false) {
+        if (_.isEqual(intents, this.state.selectedIntentions) === false && this.chosen === false) {
+            console.log("Update with new intents", intents, this.state.selectedIntentions);
             this.setState({selectedIntentions: intents});
             this.props.onSelectedChanged(intents);
         }
@@ -125,7 +130,6 @@ export default class OnboardingPageIntent extends React.Component {
 
         const {query} = this.state;
         let intents = this._findIntent(query);
-
         return (
             <View style={styles.rootView}>
                 <Autocomplete
