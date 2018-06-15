@@ -21,6 +21,7 @@ import getSourceListEpic from './sourcelistRequestEpic';
 import updateSourceListEpic from './updateSourceListEpic'
 import getAllIntentsEpic from "./allIntentRequestEpic";
 import createBookmarkEpic from "./createBookmarkEpic";
+import removeBookmarkEpic from "./removeBookmarkEpic";
 
 const rootEpic = combineEpics(
     getSavedEpic,
@@ -41,7 +42,8 @@ const rootEpic = combineEpics(
     updateRecommendSourceEpic,
     getSourceListEpic,
     updateSourceListEpic,
-    createBookmarkEpic
+    createBookmarkEpic,
+    removeBookmarkEpic
 );
 
 export default rootEpic;

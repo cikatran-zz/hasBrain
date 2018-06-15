@@ -3,32 +3,32 @@ import {strings} from "../constants/strings";
 import {NativeModules} from "react-native";
 const {RNUserKit} = NativeModules;
 
-export function createBookmark(contentId, bookmarkType, trackingType) {
+export function removeBookmark(contentId, bookmarkType, trackingType) {
     return {
-        type: actionTypes.CREATING_BOOKMARK,
+        type: actionTypes.REMOVING_BOOKMARK,
         contentId: contentId,
         contentType: bookmarkType,
         trackingType: trackingType
     }
 }
 
-export function createBookmarkSuccess(contentId, trackingType) {
+export function removeBookmarkSuccess(contentId, trackingType) {
     let props = {
         [strings.contentEvent.contentId]: contentId,
         [strings.contentEvent.mediaType]: trackingType
     };
-    RNUserKit.track(strings.contentBookmarked.event, props);
+    RNUserKit.track(strings.contentUnbookmarked.event, props);
 
     return {
-        type: actionTypes.CREATE_BOOKMARK_SUCCESS,
+        type: actionTypes.REMOVE_BOOKMARK_SUCCESS,
         contentId: contentId
     }
 }
 
 
-export function createBookmarkFailure(error) {
+export function removeBookmarkFailure(error) {
     return {
-        type: actionTypes.CREATE_BOOKMARK_FAILURE,
+        type: actionTypes.REMOVE_BOOKMARK_FAILURE,
         errorMessage: error
     }
 }

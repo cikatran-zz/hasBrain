@@ -189,20 +189,11 @@ export default class Reader extends React.Component {
         if (this.state.isBookmarked) {
             this.setState({isBookmarked: false});
             // Unbookmark
-            postRemoveBookmark(_.get(this.state.currentItem,"_id", ""), "articletype").then(value => {
-                console.log("SUCCESS UNBOOK");
-            }).catch((err)=> {
-                console.log("ERROR UNBOOK", err);
-            });
+            this.props.removeBookmark(_.get(this.state.currentItem,"_id", ""), strings.bookmarkType.article, strings.trackingType.article);
         } else {
             this.setState({isBookmarked: true});
             // Bookmark
-            this.props.createBookmark(_.get(this.state.currentItem,"_id", ""), "articletype", strings.articleType);
-            // postCreateBookmark(_.get(this.state.currentItem,"_id", ""), "articletype").then(value => {
-            //     console.log("SUCCESS BOOK");
-            // }).catch((err)=> {
-            //     console.log("ERROR BOOK", err);
-            // });
+            this.props.createBookmark(_.get(this.state.currentItem,"_id", ""), strings.bookmarkType.article, strings.trackingType.article);
         }
     };
 
@@ -312,8 +303,8 @@ export default class Reader extends React.Component {
     _content_consumed_event = () => {
         let props = {
             [strings.contentConsumed.consumedLength]: this._totalReadingTimeInSeconds,
-            [strings.contentConsumed.contentId]: _.get(this.state.currentItem, '_id', ''),
-            [strings.contentConsumed.mediaType]: strings.articleType
+            [strings.contentEvent.contentId]: _.get(this.state.currentItem, '_id', ''),
+            [strings.contentEvent.mediaType]: strings.articleType
         };
 
         // Increase tag score
@@ -329,7 +320,7 @@ export default class Reader extends React.Component {
             RNUserKit.incrementProperty(increment, (err, res)=> {});
         }
         this._totalReadingTimeInSeconds = 0;
-        this.props.trackEvent(strings.contentConsumed.event, props);
+        RNUserKit.track(strings.contentConsumed.event, props);
     };
 
     render() {

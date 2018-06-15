@@ -33,6 +33,7 @@ export default class ContinueReadingModal extends React.Component {
                        this.setState({isShow: false});
                    }}>
                 <View style={styles.rootView}>
+                    <View style={styles.backgroundView}/>
                     <View style={styles.alertWindow}>
                         <Text style={styles.message}>
                             {this.state.message}
@@ -56,7 +57,16 @@ const styles = StyleSheet.create({
     rootView: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+    },
+    backgroundView: {
+        position: 'absolute',
+        backgroundColor: '#000000',
+        opacity: 0.3,
+        width: '100%',
+        height: '100%',
+        top: 0,
+        left: 0
     },
     alertWindow: {
         width: '70%',

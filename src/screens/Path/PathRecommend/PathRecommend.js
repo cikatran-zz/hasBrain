@@ -12,10 +12,10 @@ import {
 } from 'react-native'
 import {colors} from '../../../constants/colors'
 import _ from 'lodash'
-import {postCreateBookmark, postRemoveBookmark} from "../../../api";
 import LoadingRow from "../../../components/LoadingRow";
 import PathItem from "../PathItem";
 import NoDataView from "../../../components/NoDataView";
+import {strings} from "../../../constants/strings";
 
 
 export default class PathRecommend extends React.Component {
@@ -42,24 +42,14 @@ export default class PathRecommend extends React.Component {
     _onBookmarkItem = (id) => {
         if (_.findIndex(this.state.bookmarked, (o) => (o === id)) !== -1) {
             this.setState({bookmarked: _.filter(this.state.bookmarked, (o) => (o !== id))});
-            postRemoveBookmark(id, "pathtype").then(value => {
-                //console.log("SUCCESS BOOK");
-            }).catch((err) => {
-                //console.log("ERROR BOOK", err);
-            });
+            this.props.removeBookmark(id, strings.bookmarkType.path, strings.trackingType.path);
         } else {
             this.setState({bookmarked: this.state.bookmarked.concat(id)});
-            postCreateBookmark(id, "pathtype").then(value => {
-                //console.log("SUCCESS BOOK");
-            }).catch((err) => {
-                //console.log("ERROR BOOK", err);
-            });
+            this.props.createBookmark(id, strings.bookmarkType.path, strings.trackingType.path);
         }
     };
 
     _renderVerticalItem = ({item}) => {
-
-        console.log("Recommend", this.state.bookmarked, item._id, _.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1);
 
         return (<PathItem data={item}
                           onBookmark={() => this._onBookmarkItem(item._id)}

@@ -12,10 +12,11 @@ import {
 } from 'react-native'
 import {colors} from '../../../constants/colors'
 import _ from 'lodash'
-import {postRemoveBookmark, postUnbookmark} from "../../../api";
+import {postRemoveBookmark} from "../../../api";
 import LoadingRow from "../../../components/LoadingRow";
 import PathItem from "../PathItem";
 import NoDataView from "../../../components/NoDataView";
+import {strings} from "../../../constants/strings";
 
 
 export default class PathBookmarked extends React.Component {
@@ -46,11 +47,7 @@ export default class PathBookmarked extends React.Component {
                 this.setState({deleteItems: this.state.deleteItems.concat(id)});
             })
         }
-        postRemoveBookmark(id, "pathtype").then(value => {
-            console.log("DONE BOOKMARK",value);
-        }).catch((err)=> {
-            console.log("ERROR BOOK", err);
-        });
+        this.props.removeBookmark(id, strings.bookmarkType.path, strings.trackingType.path);
     };
 
     _renderVerticalItem = ({item}) => {

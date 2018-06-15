@@ -2,15 +2,14 @@ import React from 'react'
 import {
     Text, View, FlatList, StyleSheet, TouchableOpacity, Platform
 } from 'react-native'
-import VerticalNotificationRow from '../../components/VerticalNotificationRow'
 import {colors} from "../../constants/colors";
 import VerticalRow from "../../components/VerticalRow";
 import NoDataView from "../../components/NoDataView";
-import {postRemoveBookmark} from "../../api";
 import _ from 'lodash'
 import {getImageFromArray} from "../../utils/imageUtils";
 import {extractRootDomain} from "../../utils/stringUtils";
 import LoadingRow from "../../components/LoadingRow";
+import {strings} from "../../constants/strings";
 
 export default class Save extends React.Component {
 
@@ -33,11 +32,7 @@ export default class Save extends React.Component {
                 this.setState({deleteItems: this.state.deleteItems.concat(id)});
             })
         }
-        postRemoveBookmark(id, "articletype").then(value => {
-            //console.log("DONE BOOKMARK",value);
-        }).catch((err)=> {
-            //console.log("ERROR BOOK", err);
-        });
+        this.props.removeBookmark(id, strings.bookmarkType.article, strings.trackingType.article);
     };
 
     _renderListItem = ({item}) => {

@@ -10,6 +10,7 @@ import * as updateRecommendSource from './updateRecommendSource'
 import * as getAllIntention from './getAllIntention'
 import * as getUserPath from './getUserPath'
 import * as createBookmark from './createBookmark'
+import * as removeBookmark from './removeBookmark'
 
 export default actions = {
     getSaved,
@@ -23,5 +24,6 @@ export default actions = {
     getPathBookmarked,
     updateRecommendSource,
     getUserPath,
-    createBookmark
+    createBookmark,
+    removeBookmark
 }

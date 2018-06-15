@@ -1,6 +1,5 @@
 import React from 'react'
 import {
-    ActivityIndicator,
     FlatList,
     SectionList,
     Text,
@@ -9,7 +8,6 @@ import {
     StyleSheet,
     Dimensions,
     Share, NativeModules, Platform, Image,
-    TouchableWithoutFeedback,
     Alert
 } from 'react-native'
 import {colors} from '../../constants/colors'
@@ -111,18 +109,10 @@ export default class Explore extends React.Component {
     _onBookmarkItem = (id) => {
         if (_.findIndex(this.state.bookmarked, (o) => (o === id)) !== -1) {
             this.setState({bookmarked: _.filter(this.state.bookmarked, (o) => (o !== id))});
-            postRemoveBookmark(id, "articletype").then(value => {
-                //console.log("SUCCESS BOOK");
-            }).catch((err) => {
-                //console.log("ERROR BOOK", err);
-            });
+            this.props.removeBookmark(id, strings.bookmarkType.article, strings.trackingType.article);
         } else {
             this.setState({bookmarked: this.state.bookmarked.concat(id)});
-            postCreateBookmark(id, "articletype").then(value => {
-                //console.log("SUCCESS BOOK");
-            }).catch((err) => {
-                //console.log("ERROR BOOK", err);
-            });
+            this.props.createBookmark(id, strings.bookmarkType.article, strings.trackingType.article);
         }
     };
 
