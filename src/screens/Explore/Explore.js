@@ -8,6 +8,7 @@ import {
     StyleSheet,
     Dimensions,
     Share, NativeModules, Platform, Image,
+    Animated,
     Alert
 } from 'react-native'
 import {colors} from '../../constants/colors'
@@ -45,7 +46,10 @@ export default class Explore extends React.Component {
         this.haveMore = true;
         this.state = {
             bookmarked: [],
-        }
+        };
+
+        this.offset = 0;
+        this._animated = new Animated.Value(1);
         this._debounceReloadAndSave = _.debounce(this._reloadAndSaveTag, 500);
     }
 
@@ -68,7 +72,10 @@ export default class Explore extends React.Component {
 
     _openReadingView = (item) => {
 
-        this.props.navigation.navigate("Reader", {...item, bookmarked: _.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1});
+        this.props.navigation.navigate("Reader", {
+            ...item,
+            bookmarked: _.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1
+        });
     };
 
     _setUpReadingTime = () => {
@@ -117,7 +124,7 @@ export default class Explore extends React.Component {
     _renderVerticalItem = ({item}) => (
         <VerticalRow title={item._source.title}
                      author={item._source.author}
-                     time={item._source.sourceCreateAt}
+                     time={item._source.sourceCreatedAt}
                      readingTime={item._source.readingTime}
                      onClicked={() => this._openReadingView({...item._source, _id: item._id})}
                      onShare={() => this._onShareItem(item._source)}
@@ -197,7 +204,7 @@ export default class Explore extends React.Component {
                 <LoadingRow/>
             )
         } else {
-            return null;
+            return <View style={{height:100}}/>;
         }
 
     };
@@ -248,12 +255,12 @@ export default class Explore extends React.Component {
                 newTagsArray.push(id);
                 this._debounceReloadAndSave(chosenSourceArray, newTagsArray);
             }
-            if (tagMap.get('All')){
+            if (tagMap.get('All')) {
                 tagMap.set('All', false);
             }
         }
         this.props.updateUserSourceTag(tagMap);
-    }
+    };
 
     _reloadAndSaveTag = (sources, tags) => {
         const {source} = this.props;
@@ -270,50 +277,98 @@ export default class Explore extends React.Component {
         }
         if (!_.isEmpty(newSource))
             this.props.updateSourceList(newSource);
-    }
+    };
+
+    _onScroll = (event) => {
+        const {articles, playlist, source} = this.props;
+        let currentOffset = event.nativeEvent.contentOffset.y;
+        const dif = currentOffset - (this.offset || 0);
+        let endOffset = event.nativeEvent.layoutMeasurement.height + currentOffset;
+
+        if (Math.abs(dif) < 5) {
+        } else if ((dif < 0 || articles.isFetching || currentOffset <= 0) && (endOffset < event.nativeEvent.contentSize.height)) {
+            Animated.timing(this._animated, {
+                toValue: 1,
+                duration: 100,
+            }).start();
+        } else {
+            Animated.timing(this._animated, {
+                toValue: 0,
+                duration: 100,
+            }).start();
+        }
+        this.offset = currentOffset;
+    };
+
+    _animatedStyle = () => ([
+        styles.topView,
+        {
+            opacity: this._animated,
+            transform: [{
+                translateY: this._animated.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [-112, 0]
+                }),
+            }],
+        }
+    ]);
 
     render() {
         const {articles, playlist, source} = this.props;
         return (
             <View style={styles.rootView}>
-                <View style={styles.searchBar}>
-                    <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
-                    <Text style={styles.searchText}>For You</Text>
-                    <TouchableOpacity style={{marginRight: 0, marginLeft: 'auto', padding: 10}} onPress={()=>this.props.navigation.navigate('MySource')}>
-                        <Image style={[styles.searchIcon]} source={require('../../assets/ic_filter.png')}/>
-                    </TouchableOpacity>
-                </View>
-                <FlatList
-                    style={{marginLeft: 25, marginVertical: 10, height: 50}}
-                    keyExtractor={this._keyExtractor}
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    data={source.tags}
-                    renderItem={this._renderTagsItem}
-                />
-                <SectionList
-                    refreshing={articles.isFetching}
-                    onRefresh={() => this.props.getArticles(10, 0, "", "")}
-                    style={styles.alertWindow}
-                    keyExtractor={this._keyExtractor}
-                    stickySectionHeadersEnabled={false}
-                    showsVerticalScrollIndicator={false}
-                    bounces={true}
-                    onEndReached={this._fetchMore}
-                    ListFooterComponent={() => this._renderListFooter(articles.isFetching)}
-                    onEndReachedThreshold={1}
-                    sections={[
-                        {
-                            data: [playlist.data ? playlist.data : null],
-                            title: playlist.title == null ? "" : playlist.title,
-                            renderItem: this._renderHorizontalSection
-                        },
-                        {
-                            data: [articles.data],
-                            renderItem: this._renderVerticalSection
-                        }
-                    ]}
-                />
+                <Animated.View style={this._animatedStyle()}>
+                    <View style={styles.searchBar}>
+                        <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
+                        <Text style={styles.searchText}>For You</Text>
+                        <TouchableOpacity style={{marginRight: 0, marginLeft: 'auto', padding: 10}}
+                                          onPress={() => this.props.navigation.navigate('MySource')}>
+                            <Image style={[styles.searchIcon]} source={require('../../assets/ic_filter.png')}/>
+                        </TouchableOpacity>
+                    </View>
+                    <FlatList
+                        style={{marginLeft: 25, marginBottom: 0, height: 50}}
+                        keyExtractor={this._keyExtractor}
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        data={source.tags}
+                        renderItem={this._renderTagsItem}
+                    />
+                </Animated.View>
+                <Animated.View style={[styles.sectionView, {
+                    transform: [{
+                        translateY: this._animated.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [-112, 0]
+                        }),
+                    }],
+                }]}>
+                    <SectionList
+                        refreshing={articles.isFetching}
+                        onRefresh={() => this.props.getArticles(10, 0, "", "")}
+                        style={styles.alertWindow}
+                        onScroll={this._onScroll}
+                        scrollEventThrottle={100}
+                        keyExtractor={this._keyExtractor}
+                        stickySectionHeadersEnabled={false}
+                        showsVerticalScrollIndicator={false}
+                        bounces={true}
+                        onEndReached={this._fetchMore}
+                        ListFooterComponent={() => this._renderListFooter(articles.isFetching)}
+                        onEndReachedThreshold={1}
+                        sections={[
+                            {
+                                data: [playlist.data ? playlist.data : null],
+                                title: playlist.title == null ? "" : playlist.title,
+                                renderItem: this._renderHorizontalSection
+                            },
+                            {
+                                data: [articles.data],
+                                renderItem: this._renderVerticalSection
+                            }
+                        ]}
+                    />
+                </Animated.View>
             </View>
         )
     }
@@ -326,9 +381,16 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: colors.mainWhite
     },
+    topView: {
+        width: '100%',
+        flexDirection: 'column'
+    },
+    sectionView: {
+        width: '100%',
+        flexDirection: 'column'
+    },
     alertWindow: {
-        backgroundColor: colors.mainWhite,
-        position: 'relative',
+        backgroundColor: colors.mainWhite
     },
     horizontalCarousel: {
         backgroundColor: colors.carouselBackground,
@@ -351,15 +413,11 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderWidth: 1,
         borderColor: colors.grayLine,
-        paddingHorizontal: 20,
-        paddingVertical: 15,
-        marginTop: rootViewTopPadding() + 10,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        marginTop: rootViewTopPadding(),
         marginBottom: 15,
         marginHorizontal: 25,
-        elevation: 2,
-        shadowOffset: {width: 1, height: 1},
-        shadowColor: colors.mainDarkGray,
-        shadowOpacity: 0.5,
         backgroundColor: colors.mainWhite,
         alignItems: 'center'
     },
@@ -370,7 +428,7 @@ const styles = StyleSheet.create({
     },
     searchText: {
         marginLeft: 15,
-        fontSize: 20,
+        fontSize: 17,
         color: colors.grayTextSearch
     },
 });

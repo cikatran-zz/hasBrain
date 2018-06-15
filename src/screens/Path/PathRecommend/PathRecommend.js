@@ -96,7 +96,7 @@ export default class PathRecommend extends React.Component {
             return null;
         }
         return (<NoDataView text={'No recommend path'}/>);
-    }
+    };
 
     render() {
         const {pathRecommend} = this.props;
