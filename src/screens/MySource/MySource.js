@@ -76,6 +76,8 @@ export default class MySource extends React.Component {
         let checkedItem = false;
         if (_.isEmpty(checkedState)) {
             checkedItem = _.get(chosenSources, item.sourceId, undefined);
+            checkedItem = !_.isUndefined(checkedItem);
+
         } else {
             checkedItem = checkedState.get(item.sourceId);
         }
