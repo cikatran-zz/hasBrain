@@ -40,7 +40,7 @@ export default class MySource extends React.Component {
 
         this.setState((state) => {
             let checkedState = state.checkedState;
-            if (_.isEmpty(checkedState)) {
+            if (checkedState.size < 1) {
                 let keys = _.keys(chosenSources);
                 for (let key of keys) {
                     checkedState.set(key, true);
@@ -74,13 +74,13 @@ export default class MySource extends React.Component {
         const {source} = this.props;
         const {chosenSources} = source;
         let checkedItem = false;
-        if (_.isEmpty(checkedState)) {
+        if (checkedState.size < 1) {
             checkedItem = _.get(chosenSources, item.sourceId, undefined);
             checkedItem = !_.isUndefined(checkedItem);
-
         } else {
             checkedItem = checkedState.get(item.sourceId);
         }
+        console.log("Checked: ", item.sourceId, checkedItem, checkedState.size);
 
         return (
             <View style={styles.listRow}>
