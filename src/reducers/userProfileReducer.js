@@ -38,9 +38,14 @@ export default function userProfileReducer(state = initialState, action) {
                 userAnalystFetching: true
             }
         case actionTypes.UPDATING_USER_PROFILE:
+            let newUserProfileData = {
+                role: action.role,
+                about: action.summary
+            }
             return {
                 ...state,
-                updating: true
+                updating: true,
+                userProfileData: newUserProfileData
             }
         case actionTypes.FETCH_USER_PROFILE_SUCCESS:
             return {
