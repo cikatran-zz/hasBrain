@@ -407,7 +407,7 @@ const getSourceList = gql`
 const getExploreArticles = gql`
 query getExploreArticles($skip: Int, $limit: Int, $sources: [JSON], $tags: [JSON]){
   viewer{
-    articleSearch(query: {
+    articleSearch(sort: sourceCreatedAt__desc, query: {
       bool: {
         filter: [
           {
