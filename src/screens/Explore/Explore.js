@@ -50,6 +50,9 @@ export default class Explore extends React.Component {
 
         this.offset = 0;
         this._animated = new Animated.Value(1);
+        this._currentPositionVal = 1;
+        this._showStep = 0;
+        this._hideStep = 0;
         this._debounceReloadAndSave = _.debounce(this._reloadAndSaveTag, 500);
     }
 
@@ -224,13 +227,13 @@ export default class Explore extends React.Component {
         let tagMap = new Map(source.tagMap);
         let chosenSourceArray = Array.from(Object.keys(chosenSources));
 
-        if (id == 'All') {
+        if (id === 'All') {
             if (!isOn) {
                 tagMap.set(id, !isOn);
                 let tagKeyArray = Array.from(tagMap.keys());
                 this._debounceReloadAndSave(chosenSourceArray, _.drop(tags));
                 for (let tagKey of tagKeyArray) {
-                    if (tagKey != 'All') {
+                    if (tagKey !== 'All') {
                         tagMap.set(tagKey, false);
                     }
                 }
@@ -282,16 +285,31 @@ export default class Explore extends React.Component {
         const dif = currentOffset - (this.offset || 0);
         let endOffset = event.nativeEvent.layoutMeasurement.height + currentOffset;
 
-        if (Math.abs(dif) < 5) {
-        } else if ((dif < 0 || articles.isFetching || currentOffset <= 0) && (endOffset < event.nativeEvent.contentSize.height)) {
+        if (Math.abs(dif) < 0) {
+        } else if ((dif < 0 || currentOffset <= 0) && (endOffset < event.nativeEvent.contentSize.height)) {
+            // Show
+            this._showStep += 1;
+            this._hideStep = 0;
+            let newValue = Math.abs(dif) / 112 + this._currentPositionVal;
+            this._currentPositionVal = newValue > 1 ? 1 : newValue;
+            console.log("Show ", newValue);
             Animated.timing(this._animated, {
-                toValue: 1,
-                duration: 100,
+                toValue: this._currentPositionVal,
+                duration: 1,
+                useNativeDriver: true,
             }).start();
+
         } else {
+            // Hide
+            this._hideStep += 1;
+            this._showStep = 0;
+            let newValue = this._currentPositionVal - Math.abs(dif) / 112;
+            this._currentPositionVal = newValue < 0 ? 0 : newValue;
+            console.log("Hide ", newValue);
             Animated.timing(this._animated, {
-                toValue: 0,
-                duration: 100,
+                toValue: this._currentPositionVal,
+                duration: 1,
+                useNativeDriver: true,
             }).start();
         }
         this.offset = currentOffset;
