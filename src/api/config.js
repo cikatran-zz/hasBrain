@@ -440,6 +440,7 @@ query getExploreArticles($skip: Int, $limit: Int, $sources: [JSON], $tags: [JSON
           sourceCreatedAt
           shortDescription
           tags
+          sourceName
         }
       }
     }
