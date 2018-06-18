@@ -190,12 +190,9 @@ export default class Explore extends React.Component {
     };
 
     _fetchMore = () => {
-        if (this.props.articles.data != null) {
-            if (this.props.articles.data.length === this.currentPage * 20) {
-                this.currentPage += 1;
-                this.props.getArticles(this.currentPage, 20);
-            }
-        }
+        const {articles} = this.props;
+        const {skip} = articles;
+        this.props.getArticles(10, skip, "", "");
     };
 
     _renderListFooter = (isFetching) => {
