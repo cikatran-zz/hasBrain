@@ -22,7 +22,9 @@ export default function articlesReducer(state = initialState, action) {
             //prevent load more multi times
             if (state.data != null && action.skip < state.data.length)
                 return {
-                    ...state
+                    ...state,
+                    isFetching: false,
+                    fetched: true,
                 }
             let newData = action.data;
             if (state.data != null && action.skip > 0) {
