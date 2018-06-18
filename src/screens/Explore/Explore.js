@@ -352,7 +352,7 @@ export default class Explore extends React.Component {
                         bounces={true}
                         onEndReached={this._fetchMore}
                         ListFooterComponent={() => this._renderListFooter(articles.isFetching)}
-                        onEndReachedThreshold={1}
+                        onEndReachedThreshold={0.5}
                         sections={[
                             {
                                 data: [playlist.data ? playlist.data : null],
