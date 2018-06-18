@@ -184,6 +184,7 @@ export default class Reader extends React.Component {
     };
 
     _bookmarkPress = () => {
+        console.log("Current Item: ", this.state.currentItem);
         if (this.state.isBookmarked) {
             this.setState({isBookmarked: false});
             // Unbookmark

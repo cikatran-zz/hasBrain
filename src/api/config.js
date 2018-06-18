@@ -267,6 +267,7 @@ query getUserPath($id: MongoID){
         type
         kind
         contentData {
+          _id
           contentId
           content
           readingTime
