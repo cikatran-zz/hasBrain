@@ -48,6 +48,7 @@ query getBookmark($page: Int, $perPage: Int, $kind: String){
         content {
           _id
           contentId
+          content
           title
           longDescription
           shortDescription
