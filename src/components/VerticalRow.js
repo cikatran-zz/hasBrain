@@ -72,8 +72,8 @@ export default class VerticalRow extends React.PureComponent {
             <TouchableOpacity onPress={this.props.onClicked}>
                 <Animated.View style={rowStyles}>
                     <View style={styles.horizontalView}>
-                        <Text numberOfLines={2} style={[titleCardStyle, {
-                            flex: 2,
+                        <Text numberOfLines={3} style={[titleCardStyle, {
+                            flex: 3,
                             marginRight: 10,
                             maxHeight: 100,
                             flexWrap: "wrap"
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
         height: '100%'
     },
     subTextView: {
-        flexDirection: 'column'
+        flexDirection: 'column',
     },
     articleButtonView: {
         marginRight: 0,

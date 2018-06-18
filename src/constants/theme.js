@@ -13,7 +13,7 @@ export const defaultHeaderStyle = {
 
 export const titleCardStyle = {
     color: colors.blackText,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
 };
 

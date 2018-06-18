@@ -124,17 +124,24 @@ export default class Explore extends React.Component {
         }
     };
 
-    _renderVerticalItem = ({item}) => (
-        <VerticalRow title={item._source.title}
-                     author={item._source.author}
-                     time={item._source.sourceCreatedAt}
-                     readingTime={item._source.readingTime}
-                     onClicked={() => this._openReadingView({...item._source, _id: item._id})}
-                     onShare={() => this._onShareItem(item._source)}
-                     onBookmark={() => this._onBookmarkItem(item._id)}
-                     bookmarked={_.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1}
-                     image={item._source.sourceImage}/>
-    );
+    _renderVerticalItem = ({item}) => {
+        let sourceName = _.get(item, '_source.sourceName', '');
+        if (sourceName != null && sourceName.length > 2) {
+            sourceName = sourceName.charAt(0).toUpperCase() + sourceName.substr(1);
+        }
+
+        return(
+            <VerticalRow title={item._source.title}
+                         author={sourceName}
+                         time={item._source.sourceCreatedAt}
+                         readingTime={item._source.readingTime}
+                         onClicked={() => this._openReadingView({...item._source, _id: item._id})}
+                         onShare={() => this._onShareItem(item._source)}
+                         onBookmark={() => this._onBookmarkItem(item._id)}
+                         bookmarked={_.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1}
+                         image={item._source.sourceImage}/>
+        );
+    };
 
     _renderVerticalSeparator = () => (
         <View style={styles.horizontalItemSeparator}/>
@@ -370,7 +377,7 @@ export default class Explore extends React.Component {
                         bounces={true}
                         onEndReached={this._fetchMore}
                         ListFooterComponent={() => this._renderListFooter(articles.isFetching)}
-                        onEndReachedThreshold={1}
+                        onEndReachedThreshold={0.5}
                         sections={[
                             {
                                 data: [playlist.data ? playlist.data : null],
