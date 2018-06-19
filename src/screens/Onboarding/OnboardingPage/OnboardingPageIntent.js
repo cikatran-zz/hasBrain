@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-    Text, View, FlatList, StyleSheet, TouchableOpacity, Dimensions, Modal, Image, TouchableWithoutFeedback, TextInput
+    Text, View, FlatList, StyleSheet, TouchableOpacity, Dimensions, Modal, Image, TouchableWithoutFeedback, TextInput, ScrollView
 } from 'react-native'
 import {colors} from "../../../constants/colors";
 import {onboardingItemStyle} from "../../../constants/theme";
@@ -60,9 +60,17 @@ export default class OnboardingPageIntent extends React.Component {
     };
 
     _renderTags = () => {
-        return this.state.selectedIntentions.map((item, index) => <TouchableOpacity
-            onPress={() => this._onClickedTag(item._id)}><View style={styles.tagView}><Text
-            style={styles.tagText}>{item.displayName}</Text></View></TouchableOpacity>)
+        return this.state.selectedIntentions.map((item, index) =>
+            <TouchableOpacity
+                onPress={() => this._onClickedTag(item._id)}>
+                <View style={styles.tagView}>
+                    <Image source={require('../../../assets/ic_cancel.png')} />
+                    <Text
+                        style={styles.tagText}>{item.displayName}
+                    </Text>
+                </View>
+            </TouchableOpacity>
+        )
     };
 
     _onClickedTag = (id) => {
@@ -145,12 +153,12 @@ export default class OnboardingPageIntent extends React.Component {
     _renderSearchItem = ({item}) => {
         const {_id, group, displayName} = item;
         return (
-        <TouchableOpacity style={styles.autocompleteButton}
-                          onPress={() => this._onSearchItemPress(_id, group, displayName)}>
-            <Text style={[styles.autocompleteText, group ? {fontWeight: 'bold'} : {}]}>
-                {_id === "_create_new" ? "New intent \"" + displayName + "\"" : displayName}
-            </Text>
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.autocompleteButton}
+                              onPress={() => this._onSearchItemPress(_id, group, displayName)}>
+                <Text style={[styles.autocompleteText, group ? {fontWeight: 'bold'} : {}]}>
+                    {_id === "_create_new" ? "New intent \"" + displayName + "\"" : displayName}
+                </Text>
+            </TouchableOpacity>
         )
     }
 
@@ -200,9 +208,13 @@ export default class OnboardingPageIntent extends React.Component {
                         <Text style={styles.searchText}>Search for intention</Text>
                     </View>
                 </TouchableWithoutFeedback>
-                <View style={styles.tagsView}>
-                    {this._renderTags()}
-                </View>
+                <ScrollView
+                    horizontal={false}
+                    showsVerticalScrollIndicator={false}>
+                    <View style={styles.tagsView}>
+                        {this._renderTags()}
+                    </View>
+                </ScrollView>
             </View>
         );
     }
@@ -242,11 +254,14 @@ const styles = StyleSheet.create({
         padding: 8,
         borderColor: colors.blueText,
         marginTop: 10,
-        marginRight: 10
+        marginRight: 10,
+        flexDirection: 'row',
+        alignItems: 'center'
     },
     tagText: {
         fontSize: 15,
         color: colors.blueText,
+        marginLeft: 5
 
     },
     backIcon: {
