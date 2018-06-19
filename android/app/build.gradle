@@ -176,8 +176,8 @@ android {
 }
 
 ext {
-    userkitVersion = "2.2.49.1"
-    userkitVersionStaging = "2.2.49.1-staging"
+    userkitVersion = "2.2.51.2"
+    userkitVersionStaging = "2.2.51.2-staging"
     supportVersion = "27.1.1"
 }
 
