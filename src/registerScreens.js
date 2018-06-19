@@ -125,7 +125,7 @@ export const ScreenStack = StackNavigator({
     Reader: {
         screen: Reader,
         navigationOptions: ({navigation}) => ({
-            title: Math.round(navigation.state.params.readingTime) + " Min Read",
+            title: Math.ceil(Math.max(navigation.state.params.readingTime,1)) + " Min Read",
             headerStyle: {
                 backgroundColor: colors.mainWhite
             },
