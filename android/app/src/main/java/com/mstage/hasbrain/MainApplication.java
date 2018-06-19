@@ -17,6 +17,7 @@ import com.microsoft.appcenter.reactnative.analytics.AppCenterReactNativeAnalyti
 import com.microsoft.appcenter.reactnative.appcenter.AppCenterReactNativePackage;
 import com.microsoft.appcenter.reactnative.crashes.AppCenterReactNativeCrashesPackage;
 import com.microsoft.codepush.react.CodePush;
+import com.mstage.hasbrain.cache.WebpageCache;
 
 import java.util.Arrays;
 import java.util.List;
@@ -76,6 +77,7 @@ public class MainApplication extends Application implements ReactApplication {
         super.onCreate();
         MultiDex.install(this);
         SoLoader.init(this, /* native exopackage */ false);
+        MyOkhttpModule.init(this);
         FacebookSdk.setApplicationId(getResources().getString(R.string.facebook_app_id));
         FacebookSdk.sdkInitialize(this);
         String token = "";

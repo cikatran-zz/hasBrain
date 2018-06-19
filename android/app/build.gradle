@@ -167,10 +167,12 @@ android {
         sourceCompatibility 1.8
     }
 
-    android {
-        lintOptions {
-            abortOnError false
-        }
+    lintOptions {
+        abortOnError false
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
     }
 
 }
@@ -239,33 +241,9 @@ dependencies {
     implementation("com.mstage.userkit:identity:${userkitVersion}") {
         transitive = false
     }
-
-    //
-
-    //    releaseImplementation("com.mstage.userkit:sdk:${userkitVersion}") {
-
-    //        transitive = false
-
-    //    }
-
-    //    releaseImplementation("com.mstage.userkit:identity:${userkitVersion}") {
-
-    //        transitive = false
-
-    //    }
-
-    //    debugImplementation("com.mstage.userkit:sdk:${userkitVersionStaging}") {
-
-    //        transitive = false
-
-    //    }
-
-    //    debugImplementation("com.mstage.userkit:identity:${userkitVersionStaging}") {
-
-    //        transitive = false
-
-    //    }
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation "io.reactivex.rxjava2:rxjava:2.1.14"
+    implementation 'org.jsoup:jsoup:1.8.3'
 }
 
 // Run this once to be able to run the application with BUCK
