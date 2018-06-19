@@ -33,7 +33,22 @@ class CustomWebView: WKWebView {
     public var source: String = "" {
         didSet {
             if let _url = URL(string: source) {
-                self.load(URLRequest(url: _url) )
+                
+                let request = URLRequest(url: _url, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad)
+//                let cachedUrl = URLCache.shared.cachedResponse(for: request)
+//                if cachedUrl == nil {
+//                    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+//                        if let _ = response, let _ = data {
+//                            URLCache.shared.storeCachedResponse(CachedURLResponse(response: response!, data: data!), for: request)
+//                        }
+//                    }
+//                    
+//                    task.resume()
+//                    //self.load(URLRequest(url: _url, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad) )
+//                } else {
+//                    //self.load(cachedUrl!.data, mimeType: cachedUrl!.response.mimeType ?? "text/html", characterEncodingName: cachedUrl!.response.textEncodingName ?? "UTF-8", baseURL: cachedUrl!.response.url!.baseURL ?? cachedUrl!.response.url!)
+//                }
+                self.load(request)
             }
             
         }

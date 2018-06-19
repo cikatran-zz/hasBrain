@@ -61,6 +61,7 @@ export default class Explore extends React.Component {
         // this.props.getPlaylist();
         this.props.getSaved();
         this.props.getSourceList();
+        this.props.getCategory();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
         });
@@ -377,7 +378,7 @@ export default class Explore extends React.Component {
         </View>);
 
     render() {
-        const {articles, playlist, source} = this.props;
+        const {articles, playlist, source, category} = this.props;
         return (
             <View style={styles.rootView}>
                 <SectionList
@@ -417,7 +418,7 @@ export default class Explore extends React.Component {
                         keyExtractor={this._keyExtractor}
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
-                        data={source.tags}
+                        data={['All'].concat(category.data)}
                         renderItem={this._renderTagsItem}
                     />
                 </Animated.View>

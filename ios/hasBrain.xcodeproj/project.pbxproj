@@ -61,6 +61,8 @@
 		696011A120B27D9A00F0889D /* layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696011A020B27D9A00F0889D /* layout.swift */; };
 		69C4DAF620AAA3DC000E4B4F /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69C4DAF320AAA3C2000E4B4F /* libBVLinearGradient.a */; };
 		69C4DAFD20AADC97000E4B4F /* libRCTWKWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69C4DAFC20AADC8C000E4B4F /* libRCTWKWebView.a */; };
+		69CA44EF20D8F59100BF4409 /* SwiftURLCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CA44EE20D8F59100BF4409 /* SwiftURLCache.swift */; };
+		69CA44F220D904BA00BF4409 /* RNURLCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 69CA44F120D904BA00BF4409 /* RNURLCache.m */; };
 		69D7747620C52BB2001C60EB /* CustomWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D7747520C52BB2001C60EB /* CustomWebView.swift */; };
 		69D774C220C542CB001C60EB /* RNCustomWebviewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 69D774C120C542CB001C60EB /* RNCustomWebviewManager.m */; };
 		69F4CCD220BFB8DB004AE650 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 69F4CCA220BFB8DB004AE650 /* GoogleService-Info.plist */; };
@@ -517,6 +519,9 @@
 		696011A020B27D9A00F0889D /* layout.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = layout.swift; sourceTree = "<group>"; tabWidth = 4; };
 		69C4DAED20AAA3C2000E4B4F /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		69C4DAF720AADC8C000E4B4F /* RCTWKWebView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWKWebView.xcodeproj; path = "../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView.xcodeproj"; sourceTree = "<group>"; };
+		69CA44EE20D8F59100BF4409 /* SwiftURLCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftURLCache.swift; sourceTree = "<group>"; };
+		69CA44F020D904BA00BF4409 /* RNURLCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNURLCache.h; sourceTree = "<group>"; };
+		69CA44F120D904BA00BF4409 /* RNURLCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNURLCache.m; sourceTree = "<group>"; };
 		69D7747520C52BB2001C60EB /* CustomWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWebView.swift; sourceTree = "<group>"; };
 		69D774C020C542CB001C60EB /* RNCustomWebviewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNCustomWebviewManager.h; sourceTree = "<group>"; };
 		69D774C120C542CB001C60EB /* RNCustomWebviewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNCustomWebviewManager.m; sourceTree = "<group>"; };
@@ -807,6 +812,7 @@
 		6927DEA2209C64F100FFA275 /* NativeModule */ = {
 			isa = PBXGroup;
 			children = (
+				69CA44BA20D8F56600BF4409 /* RNURLCache */,
 				69FE69F520AEAFD000F8FED1 /* ReaderView */,
 				6927DEA3209C64F100FFA275 /* UserKit */,
 				6927DEB8209C64F100FFA275 /* OANotificationCenter */,
@@ -956,6 +962,16 @@
 				69C4DAFC20AADC8C000E4B4F /* libRCTWKWebView.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		69CA44BA20D8F56600BF4409 /* RNURLCache */ = {
+			isa = PBXGroup;
+			children = (
+				69CA44EE20D8F59100BF4409 /* SwiftURLCache.swift */,
+				69CA44F020D904BA00BF4409 /* RNURLCache.h */,
+				69CA44F120D904BA00BF4409 /* RNURLCache.m */,
+			);
+			path = RNURLCache;
 			sourceTree = "<group>";
 		};
 		69F4CD2820BFBA1D004AE650 /* Products */ = {
@@ -1804,6 +1820,7 @@
 				6927DEE3209C654A00FFA275 /* String+Extension.swift in Sources */,
 				69FE6A3920AEB11200F8FED1 /* RNCustomWebview.m in Sources */,
 				6927DEE2209C654A00FFA275 /* JSON.swift in Sources */,
+				69CA44F220D904BA00BF4409 /* RNURLCache.m in Sources */,
 				6927DECA209C64F100FFA275 /* LivePlaybackRecorder.swift in Sources */,
 				6927DEDD209C64F100FFA275 /* AuthenticationModel+Extension.swift in Sources */,
 				6960115F20B26A9000F0889D /* CustomWebViewViewController.swift in Sources */,
@@ -1812,6 +1829,7 @@
 				6927DED8209C64F100FFA275 /* IQKeyboardManagerObj.swift in Sources */,
 				6927DED1209C64F100FFA275 /* RNVODPlaybackRecorder.m in Sources */,
 				6927DEDB209C64F100FFA275 /* UserKitIdentityProfile+Extension.swift in Sources */,
+				69CA44EF20D8F59100BF4409 /* SwiftURLCache.swift in Sources */,
 				69D774C220C542CB001C60EB /* RNCustomWebviewManager.m in Sources */,
 				6927DECB209C64F100FFA275 /* RNLivePlaybackRecorder.m in Sources */,
 				6927DEDC209C64F100FFA275 /* UKIError+Extension.swift in Sources */,

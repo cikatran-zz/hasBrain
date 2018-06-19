@@ -447,7 +447,17 @@ query getExploreArticles($skip: Int, $limit: Int, $sources: [JSON], $tags: [JSON
     }
   }
 }
-`
+`;
+
+const getCategory = gql`
+query {
+  viewer {
+    categoryMany {
+      title
+    }
+  }
+}
+`;
 
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
@@ -463,7 +473,8 @@ export default {
         exploreArticles: getExploreArticles,
         intents: intentMany,
         pathRecommend: getPathRecommend,
-        sourceRecommend: getRecommendSource
+        sourceRecommend: getRecommendSource,
+        category: getCategory
     },
     mutation: {
         bookmark: postBookmark,
