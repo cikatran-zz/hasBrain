@@ -26,7 +26,8 @@ export default class Launch extends React.PureComponent {
                             this.props.navigation.navigate("Home");
                         }
                     } else {
-                        this.props.navigation.navigate('Onboarding');
+                        NativeModules.RNUserKitIdentity.signOut();
+                        this.props.navigation.navigate('Authentication');
                     }
                 });
             } else {

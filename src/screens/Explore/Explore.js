@@ -9,7 +9,7 @@ import {
     Dimensions,
     Share, NativeModules, Platform, Image,
     Animated,
-    Alert
+    Alert, RefreshControl
 } from 'react-native'
 import {colors} from '../../constants/colors'
 import VerticalRow from '../../components/VerticalRow'
@@ -24,6 +24,7 @@ import LoadingRow from "../../components/LoadingRow";
 import * as moment from 'moment';
 import {rootViewTopPadding} from "../../utils/paddingUtils";
 import ToggleTagComponent from '../../components/ToggleTagComponent'
+import {DotsLoader} from 'react-native-indicator';
 
 const horizontalMargin = 5;
 
@@ -46,10 +47,14 @@ export default class Explore extends React.Component {
         this.haveMore = true;
         this.state = {
             bookmarked: [],
+            _animated: new Animated.Value(1)
         };
 
         this.offset = 0;
-        this._animated = new Animated.Value(1);
+        this._currentPositionVal = 1;
+        this._showStep = 0;
+        this._hideStep = 0;
+        this._scrollView = null;
         this._debounceReloadAndSave = _.debounce(this._reloadAndSaveTag, 500);
     }
 
@@ -127,7 +132,7 @@ export default class Explore extends React.Component {
             sourceName = sourceName.charAt(0).toUpperCase() + sourceName.substr(1);
         }
 
-        return(
+        return (
             <VerticalRow title={item._source.title}
                          author={sourceName}
                          time={item._source.sourceCreatedAt}
@@ -209,7 +214,7 @@ export default class Explore extends React.Component {
                 <LoadingRow/>
             )
         } else {
-            return <View style={{height:100}}/>;
+            return <View style={{height: 100}}/>;
         }
 
     };
@@ -232,13 +237,13 @@ export default class Explore extends React.Component {
         let tagMap = new Map(source.tagMap);
         let chosenSourceArray = Array.from(Object.keys(chosenSources));
 
-        if (id == 'All') {
+        if (id === 'All') {
             if (!isOn) {
                 tagMap.set(id, !isOn);
                 let tagKeyArray = Array.from(tagMap.keys());
                 this._debounceReloadAndSave(chosenSourceArray, _.drop(tags));
                 for (let tagKey of tagKeyArray) {
-                    if (tagKey != 'All') {
+                    if (tagKey !== 'All') {
                         tagMap.set(tagKey, false);
                     }
                 }
@@ -290,29 +295,64 @@ export default class Explore extends React.Component {
         const dif = currentOffset - (this.offset || 0);
         let endOffset = event.nativeEvent.layoutMeasurement.height + currentOffset;
 
-        if (Math.abs(dif) < 5) {
-        } else if ((dif < 0 || articles.isFetching || currentOffset <= 0) && (endOffset < event.nativeEvent.contentSize.height)) {
-            Animated.timing(this._animated, {
-                toValue: 1,
-                duration: 100,
+        if (Math.abs(dif) < 0) {
+        } else if ((dif < 0 || currentOffset <= 0) && (endOffset < event.nativeEvent.contentSize.height)) {
+            // Show
+            this._currentPositionVal = Math.max(this._currentPositionVal - Math.abs(dif)/112, 0);
+            Animated.spring(this.state._animated, {
+                toValue: this._currentPositionVal * 112 ,
+                friction: 7,
+                tension: 40,
+                //useNativeDriver: true,
             }).start();
+
         } else {
-            Animated.timing(this._animated, {
-                toValue: 0,
-                duration: 100,
+
+            // Hide
+            this._currentPositionVal = Math.min(Math.abs(dif)/112 + this._currentPositionVal, 1);
+            Animated.spring(this.state._animated, {
+                toValue: this._currentPositionVal * 112,
+                friction: 7,
+                tension: 40,
+                //useNativeDriver: true,
             }).start();
         }
         this.offset = currentOffset;
     };
 
+    _onScrollEnd = (event) => {
+        if (this._currentPositionVal < 0.5) {
+            // Show
+            this._currentPositionVal = 0;
+            Animated.spring(this.state._animated, {
+                toValue: 0 ,
+                friction: 7,
+                tension: 40,
+            }).start();
+        } else {
+            // Hide
+            this._currentPositionVal = 1;
+            Animated.spring(this.state._animated, {
+                toValue: 112,
+                friction: 7,
+                tension: 40,
+            }).start();
+        }
+    };
+
     _animatedStyle = () => ([
         styles.topView,
         {
-            opacity: this._animated,
+            opacity: this.state._animated.interpolate({
+                inputRange: [0, 100, 112],
+                outputRange: [1, 0.9, 0],
+                extrapolate: 'clamp',
+            }),
             transform: [{
-                translateY: this._animated.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [-112, 0]
+                translateY: this.state._animated.interpolate({
+                    inputRange: [0, 112],
+                    outputRange: [0, -112],
+                    extrapolate: 'clamp',
                 }),
             }],
         }
@@ -322,6 +362,28 @@ export default class Explore extends React.Component {
         const {articles, playlist, source} = this.props;
         return (
             <View style={styles.rootView}>
+                <SectionList
+                    ref={(ref) => this._scrollView = ref}
+                    contentContainerStyle={{marginTop: 112 + rootViewTopPadding()}}
+                    refreshing={false}
+                    onRefresh={() => this.props.getArticles(10, 0, "", "")}
+                    onScrollEndDrag={this._onScrollEnd}
+                    onScroll={this._onScroll}
+                    scrollEventThrottle={16}
+                    keyExtractor={this._keyExtractor}
+                    stickySectionHeadersEnabled={false}
+                    showsVerticalScrollIndicator={false}
+                    bounces={true}
+                    onEndReached={this._fetchMore}
+                    ListFooterComponent={() => this._renderListFooter(articles.isFetching)}
+                    onEndReachedThreshold={0.5}
+                    sections={[
+                        {
+                            data: [articles.data],
+                            renderItem: this._renderVerticalSection
+                        }
+                    ]}
+                />
                 <Animated.View style={this._animatedStyle()}>
                     <View style={styles.searchBar}>
                         <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
@@ -340,41 +402,11 @@ export default class Explore extends React.Component {
                         renderItem={this._renderTagsItem}
                     />
                 </Animated.View>
-                <Animated.View style={[styles.sectionView, {
-                    transform: [{
-                        translateY: this._animated.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [-112, 0]
-                        }),
-                    }],
-                }]}>
-                    <SectionList
-                        refreshing={articles.isFetching}
-                        onRefresh={() => this.props.getArticles(10, 0, "", "")}
-                        style={styles.alertWindow}
-                        onScroll={this._onScroll}
-                        scrollEventThrottle={100}
-                        removeClippedSubviews={false}
-                        keyExtractor={this._keyExtractor}
-                        stickySectionHeadersEnabled={false}
-                        showsVerticalScrollIndicator={false}
-                        bounces={true}
-                        onEndReached={this._fetchMore}
-                        ListFooterComponent={() => this._renderListFooter(articles.isFetching)}
-                        onEndReachedThreshold={0.5}
-                        sections={[
-                            {
-                                data: [playlist.data ? playlist.data : null],
-                                title: playlist.title == null ? "" : playlist.title,
-                                renderItem: this._renderHorizontalSection
-                            },
-                            {
-                                data: [articles.data],
-                                renderItem: this._renderVerticalSection
-                            }
-                        ]}
-                    />
-                </Animated.View>
+                {articles.isFetching &&
+                (<View style={styles.loadingView}>
+                    <DotsLoader color={colors.mainDarkGray} size={10} betweenSpace={10}/>
+                </View>)
+                }
             </View>
         )
     }
@@ -382,14 +414,31 @@ export default class Explore extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    loadingView: {
+        position: 'absolute',
+        alignSelf: 'center',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        width: 60,
+        height: 20,
+        top: 112 + rootViewTopPadding(),
+        //backgroundColor: colors.mainWhite,
+        borderRadius: 25,
+        borderColor: colors.grayLine,
+        borderWidth: 0
+    },
     rootView: {
         flex: 1,
         flexDirection: 'column',
         backgroundColor: colors.mainWhite
     },
     topView: {
-        width: '100%',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        position: 'absolute',
+        backgroundColor: colors.mainWhite,
+        height: 112 + rootViewTopPadding(),
+        left: 0,
+        right: 0
     },
     sectionView: {
         width: '100%',
