@@ -1,12 +1,35 @@
 package com.mstage.hasbrain;
 
 import android.annotation.SuppressLint;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Log;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.google.zxing.common.StringUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by henry on 5/28/18.
@@ -20,6 +43,12 @@ public class ResumeWebviewClient extends WebViewClient {
     private float scaleResume = 1f;
 
     private enum State {LOADING, LOADED, FINISHED}
+
+    File folder;
+
+    public void updateFolder(File folder){
+        this.folder = folder;
+    }
 
     public ResumeWebviewClient(CustomWebview webView, Context context) {
         this.context = context;
@@ -62,6 +91,52 @@ public class ResumeWebviewClient extends WebViewClient {
         return true;
     }
 
+    String TAG  = "RESUMEWEBVIEWCLIENT";
+    @Nullable
+    @Override
+    public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            String resourceUrl = request.getUrl().toString();
+            String fileExtension = WebviewResourceMappingHelper.getInstance().getFileExt(resourceUrl);
+            if (WebviewResourceMappingHelper.getInstance().getOverridableExtensions().contains(fileExtension)) {
+                String encoding = "UTF-8";
+                String fileName = WebviewResourceMappingHelper.getInstance().getFileName(resourceUrl);
+                if (!TextUtils.isEmpty(fileName)) {
+                    String mimeType = WebviewResourceMappingHelper.getInstance().getMimeType(fileExtension);
+                    if (!TextUtils.isEmpty(mimeType)) {
+                        try {
+                            Log.e(TAG, fileName);
+                            WebResourceResponse temp = WebviewResourceMappingHelper.getWebResourceResponseFromFile(fileName, folder, mimeType, encoding);
+                            if(temp != null){
+                                return temp;
+                            } else {
+                                return super.shouldInterceptRequest(view, request);
+                            }
+                        } catch (IOException e) {
+                            return super.shouldInterceptRequest(view, request);
+                        }
+                    }
+                }
+            }
+            if (fileExtension.endsWith("jpg")) {
+//                try {
+//                    InputStream inputStream = ImageUtils.readFromCacheSync(resourceUrl);
+//                    if (inputStream != null) {
+//                        return new WebResourceResponse("image/jpg", "UTF-8", inputStream);
+//                    }
+//                } catch (Exception e) {
+//                    return super.shouldInterceptRequest(view, request);
+//                }
+            }
+            return super.shouldInterceptRequest(view, request);
+
+        }
+        return super.shouldInterceptRequest(view, request);
+    }
+
+
+
     @Override
     public void onPageFinished(android.webkit.WebView view, String url) {
         if (url.equals("about:blank")) {
@@ -103,3 +178,5 @@ public class ResumeWebviewClient extends WebViewClient {
         return new Point(webView.getScrollX(), webView.getScrollY());
     }
 }
+
+

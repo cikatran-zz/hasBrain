@@ -32,9 +32,8 @@ export default function articlesReducer(state = initialState, action) {
                 newData = _.union(state.data, newData);
             }
             let skip = newData.length;
-            let contentsArr = newData.map((e)=> e._source.content);
-            let contentIdsArr = newData.map((e)=>e._source.contentId);
-            //NativeModules.RNURLCache.cacheUrls(contentsArr.concat(contentIdsArr));
+            let listUrl = newData.map(item => item._source.contentId)
+            NativeModules.RNCache.cacheWebPage(listUrl);
             return {
                 ...state,
                 count: action.count,
