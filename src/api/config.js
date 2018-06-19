@@ -392,7 +392,7 @@ query getRecommendSource($ids: [ID]!){
 const getSourceList = gql`
     query{
         viewer{
-            sourcePagination {
+            sourcePagination(page: 1, perPage: 100) {
                 count
                 items {
                     _id

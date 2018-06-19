@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mstage.hasbrain.lib.customwebview">
+
+    <application
+        >
+        <activity android:name="com.mstage.hasbrain.lib.customwebview.helper.WebviewActivity"></activity>
+    </application>
+</manifest>
