@@ -52,8 +52,6 @@ export default class Explore extends React.Component {
 
         this.offset = 0;
         this._currentPositionVal = 1;
-        this._showStep = 0;
-        this._hideStep = 0;
         this._scrollView = null;
         this._debounceReloadAndSave = _.debounce(this._reloadAndSaveTag, 500);
     }
@@ -203,8 +201,8 @@ export default class Explore extends React.Component {
 
     _fetchMore = () => {
         const {articles} = this.props;
-        const {skip, count} = articles;
-        if (skip < count)
+        const {skip, count, isFetching} = articles;
+        if (skip < count && !isFetching)
             this.props.getArticles(10, skip, "", "");
     };
 
@@ -214,7 +212,7 @@ export default class Explore extends React.Component {
                 <LoadingRow/>
             )
         } else {
-            return <View style={{height: 100}}/>;
+            return <View style={{height: 200}}/>;
         }
 
     };
@@ -262,7 +260,11 @@ export default class Explore extends React.Component {
                 ])
             } else {
                 tagMap.set(id, !isOn);
-                newTagsArray.push(id);
+                if (!isOn) {
+                    newTagsArray.push(id);
+                } else {
+                    _.remove(newTagsArray, (x)=>x === id);
+                }
                 this._debounceReloadAndSave(chosenSourceArray, newTagsArray);
             }
             if (tagMap.get('All')) {
@@ -295,12 +297,23 @@ export default class Explore extends React.Component {
         const dif = currentOffset - (this.offset || 0);
         let endOffset = event.nativeEvent.layoutMeasurement.height + currentOffset;
 
+        // Check data is not null
+        if (articles.data == null || articles.data.length === 0) {
+            this._currentPositionVal = 0;
+            Animated.spring(this.state._animated, {
+                toValue: 0,
+                friction: 7,
+                tension: 40,
+            }).start();
+            return
+        }
+
         if (Math.abs(dif) < 0) {
         } else if ((dif < 0 || currentOffset <= 0) && (endOffset < event.nativeEvent.contentSize.height)) {
             // Show
-            this._currentPositionVal = Math.max(this._currentPositionVal - Math.abs(dif)/112, 0);
+            this._currentPositionVal = Math.max(this._currentPositionVal - Math.abs(dif) / 112, 0);
             Animated.spring(this.state._animated, {
-                toValue: this._currentPositionVal * 112 ,
+                toValue: this._currentPositionVal * 112,
                 friction: 7,
                 tension: 40,
                 //useNativeDriver: true,
@@ -309,7 +322,7 @@ export default class Explore extends React.Component {
         } else {
 
             // Hide
-            this._currentPositionVal = Math.min(Math.abs(dif)/112 + this._currentPositionVal, 1);
+            this._currentPositionVal = Math.min(Math.abs(dif) / 112 + this._currentPositionVal, 1);
             Animated.spring(this.state._animated, {
                 toValue: this._currentPositionVal * 112,
                 friction: 7,
@@ -325,7 +338,7 @@ export default class Explore extends React.Component {
             // Show
             this._currentPositionVal = 0;
             Animated.spring(this.state._animated, {
-                toValue: 0 ,
+                toValue: 0,
                 friction: 7,
                 tension: 40,
             }).start();
@@ -358,13 +371,18 @@ export default class Explore extends React.Component {
         }
     ]);
 
+    _renderLoading = (fetching) => (
+        <View style={[styles.loadingView, {opacity: fetching ? 1 : 0}]}>
+            <DotsLoader color={colors.mainDarkGray} size={10} betweenSpace={10}/>
+        </View>);
+
     render() {
         const {articles, playlist, source} = this.props;
         return (
             <View style={styles.rootView}>
                 <SectionList
                     ref={(ref) => this._scrollView = ref}
-                    contentContainerStyle={{marginTop: 112 + rootViewTopPadding()}}
+                    contentContainerStyle={{marginTop: 112 + rootViewTopPadding(), marginBottom: 0}}
                     refreshing={false}
                     onRefresh={() => this.props.getArticles(10, 0, "", "")}
                     onScrollEndDrag={this._onScrollEnd}
@@ -375,6 +393,7 @@ export default class Explore extends React.Component {
                     showsVerticalScrollIndicator={false}
                     bounces={true}
                     onEndReached={this._fetchMore}
+                    ListHeaderComponent={this._renderLoading(articles.isFetching)}
                     ListFooterComponent={() => this._renderListFooter(articles.isFetching)}
                     onEndReachedThreshold={0.5}
                     sections={[
@@ -402,10 +421,8 @@ export default class Explore extends React.Component {
                         renderItem={this._renderTagsItem}
                     />
                 </Animated.View>
-                {articles.isFetching &&
-                (<View style={styles.loadingView}>
-                    <DotsLoader color={colors.mainDarkGray} size={10} betweenSpace={10}/>
-                </View>)
+                {
+                    //this._renderLoading(articles.isFetching)
                 }
             </View>
         )
@@ -415,17 +432,11 @@ export default class Explore extends React.Component {
 
 const styles = StyleSheet.create({
     loadingView: {
-        position: 'absolute',
         alignSelf: 'center',
         flexDirection: 'column',
         justifyContent: 'center',
         width: 60,
         height: 20,
-        top: 112 + rootViewTopPadding(),
-        //backgroundColor: colors.mainWhite,
-        borderRadius: 25,
-        borderColor: colors.grayLine,
-        borderWidth: 0
     },
     rootView: {
         flex: 1,

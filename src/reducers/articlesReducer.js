@@ -20,12 +20,12 @@ export default function articlesReducer(state = initialState, action) {
             };
         case actionTypes.FETCH_ARTICLE_SUCCESS:
             //prevent load more multi times
-            if (state.data != null && action.skip < state.data.length)
-                return {
-                    ...state,
-                    isFetching: false,
-                    fetched: true,
-                }
+            // if (state.data != null && action.skip < state.data.length)
+            //     return {
+            //         ...state,
+            //         isFetching: false,
+            //         fetched: true,
+            //     };
             let newData = action.data;
             if (state.data != null && action.skip > 0) {
                 newData = _.union(state.data, newData);

@@ -5,7 +5,7 @@ export function getPublishDateDescription(time) {
 
 export function getReadingTimeDescription(minutes) {
     if (typeof(minutes) === "number") {
-        return Math.round(minutes) + ' min read';
+        return Math.ceil(Math.max(minutes,1)) + ' min read';
     }
     return '';
 }
