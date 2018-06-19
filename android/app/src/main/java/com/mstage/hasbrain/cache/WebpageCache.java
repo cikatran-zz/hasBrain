@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -55,6 +56,10 @@ public class WebpageCache {
 
     Pattern REGEX_HTTP = Pattern.compile("^(http|https)://");
     private final Pattern fileNameReplacementPattern = Pattern.compile("[^a-zA-Z0-9-_\\.]");
+    private List<String> overridableExtensions = new ArrayList<>(Arrays.asList("js", "png", "jpg", "woff", "ttf", "eot", "css", "ico"));
+    private List<String> cacheImageList = new ArrayList<>(Arrays.asList("png", "jpg", "ico"));
+
+//     "png", "jpg", "woff", "ttf", "eot",
 
     Boolean detectHttp(String string) {
         return REGEX_HTTP.matcher(string).find();
@@ -71,10 +76,14 @@ public class WebpageCache {
             try {
                 URL temp = new URL(url);
                 String baseUrl = temp.getProtocol() + "://" + temp.getHost();
-                getCacheURL(url, baseUrl, webPageFile).subscribe(item -> {
+                getCacheURL(url, baseUrl, webPageFile).subscribeOn(Schedulers.newThread()).subscribe(item -> {
                     if (webPageFolder.mkdir()) {
                         for (Iterator<String> i = cssToGrab.iterator(); i.hasNext(); ) {
                             downloadCssAndParse(i.next(), webPageFolder.getAbsolutePath());
+                        }
+
+                        for (Iterator<String> i = filesToGrab.iterator(); i.hasNext(); ) {
+                            downloadFile(i.next(), webPageFolder.getAbsolutePath());
                         }
                     }
                 }, error -> {
@@ -90,12 +99,27 @@ public class WebpageCache {
 
     @SuppressLint("CheckResult")
     public Observable<Response> getCacheURL(String url, String baseUrl, File basePath) {
-        return getData(url).observeOn(Schedulers.io())
+        return getData(url)
                 .doOnNext(response -> {
                     String htmlRaw = response.body().string();
                     String parseHtml = parseHtmlForLinks(htmlRaw, baseUrl);
                     saveStringToFile(htmlRaw, basePath);
                 });
+    }
+
+    private void saveByteToFile(byte[] ToSave, File outputFile) throws IOException {
+
+        if (outputFile.exists()) {
+            return;
+        }
+
+        outputFile.createNewFile();
+
+        FileOutputStream fos = new FileOutputStream(outputFile);
+        fos.write(ToSave);
+
+        fos.flush();
+        fos.close();
     }
 
     private void saveStringToFile(String ToSave, File outputFile) throws IOException {
@@ -113,6 +137,32 @@ public class WebpageCache {
         fos.close();
     }
 
+    public String getFileExt(String fileName) {
+        return fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+    }
+
+    @SuppressLint("CheckResult")
+    private void downloadFile(final String url, final String outputDir) {
+        String fileExt = getFileExt(url);
+        if (overridableExtensions.contains(fileExt)) {
+            String filename = getFileName(url);
+            File outputFile = new File(outputDir, filename);
+            getData(url).subscribeOn(Schedulers.newThread())
+                    .subscribe(response -> {
+                        if (cacheImageList.contains(fileExt)) {
+                            saveByteToFile(response.body().bytes(), outputFile);
+                        } else {
+                            String file = response.body().string();
+                            saveStringToFile(file, outputFile);
+                        }
+                    }, error -> {
+                        Log.d("error", error.getMessage());
+                    });
+        } else {
+            Log.d("not get this file", url);
+        }
+    }
+
     @SuppressLint("CheckResult")
     private void downloadCssAndParse(final String url, final String outputDir) {
 
@@ -120,10 +170,10 @@ public class WebpageCache {
         File outputFile = new File(outputDir, filename);
 
 //            eventCallback.onProgressMessage("Getting CSS file: " + filename);
-        getData(url).observeOn(Schedulers.io())
+        getData(url).subscribeOn(Schedulers.newThread())
                 .subscribe(response -> {
                     String cssContent = response.body().string();
-                    cssContent = parseCssForLinks(cssContent, url);
+                    String parseCssContent = parseCssForLinks(cssContent, url);
                     saveStringToFile(cssContent, outputFile);
                 }, error -> {
                     Log.d("error", error.getMessage());

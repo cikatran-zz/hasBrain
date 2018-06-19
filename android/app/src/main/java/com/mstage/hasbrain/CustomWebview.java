@@ -24,13 +24,14 @@ import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.mstage.hasbrain.notification.NotificationCenter;
 import com.mstage.hasbrain.notification.NotificationObserver;
 
+import java.io.File;
 import java.util.Map;
 
 /**
  * Created by henry on 6/1/18.
  */
 public class CustomWebview extends WebView implements NotificationObserver {
-    ResumeWebviewClient webViewClient;
+    public ResumeWebviewClient webViewClient;
     Point resume = new Point();
 
     ReactContext reactContext;
@@ -59,6 +60,7 @@ public class CustomWebview extends WebView implements NotificationObserver {
         super(context, attrs);
         initSetting();
     }
+
 
     @Override
     protected void finalize() throws Throwable {

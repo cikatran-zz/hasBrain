@@ -61,16 +61,15 @@ public class ReactWebviewManager extends SimpleViewManager<CustomWebview> {
     @ReactProp(name = "source")
     public void setUrl(CustomWebview view, String url) {
 
-        if (!TextUtils.isEmpty(url)) {
+        if (!TextUtils.isEmpty(url) && !url.equals("about:blank")) {
             File webPageFile = new File(view.getContext().getCacheDir(), "webpage/" + url.hashCode() + ".html");
             File webPageFolder = new File(view.getContext().getCacheDir(), "webpage/" + url.hashCode());
                 if (webPageFile.exists()) {
                     try {
                         String webpage = getStringFromFile(webPageFile);
-
                         URL temp = new URL(url);
                         String baseUrl = temp.getProtocol() + "://" + temp.getHost();
-                        view.loadDataWithBaseURL("file://"+webPageFolder.toString() + "/", webpage, "text/html", "utf-8", null);
+                        view.loadDataWithBaseURL(baseUrl, webpage, "text/html", "utf-8", null);
 //                        view.loadDataWithBaseURL(baseUrl, webpage, "text/html", "utf-8", null);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -78,8 +77,10 @@ public class ReactWebviewManager extends SimpleViewManager<CustomWebview> {
                 } else {
                     view.loadUrl(url);
                 }
-
+            (view.webViewClient).updateFolder(webPageFolder);
         }
+
+
     }
 
     @ReactProp(name = "initPosition")
