@@ -201,8 +201,9 @@ export default class Explore extends React.Component {
 
     _fetchMore = () => {
         const {articles} = this.props;
-        const {skip} = articles;
-        this.props.getArticles(10, skip, "", "");
+        const {skip, count} = articles;
+        if (skip < count)
+            this.props.getArticles(10, skip, "", "");
     };
 
     _renderListFooter = (isFetching) => {
@@ -371,6 +372,7 @@ export default class Explore extends React.Component {
                         style={styles.alertWindow}
                         onScroll={this._onScroll}
                         scrollEventThrottle={100}
+                        removeClippedSubviews={false}
                         keyExtractor={this._keyExtractor}
                         stickySectionHeadersEnabled={false}
                         showsVerticalScrollIndicator={false}
@@ -412,7 +414,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
     alertWindow: {
-        backgroundColor: colors.mainWhite
+        backgroundColor: colors.mainWhite,
     },
     horizontalCarousel: {
         backgroundColor: colors.carouselBackground,
