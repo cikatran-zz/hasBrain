@@ -1,5 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
 import _ from 'lodash';
+import {NativeModules} from 'react-native'
 
 const initialState = {
     data: null,
@@ -31,6 +32,9 @@ export default function articlesReducer(state = initialState, action) {
                 newData = _.union(state.data, newData);
             }
             let skip = newData.length;
+            let contentsArr = newData.map((e)=> e._source.content);
+            let contentIdsArr = newData.map((e)=>e._source.contentId);
+            //NativeModules.RNURLCache.cacheUrls(contentsArr.concat(contentIdsArr));
             return {
                 ...state,
                 count: action.count,

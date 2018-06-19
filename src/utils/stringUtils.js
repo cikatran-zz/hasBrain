@@ -19,6 +19,9 @@ function extractHostname(url) {
 }
 
 export function extractRootDomain(url) {
+    if (url === null) {
+        return "";
+    }
     let domain = extractHostname(url),
         splitArr = domain.split('.'),
         arrLen = splitArr.length;

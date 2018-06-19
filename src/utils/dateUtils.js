@@ -39,13 +39,13 @@ export function getIDOfCurrentDate() {
 
 Date.prototype.toRelativeTime = (function() {
 
-    var _ = function(options) {
-        var opts = processOptions(options);
+    let _ = function(options) {
+        let opts = processOptions(options);
 
-        var now = opts.now || new Date();
-        var texts = opts.texts || TEXTS;
-        var delta = now - this;
-        var future = (delta <= 0);
+        let now = opts.now || new Date();
+        let texts = opts.texts || TEXTS;
+        let delta = now - this;
+        let future = (delta <= 0);
         delta = Math.abs(delta);
 
         // special cases controlled by options
@@ -56,8 +56,8 @@ Date.prototype.toRelativeTime = (function() {
             return toSmartDays(this, now, texts);
         }
 
-        var units = null;
-        for (var key in CONVERSIONS) {
+        let units = null;
+        for (let key in CONVERSIONS) {
             if (delta < CONVERSIONS[key])
                 break;
             units = key; // keeps track of the selected key over the iteration
@@ -70,7 +70,7 @@ Date.prototype.toRelativeTime = (function() {
         return [delta, units, future ? texts.from_now : texts.ago].join(" ");
     };
 
-    var processOptions = function(arg) {
+    let processOptions = function(arg) {
         if (!arg) arg = 0;
         if (typeof arg === 'string') {
             arg = parseInt(arg, 10);
@@ -82,9 +82,9 @@ Date.prototype.toRelativeTime = (function() {
         return arg;
     };
 
-    var toSmartDays = function(date, now, texts) {
-        var day;
-        var weekday = date.getDay(),
+    let toSmartDays = function(date, now, texts) {
+        let day;
+        let weekday = date.getDay(),
             dayDiff = weekday - now.getDay();
         if (dayDiff == 0)       day = texts.today;
         else if (dayDiff == -1) day = texts.yesterday;
@@ -94,7 +94,7 @@ Date.prototype.toRelativeTime = (function() {
         return day + " " + texts.at + " " + date.toLocaleTimeString();
     };
 
-    var CONVERSIONS = {
+    let CONVERSIONS = {
         millisecond: 1, // ms    -> ms
         second: 1000,   // ms    -> sec
         minute: 60,     // sec   -> min
@@ -104,11 +104,11 @@ Date.prototype.toRelativeTime = (function() {
         year:   12      // month -> year
     };
 
-    var MS_IN_DAY = (CONVERSIONS.millisecond * CONVERSIONS.second * CONVERSIONS.minute * CONVERSIONS.hour * CONVERSIONS.day);
+    let MS_IN_DAY = (CONVERSIONS.millisecond * CONVERSIONS.second * CONVERSIONS.minute * CONVERSIONS.hour * CONVERSIONS.day);
 
-    var WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    let WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    var TEXTS = {today:        'Today',
+    let TEXTS = {today:        'Today',
         yesterday:    'Yesterday',
         tomorrow:     'Tomorrow',
         at:           'at',

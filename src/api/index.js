@@ -414,3 +414,9 @@ export const getWatchingHistory = (contentId) => {
     });
 };
 
+export const getCategory = () => {
+    return gqlQuery({
+        query: config.queries.category
+    })
+}
+

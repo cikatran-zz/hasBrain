@@ -100,7 +100,12 @@ export default class Save extends React.Component {
 
         let data = [];
         if (saved.data != null) {
-            data = saved.data.filter((x)=> (x.content != null && _.indexOf(this.state.deleteItems, x.content._id) < 0))
+            try {
+                data = saved.data.filter((x)=> (x.content != null && _.indexOf(this.state.deleteItems, x.content._id) < 0))
+            }catch (error) {
+                console.log("Error", error);
+            }
+
         }
 
         if (data.length === 0) {
