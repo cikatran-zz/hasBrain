@@ -1,12 +1,13 @@
 import React from 'react'
 import {
-    Text, View, FlatList, StyleSheet, TouchableOpacity, Dimensions
+    Text, View, FlatList, StyleSheet, TouchableOpacity, Dimensions, Modal, Image, TouchableWithoutFeedback, TextInput
 } from 'react-native'
 import {colors} from "../../../constants/colors";
 import {onboardingItemStyle} from "../../../constants/theme";
 import _ from 'lodash'
 import {TagSelect} from 'react-native-tag-select';
 import Autocomplete from "react-native-autocomplete-input";
+import {rootViewTopPadding} from "../../../utils/paddingUtils";
 import {postCreateIntent} from "../../../api";
 
 export default class OnboardingPageIntent extends React.Component {
@@ -17,6 +18,7 @@ export default class OnboardingPageIntent extends React.Component {
             query: '',
             selectedIntentions: [],
             isSearching: false,
+            showSearchModal: false
         }
         this.chosen = false
     }
@@ -125,6 +127,32 @@ export default class OnboardingPageIntent extends React.Component {
             this.props.onSelectedChanged(intents);
         }
     }
+    showSearchModal(visible) {
+        this.setState({showSearchModal: visible});
+    }
+
+    _keyExtractor = (item, index) => index.toString();
+
+    _onSearchItemPress = (_id, group, displayName) => {
+        this.showSearchModal(false);
+        this._onChooseIntent({
+            _id: _id,
+            group: group,
+            displayName: displayName
+        })
+    }
+
+    _renderSearchItem = ({item}) => {
+        const {_id, group, displayName} = item;
+        return (
+        <TouchableOpacity style={styles.autocompleteButton}
+                          onPress={() => this._onSearchItemPress(_id, group, displayName)}>
+            <Text style={[styles.autocompleteText, group ? {fontWeight: 'bold'} : {}]}>
+                {_id === "_create_new" ? "New intent \"" + displayName + "\"" : displayName}
+            </Text>
+        </TouchableOpacity>
+        )
+    }
 
     render() {
 
@@ -132,31 +160,46 @@ export default class OnboardingPageIntent extends React.Component {
         let intents = this._findIntent(query);
         return (
             <View style={styles.rootView}>
-                <Autocomplete
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    containerStyle={styles.autocompleteContainer}
-                    inputContainerStyle={styles.inputContainer}
-                    data={intents}
-                    defaultValue={''}
-                    onChangeText={text => this.setState({query: text, isSearching: true})}
-                    placeholder="Search for intention"
-                    renderItem={({_id, group, displayName}) => (
-                        <TouchableOpacity zIndex={1000} style={styles.autocompleteButton}
-                                          onPress={() => this._onChooseIntent({
-                                              _id: _id,
-                                              group: group,
-                                              displayName: displayName
-                                          })}>
-                            <Text style={[styles.autocompleteText, group ? {fontWeight: 'bold'} : {}]}>
-                                {_id === "_create_new" ? "New intent \"" + displayName + "\"" : displayName}
-                            </Text>
-                        </TouchableOpacity>
-                    )}
-                    renderSeparator={() => (
-                        <View style={styles.separatorLine}/>
-                    )}
-                />
+                <Modal
+                    animationType="slide"
+                    transparent={false}
+                    visible={this.state.showSearchModal}>
+                    <View style={styles.searchModalContainer}>
+                        <View style={styles.searchModalBar}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.showSearchModal(!this.state.showSearchModal);
+                                }}>
+                                <Image style={styles.backIcon} source={require('../../../assets/ic_back_button.png')}/>
+                            </TouchableOpacity>
+                            <TextInput
+                                underlineColorAndroid="transparent"
+                                style={{marginLeft: 5, borderBottomColor: colors.grayLine, borderBottomWidth: 0.5, width: '80%', paddingVertical: -5}}
+                                placeholder="Search for intention"
+                                autoFocus={true}
+                                onChangeText={text => this.setState({query: text, isSearching: true})}
+                            />
+                        </View>
+                        <FlatList
+                            keyExtractor={this._keyExtractor}
+                            style={{flex: 1}}
+                            horizontal={false}
+                            showsVerticalScrollIndicator={false}
+                            ItemSeparatorComponent={() => (
+                                <View style={styles.separatorLine}/>
+                            )}
+                            data={intents}
+                            renderItem={this._renderSearchItem}
+                        />
+                    </View>
+                </Modal>
+                <TouchableWithoutFeedback style={{width: '100%'}} onPress={() => {
+                    this.showSearchModal(!this.state.showSearchModal);
+                }}>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.searchText}>Search for intention</Text>
+                    </View>
+                </TouchableWithoutFeedback>
                 <View style={styles.tagsView}>
                     {this._renderTags()}
                 </View>
@@ -173,29 +216,14 @@ const styles = StyleSheet.create({
         flex: 1,
         height: Dimensions.get('window').height/2
     },
-    autocompleteView: {
-        flex: 1
-    },
-    autocompleteContainer: {
-        flex: 1,
-        left: 0,
-        position: 'absolute',
-        right: 0,
-        top: 0,
-        zIndex: 1
-    },
     inputContainer: {
         borderWidth: 1,
-        borderColor: colors.grayLine
+        borderColor: colors.grayLine,
+        justifyContent: 'center',
+        width: '100%',
+        height: 30,
     },
-    autocompleteText: {
-        fontSize: 15,
-        color: colors.blackText,
-        paddingHorizontal: 10
-    },
-    autocompleteButton: {
-        paddingVertical: 15
-    },
+
     separatorLine: {
         width: '90%',
         alignSelf: 'center',
@@ -218,6 +246,36 @@ const styles = StyleSheet.create({
     },
     tagText: {
         fontSize: 15,
-        color: colors.blueText
-    }
+        color: colors.blueText,
+
+    },
+    backIcon: {
+        width: 15,
+        height: 15,
+        resizeMode: 'contain'
+    },
+    searchText: {
+        marginLeft: 5,
+        fontSize: 15,
+        color: colors.grayTextSearch
+    },
+    searchModalContainer: {
+        flexDirection: 'column',
+        paddingTop: rootViewTopPadding(),
+        flex: 1
+    },
+    searchModalBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginHorizontal: 10,
+        width: '100%'
+    },
+    autocompleteText: {
+        fontSize: 15,
+        color: colors.blackText,
+        paddingHorizontal: 10
+    },
+    autocompleteButton: {
+        paddingVertical: 15
+    },
 });

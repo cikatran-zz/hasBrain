@@ -182,7 +182,7 @@ ext {
 }
 
 dependencies {
-    compile project(':react-native-code-push')
+    implementation project(':react-native-code-push')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation project(':react-native-fbsdk')
     implementation(project(":react-native-google-signin")) {
@@ -196,7 +196,7 @@ dependencies {
     implementation project(':react-native-svg')
     implementation "com.android.support:appcompat-v7:${supportVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
-    implementation "com.facebook.android:facebook-android-sdk:4.33.0"
+    implementation "com.facebook.android:facebook-android-sdk:4.34.0"
 
     implementation "com.android.support:support-v4:${supportVersion}"
     implementation "com.android.support:recyclerview-v7:${supportVersion}"
