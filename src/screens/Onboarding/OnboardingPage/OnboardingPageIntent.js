@@ -110,6 +110,11 @@ export default class OnboardingPageIntent extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         let {selected} = this.props;
+        const {selectedIntentions} = this.state;
+        //====Temporary fix same intent type disappeared=====
+        if (!_.isEmpty(selectedIntentions))
+            return;
+        //====================================================
         if (selected == null) {
             return;
         }
@@ -129,7 +134,7 @@ export default class OnboardingPageIntent extends React.Component {
                 });
             }
         });
-        if (_.isEqual(intents, this.state.selectedIntentions) === false && this.chosen === false) {
+        if (!_.isEqual(intents, this.state.selectedIntentions) && !this.chosen) {
             console.log("Update with new intents", intents, this.state.selectedIntentions);
             this.setState({selectedIntentions: intents});
             this.props.onSelectedChanged(intents);
@@ -209,6 +214,7 @@ export default class OnboardingPageIntent extends React.Component {
                     </View>
                 </TouchableWithoutFeedback>
                 <ScrollView
+                    style={{marginTop: 10}}
                     horizontal={false}
                     showsVerticalScrollIndicator={false}>
                     <View style={styles.tagsView}>
@@ -253,8 +259,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 8,
         borderColor: colors.blueText,
-        marginTop: 10,
         marginRight: 10,
+        marginTop: 10,
         flexDirection: 'row',
         alignItems: 'center'
     },
