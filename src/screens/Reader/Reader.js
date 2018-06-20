@@ -29,7 +29,7 @@ export default class Reader extends React.Component {
     _switchView = () => {
         if (this.state.currentUrl === this.state.currentItem.contentId) {
             this.props.navigation.setParams({handleSwitch: this._switchView, icon: require('../../assets/ic_webview.png')});
-            this.setState({currentUrl: this.state.currentItem.content});
+            this.setState({ currentUrl: this.state.currentItem.contentId});
             this._showMessage("Switch to article view");
         } else {
             this.props.navigation.setParams({handleSwitch: this._switchView, icon: require('../../assets/ic_article.png')});
@@ -89,9 +89,9 @@ export default class Reader extends React.Component {
         this._appState = AppState.currentState;
         AppState.addEventListener('change', this._handleAppStateChange);
 
-        const {content, bookmarked} = this.props.navigation.state.params;
+        const {contentId, bookmarked} = this.props.navigation.state.params;
         console.log("Reader", this.props.navigation.state.params);
-        this.setState({currentItem: this.props.navigation.state.params, currentUrl: content, isBookmarked: bookmarked});
+        this.setState({currentItem: this.props.navigation.state.params, currentUrl: contentId, isBookmarked: bookmarked});
         this._requestContinueReading(this.props.navigation.state.params);
     }
 
