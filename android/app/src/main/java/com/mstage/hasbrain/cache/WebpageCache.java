@@ -2,6 +2,7 @@ package com.mstage.hasbrain.cache;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.StrictMode;
 import android.util.Log;
 
 import com.mstage.hasbrain.MyOkhttpModule;
@@ -11,7 +12,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Entities;
 import org.jsoup.select.Elements;
-import org.reactivestreams.Subscriber;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,9 +28,8 @@ import java.util.regex.Pattern;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.processors.PublishProcessor;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -47,49 +46,44 @@ public class WebpageCache {
         return this.options;
     }
 
-    // filesToGrab - maintains all the links to files (eg images, scripts) which we are going to grab/download
     private List<String> filesToGrab = new ArrayList<String>();
-    //framesToGrab - list of html frame files to download, as we parse these recursively
-    private List<String> framesToGrab = new ArrayList<String>();
-    //cssToGrab - list of all css files to download and parse, these need to be parsed to extract urls
+    PublishProcessor<String> filesSubject = PublishProcessor.create();
+    //    private List<String> framesToGrab = new ArrayList<String>();
     private List<String> cssToGrab = new ArrayList<String>();
+    PublishProcessor<String> cssSubject = PublishProcessor.create();
 
-    Pattern REGEX_HTTP = Pattern.compile("^(http|https)://");
     private final Pattern fileNameReplacementPattern = Pattern.compile("[^a-zA-Z0-9-_\\.]");
-    private List<String> overridableExtensions = new ArrayList<>(Arrays.asList("js", "png", "jpg", "woff", "ttf", "eot", "css", "ico"));
+    private List<String> listGrabExt = new ArrayList<>(Arrays.asList("js", "woff", "ttf", "eot", "css", "ico")); //take out this  "png", "jpg",
     private List<String> cacheImageList = new ArrayList<>(Arrays.asList("png", "jpg", "ico"));
-
-//     "png", "jpg", "woff", "ttf", "eot",
-
-    Boolean detectHttp(String string) {
-        return REGEX_HTTP.matcher(string).find();
-    }
-
-//            if (detectHttp(url))
-
+    String TAG = "WEBPAGECACHE";
 
     @SuppressLint("CheckResult")
     public void getPageURL(String url, String basePath) {
         File webPageFile = new File(basePath, String.valueOf(url.hashCode() + ".html"));
         File webPageFolder = new File(basePath, String.valueOf(url.hashCode()));
         if (!webPageFile.exists()) {
+            if (webPageFolder.exists() || webPageFolder.mkdir()) {
+                cssSubject.onBackpressureBuffer(1).subscribe(item -> {
+                    downloadCssAndParse(item, webPageFolder.getAbsolutePath());
+                }, err -> {
+                    Log.d(TAG, err.toString());
+                });
+                filesSubject.onBackpressureBuffer(1).subscribe(item -> {
+                    downloadFile(item, webPageFolder.getAbsolutePath());
+                }, err -> {
+                    Log.d(TAG, err.toString());
+                });
+            } else {
+                Log.d(TAG, "Can't create folder");
+            }
             try {
                 URL temp = new URL(url);
                 String baseUrl = temp.getProtocol() + "://" + temp.getHost();
-                getCacheURL(url, baseUrl, webPageFile).subscribeOn(Schedulers.newThread()).subscribe(item -> {
-                    if (webPageFolder.mkdir()) {
-                        for (Iterator<String> i = cssToGrab.iterator(); i.hasNext(); ) {
-                            downloadCssAndParse(i.next(), webPageFolder.getAbsolutePath());
-                        }
+                getCacheURL(url, baseUrl, webPageFile).subscribeOn(Schedulers.io()).subscribe(item -> {
 
-                        for (Iterator<String> i = filesToGrab.iterator(); i.hasNext(); ) {
-                            downloadFile(i.next(), webPageFolder.getAbsolutePath());
-                        }
-                    }
                 }, error -> {
-                    Log.d("error", error.getMessage());
+                    Log.d(TAG, error.getMessage());
                 });
-                //download and parse css files
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -144,10 +138,10 @@ public class WebpageCache {
     @SuppressLint("CheckResult")
     private void downloadFile(final String url, final String outputDir) {
         String fileExt = getFileExt(url);
-        if (overridableExtensions.contains(fileExt)) {
+        if (listGrabExt.contains(fileExt)) {
             String filename = getFileName(url);
             File outputFile = new File(outputDir, filename);
-            getData(url).subscribeOn(Schedulers.newThread())
+            getData(url).subscribeOn(Schedulers.io())
                     .subscribe(response -> {
                         if (cacheImageList.contains(fileExt)) {
                             saveByteToFile(response.body().bytes(), outputFile);
@@ -156,7 +150,7 @@ public class WebpageCache {
                             saveStringToFile(file, outputFile);
                         }
                     }, error -> {
-                        Log.d("error", error.getMessage());
+                        Log.d(TAG, error.getMessage());
                     });
         } else {
             Log.d("not get this file", url);
@@ -168,25 +162,23 @@ public class WebpageCache {
 
         String filename = getFileName(url);
         File outputFile = new File(outputDir, filename);
-
-//            eventCallback.onProgressMessage("Getting CSS file: " + filename);
-        getData(url).subscribeOn(Schedulers.newThread())
+        getData(url).subscribeOn(Schedulers.io())
                 .subscribe(response -> {
                     String cssContent = response.body().string();
-                    String parseCssContent = parseCssForLinks(cssContent, url);
+                    try {
+                        String parseCssContent = parseCssForLinks(cssContent, url);
+                    } catch (Exception e) {
+                        Log.d(TAG, e.toString());
+                    }
                     saveStringToFile(cssContent, outputFile);
                 }, error -> {
-                    Log.d("error", error.getMessage());
+                    Log.d(TAG, error.getMessage());
                 });
-
-//            eventCallback.onProgressMessage("Processing CSS file: " + filename);
-
-//            eventCallback.onProgressMessage("Saving CSS file: " + filename);
     }
 
     public static Observable<Response> getData(String url) {
-//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//        StrictMode.setThreadPolicy(policy);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         final Request request = new Request.Builder()
                 .url(url)
                 .get()
@@ -212,16 +204,14 @@ public class WebpageCache {
         //get all links from this webpage and add them to LinksToVisit ArrayList
         Document document = Jsoup.parse(htmlToParse, baseUrl);
         document.outputSettings().escapeMode(Entities.EscapeMode.extended);
-
         String urlToGrab;
-
         Elements links;
 
         if (getOptions().saveFrames()) {
             links = document.select("frame[src]");
             for (Element link : links) {
                 urlToGrab = link.attr("abs:src");
-                addLinkToList(urlToGrab, framesToGrab);
+//                addLinkToList(urlToGrab, framesToGrab);
                 String replacedURL = getFileName(urlToGrab);
                 link.attr("src", replacedURL);
             }
@@ -229,8 +219,7 @@ public class WebpageCache {
             links = document.select("iframe[src]");
             for (Element link : links) {
                 urlToGrab = link.attr("abs:src");
-
-                addLinkToList(urlToGrab, framesToGrab);
+//                addLinkToList(urlToGrab, framesToGrab);
 
                 String replacedURL = getFileName(urlToGrab);
                 link.attr("src", replacedURL);
@@ -247,7 +236,7 @@ public class WebpageCache {
                 if (link.attr("rel").equals("stylesheet")) {
                     cssToGrab.add(link.attr("abs:href"));
                 } else {
-                    addLinkToList(urlToGrab, filesToGrab);
+                    addLinkToList(urlToGrab, filesToGrab, filesSubject);
                 }
 
                 String replacedURL = getFileName(urlToGrab);
@@ -266,26 +255,23 @@ public class WebpageCache {
 
             //get input types with an image type
             links = document.select("input[type=image]");
-//            eventCallback.onLogMessage("Got " + links.size() + " input elements with type = image");
             for (Element link : links) {
                 urlToGrab = link.attr("abs:src");
-                addLinkToList(urlToGrab, filesToGrab);
+                addLinkToList(urlToGrab, filesToGrab, filesSubject);
                 String replacedURL = getFileName(urlToGrab);
                 link.attr("src", replacedURL);
             }
 
             //get everything which has a background attribute
             links = document.select("[background]");
-//            eventCallback.onLogMessage("Got " + links.size() + " elements with a background attribute");
             for (Element link : links) {
                 urlToGrab = link.attr("abs:src");
-                addLinkToList(urlToGrab, filesToGrab);
+                addLinkToList(urlToGrab, filesToGrab, filesSubject);
                 String replacedURL = getFileName(urlToGrab);
                 link.attr("src", replacedURL);
             }
 
             links = document.select("[style]");
-//            eventCallback.onLogMessage("Got " + links.size() + " elements with a style attribute, parsing CSS");
             for (Element link : links) {
                 String cssToParse = link.attr("style");
                 String parsedCss = parseCssForLinks(cssToParse, baseUrl);
@@ -296,10 +282,9 @@ public class WebpageCache {
 
         if (getOptions().saveScripts()) {
             links = document.select("script[src]");
-//            eventCallback.onLogMessage("Got " + links.size() + " script elements");
             for (Element link : links) {
                 urlToGrab = link.attr("abs:src");
-                addLinkToList(urlToGrab, filesToGrab);
+                addLinkToList(urlToGrab, filesToGrab, filesSubject);
                 String replacedURL = getFileName(urlToGrab);
                 link.attr("src", replacedURL);
             }
@@ -307,45 +292,41 @@ public class WebpageCache {
 
         if (getOptions().saveImages()) {
             links = document.select("img[src]");
-//            eventCallback.onLogMessage("Got " + links.size() + " image elements");
             for (Element link : links) {
                 urlToGrab = link.attr("abs:src");
-                addLinkToList(urlToGrab, filesToGrab);
+                addLinkToList(urlToGrab, filesToGrab, filesSubject);
 
                 String replacedURL = getFileName(urlToGrab);
                 link.attr("src", replacedURL);
-                link.removeAttr("srcset"); //we don't use this for now, so remove it.
+                link.removeAttr("srcset");
             }
 
             links = document.select("img[data-canonical-src]");
-//            eventCallback.onLogMessage("Got " + links.size() + " image elements, w. data-canonical-src");
             for (Element link : links) {
                 urlToGrab = link.attr("abs:data-canonical-src");
-                addLinkToList(urlToGrab, filesToGrab);
+                addLinkToList(urlToGrab, filesToGrab, filesSubject);
 
                 String replacedURL = getFileName(urlToGrab);
                 link.attr("data-canonical-src", replacedURL);
-                link.removeAttr("srcset"); //we don't use this for now, so remove it.
+                link.removeAttr("srcset");
             }
         }
 
         if (getOptions().saveVideo()) {
             //video src is sometimes in a child element
             links = document.select("video:not([src])");
-//            eventCallback.onLogMessage("Got " + links.size() + " video elements without src attribute");
             for (Element link : links.select("[src]")) {
                 urlToGrab = link.attr("abs:src");
-                addLinkToList(urlToGrab, filesToGrab);
+                addLinkToList(urlToGrab, filesToGrab, filesSubject);
 
                 String replacedURL = getFileName(urlToGrab);
                 link.attr("src", replacedURL);
             }
 
             links = document.select("video[src]");
-//            eventCallback.onLogMessage("Got " + links.size() + " video elements");
             for (Element link : links) {
                 urlToGrab = link.attr("abs:src");
-                addLinkToList(urlToGrab, filesToGrab);
+                addLinkToList(urlToGrab, filesToGrab, filesSubject);
 
                 String replacedURL = getFileName(urlToGrab);
                 link.attr("src", replacedURL);
@@ -355,7 +336,6 @@ public class WebpageCache {
         if (getOptions().makeLinksAbsolute()) {
             //make links absolute, so they are not broken
             links = document.select("a[href]");
-//            eventCallback.onLogMessage("Making " + links.size() + " links absolute");
             for (Element link : links) {
                 String absUrl = link.attr("abs:href");
                 link.attr("href", absUrl);
@@ -365,21 +345,17 @@ public class WebpageCache {
     }
 
     private String parseCssForLinks(String cssToParse, String baseUrl) {
-
-        String patternString = "url(\\s*\\(\\s*['\"]*\\s*)(.*?)\\s*['\"]*\\s*\\)"; //I hate regexes...
+        String patternString = "url(\\s*\\(\\s*['\"]*\\s*)(.*?)\\s*['\"]*\\s*\\)";
 
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(cssToParse);
-
-//        eventCallback.onLogMessage("Parsing CSS");
-
         //find everything inside url(" ... ")
         while (matcher.find()) {
             if (matcher.group().replaceAll(patternString, "$2").contains("/")) {
                 cssToParse = cssToParse.replace(matcher.group().replaceAll(patternString, "$2"), getFileName(matcher.group().replaceAll(patternString, "$2")));
 
             }
-            addLinkToList(matcher.group().replaceAll(patternString, "$2").trim(), baseUrl, filesToGrab);
+            addLinkToList(matcher.group().replaceAll(patternString, "$2").trim(), baseUrl, filesToGrab, filesSubject);
         }
 
         // find css linked with @import  -  needs testing
@@ -393,7 +369,7 @@ public class WebpageCache {
             if (matcher.group().replaceAll(patternString, "$2").contains("/")) {
                 cssToParse = cssToParse.replace(matcher.group().replaceAll(patternString, "$2"), getFileName(matcher.group().replaceAll(patternString, "$2")));
             }
-            addLinkToList(matcher.group().replaceAll(patternString, "$2").trim(), baseUrl, cssToGrab);
+            addLinkToList(matcher.group().replaceAll(patternString, "$2").trim(), baseUrl, cssToGrab, cssSubject);
         }
         return cssToParse;
     }
@@ -409,15 +385,20 @@ public class WebpageCache {
         }
     }
 
-    private void addLinkToList(String link, List<String> list) {
+    private void addLinkToList(String link, List<String> list, PublishProcessor<String> publishSubject) {
         if (!isLinkValid(link) || list.contains(link)) {
             return;
         } else {
-            list.add(link);
+            try {
+                list.add(link);
+                publishSubject.onNext(link);
+            } catch (Exception e) {
+                Log.d(TAG, e.toString());
+            }
         }
     }
 
-    private void addLinkToList(String link, String baseUrl, List<String> list) {
+    private void addLinkToList(String link, String baseUrl, List<String> list, PublishProcessor<String> publishSubject) {
         if (link.startsWith("data:image")) {
             return;
         }
@@ -431,7 +412,12 @@ public class WebpageCache {
         if (!isLinkValid(link) || list.contains(link)) {
             return;
         } else {
-            list.add(link);
+            try {
+                list.add(link);
+                publishSubject.onNext(link);
+            } catch (Exception e) {
+                Log.d(TAG, e.toString());
+            }
         }
     }
 
@@ -469,15 +455,6 @@ class Options {
     private boolean saveVideo = false;
 
     private String userAgent = " ";
-
-//    public void setCache (File cacheDirectory, long maxCacheSize) {
-//        Cache cache = (new Cache(cacheDirectory, maxCacheSize));
-//        client.setCache(cache);
-//    }
-//
-//    public void clearCache() throws IOException {
-//        client.getCache().evictAll();
-//    }
 
     public String getUserAgent() {
         return userAgent;

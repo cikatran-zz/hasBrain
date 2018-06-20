@@ -62,7 +62,6 @@ public class CacheModule extends ReactContextBaseJavaModule {
                     }
                 }
             }
-
             emitter.onComplete();
         });
 
@@ -92,7 +91,6 @@ public class CacheModule extends ReactContextBaseJavaModule {
                     }
 
                 });
-
     }
 
     private void makeFolder(String path) {
