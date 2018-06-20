@@ -22,7 +22,7 @@ public class MyOkhttpModule {
     static long DEFAULT_READ_TIMEOUT_MILLIS = 20 * 1000L; // 20s
     static long DEFAULT_WRITE_TIMEOUT_MILLIS = 20 * 1000L; // 20s
     static long DEFAULT_CONNECT_TIMEOUT_MILLIS = 15 * 1000L; // 15s
-    static int MAX_RETRY_TIME = 10;
+    static int MAX_RETRY_TIME = 2;
     private static OkHttpClient mOkHttpClient;
     private static MyOkhttpModule instance;
 
