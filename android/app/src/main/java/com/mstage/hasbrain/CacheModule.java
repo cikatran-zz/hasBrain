@@ -28,7 +28,7 @@ import io.reactivex.functions.Function;
  * Created by henry on 6/19/18.
  */
 public class CacheModule extends ReactContextBaseJavaModule {
-    public static final String REACT_MODULE = "RNCache";
+    public static final String REACT_MODULE = "RNURLCache";
     String basePath;
 
     public CacheModule(ReactApplicationContext reactContext) {
@@ -50,7 +50,7 @@ public class CacheModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void cacheWebPage(ReadableArray list) {
+    public void cacheUrls(ReadableArray list) {
         makeFolder(basePath);
         ArrayList temp = list.toArrayList();
 

@@ -11,11 +11,15 @@ import { googleLogin } from '../../utils/googleLogin'
 import NavigationActions from 'react-navigation/src/NavigationActions'
 import PathSlider from "../../components/PathSlider";
 import {postCreateUser} from "../../api";
+import IndicatorModal from "../../components/IndicatorModal";
+import Toast from "react-native-root-toast";
 
 export default class Authentication extends React.PureComponent {
 
     constructor(props) {
         super(props);
+        this.indicatorModal = null;
+        this.callbackMessage = "";
     }
 
     componentDidMount() {
@@ -63,33 +67,72 @@ export default class Authentication extends React.PureComponent {
     };
 
     _loginWithFacebook = () => {
+        this.indicatorModal.setState({isShow: true});
         facebookLogin().then((value) => {
+            this.indicatorModal.setState({isShow: false});
             if (value.new) {
                 this._createUser(_.get(value, 'profiles[0]', {}));
             }
             this._goToNextScreen();
         }).catch((error) => {
-            console.log('Error when login with Facebook', error);
+            this.callbackMessage = error;
+            this.indicatorModal.setState({isShow: false});
         })
     };
 
     _loginWithGooglePlus = () => {
+        this.indicatorModal.setState({isShow: true});
         googleLogin().then((value) => {
+            this.indicatorModal.setState({isShow: false});
             if (value.new) {
                 this._createUser(_.get(value, 'profiles[0]', {}));
             }
             this._goToNextScreen();
         })
         .catch((err) => {
-            console.log('Error', err);
+            this.callbackMessage = err;
+            this.indicatorModal.setState({isShow: false});
         })
     };
+
+    _showMessage = (message) => {
+        if (message === "") {
+            return;
+        }
+        Toast.show(message, {
+            duration: Toast.durations.LONG,
+            position: Toast.positions.BOTTOM,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+            onShow: () => {
+
+            },
+            onShown: () => {
+                this.callbackMessage = "";
+            },
+            onHide: () => {
+
+            },
+            onHidden: () => {
+
+            }
+        });
+    };
+
+    onDismissIndicatorModal() {
+        this._showMessage(this.callbackMessage)
+    }
 
     render() {
         const {navigation} = this.props;
 
         return (
             <View style={styles.container}>
+                <IndicatorModal ref={(modal) => {
+                    this.indicatorModal = modal
+                }} onDismiss={this.onDismissIndicatorModal.bind(this)}/>
                 <Image style={styles.image} source={require('../../assets/ic_hasbrain.png')}/>
                 <Text style={styles.text}>hasBrain</Text>
                 <TouchableOpacity

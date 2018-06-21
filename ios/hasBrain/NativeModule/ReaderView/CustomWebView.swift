@@ -35,20 +35,15 @@ class CustomWebView: WKWebView {
             if let _url = URL(string: source) {
                 
                 let request = URLRequest(url: _url, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad)
-//                let cachedUrl = URLCache.shared.cachedResponse(for: request)
-//                if cachedUrl == nil {
-//                    let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-//                        if let _ = response, let _ = data {
-//                            URLCache.shared.storeCachedResponse(CachedURLResponse(response: response!, data: data!), for: request)
-//                        }
-//                    }
-//                    
-//                    task.resume()
-//                    //self.load(URLRequest(url: _url, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad) )
-//                } else {
-//                    //self.load(cachedUrl!.data, mimeType: cachedUrl!.response.mimeType ?? "text/html", characterEncodingName: cachedUrl!.response.textEncodingName ?? "UTF-8", baseURL: cachedUrl!.response.url!.baseURL ?? cachedUrl!.response.url!)
-//                }
-                self.load(request)
+                let cachedUrl = URLCache.shared.cachedResponse(for: request)
+                if cachedUrl == nil {
+                    SwiftURLCache.shared.cacheURL(source)
+                    print("Not load \(source)")
+                    self.load(URLRequest(url: _url, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad) )
+                } else {
+                    print("Load from cache \(source)")
+                    self.load(cachedUrl!.data, mimeType: cachedUrl!.response.mimeType ?? "text/html", characterEncodingName: cachedUrl!.response.textEncodingName ?? "UTF-8", baseURL: cachedUrl!.response.url!.baseURL ?? cachedUrl!.response.url!)
+                }
             }
             
         }
@@ -92,7 +87,7 @@ class CustomWebView: WKWebView {
     func commonInit() {
         UIMenuController.shared.menuItems = [UIMenuItem(title: "Highlight", action: #selector(highlight))]
         UIMenuController.shared.update()
-        
+        self.allowsBackForwardNavigationGestures = false
         self.navigationDelegate = self
         self.scrollView.delegate = self
         self.addObserver(self, forKeyPath: "canGoBack", options: .new, context: &webViewContext)
