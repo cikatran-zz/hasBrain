@@ -14,7 +14,7 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(cacheUrls: (NSArray<NSString *> *) urls) {
     for (int i = 0; i< [urls count]; i++) {
-        //[[SwiftURLCache shared] cacheURL:[urls objectAtIndex:i]];
+        [[SwiftURLCache shared] cacheURL:[urls objectAtIndex:i]];
     }
 }
 
