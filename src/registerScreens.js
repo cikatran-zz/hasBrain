@@ -134,7 +134,8 @@ export const ScreenStack = StackNavigator({
                 fontSize: 25,
                 fontWeight: "bold"
             },
-            headerLeft: <BackNavigationButton goBack={()=>navigation.goBack()}/>
+            headerLeft: <BackNavigationButton goBack={()=>navigation.goBack()}/>,
+            gesturesEnabled: true
         })
     }
 }, {

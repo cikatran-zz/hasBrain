@@ -20,13 +20,13 @@ class SwiftURLCache: NSObject, WKNavigationDelegate {
     var webviews = [WKWebView]()
     
     private override init() {
-        for _ in 0..<maximumParallelCache {
-            var webview: WKWebView?
-            DispatchQueue.main.sync {
-                webview = WKWebView(frame: .zero)
-            }
-            webviews.append(webview!)
-        }
+//        for _ in 0..<maximumParallelCache {
+//            var webview: WKWebView?
+//            DispatchQueue.main.sync {
+//                webview = WKWebView(frame: .zero)
+//            }
+//            webviews.append(webview!)
+//        }
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -51,18 +51,36 @@ class SwiftURLCache: NSObject, WKNavigationDelegate {
                 self.notCached.append(urlStr)
                 return
             }
+            if let _ = URLCache.shared.cachedResponse(for: request) {
+                print("Already cached \(urlStr)")
+                return
+            }
             self.currentCaching += 1
-            for i in 0..<maximumParallelCache {
-                DispatchQueue.main.async {
-                    if (!self.webviews[i].isLoading) {
-                        self.webviews[i].navigationDelegate = self
-                        DispatchQueue.main.async {
-                            self.webviews[i].load(request)
+            URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) in
+                print("Done cached \(urlStr)")
+                if let _ = data, let _ = response {
+                    URLCache.shared.storeCachedResponse(CachedURLResponse(response: response!, data: data!) , for: request)
+                    self.cachedQueue.async {
+                        self.currentCaching -= 1
+                        if let _ = self.notCached.first {
+                            let lastUrl = self.notCached.removeFirst()
+                            self.cacheURL(lastUrl)
                         }
-                        
                     }
                 }
-            }
+            }).resume()
+            //for i in 0..<maximumParallelCache {
+                
+//                DispatchQueue.main.async {
+//                    if (!self.webviews[i].isLoading) {
+//                        self.webviews[i].navigationDelegate = self
+//                        DispatchQueue.main.async {
+//                            self.webviews[i].load(request)
+//                        }
+//
+//                    }
+//                }
+            //}
         }
     }
 }
