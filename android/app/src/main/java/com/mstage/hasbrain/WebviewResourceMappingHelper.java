@@ -145,10 +145,6 @@ public class WebviewResourceMappingHelper {
         return overridableExtensions;
     }
 
-    public String getFileExt(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
-    }
-
     public String getMimeType(String fileExtension) {
         String mimeType = "";
         switch (fileExtension) {

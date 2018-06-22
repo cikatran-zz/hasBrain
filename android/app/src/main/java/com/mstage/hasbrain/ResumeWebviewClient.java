@@ -18,6 +18,7 @@ import android.webkit.WebViewClient;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.common.StringUtils;
+import com.mstage.hasbrain.cache.WebpageCache;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -98,7 +99,7 @@ public class ResumeWebviewClient extends WebViewClient {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             String resourceUrl = request.getUrl().toString();
-            String fileExtension = WebviewResourceMappingHelper.getInstance().getFileExt(resourceUrl);
+            String fileExtension = WebpageCache.getFileExt(resourceUrl);
             if (WebviewResourceMappingHelper.getInstance().getOverridableExtensions().contains(fileExtension)) {
                 String encoding = "UTF-8";
                 String fileName = WebviewResourceMappingHelper.getInstance().getFileName(resourceUrl);
