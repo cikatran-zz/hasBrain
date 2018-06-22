@@ -53,7 +53,7 @@ public class WebpageCache {
     PublishProcessor<String> cssSubject = PublishProcessor.create();
 
     private final Pattern fileNameReplacementPattern = Pattern.compile("[^a-zA-Z0-9-_\\.]");
-    private List<String> listGrabExt = new ArrayList<>(Arrays.asList("js", "woff", "ttf", "eot", "css", "ico")); //take out this  "png", "jpg",
+    private List<String> listGrabExt = new ArrayList<>(Arrays.asList("js", "woff", "ttf", "eot", "css", "ico", "xml", "woff2", "json")); //take out this  "png", "jpg",
     private List<String> cacheImageList = new ArrayList<>(Arrays.asList("png", "jpg", "ico"));
     String TAG = "WEBPAGECACHE";
 
@@ -131,8 +131,21 @@ public class WebpageCache {
         fos.close();
     }
 
-    public String getFileExt(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+    static public String getFileExt(String fileName) {
+        String sub = fileName;
+        if (sub.contains("?")) {
+            sub = fileName.substring(0, fileName.indexOf('?'));
+        }
+        if (sub.contains(".")) {
+            sub = sub.substring(sub.lastIndexOf('.') + 1);
+        }
+        if (sub.contains("/")) {
+            sub = sub.substring(sub.indexOf('/'));
+        }
+        if (sub.length() == 0) {
+            return "";
+        }
+        return sub;
     }
 
     @SuppressLint("CheckResult")
@@ -153,7 +166,7 @@ public class WebpageCache {
                         Log.d(TAG, error.getMessage());
                     });
         } else {
-            Log.d("not get this file", url);
+            Log.d("not get this file", fileExt + " and url is:" + url);
         }
     }
 
