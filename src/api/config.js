@@ -334,6 +334,7 @@ query getIntent($segments: [PersonaLevel]) {
         createdAt
         updatedAt
         projectId
+        recommended
       }
     }
   }

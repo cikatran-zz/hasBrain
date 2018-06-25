@@ -1,4 +1,5 @@
 import * as actionTypes from './actionTypes';
+import _ from 'lodash'
 
 export function getIntents(segments) {
     return {
@@ -8,9 +9,15 @@ export function getIntents(segments) {
 }
 
 export function getIntentsSuccess(data) {
+    let selectedIntents = data.viewer.intentMany.map((intent)=>{
+        let res = _.cloneDeep(intent);
+        res.children = intent.children.filter((x)=>x.recommended);
+        return res;
+    });
+
     return {
         type: actionTypes.FETCH_INTENT_SUCCESS,
-        data: data.viewer.intentMany,
+        data: {all: data.viewer.intentMany, selected: selectedIntents},
     }
 }
 

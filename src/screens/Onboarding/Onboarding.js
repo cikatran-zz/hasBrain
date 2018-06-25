@@ -28,7 +28,7 @@ export default class Onboarding extends React.Component {
 
     componentDidMount() {
         this.props.getOnboarding();
-        this.props.getAllIntentions();
+        //this.props.getAllIntentions();
     }
 
     _onNextPage = () => {
@@ -117,7 +117,7 @@ export default class Onboarding extends React.Component {
     };
 
     render() {
-        const {onboarding, intentions, allIntentions} = this.props;
+        const {onboarding, intentions} = this.props;
         if (onboarding.isFetching || !onboarding.fetched || onboarding.data == null) {
             return (
                 <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
@@ -160,10 +160,10 @@ export default class Onboarding extends React.Component {
                                         data={
                                             [
                                                 {
-                                                    data: [allIntentions.data ? allIntentions.data : []],
+                                                    data: [intentions.data ? (intentions.data.all ? intentions.data.all : []) : []],
                                                     searchable: true,
                                                     multipleSelection: false,
-                                                    selectedData: [intentions.data ? intentions.data : []]
+                                                    selectedData: [intentions.data ? (intentions.data.selected ? intentions.data.selected : []) : []]
                                                 }
                                             ]
                                         }
