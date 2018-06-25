@@ -264,7 +264,7 @@ export default class Explore extends React.Component {
                 if (!isOn) {
                     newTagsArray.push(id);
                 } else {
-                    _.remove(newTagsArray, (x)=>x === id);
+                    _.remove(newTagsArray, (x) => x === id);
                 }
                 this._debounceReloadAndSave(chosenSourceArray, newTagsArray);
             }
@@ -381,50 +381,49 @@ export default class Explore extends React.Component {
         const {articles, playlist, source, category} = this.props;
         return (
             <View style={styles.rootView}>
-                <SectionList
-                    ref={(ref) => this._scrollView = ref}
-                    contentContainerStyle={{marginTop: 112 + rootViewTopPadding(), marginBottom: 0}}
-                    refreshing={false}
-                    onRefresh={() => this.props.getArticles(10, 0, "", "")}
-                    onScrollEndDrag={this._onScrollEnd}
-                    onScroll={this._onScroll}
-                    scrollEventThrottle={16}
-                    keyExtractor={this._keyExtractor}
-                    stickySectionHeadersEnabled={false}
-                    showsVerticalScrollIndicator={false}
-                    bounces={true}
-                    onEndReached={this._fetchMore}
-                    ListHeaderComponent={this._renderLoading(articles.isFetching)}
-                    ListFooterComponent={() => this._renderListFooter(articles.isFetching)}
-                    onEndReachedThreshold={0.5}
-                    sections={[
-                        {
-                            data: [articles.data],
-                            renderItem: this._renderVerticalSection
-                        }
-                    ]}
-                />
-                <Animated.View style={this._animatedStyle()}>
-                    <View style={styles.searchBar}>
-                        <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
-                        <Text style={styles.searchText}>For You</Text>
-                        <TouchableOpacity style={{marginRight: 0, marginLeft: 'auto', padding: 10}}
-                                          onPress={() => this.props.navigation.navigate('MySource')}>
-                            <Image style={[styles.searchIcon]} source={require('../../assets/ic_filter.png')}/>
-                        </TouchableOpacity>
-                    </View>
-                    <FlatList
-                        style={{marginLeft: 25, marginBottom: 0, height: 50}}
+                <View style={styles.contentView}>
+                    <SectionList
+                        ref={(ref) => this._scrollView = ref}
+                        contentContainerStyle={{marginTop: 112, marginBottom: 0}}
+                        refreshing={false}
+                        onRefresh={() => this.props.getArticles(10, 0, "", "")}
+                        onScrollEndDrag={this._onScrollEnd}
+                        onScroll={this._onScroll}
+                        scrollEventThrottle={16}
                         keyExtractor={this._keyExtractor}
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                        data={['All'].concat(category.data)}
-                        renderItem={this._renderTagsItem}
+                        stickySectionHeadersEnabled={false}
+                        showsVerticalScrollIndicator={false}
+                        bounces={true}
+                        onEndReached={this._fetchMore}
+                        ListHeaderComponent={this._renderLoading(articles.isFetching)}
+                        ListFooterComponent={() => this._renderListFooter(articles.isFetching)}
+                        onEndReachedThreshold={0.5}
+                        sections={[
+                            {
+                                data: [articles.data],
+                                renderItem: this._renderVerticalSection
+                            }
+                        ]}
                     />
-                </Animated.View>
-                {
-                    //this._renderLoading(articles.isFetching)
-                }
+                    <Animated.View style={this._animatedStyle()}>
+                        <View style={styles.searchBar}>
+                            <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
+                            <Text style={styles.searchText}>For You</Text>
+                            <TouchableOpacity style={{marginRight: 0, marginLeft: 'auto', padding: 10}}
+                                              onPress={() => this.props.navigation.navigate('MySource')}>
+                                <Image style={[styles.searchIcon]} source={require('../../assets/ic_filter.png')}/>
+                            </TouchableOpacity>
+                        </View>
+                        <FlatList
+                            style={{marginLeft: 25, marginBottom: 0, height: 50}}
+                            keyExtractor={this._keyExtractor}
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                            data={['All'].concat(category.data)}
+                            renderItem={this._renderTagsItem}
+                        />
+                    </Animated.View>
+                </View>
             </View>
         )
     }
@@ -442,13 +441,20 @@ const styles = StyleSheet.create({
     rootView: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: colors.mainWhite
+        backgroundColor: colors.mainWhite,
+
+    },
+    contentView: {
+        flex: 1,
+        flexDirection: 'column',
+        marginTop: rootViewTopPadding(),
+        overflow: 'hidden'
     },
     topView: {
         flexDirection: 'column',
         position: 'absolute',
         backgroundColor: colors.mainWhite,
-        height: 112 + rootViewTopPadding(),
+        height: 112,
         left: 0,
         right: 0
     },
@@ -482,7 +488,7 @@ const styles = StyleSheet.create({
         borderColor: colors.grayLine,
         paddingHorizontal: 10,
         paddingVertical: 5,
-        marginTop: rootViewTopPadding(),
+        marginTop: 5,
         marginBottom: 15,
         marginHorizontal: 25,
         backgroundColor: colors.mainWhite,
