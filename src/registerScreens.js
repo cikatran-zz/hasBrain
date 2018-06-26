@@ -91,7 +91,9 @@ export const ScreenStack = createStackNavigator({
 
     Root: {
         screen: Launch,
-        headerMode: 'none',
+        navigationOptions: {
+            header: null,
+        }
     },
     Authentication: {
         screen: Authentication,
@@ -106,7 +108,10 @@ export const ScreenStack = createStackNavigator({
         }
     },
     Home: {
-        screen: TabNav
+        screen: TabNav,
+        navigationOptions: {
+            header: null,
+        }
     },
     Onboarding: {
         screen: Onboarding,

@@ -21,17 +21,17 @@ export default class Launch extends React.PureComponent {
                     if (error == null && result != null) {
                         let experience = _.get(result[0], strings.mekey+'.'+strings.experienceKey);
                         if (experience == null) {
-                            this.props.navigation.navigate('Onboarding');
+                            this.props.navigation.replace('Onboarding');
                         } else {
-                            this.props.navigation.navigate("Home");
+                            this.props.navigation.replace("Home");
                         }
                     } else {
                         NativeModules.RNUserKitIdentity.signOut();
-                        this.props.navigation.navigate('Authentication');
+                        this.props.navigation.replace('Authentication');
                     }
                 });
             } else {
-                this.props.navigation.navigate('Authentication');
+                this.props.navigation.replace('Authentication');
             }
         });
     }
