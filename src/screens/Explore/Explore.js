@@ -9,7 +9,8 @@ import {
     Dimensions,
     Share, NativeModules, Platform, Image,
     Animated,
-    Alert, RefreshControl
+    Alert, RefreshControl,
+    StatusBar
 } from 'react-native'
 import {colors} from '../../constants/colors'
 import VerticalRow from '../../components/VerticalRow'
@@ -64,6 +65,8 @@ export default class Explore extends React.Component {
         this.props.getCategory();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
+            StatusBar.setBarStyle('dark-content');
+            (Platform.OS != 'ios') && StatusBar.setBackgroundColor('transparent');
         });
         this._setUpReadingTime();
     }
@@ -134,6 +137,11 @@ export default class Explore extends React.Component {
         return (
             <VerticalRow title={item._source.title}
                          author={sourceName}
+                         sourceCommentCount={item._source.sourceCommentCount}
+                         sourceActionName={item._source.sourceActionName}
+                         sourceActionCount={item._source.sourceActionCount}
+                         sourceImage={item._source.sourceImage}
+                         category={item._source.category}
                          time={item._source.sourceCreatedAt}
                          readingTime={item._source.readingTime}
                          onClicked={() => this._openReadingView({...item._source, _id: item._id})}
@@ -381,6 +389,7 @@ export default class Explore extends React.Component {
         const {articles, playlist, source, category} = this.props;
         return (
             <View style={styles.rootView}>
+                <View style={styles.headerBackgroundView}/>
                 <View style={styles.contentView}>
                     <SectionList
                         ref={(ref) => this._scrollView = ref}
@@ -408,7 +417,7 @@ export default class Explore extends React.Component {
                     <Animated.View style={this._animatedStyle()}>
                         <View style={styles.searchBar}>
                             <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
-                            <Text style={styles.searchText}>For You</Text>
+                            <Text style={styles.searchText}>For you</Text>
                             <TouchableOpacity style={{marginRight: 0, marginLeft: 'auto', padding: 10}}
                                               onPress={() => this.props.navigation.navigate('MySource')}>
                                 <Image style={[styles.searchIcon]} source={require('../../assets/ic_filter.png')}/>
@@ -438,10 +447,18 @@ const styles = StyleSheet.create({
         width: 60,
         height: 20,
     },
+    headerBackgroundView: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: rootViewTopPadding(),
+        backgroundColor: colors.mainWhite
+    },
     rootView: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: colors.mainWhite,
+        backgroundColor: colors.lightGray,
 
     },
     contentView: {
@@ -485,23 +502,26 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderRadius: 5,
         borderWidth: 1,
-        borderColor: colors.grayLine,
+        borderColor: colors.graySearchBorder,
         paddingHorizontal: 10,
         paddingVertical: 5,
         marginTop: 5,
         marginBottom: 15,
         marginHorizontal: 25,
-        backgroundColor: colors.mainWhite,
+        backgroundColor: colors.lightGray,
         alignItems: 'center'
     },
     searchIcon: {
         width: 20,
         resizeMode: 'contain',
-        aspectRatio: 1
+        aspectRatio: 1,
+        tintColor: '#A6B2C4'
     },
     searchText: {
         marginLeft: 15,
-        fontSize: 17,
-        color: colors.grayTextSearch
+        fontSize: 14,
+        color: colors.grayTextSearch,
+        fontFamily: 'CircularStd-Book',
+        opacity: 0.5
     },
 });
