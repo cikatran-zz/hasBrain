@@ -4,6 +4,7 @@ import {
     SectionList,
     Text,
     TouchableOpacity,
+    TouchableWithoutFeedback,
     View,
     StyleSheet,
     Dimensions,
@@ -406,14 +407,13 @@ export default class Explore extends React.Component {
                         ]}
                     />
                     <Animated.View style={this._animatedStyle()}>
-                        <View style={styles.searchBar}>
-                            <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
-                            <Text style={styles.searchText}>For You</Text>
-                            <TouchableOpacity style={{marginRight: 0, marginLeft: 'auto', padding: 10}}
-                                              onPress={() => this.props.navigation.navigate('MySource')}>
-                                <Image style={[styles.searchIcon]} source={require('../../assets/ic_filter.png')}/>
-                            </TouchableOpacity>
-                        </View>
+                        <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('MySource')}>
+                            <View style={styles.searchBar}>
+                                <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
+                                <Text style={styles.searchText}>For you</Text>
+
+                            </View>
+                        </TouchableWithoutFeedback>
                         <FlatList
                             style={{marginLeft: 25, marginBottom: 0, height: 50}}
                             keyExtractor={this._keyExtractor}
@@ -483,15 +483,16 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         flexDirection: 'row',
-        borderRadius: 5,
+        borderRadius: 3,
         borderWidth: 1,
-        borderColor: colors.grayLine,
+        borderColor: colors.whiteGray,
         paddingHorizontal: 10,
         paddingVertical: 5,
         marginTop: 5,
         marginBottom: 15,
         marginHorizontal: 25,
-        backgroundColor: colors.mainWhite,
+        backgroundColor: colors.lightGray,
+        height: 49,
         alignItems: 'center'
     },
     searchIcon: {
