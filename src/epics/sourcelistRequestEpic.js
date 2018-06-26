@@ -1,17 +1,18 @@
 import * as actionTypes from '../actions/actionTypes'
-import 'rxjs'
-import { Observable } from 'rxjs/Observable'
+import { mergeMap, catchError, map} from 'rxjs/operators';
+import { from, of } from 'rxjs';
+import { ofType } from 'redux-observable';
 import { getSourceList } from '../api'
 import { getSourceListSuccess, getSourceListFailure } from '../actions/getSourceList'
 
 const getSourceListEpic = (action$) =>
-    action$.ofType(actionTypes.FETCHING_SOURCE_LIST)
-        .mergeMap(action =>
-            Observable.from(getSourceList())
-                .map(response => {
+    action$.pipe(ofType(actionTypes.FETCHING_SOURCE_LIST),
+        mergeMap(action =>
+            from(getSourceList()).pipe(
+                map(response => {
                     return getSourceListSuccess(response)
-                })
-                .catch(error => Observable.of(getSourceListFailure(error)))
-        )
+                }),
+                catchError(error => of(getSourceListFailure(error)))
+            )));
 
 export default getSourceListEpic

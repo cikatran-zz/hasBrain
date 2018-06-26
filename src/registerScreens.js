@@ -1,4 +1,4 @@
-import { StackNavigator, TabNavigator } from 'react-navigation'
+import { createStackNavigator, createTabNavigator } from 'react-navigation'
 import ExploreStack from './screenStacks/ExploreStack'
 import SaveStack from './screenStacks/SaveStack'
 import UserPathStack from './screenStacks/UserPathStack'
@@ -16,7 +16,7 @@ import Onboarding from "./screens/Onboarding";
 import Reader from "./screens/Reader";
 import MySource from "./screens/MySource";
 
-const TabNav = TabNavigator({
+const TabNav = createTabNavigator({
     ExploreTab: {
         screen: ExploreStack,
         navigationOptions: ({ navigation }) => ({
@@ -87,13 +87,11 @@ const styles = StyleSheet.create({
     }
 });
 
-export const ScreenStack = StackNavigator({
+export const ScreenStack = createStackNavigator({
 
     Root: {
         screen: Launch,
-        navigationOptions: {
-            header: null,
-        }
+        headerMode: 'none',
     },
     Authentication: {
         screen: Authentication,

@@ -2,10 +2,12 @@ import codePush from "react-native-code-push";
 import React, {Component} from "react";
 import {Provider} from "react-redux";
 import configureStore from './configureStore'
-import AppNavigator from "./AppNavigator";
 import { PersistGate } from 'redux-persist/integration/react';
+import {ScreenStack} from './registerScreens';
 import {Image, View} from 'react-native'
 import {colors} from "./constants/colors";
+import NavigationService from './NavigationService'
+
 const { persistor, store } = configureStore();
 
 const hasBrainPic = require('./assets/ic_hasbrain.png')
@@ -19,7 +21,9 @@ class App extends Component {
                             <Image source={hasBrainPic}/>
                         </View>
                     } persistor={persistor}>
-                    <AppNavigator />
+                    <ScreenStack ref={navigatorRef => {
+                        NavigationService.setTopLevelNavigator(navigatorRef);
+                    }}/>
                 </PersistGate>
             </Provider>
         );

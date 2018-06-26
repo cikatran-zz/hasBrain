@@ -1,17 +1,18 @@
 import * as actionTypes from '../actions/actionTypes'
-import 'rxjs'
-import { Observable } from 'rxjs/Observable'
+import { mergeMap, catchError, map} from 'rxjs/operators';
+import { from, of } from 'rxjs';
+import { ofType } from 'redux-observable';
 import { getUserPath } from '../api'
 import { getUserPathSuccess, getUserPathFailure } from '../actions/getUserPath'
 
 const getUserPathEpic = (action$) =>
-    action$.ofType(actionTypes.FETCHING_USER_PATH)
-        .mergeMap(action =>
-            Observable.from(getUserPath(action.pathId))
-                .map(response => {
+    action$.pipe(ofType(actionTypes.FETCHING_USER_PATH),
+        mergeMap(action =>
+            from(getUserPath(action.pathId)).pipe(
+                map(response => {
                     return getUserPathSuccess(response.data)
-                })
-                .catch(error => Observable.of(getUserPathFailure(error)))
-        );
+                }),
+                catchError(error => of(getUserPathFailure(error)))
+            )));
 
 export default getUserPathEpic

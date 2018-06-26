@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux'
-import nav from './appReducer'
 import articlesReducer from './articlesReducer'
 import savedReducer from './savedReducer'
 import playlistReducer from './playlistReducer'
@@ -19,7 +18,6 @@ import watchingHistoryReducer from "./watchingHistoryReducer";
 import categoryReducer from "./categoryReducer";
 
 export default combineReducers({
-    nav,
     articlesReducer,
     savedReducer,
     playlistReducer,
