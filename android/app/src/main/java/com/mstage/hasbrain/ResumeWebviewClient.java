@@ -56,7 +56,7 @@ public class ResumeWebviewClient extends WebViewClient {
         this.webView = webView;
         state = State.LOADING;
         webView.changeState(state.ordinal());
-
+        //webView.evaluateJavascript("document.getElementsByTagName('body')[0].style.paddingTop='50px'", value -> {});
         webView.setPictureListener((view, picture) -> {
             if (webView != view) {
                 return;

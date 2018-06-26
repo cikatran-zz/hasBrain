@@ -66,5 +66,10 @@
   },
   "resolutions": {
     "metro-bundler": "0.20.1"
+  },
+  "rnpm": {
+    "assets": [
+      "./assets/fonts/"
+    ]
   }
 }

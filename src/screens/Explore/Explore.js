@@ -408,7 +408,7 @@ export default class Explore extends React.Component {
                     <Animated.View style={this._animatedStyle()}>
                         <View style={styles.searchBar}>
                             <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
-                            <Text style={styles.searchText}>For You</Text>
+                            <Text style={styles.searchText}>For you</Text>
                             <TouchableOpacity style={{marginRight: 0, marginLeft: 'auto', padding: 10}}
                                               onPress={() => this.props.navigation.navigate('MySource')}>
                                 <Image style={[styles.searchIcon]} source={require('../../assets/ic_filter.png')}/>
@@ -485,13 +485,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderRadius: 5,
         borderWidth: 1,
-        borderColor: colors.grayLine,
+        borderColor: colors.graySearchBorder,
         paddingHorizontal: 10,
         paddingVertical: 5,
         marginTop: 5,
         marginBottom: 15,
         marginHorizontal: 25,
-        backgroundColor: colors.mainWhite,
+        backgroundColor: colors.lightGray,
         alignItems: 'center'
     },
     searchIcon: {

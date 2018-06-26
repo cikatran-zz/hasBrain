@@ -53,6 +53,11 @@ class CustomWebView: WKWebView {
             scrollToLastPosition()
         }
     }
+    public var topInset: NSNumber = 112 {
+        didSet {
+            self.scrollView.contentInset = UIEdgeInsetsMake(112, 0, 0, 0)
+        }
+    }
     public var onHighlight: RCTDirectEventBlock = { event in }
     public var onUrlChanged: RCTDirectEventBlock = { event in }
     public var onLoadingChanged: RCTDirectEventBlock = { event in }
@@ -90,6 +95,9 @@ class CustomWebView: WKWebView {
         self.allowsBackForwardNavigationGestures = false
         self.navigationDelegate = self
         self.scrollView.delegate = self
+        self.scrollView.showsHorizontalScrollIndicator = false
+        self.scrollView.showsVerticalScrollIndicator = false
+        self.scrollView.contentInset = UIEdgeInsetsMake(112, 0, 0, 0)
         self.addObserver(self, forKeyPath: "canGoBack", options: .new, context: &webViewContext)
         self.addObserver(self, forKeyPath: "canGoForward", options: .new, context: &webViewContext)
         self.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: &webViewContext)

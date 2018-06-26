@@ -19,4 +19,5 @@ export const colors = {
     grayTextSearch: '#919191',
     lightGray: "#f7f8f9",
     tagGrayText: "#7b8ca8",
+    graySearchBorder: '#EBEDF8'
 };

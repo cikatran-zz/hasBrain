@@ -19,10 +19,10 @@ export default class Reader extends React.Component {
 
     static navigationOptions = ({navigation}) => {
         return {
-            headerRight:
-                <TouchableOpacity onPress={navigation.state.params.handleSwitch} style={{padding: 15}}>
-                    <Image source={navigation.state.params.icon} style={{resizeMode: 'contain'}}/>
-                </TouchableOpacity>
+            // headerRight:
+            //     <TouchableOpacity onPress={navigation.state.params.handleSwitch} style={{padding: 15}}>
+            //         <Image source={navigation.state.params.icon} style={{resizeMode: 'contain'}}/>
+            //     </TouchableOpacity>
         }
     };
 
@@ -329,9 +329,6 @@ export default class Reader extends React.Component {
         console.log("Scroll to: ", watchingHistory.data);
         return (
             <View style={styles.alertWindow}>
-                {/*<ContinueReadingModal ref={(ref)=>this.modal=ref}*/}
-                                      {/*onYes={this._onConfirmContinueReading}*/}
-                                      {/*onNo={this._onCancelContinueReading}/>*/}
                 {this._renderProgressBar()}
                 <CustomWebview source={this.state.currentUrl}
                                initPosition={watchingHistory.data ? watchingHistory.data : {}}
