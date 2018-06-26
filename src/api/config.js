@@ -443,6 +443,11 @@ query getExploreArticles($skip: Int, $limit: Int, $sources: [JSON], $tags: [JSON
           shortDescription
           tags
           sourceName
+          sourceImage
+          sourceName
+          sourceActionCount
+          sourceActionName
+          sourceCommentCount
         }
       }
     }

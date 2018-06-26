@@ -108,7 +108,7 @@ android {
         targetSdkVersion 27
         multiDexEnabled true
         versionCode 3
-        versionName "1.2"
+        versionName "1.3"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }

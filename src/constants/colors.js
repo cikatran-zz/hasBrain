@@ -16,8 +16,11 @@ export const colors = {
     darkBlue: '#002257',
     grayTextExpYear: '#B1B1B1',
     grayTextExpTitle: '#828282',
-    grayTextSearch: '#919191',
+    grayTextSearch: '#002257',
     lightGray: "#f7f8f9",
     tagGrayText: "#7b8ca8",
-    graySearchBorder: '#EBEDF8'
+    graySearchBorder: '#EBEDF8',
+    articleCategory: '#97A3B4',
+    articleTitle: '#002257',
+    articleSubtitle: '#99A4B3'
 };
