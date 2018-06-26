@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ActionMode;
@@ -75,6 +76,7 @@ public class CustomWebview extends WebView implements NotificationObserver {
             isLoading = true;
         } else {
             isLoading = false;
+
         }
         sendOnLoadingChanged();
     }

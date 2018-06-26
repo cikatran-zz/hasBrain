@@ -73,6 +73,7 @@
 		69F4CD4320BFBB8B004AE650 /* GoogleSignIn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F4CD3D20BFBB8B004AE650 /* GoogleSignIn.framework */; };
 		69F4CD4420BFBB8B004AE650 /* GoogleSymbolUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F4CD3E20BFBB8B004AE650 /* GoogleSymbolUtilities.framework */; };
 		69F4CE4B20BFEA43004AE650 /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F4CE4A20BFE940004AE650 /* libRCTFBSDK.a */; };
+		69F78D5820E22BF80013F14C /* circularStdBook.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 69F78D2420E22BF80013F14C /* circularStdBook.ttf */; };
 		69FE6A3920AEB11200F8FED1 /* RNCustomWebview.m in Sources */ = {isa = PBXBuildFile; fileRef = 69FE6A3820AEB11200F8FED1 /* RNCustomWebview.m */; };
 		78BED8079EEA42CAB8F4C9A8 /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = B4F2F43D2B3C46E6887F3FED /* AppCenter-Config.plist */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
@@ -532,6 +533,7 @@
 		69F4CD3C20BFBB8B004AE650 /* GoogleAppUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleAppUtilities.framework; path = "../node_modules/react-native-google-signin/ios/GoogleSdk/GoogleAppUtilities.framework"; sourceTree = "<group>"; };
 		69F4CD3D20BFBB8B004AE650 /* GoogleSignIn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleSignIn.framework; path = "../node_modules/react-native-google-signin/ios/GoogleSdk/GoogleSignIn.framework"; sourceTree = "<group>"; };
 		69F4CD3E20BFBB8B004AE650 /* GoogleSymbolUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleSymbolUtilities.framework; path = "../node_modules/react-native-google-signin/ios/GoogleSdk/GoogleSymbolUtilities.framework"; sourceTree = "<group>"; };
+		69F78D2420E22BF80013F14C /* circularStdBook.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = circularStdBook.ttf; path = ../src/assets/fonts/circularStdBook.ttf; sourceTree = "<group>"; };
 		69FE6A3720AEB11200F8FED1 /* RNCustomWebview.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNCustomWebview.h; sourceTree = "<group>"; };
 		69FE6A3820AEB11200F8FED1 /* RNCustomWebview.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = RNCustomWebview.m; sourceTree = "<group>"; tabWidth = 4; };
 		73F1EC9EDE3946F1A89AF472 /* libAppCenterReactNativeCrashes.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAppCenterReactNativeCrashes.a; sourceTree = "<group>"; };
@@ -688,6 +690,7 @@
 		13B07FAE1A68108700A75B9A /* hasBrain */ = {
 			isa = PBXGroup;
 			children = (
+				69F78D2420E22BF80013F14C /* circularStdBook.ttf */,
 				69F4CCA220BFB8DB004AE650 /* GoogleService-Info.plist */,
 				6927DEDF209C654900FFA275 /* Utilities */,
 				6927DEA2209C64F100FFA275 /* NativeModule */,
@@ -1644,6 +1647,7 @@
 			files = (
 				6960118D20B26B2E00F0889D /* ReaderView.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				69F78D5820E22BF80013F14C /* circularStdBook.ttf in Resources */,
 				69F4CCD220BFB8DB004AE650 /* GoogleService-Info.plist in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				78BED8079EEA42CAB8F4C9A8 /* AppCenter-Config.plist in Resources */,

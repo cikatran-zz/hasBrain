@@ -108,7 +108,7 @@ android {
         targetSdkVersion 27
         multiDexEnabled true
         versionCode 3
-        versionName "1.2"
+        versionName "1.3"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -145,7 +145,6 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
             buildConfigField "String", "CODEPUSH_KEY", '"yc3GJIYkRPbjqevomEvxg1J9DOne46f1de64-eb3a-4a54-97d5-827a4c0e31f9"'
-            debuggable true
         }
 
         debug {
@@ -183,8 +182,8 @@ android {
 }
 
 ext {
-    userkitVersion = "2.2.51.2"
-    userkitVersionStaging = "2.2.51.4-staging"
+    userkitVersion = "2.2.52"
+    userkitVersionStaging = "2.2.52-staging"
     supportVersion = "27.1.1"
 }
 

@@ -9,7 +9,8 @@ import {
     Dimensions,
     Share, NativeModules, Platform, Image,
     Animated,
-    Alert, RefreshControl
+    Alert, RefreshControl,
+    StatusBar
 } from 'react-native'
 import {colors} from '../../constants/colors'
 import VerticalRow from '../../components/VerticalRow'
@@ -64,6 +65,8 @@ export default class Explore extends React.Component {
         this.props.getCategory();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
+            StatusBar.setBarStyle('dark-content');
+            (Platform.OS != 'ios') && StatusBar.setBackgroundColor('transparent');
         });
         this._setUpReadingTime();
     }
@@ -134,6 +137,11 @@ export default class Explore extends React.Component {
         return (
             <VerticalRow title={item._source.title}
                          author={sourceName}
+                         sourceCommentCount={item._source.sourceCommentCount}
+                         sourceActionName={item._source.sourceActionName}
+                         sourceActionCount={item._source.sourceActionCount}
+                         sourceImage={item._source.sourceImage}
+                         category={item._source.category}
                          time={item._source.sourceCreatedAt}
                          readingTime={item._source.readingTime}
                          onClicked={() => this._openReadingView({...item._source, _id: item._id})}
@@ -264,7 +272,7 @@ export default class Explore extends React.Component {
                 if (!isOn) {
                     newTagsArray.push(id);
                 } else {
-                    _.remove(newTagsArray, (x)=>x === id);
+                    _.remove(newTagsArray, (x) => x === id);
                 }
                 this._debounceReloadAndSave(chosenSourceArray, newTagsArray);
             }
@@ -381,50 +389,50 @@ export default class Explore extends React.Component {
         const {articles, playlist, source, category} = this.props;
         return (
             <View style={styles.rootView}>
-                <SectionList
-                    ref={(ref) => this._scrollView = ref}
-                    contentContainerStyle={{marginTop: 112 + rootViewTopPadding(), marginBottom: 0}}
-                    refreshing={false}
-                    onRefresh={() => this.props.getArticles(10, 0, "", "")}
-                    onScrollEndDrag={this._onScrollEnd}
-                    onScroll={this._onScroll}
-                    scrollEventThrottle={16}
-                    keyExtractor={this._keyExtractor}
-                    stickySectionHeadersEnabled={false}
-                    showsVerticalScrollIndicator={false}
-                    bounces={true}
-                    onEndReached={this._fetchMore}
-                    ListHeaderComponent={this._renderLoading(articles.isFetching)}
-                    ListFooterComponent={() => this._renderListFooter(articles.isFetching)}
-                    onEndReachedThreshold={0.5}
-                    sections={[
-                        {
-                            data: [articles.data],
-                            renderItem: this._renderVerticalSection
-                        }
-                    ]}
-                />
-                <Animated.View style={this._animatedStyle()}>
-                    <View style={styles.searchBar}>
-                        <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
-                        <Text style={styles.searchText}>For You</Text>
-                        <TouchableOpacity style={{marginRight: 0, marginLeft: 'auto', padding: 10}}
-                                          onPress={() => this.props.navigation.navigate('MySource')}>
-                            <Image style={[styles.searchIcon]} source={require('../../assets/ic_filter.png')}/>
-                        </TouchableOpacity>
-                    </View>
-                    <FlatList
-                        style={{marginLeft: 25, marginBottom: 0, height: 50}}
+                <View style={styles.headerBackgroundView}/>
+                <View style={styles.contentView}>
+                    <SectionList
+                        ref={(ref) => this._scrollView = ref}
+                        contentContainerStyle={{marginTop: 112, marginBottom: 0}}
+                        refreshing={false}
+                        onRefresh={() => this.props.getArticles(10, 0, "", "")}
+                        onScrollEndDrag={this._onScrollEnd}
+                        onScroll={this._onScroll}
+                        scrollEventThrottle={16}
                         keyExtractor={this._keyExtractor}
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                        data={['All'].concat(category.data)}
-                        renderItem={this._renderTagsItem}
+                        stickySectionHeadersEnabled={false}
+                        showsVerticalScrollIndicator={false}
+                        bounces={true}
+                        onEndReached={this._fetchMore}
+                        ListHeaderComponent={this._renderLoading(articles.isFetching)}
+                        ListFooterComponent={() => this._renderListFooter(articles.isFetching)}
+                        onEndReachedThreshold={0.5}
+                        sections={[
+                            {
+                                data: [articles.data],
+                                renderItem: this._renderVerticalSection
+                            }
+                        ]}
                     />
-                </Animated.View>
-                {
-                    //this._renderLoading(articles.isFetching)
-                }
+                    <Animated.View style={this._animatedStyle()}>
+                        <View style={styles.searchBar}>
+                            <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
+                            <Text style={styles.searchText}>For you</Text>
+                            <TouchableOpacity style={{marginRight: 0, marginLeft: 'auto', padding: 10}}
+                                              onPress={() => this.props.navigation.navigate('MySource')}>
+                                <Image style={[styles.searchIcon]} source={require('../../assets/ic_filter.png')}/>
+                            </TouchableOpacity>
+                        </View>
+                        <FlatList
+                            style={{marginLeft: 25, marginBottom: 0, height: 50}}
+                            keyExtractor={this._keyExtractor}
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                            data={['All'].concat(category.data)}
+                            renderItem={this._renderTagsItem}
+                        />
+                    </Animated.View>
+                </View>
             </View>
         )
     }
@@ -439,16 +447,31 @@ const styles = StyleSheet.create({
         width: 60,
         height: 20,
     },
+    headerBackgroundView: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: rootViewTopPadding(),
+        backgroundColor: colors.mainWhite
+    },
     rootView: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: colors.mainWhite
+        backgroundColor: colors.lightGray,
+
+    },
+    contentView: {
+        flex: 1,
+        flexDirection: 'column',
+        marginTop: rootViewTopPadding(),
+        overflow: 'hidden'
     },
     topView: {
         flexDirection: 'column',
         position: 'absolute',
         backgroundColor: colors.mainWhite,
-        height: 112 + rootViewTopPadding(),
+        height: 112,
         left: 0,
         right: 0
     },
@@ -479,23 +502,26 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderRadius: 5,
         borderWidth: 1,
-        borderColor: colors.grayLine,
+        borderColor: colors.graySearchBorder,
         paddingHorizontal: 10,
         paddingVertical: 5,
-        marginTop: rootViewTopPadding(),
+        marginTop: 5,
         marginBottom: 15,
         marginHorizontal: 25,
-        backgroundColor: colors.mainWhite,
+        backgroundColor: colors.lightGray,
         alignItems: 'center'
     },
     searchIcon: {
         width: 20,
         resizeMode: 'contain',
-        aspectRatio: 1
+        aspectRatio: 1,
+        tintColor: '#A6B2C4'
     },
     searchText: {
         marginLeft: 15,
-        fontSize: 17,
-        color: colors.grayTextSearch
+        fontSize: 14,
+        color: colors.grayTextSearch,
+        fontFamily: 'CircularStd-Book',
+        opacity: 0.5
     },
 });

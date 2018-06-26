@@ -12,9 +12,9 @@ export const defaultHeaderStyle = {
 };
 
 export const titleCardStyle = {
-    color: colors.blackText,
+    color: colors.articleTitle,
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'CircularStd-Book'
 };
 
 export const blackTextStyle = {
@@ -23,13 +23,16 @@ export const blackTextStyle = {
 };
 
 export const grayTextStyle = {
-    fontSize: 15,
-    color: colors.mainDarkGray
+    fontSize: 12,
+    color: colors.articleSubtitle,
+    fontFamily: 'CircularStd-Book',
 }
 
 export const graySmallTextStyle = {
-    fontSize: 10,
-    color: colors.mainDarkGray
+    fontSize: 12,
+    color: colors.articleTitle,
+    fontFamily: 'CircularStd-Book',
+
 };
 
 export const onboardingTitleStyle = {

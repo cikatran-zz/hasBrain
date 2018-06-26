@@ -41,7 +41,8 @@ const styles = StyleSheet.create({
         borderWidth: 0.5
     },
     text: {
-        fontSize: 12,
-        marginHorizontal: 10
+        fontSize: 13,
+        marginHorizontal: 10,
+        fontFamily: 'CircularStd-Book'
     }
 });
