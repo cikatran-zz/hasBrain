@@ -22,9 +22,9 @@ export default function sourcelistReducer(state = initialState, action) {
                 isFetching: true
             }
         case actionTypes.FETCH_SOURCE_LIST_SUCCESS:
-            let sourceListData = action.data[0].viewer.sourcePagination.items;
-            let followSourceData = action.data[1].viewer.userFollowMany;
-            let followCategoryData = action.data[2].viewer.userFollowMany;
+            let sourceListData = action.data[0].data.viewer.sourcePagination.items;
+            let followSourceData = action.data[1].data.viewer.userFollowMany;
+            let followCategoryData = action.data[2].data.viewer.userFollowMany;
             let chosentags = followCategoryData.map(item => {
                 return item.sourceId
             });

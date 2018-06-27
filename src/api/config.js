@@ -468,7 +468,7 @@ export const getExploreArticlesQuery = (withSources, withTags) => {
       took
       hits {
         _id
-        _source
+        _source{
   		  title
           category
           author
@@ -484,7 +484,7 @@ export const getExploreArticlesQuery = (withSources, withTags) => {
         }
       }
     }
-}`
+}}`
     } else {
         query = `${query} query: {
       bool: {
@@ -513,7 +513,7 @@ export const getExploreArticlesQuery = (withSources, withTags) => {
       took
       hits {
         _id
-        _source
+        _source{
   		  title
           category
           author
@@ -529,9 +529,8 @@ export const getExploreArticlesQuery = (withSources, withTags) => {
         }
       }
     }
-  }`
+  }}`
     }
-
     return gql `${query}`;
 }
 

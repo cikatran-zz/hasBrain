@@ -1,4 +1,4 @@
-import config from './config';
+import config, {getExploreArticlesQuery} from './config';
 import {ApolloClient} from 'apollo-client';
 import {HttpLink} from 'apollo-link-http';
 import {onError} from 'apollo-link-error'
@@ -6,6 +6,7 @@ import {InMemoryCache} from 'apollo-cache-inmemory';
 import {NativeModules} from "react-native";
 import {strings} from "../constants/strings";
 import _ from 'lodash';
+import {forkJoin} from 'rxjs';
 
 const {RNCustomWebview, RNUserKit} = NativeModules;
 const getAuthToken = () => {
@@ -352,16 +353,52 @@ export const updateSourceList = (sources) => {
 }
 
 export const getExploreArticles = (limit, skip, sources, tags) => {
-    return getExploreFunc(limit, skip, sources, tags);
+    if (_.isEmpty(sources) || _.isEmpty(tags)) {
+        return new Promise((resolve, reject) => {
+            const observable = forkJoin([getUserFollow("sourcetype"), getUserFollow("categorytype")]);
+            observable.subscribe(
+                value => {
+                    let followSourceData = value[0].data.viewer.userFollowMany;
+                    let followCategoryData = value[1].data.viewer.userFollowMany;
+                    let chosentags = followCategoryData.map(item => {
+                        return item.sourceId
+                    });
+                    let chosenSources = followSourceData.map(item => {
+                        return item.sourceId
+                    });
+                    resolve(getExploreFunc(limit, skip, chosenSources, chosentags));
+                },
+                err => {reject(err)}
+            )
+        })
+    } else {
+        return getExploreFunc(limit, skip, sources, tags);
+    }
 }
 
 const  getExploreFunc = (limit, skip, sources, tags) => {
-    let destSources = sources.map((source)=> ({value: source}));
-    let destTags = tags.map((tag)=>({value: tag}));
+    let destSources;
+    let destTags;
+    if (!_.isEmpty(sources))
+     destSources = sources.map((source)=> ({value: source}));
+    if (!_.isEmpty(tags))
+     destTags = tags.map((tag)=>({value: tag}));
+    let query = getExploreArticlesQuery(!_.isEmpty(sources), !_.isEmpty(tags));
+    let variables;
+    if (!_.isEmpty(sources) && !_.isEmpty(tags)) {
+        variables = {skip: skip, limit: limit, sources: destSources, tags: destTags}
+    } else if (!_.isEmpty(tags)) {
+        variables = {skip: skip, limit: limit, tags: destTags}
+    } else if (!_.isEmpty(sources)) {
+        variables = {skip: skip, limit: limit, sources: destSources}
+    } else {
+        variables = {skip: skip, limit: limit}
+    }
     return gqlQuery({
-        query: config.queries.exploreArticles,
-        variables: {skip: skip, limit: limit, sources: destSources, tags: destTags}
+        query: query,
+        variables: variables
     })
+
 };
 
 export const getWatchingHistory = (contentId) => {
