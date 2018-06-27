@@ -219,13 +219,13 @@ export const updateUserProfile = (role, summary) => {
 
 export const getUserAnalyst = () => {
     return new Promise((resolve, reject) => {
-       RNUserKit.getProperty(strings.readingTagsKey, (error, result) => {
-           if (error) {
-               reject(error);
-           } else {
-               let userAnalyst = _.get(result[0], strings.readingTagsKey, null);
-               resolve(userAnalyst);
-           }
+        RNUserKit.getProperty(strings.readingTagsKey, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                let userAnalyst = _.get(result[0], strings.readingTagsKey, null);
+                resolve(userAnalyst);
+            }
         });
     });
 }
@@ -329,22 +329,13 @@ export const updateRecommendSoureToProfile = (ids) => {
 export const getSourceList = () => {
     return gqlQuery({
         query: config.queries.sourceList
-    }).then((response) => {
-        return new Promise((resolve, reject) => {
-            RNUserKit.getProperty(strings.articleFilter, (error, result) => {
-                if (error) {
-                    reject(error)
-                } else {
-                    let sourceList = response.data.viewer.sourcePagination;
-                    let chosenSources = _.get(result[0], strings.articleFilter, null);
-                    let responseResult = {
-                        sourceList: sourceList,
-                        chosenSources: chosenSources
-                    }
-                    resolve(responseResult);
-                }
-            })
-        })
+    });
+}
+
+export const getUserFollow = (kind) => {
+    return gqlQuery({
+        query: config.queries.userFollow,
+        variables: {kind: kind}
     })
 }
 
@@ -361,24 +352,7 @@ export const updateSourceList = (sources) => {
 }
 
 export const getExploreArticles = (limit, skip, sources, tags) => {
-
-    if (_.isEmpty(sources) || _.isEmpty(tags)) {
-        return new Promise((resolve, reject) => {
-            RNUserKit.getProperty(strings.articleFilter, (error, result) => {
-                if (error) {
-                    reject(error)
-                } else {
-                    let chosenSources = _.get(result[0], strings.articleFilter, null);
-                    let newSources = _.keys(chosenSources);
-                    let newTags = _.uniq(_.flatten(_.values(chosenSources)));
-                    resolve(getExploreFunc(limit, skip, newSources, newTags));
-                }
-            })
-        })
-    } else {
-        return getExploreFunc(limit, skip, sources, tags);
-    }
-
+    return getExploreFunc(limit, skip, sources, tags);
 }
 
 const  getExploreFunc = (limit, skip, sources, tags) => {

@@ -450,6 +450,91 @@ query getExploreArticles($skip: Int, $limit: Int, $sources: [JSON], $tags: [JSON
 }
 `;
 
+export const getExploreArticlesQuery = (withSources, withTags) => {
+    let query = `query getExploreArticles($skip: Int, $limit: Int`;
+    if (withSources)  {
+        query = `${query}, $sources: [JSON]`;
+    }
+
+    if (withTags) {
+        query = `${query}, $tags: [JSON]`;
+    }
+    query = `${query} ){
+  viewer{
+    articleSearch(sort: sourceCreatedAt__desc,`
+    if (!withSources && !withTags) {
+        query = `${query} limit: $limit, skip: $skip) {
+      count
+      took
+      hits {
+        _id
+        _source
+  		  title
+          category
+          author
+          content
+          contentId
+          authorImage
+          readingTime
+          sourceImage
+          sourceCreatedAt
+          shortDescription
+          tags
+          sourceName
+        }
+      }
+    }
+}`
+    } else {
+        query = `${query} query: {
+      bool: {
+        filter: [
+          `
+        if (withSources) {
+            query = `${query} {
+              terms: {
+              sourceName: $sources
+            }
+          },`
+        }
+
+        if (withTags) {
+            query = `${query} {
+            terms:{
+              category: $tags
+            }
+          }`
+        }
+
+        query = `${query} ]
+      }
+    }, limit: $limit, skip: $skip) {
+      count
+      took
+      hits {
+        _id
+        _source
+  		  title
+          category
+          author
+          content
+          contentId
+          authorImage
+          readingTime
+          sourceImage
+          sourceCreatedAt
+          shortDescription
+          tags
+          sourceName
+        }
+      }
+    }
+  }`
+    }
+
+    return gql `${query}`;
+}
+
 const getCategory = gql`
 query {
   viewer {
@@ -459,6 +544,35 @@ query {
   }
 }
 `;
+
+const getUserFollow = gql`
+query getUserFollow($kind: EnumuserfollowtypeKind){
+  viewer{
+    userFollowMany(filter: {
+      kind: $kind
+    }) {
+      sourceId
+      kind
+      state
+      createdAt
+      updatedAt
+      profileId
+      projectId
+    }
+  }
+}
+`
+
+const updateUserFollow = gql`
+mutation updateUserFollow($kind: String!, $sourceIds: [String]){
+  user{
+    followCreateMany(record: {
+      kind: $kind,
+      sourceIds: $sourceIds
+    })
+  }
+}
+`
 
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
@@ -475,7 +589,8 @@ export default {
         intents: intentMany,
         pathRecommend: getPathRecommend,
         sourceRecommend: getRecommendSource,
-        category: getCategory
+        category: getCategory,
+        userFollow: getUserFollow
     },
     mutation: {
         bookmark: postBookmark,
@@ -486,6 +601,7 @@ export default {
         highlightText: postHighlightedText,
         createIntent: intentCreate,
         createBookmark: createBookmark,
-        removeBookmark: removeBookmark
+        removeBookmark: removeBookmark,
+        updateUserFollow: updateUserFollow
     }
 };

@@ -11,7 +11,7 @@ const initialState = {
     updated: false,
     updateError: null,
     tags: null,
-    tagMap: new Map()
+    tagMap: new Map(),
 }
 
 export default function sourcelistReducer(state = initialState, action) {
@@ -22,8 +22,17 @@ export default function sourcelistReducer(state = initialState, action) {
                 isFetching: true
             }
         case actionTypes.FETCH_SOURCE_LIST_SUCCESS:
-            let chosentags = _.uniq(_.flatten(Object.values(action.data.chosenSources)));
-            let tags = _.uniq(_.flatten(action.data.sourceList.items.map(item => {
+            let sourceListData = action.data[0].viewer.sourcePagination.items;
+            let followSourceData = action.data[1].viewer.userFollowMany;
+            let followCategoryData = action.data[2].viewer.userFollowMany;
+            let chosentags = followCategoryData.map(item => {
+                return item.sourceId
+            });
+            let chosenSources = followSourceData.map(item => {
+                return item.sourceId
+            });
+
+            let tags = _.uniq(_.flatten(sourceListData.map(item => {
                 return item.categories;
             })));
             let tagMap = new Map();
@@ -49,10 +58,10 @@ export default function sourcelistReducer(state = initialState, action) {
                 ...state,
                 isFetching: false,
                 fetched: true,
-                data: action.data.sourceList,
-                chosenSources: action.data.chosenSources,
+                data: sourceListData,
+                chosenSources: chosenSources,
                 tagMap: tagMap,
-                tags: tags
+                tags: tags,
             }
         case actionTypes.UPDATE_USER_SOURCE_TAG:
             return {
