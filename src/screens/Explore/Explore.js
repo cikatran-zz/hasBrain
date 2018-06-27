@@ -62,7 +62,6 @@ export default class Explore extends React.Component {
         // this.props.getPlaylist();
         this.props.getSaved();
         this.props.getSourceList();
-        this.props.getCategory();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
         });
@@ -279,10 +278,9 @@ export default class Explore extends React.Component {
     _reloadAndSaveTag = (sources, tags) => {
         const {source} = this.props;
         const {data, chosenSources} = source;
-        const {items} = data;
-        this.props.getArticles(10, 0, sources, tags);
+        // this.props.getArticles(10, 0, sources, tags);
         let newSource = {};
-        for (let item of items) {
+        for (let item of data) {
             if (_.get(chosenSources, item.sourceId, undefined)) {
                 let defaultTagArray = item.categories;
                 let newChosenSourceTagArray = _.intersection(tags, defaultTagArray);
@@ -379,7 +377,7 @@ export default class Explore extends React.Component {
         </View>);
 
     render() {
-        const {articles, playlist, source, category} = this.props;
+        const {articles, playlist, source} = this.props;
         return (
             <View style={styles.rootView}>
                 <View style={styles.contentView}>
@@ -419,7 +417,7 @@ export default class Explore extends React.Component {
                             keyExtractor={this._keyExtractor}
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
-                            data={['All'].concat(category.data)}
+                            data={source.tags}
                             renderItem={this._renderTagsItem}
                         />
                     </Animated.View>

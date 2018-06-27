@@ -39,11 +39,16 @@ export default function sourcelistReducer(state = initialState, action) {
             tagMap.set("All", false);
             let count = 0;
             for(let tag of tags) {
-                if (_.indexOf(chosentags, tag) < 0) {
-                    tagMap.set(tag, false);
-                } else {
+                if (_.isEmpty(chosentags)) {
                     tagMap.set(tag, true);
                     count++;
+                } else {
+                    if (_.indexOf(chosentags, tag) < 0) {
+                        tagMap.set(tag, false);
+                    } else {
+                        tagMap.set(tag, true);
+                        count++;
+                    }
                 }
             }
             //increase the count to check if all tags are chosen, then turn on All tag
