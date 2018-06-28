@@ -58,12 +58,12 @@ export default class Explore extends React.Component {
         this.offset = 0;
         this._currentPositionVal = 1;
         this._scrollView = null;
-        this._debounceReloadAndSave = _.debounce(this._reloadAndSaveTag, 500);
+        // this._debounceReloadAndSave = _.debounce(this._reloadAndSaveTag, 500);
     }
 
     componentDidMount() {
         this.props.getSaved();
-        this.props.getSourceList();
+        // this.props.getSourceList();
         this.props.getFeed(1, 10);
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
@@ -244,79 +244,79 @@ export default class Explore extends React.Component {
         }
 
     };
+    //
+    // _renderTagsItem = ({item}) => {
+    //     const {source} = this.props;
+    //     if (item == null)
+    //         return null;
+    //     if (!source.tagMap)
+    //         return null;
+    //     return (
+    //         <ToggleTagComponent id={item} onPressItem={this._onTagItemPress} isOn={source.tagMap.get(item)}/>
+    //     )
+    // };
 
-    _renderTagsItem = ({item}) => {
-        const {source} = this.props;
-        if (item == null)
-            return null;
-        if (!source.tagMap)
-            return null;
-        return (
-            <ToggleTagComponent id={item} onPressItem={this._onTagItemPress} isOn={source.tagMap.get(item)}/>
-        )
-    };
+    // _onTagItemPress = (id) => {
+    //     const {source} = this.props;
+    //     const {tags, chosenSources} = source;
+    //     let isOn = source.tagMap.get(id);
+    //     let tagMap = new Map(source.tagMap);
+    //     let chosenSourceArray = Array.from(Object.keys(chosenSources));
+    //
+    //     if (id === 'All') {
+    //         if (!isOn) {
+    //             tagMap.set(id, !isOn);
+    //             let tagKeyArray = Array.from(tagMap.keys());
+    //             this._debounceReloadAndSave(chosenSourceArray, _.drop(tags));
+    //             for (let tagKey of tagKeyArray) {
+    //                 if (tagKey !== 'All') {
+    //                     tagMap.set(tagKey, false);
+    //                 }
+    //             }
+    //         }
+    //     } else {
+    //
+    //         let newTagsArray = tags.map((item) => {
+    //             if (tagMap.get(item)) {
+    //                 return item;
+    //             }
+    //         });
+    //         newTagsArray = _.compact(newTagsArray);
+    //         if (isOn && newTagsArray.length < 2) {
+    //             Alert.alert('Oops!', 'You must select at least 1 tag', [
+    //                 {text: 'Got it!'},
+    //             ])
+    //         } else {
+    //             tagMap.set(id, !isOn);
+    //             if (!isOn) {
+    //                 newTagsArray.push(id);
+    //             } else {
+    //                 _.remove(newTagsArray, (x) => x === id);
+    //             }
+    //             this._debounceReloadAndSave(chosenSourceArray, newTagsArray);
+    //         }
+    //         if (tagMap.get('All')) {
+    //             tagMap.set('All', false);
+    //         }
+    //     }
+    //     this.props.updateUserSourceTag(tagMap);
+    // };
 
-    _onTagItemPress = (id) => {
-        const {source} = this.props;
-        const {tags, chosenSources} = source;
-        let isOn = source.tagMap.get(id);
-        let tagMap = new Map(source.tagMap);
-        let chosenSourceArray = Array.from(Object.keys(chosenSources));
-
-        if (id === 'All') {
-            if (!isOn) {
-                tagMap.set(id, !isOn);
-                let tagKeyArray = Array.from(tagMap.keys());
-                this._debounceReloadAndSave(chosenSourceArray, _.drop(tags));
-                for (let tagKey of tagKeyArray) {
-                    if (tagKey !== 'All') {
-                        tagMap.set(tagKey, false);
-                    }
-                }
-            }
-        } else {
-
-            let newTagsArray = tags.map((item) => {
-                if (tagMap.get(item)) {
-                    return item;
-                }
-            });
-            newTagsArray = _.compact(newTagsArray);
-            if (isOn && newTagsArray.length < 2) {
-                Alert.alert('Oops!', 'You must select at least 1 tag', [
-                    {text: 'Got it!'},
-                ])
-            } else {
-                tagMap.set(id, !isOn);
-                if (!isOn) {
-                    newTagsArray.push(id);
-                } else {
-                    _.remove(newTagsArray, (x) => x === id);
-                }
-                this._debounceReloadAndSave(chosenSourceArray, newTagsArray);
-            }
-            if (tagMap.get('All')) {
-                tagMap.set('All', false);
-            }
-        }
-        this.props.updateUserSourceTag(tagMap);
-    };
-
-    _reloadAndSaveTag = (sources, tags) => {
-        const {source} = this.props;
-        const {data, chosenSources} = source;
-        // this.props.getArticles(10, 0, sources, tags);
-        let newSource = {};
-        for (let item of data) {
-            if (_.get(chosenSources, item.sourceId, undefined)) {
-                let defaultTagArray = item.categories;
-                let newChosenSourceTagArray = _.intersection(tags, defaultTagArray);
-                newSource[item.sourceId] = newChosenSourceTagArray;
-            }
-        }
-        if (!_.isEmpty(newSource))
-            this.props.updateSourceList(newSource);
-    };
+    // _reloadAndSaveTag = (sources, tags) => {
+    //     const {source} = this.props;
+    //     const {data, chosenSources} = source;
+    //     // this.props.getArticles(10, 0, sources, tags);
+    //     let newSource = {};
+    //     for (let item of data) {
+    //         if (_.get(chosenSources, item.sourceId, undefined)) {
+    //             let defaultTagArray = item.categories;
+    //             let newChosenSourceTagArray = _.intersection(tags, defaultTagArray);
+    //             newSource[item.sourceId] = newChosenSourceTagArray;
+    //         }
+    //     }
+    //     if (!_.isEmpty(newSource))
+    //         this.props.updateSourceList(newSource);
+    // };
 
     _onScroll = (event) => {
         const {feed} = this.props;
@@ -402,7 +402,7 @@ export default class Explore extends React.Component {
         </View>);
 
     render() {
-        const {feed, playlist, source, category} = this.props;
+        const {feed} = this.props;
         return (
             <View style={styles.rootView}>
                 <StatusBar
@@ -448,14 +448,6 @@ export default class Explore extends React.Component {
 
                             </View>
                         </TouchableWithoutFeedback>
-                        <FlatList
-                            style={{marginLeft: 25, marginBottom: 0, height: 50}}
-                            keyExtractor={this._keyExtractor}
-                            horizontal={true}
-                            showsHorizontalScrollIndicator={false}
-                            data={source.tags}
-                            renderItem={this._renderTagsItem}
-                        />
                     </Animated.View>
                 </View>
             </View>

@@ -84,11 +84,9 @@ export default class MySource extends React.Component {
 
         return (
             <View style={styles.listRow}>
-                <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.sourceImage, width: 30, height: 30}}/>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginLeft: 20, alignItems: 'center', width: '80%', height: 30}}>
+                <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.sourceImage, width: 60, height: 60}}/>
                     <Text style={styles.sourceText}>{item.title}</Text>
                     <CheckComponent id={item.sourceId} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
-                </View>
             </View>
         )
     }
@@ -138,7 +136,7 @@ export default class MySource extends React.Component {
                     extraData={this.state}
                     keyExtractor={this._keyExtractor}
                     horizontal={false}
-                    data={source.data.items}
+                    data={source.data}
                     renderItem={this._renderListItem}
                     showsVerticalScrollIndicator={false}/>
             </View>
@@ -151,7 +149,7 @@ const styles = StyleSheet.create({
     rootView: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: colors.mainWhite
+        backgroundColor: colors.lightGray
     },
     headerView: {
         flexDirection: 'row',
@@ -177,17 +175,22 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width:'100%',
         alignItems:'center',
-        marginVertical: 10
+        marginVertical: 10,
+        backgroundColor: colors.mainWhite,
+        borderRadius: 5,
+        marginHorizontal: 10,
+        height: 60,
+        overflow: 'hidden'
     },
     iconImage: {
-        height: 30,
-        width: 30,
-        borderRadius: 3,
-        borderWidth: 1,
+        height: 60,
+        width: 60,
         overflow: 'hidden'
     },
     sourceText: {
         color: colors.grayTextExpTitle,
-        fontSize: 18
+        fontSize: 18,
+        marginLeft: 20,
+        width: '60%'
     }
 });
