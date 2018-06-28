@@ -123,22 +123,25 @@ export default class MySource extends React.Component {
             <View style={styles.rootView}>
                 <View style={styles.headerView}>
                     <TouchableOpacity style={styles.backButton} onPress={() => this._onBackPress()}>
-                        <Image style={styles.backIcon} source={require('../../assets/ic_back_button.png')}/>
+                        <Image style={styles.backIcon} source={require('../../assets/ic_arrow_left.png')}/>
                     </TouchableOpacity>
-                    <Text style={navigationTitleStyle}>My source</Text>
+                    <View style={styles.searchBar}>
+                        <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
+                        <Text style={styles.searchText}>Search for sources, people and topics</Text>
+                    </View>
                 </View>
-                <View>
-                </View>
+                <View style={{backgroundColor: colors.lightGray}}>
                 <FlatList
                     refreshing={source.isFetching}
                     onRefresh={() => this.props.getSourceList()}
-                    style={{marginHorizontal:20}}
+                    style={{marginHorizontal:10}}
                     extraData={this.state}
                     keyExtractor={this._keyExtractor}
                     horizontal={false}
                     data={source.data}
                     renderItem={this._renderListItem}
                     showsVerticalScrollIndicator={false}/>
+                </View>
             </View>
         )
     }
@@ -149,22 +152,23 @@ const styles = StyleSheet.create({
     rootView: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: colors.lightGray
+        backgroundColor: colors.mainWhite
     },
     headerView: {
         flexDirection: 'row',
         marginTop: rootViewTopPadding() + 10,
-        marginHorizontal: 20,
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: colors.mainWhite,
+        paddingBottom: 10
     },
     backIcon: {
-        width: 25,
-        height: 25,
+        width: 16,
+        height: 12,
         resizeMode: 'contain'
     },
     backButton: {
         padding: 10,
-        marginRight: 20
+        marginRight: 5
     },
     searchText: {
         marginLeft: 15,
@@ -188,9 +192,35 @@ const styles = StyleSheet.create({
         overflow: 'hidden'
     },
     sourceText: {
-        color: colors.grayTextExpTitle,
+        color: colors.darkBlue,
+        fontFamily: 'CircularStd-Book',
         fontSize: 18,
         marginLeft: 20,
         width: '60%'
-    }
+    },
+    searchBar: {
+        flexDirection: 'row',
+        borderRadius: 3,
+        borderWidth: 1,
+        borderColor: colors.whiteGray,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        marginTop: 5,
+        backgroundColor: colors.lightGray,
+        height: 49,
+        alignItems: 'center'
+    },
+    searchIcon: {
+        width: 20,
+        resizeMode: 'contain',
+        aspectRatio: 1,
+        tintColor: '#A6B2C4'
+    },
+    searchText: {
+        marginLeft: 15,
+        fontSize: 14,
+        color: colors.grayTextSearch,
+        fontFamily: 'CircularStd-Book',
+        opacity: 0.5
+    },
 });
