@@ -108,7 +108,7 @@ export default class VerticalRow extends React.PureComponent {
                             <Text style={grayTextStyle}>{action}</Text>
                         </View>
                         <ArticleButton style={styles.articleButtonView}
-                                       onShare={this.props.onShare}
+                                       onMore={this.props.onMore}
                                        onBookmark={this.props.onBookmark}
                                        bookmarked={this.props.bookmarked}/>
                     </View>

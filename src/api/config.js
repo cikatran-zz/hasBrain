@@ -411,6 +411,7 @@ const getFeed = gql`
 query getFeed($page: Int, $perPage: Int){
   viewer{
     feedPagination(sort:RANK_DESC, page: $page, perPage: $perPage) {
+      count
       items {
         contentId
         reason
