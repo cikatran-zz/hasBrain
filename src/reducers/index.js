@@ -16,6 +16,7 @@ import createBookmarkReducer from "./createBookmarkReducer";
 import removeBookmarkReducer from "./removeBookmarkReducer";
 import watchingHistoryReducer from "./watchingHistoryReducer";
 import categoryReducer from "./categoryReducer";
+import feedReducer from "./feedReducer";
 
 export default combineReducers({
     articlesReducer,
@@ -34,5 +35,6 @@ export default combineReducers({
     createBookmarkReducer,
     removeBookmarkReducer,
     watchingHistoryReducer,
-    categoryReducer
+    categoryReducer,
+    feedReducer
 });

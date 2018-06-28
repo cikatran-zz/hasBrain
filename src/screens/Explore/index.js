@@ -8,6 +8,7 @@ import {updateUserSourceTag} from '../../actions/updateUserSources';
 import {updateSourceList} from '../../actions/updateUserSources';
 import {createBookmark} from "../../actions/createBookmark";
 import {removeBookmark} from "../../actions/removeBookmark";
+import {getFeed} from "../../actions/getFeed";
 
 function mapStateToProps(state) {
     return {
@@ -15,7 +16,7 @@ function mapStateToProps(state) {
         playlist: state.playlistReducer,
         saved: state.savedReducer,
         source: state.sourcelistReducer,
-        category: state.categoryReducer
+        feed: state.feedReducer
     }
 }
 
@@ -29,6 +30,7 @@ function mapDispatchToProps(dispatch) {
         updateSourceList: (sources) => dispatch(updateSourceList(sources)),
         createBookmark: (id, type, trackingType) => dispatch(createBookmark(id, type, trackingType)),
         removeBookmark: (id, type, trackingType) => (dispatch(removeBookmark(id, type, trackingType))),
+        getFeed: (page, perPage)=>(dispatch(getFeed(page, perPage)))
     }
 }
 

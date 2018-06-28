@@ -405,7 +405,39 @@ const getSourceList = gql`
             }
          }
     }
-`
+`;
+
+const getFeed = gql`
+query getFeed($page: Int, $perPage: Int){
+  viewer{
+    feedPagination(sort:RANK_DESC, page: $page, perPage: $perPage) {
+      count
+      items {
+        contentId
+        reason
+        sourceData{
+          title
+          sourceImage
+        }
+        contentData{
+          _id
+          sourceName
+          kind
+          title
+          contentId
+          sourceImage
+          shortDescription
+          sourceActionName
+          sourceActionCount
+          sourceCommentCount
+          readingTime
+          sourceCreatedAt
+        }
+      }
+    }
+  }
+}
+`;
 
 const getExploreArticles = gql`
 query getExploreArticles($skip: Int, $limit: Int, $sources: [JSON], $tags: [JSON]){
@@ -454,90 +486,6 @@ query getExploreArticles($skip: Int, $limit: Int, $sources: [JSON], $tags: [JSON
   }
 }
 `;
-
-export const getExploreArticlesQuery = (withSources, withTags) => {
-    let query = `query getExploreArticles($skip: Int, $limit: Int`;
-    if (withSources)  {
-        query = `${query}, $sources: [JSON]`;
-    }
-
-    if (withTags) {
-        query = `${query}, $tags: [JSON]`;
-    }
-    query = `${query} ){
-  viewer{
-    articleSearch(sort: sourceCreatedAt__desc,`
-    if (!withSources && !withTags) {
-        query = `${query} limit: $limit, skip: $skip) {
-      count
-      took
-      hits {
-        _id
-        _source{
-  		  title
-          category
-          author
-          content
-          contentId
-          authorImage
-          readingTime
-          sourceImage
-          sourceCreatedAt
-          shortDescription
-          tags
-          sourceName
-        }
-      }
-    }
-}}`
-    } else {
-        query = `${query} query: {
-      bool: {
-        filter: [
-          `
-        if (withSources) {
-            query = `${query} {
-              terms: {
-              sourceName: $sources
-            }
-          },`
-        }
-
-        if (withTags) {
-            query = `${query} {
-            terms:{
-              category: $tags
-            }
-          }`
-        }
-
-        query = `${query} ]
-      }
-    }, limit: $limit, skip: $skip) {
-      count
-      took
-      hits {
-        _id
-        _source{
-  		  title
-          category
-          author
-          content
-          contentId
-          authorImage
-          readingTime
-          sourceImage
-          sourceCreatedAt
-          shortDescription
-          tags
-          sourceName
-        }
-      }
-    }
-  }}`
-    }
-    return gql `${query}`;
-}
 
 const getCategory = gql`
 query {
@@ -594,7 +542,8 @@ export default {
         pathRecommend: getPathRecommend,
         sourceRecommend: getRecommendSource,
         category: getCategory,
-        userFollow: getUserFollow
+        userFollow: getUserFollow,
+        feed: getFeed
     },
     mutation: {
         bookmark: postBookmark,

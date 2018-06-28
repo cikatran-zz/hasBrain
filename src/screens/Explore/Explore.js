@@ -27,12 +27,15 @@ import * as moment from 'moment';
 import {rootViewTopPadding} from "../../utils/paddingUtils";
 import ToggleTagComponent from '../../components/ToggleTagComponent'
 import {DotsLoader} from 'react-native-indicator';
+import ActionSheet from "react-native-actionsheet";
 
 const horizontalMargin = 5;
 
 const sliderWidth = Dimensions.get('window').width;
 const itemViewWidth = Dimensions.get('window').width * 0.8;
 const itemWidth = itemViewWidth + horizontalMargin * 2;
+
+const {RNUserKit} = NativeModules;
 
 export default class Explore extends React.Component {
 
@@ -59,14 +62,13 @@ export default class Explore extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getArticles(10, 0, "", "");
-        // this.props.getPlaylist();
         this.props.getSaved();
         this.props.getSourceList();
+        this.props.getFeed(1, 10);
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
             StatusBar.setBarStyle('dark-content');
-            (Platform.OS != 'ios') && StatusBar.setBackgroundColor('transparent');
+            (Platform.OS !== 'ios') && StatusBar.setBackgroundColor('transparent');
         });
         this._setUpReadingTime();
     }
@@ -109,13 +111,34 @@ export default class Explore extends React.Component {
         });
     };
 
-    _onShareItem = (item) => {
+    _onMoreButtonClicked = (item) => {
+        this.ActionSheet.show();
+        this.currentInteractionItem = item;
+    };
+
+    _onActionSheetButtonClicked = (index) => {
+        if (index === 0) {
+            this._onShareItem();
+        } else {
+            this._onDislikeItem();
+        }
+    };
+
+    _onShareItem = () => {
         let content = {
-            message: _.get(item, 'shortDescription', ''),
-            title: _.get(item, 'title', ''),
-            url: _.get(item, 'contentId', 'http://www.hasbrain.com/')
+            message: _.get(this.currentInteractionItem, 'shortDescription', ''),
+            title: _.get(this.currentInteractionItem, 'title', ''),
+            url: _.get(this.currentInteractionItem, 'contentId', 'http://www.hasbrain.com/')
         };
-        Share.share(content, {subject: 'HasBrain - ' + item.title})
+        Share.share(content, {subject: 'HasBrain - ' + _.get(this.currentInteractionItem, 'title', '')})
+    };
+
+    _onDislikeItem = () => {
+        let props = {
+            [strings.contentEvent.contentId]: _.get(this.currentInteractionItem, '_id', ''),
+            [strings.contentEvent.mediaType]: strings.trackingType.article
+        };
+        RNUserKit.track(strings.contentDislike.event, props);
     };
 
     _onBookmarkItem = (id) => {
@@ -128,29 +151,23 @@ export default class Explore extends React.Component {
         }
     };
 
-    _renderVerticalItem = ({item}) => {
-        let sourceName = _.get(item, '_source.sourceName', '');
-        if (sourceName != null && sourceName.length > 2) {
-            sourceName = sourceName.charAt(0).toUpperCase() + sourceName.substr(1);
-        }
-
-        return (
-            <VerticalRow title={item._source.title}
-                         author={sourceName}
-                         sourceCommentCount={item._source.sourceCommentCount}
-                         sourceActionName={item._source.sourceActionName}
-                         sourceActionCount={item._source.sourceActionCount}
-                         sourceImage={item._source.sourceImage}
-                         category={item._source.category}
-                         time={item._source.sourceCreatedAt}
-                         readingTime={item._source.readingTime}
-                         onClicked={() => this._openReadingView({...item._source, _id: item._id})}
-                         onShare={() => this._onShareItem(item._source)}
-                         onBookmark={() => this._onBookmarkItem(item._id)}
-                         bookmarked={_.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1}
-                         image={item._source.sourceImage}/>
+    _renderVerticalItem = ({item}) => (
+            <VerticalRow title={_.get(item, 'contentData.title', '')}
+                         shortDescription={_.get(item, 'contentData.shortDescription', '')}
+                         sourceName={_.get(item, 'sourceData.title', '')}
+                         sourceCommentCount={_.get(item, 'contentData.sourceCommentCount')}
+                         sourceActionName={_.get(item, 'contentData.sourceActionName')}
+                         sourceActionCount={_.get(item, 'contentData.sourceActionCount')}
+                         sourceImage={_.get(item, 'sourceData.sourceImage', '')}
+                         category={item.reason}
+                         time={_.get(item, 'contentData.sourceCreatedAt', '')}
+                         readingTime={_.get(item, 'contentData.readingTime', '')}
+                         onClicked={() => this._openReadingView({...item.contentData})}
+                         onMore={() => this._onMoreButtonClicked(item.contentData)}
+                         onBookmark={() => this._onBookmarkItem(_.get(item, 'contentData._id', ''))}
+                         bookmarked={_.findIndex(this.state.bookmarked, (o) => (o === _.get(item, 'contentData._id'))) !== -1}
+                         image={_.get(item, 'contentData.sourceImage', '')}/>
         );
-    };
 
     _renderVerticalSeparator = () => (
         <View style={styles.horizontalItemSeparator}/>
@@ -178,7 +195,7 @@ export default class Explore extends React.Component {
                             time={item.createdAt}
                             readingTime={item.readingTime}
                             onClicked={() => this._openReadingView(item)}
-                            onShare={() => this._onShareItem(item)}
+                            onShare={() => this._onMoreButtonClicked(item)}
                             onBookmark={() => this._onBookmarkItem(item._id)}
                             bookmarked={_.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1}
                             image={getImageFromArray(item.originalImages, null, null, item.sourceImage)}/>)
@@ -209,10 +226,12 @@ export default class Explore extends React.Component {
     };
 
     _fetchMore = () => {
-        const {articles} = this.props;
-        const {skip, count, isFetching} = articles;
-        if (skip < count && !isFetching)
-            this.props.getArticles(10, skip, "", "");
+        const {feed} = this.props;
+        const {skip, count, isFetching} = feed;
+        if (skip < count && !isFetching) {
+            let page = Math.round(skip/10) + 1;
+            this.props.getFeed(page,10)
+        }
     };
 
     _renderListFooter = (isFetching) => {
@@ -235,7 +254,7 @@ export default class Explore extends React.Component {
         return (
             <ToggleTagComponent id={item} onPressItem={this._onTagItemPress} isOn={source.tagMap.get(item)}/>
         )
-    }
+    };
 
     _onTagItemPress = (id) => {
         const {source} = this.props;
@@ -300,13 +319,13 @@ export default class Explore extends React.Component {
     };
 
     _onScroll = (event) => {
-        const {articles, playlist, source} = this.props;
+        const {feed} = this.props;
         let currentOffset = event.nativeEvent.contentOffset.y;
         const dif = currentOffset - (this.offset || 0);
         let endOffset = event.nativeEvent.layoutMeasurement.height + currentOffset;
 
         // Check data is not null
-        if (articles.data == null || articles.data.length === 0) {
+        if (feed.data == null || feed.data.length === 0) {
             this._currentPositionVal = 0;
             Animated.spring(this.state._animated, {
                 toValue: 0,
@@ -315,7 +334,6 @@ export default class Explore extends React.Component {
             }).start();
             return
         }
-
         if (Math.abs(dif) < 0) {
         } else if ((dif < 0 || currentOffset <= 0) && (endOffset < event.nativeEvent.contentSize.height)) {
             // Show
@@ -326,7 +344,6 @@ export default class Explore extends React.Component {
                 tension: 40,
                 //useNativeDriver: true,
             }).start();
-
         } else {
 
             // Hide
@@ -385,16 +402,26 @@ export default class Explore extends React.Component {
         </View>);
 
     render() {
-        const {articles, playlist, source} = this.props;
+        const {feed, playlist, source, category} = this.props;
         return (
             <View style={styles.rootView}>
+                <StatusBar
+                    translucent={true}
+                    backgroundColor='#00000000'
+                    barStyle='dark-content'/>
+                <ActionSheet
+                    ref={o => this.ActionSheet = o}
+                    options={['Share via ...','Show fewer articles like this','Cancel']}
+                    cancelButtonIndex={2}
+                    onPress={this._onActionSheetButtonClicked}
+                />
                 <View style={styles.headerBackgroundView}/>
                 <View style={styles.contentView}>
                     <SectionList
                         ref={(ref) => this._scrollView = ref}
                         contentContainerStyle={{marginTop: 112, marginBottom: 0}}
                         refreshing={false}
-                        onRefresh={() => this.props.getArticles(10, 0, "", "")}
+                        onRefresh={() => this.props.getFeed(1, 10)}
                         onScrollEndDrag={this._onScrollEnd}
                         onScroll={this._onScroll}
                         scrollEventThrottle={16}
@@ -403,12 +430,12 @@ export default class Explore extends React.Component {
                         showsVerticalScrollIndicator={false}
                         bounces={true}
                         onEndReached={this._fetchMore}
-                        ListHeaderComponent={this._renderLoading(articles.isFetching)}
-                        ListFooterComponent={() => this._renderListFooter(articles.isFetching)}
+                        ListHeaderComponent={this._renderLoading(feed.isFetching)}
+                        ListFooterComponent={() => this._renderListFooter(feed.isFetching)}
                         onEndReachedThreshold={0.5}
                         sections={[
                             {
-                                data: [articles.data],
+                                data: [feed.data],
                                 renderItem: this._renderVerticalSection
                             }
                         ]}

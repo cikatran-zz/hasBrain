@@ -13,6 +13,7 @@ import * as createBookmark from './createBookmark'
 import * as removeBookmark from './removeBookmark'
 import * as getWatchingHistory from './getWatchingHistory'
 import * as getCategory from './getCategory'
+import * as getFeed from './getFeed'
 
 export default actions = {
     getSaved,
@@ -29,5 +30,6 @@ export default actions = {
     createBookmark,
     removeBookmark,
     getWatchingHistory,
-    getCategory
+    getCategory,
+    getFeed
 }
