@@ -432,3 +432,10 @@ export const getFeed = (page, perPage) => {
         variables: {page: page, perPage: perPage}
     })
 };
+
+export const getBookmarkedIds = (page, perPage) => {
+    return gqlQuery({
+        query: config.queries.bookmaredIds,
+        variables: {page: page, perPage: perPage}
+    })
+};

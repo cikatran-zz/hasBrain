@@ -76,6 +76,23 @@ query getBookmark($page: Int, $perPage: Int, $kind: String){
 
 `;
 
+const getBookmarkedIds = gql`
+query getBookmarkedIds($page: Int, $perPage: Int){
+  viewer{
+    userbookmarkPagination(page: $page, perPage: $perPage) {
+      count
+      items {
+        _id
+        content {
+          _id
+          kind
+        }
+      }
+    }
+  }
+}
+`;
+
 
 const playlist = gql`
 query{
@@ -542,8 +559,9 @@ export default {
         pathRecommend: getPathRecommend,
         sourceRecommend: getRecommendSource,
         category: getCategory,
+        feed: getFeed,
+        bookmaredIds: getBookmarkedIds,
         userFollow: getUserFollow,
-        feed: getFeed
     },
     mutation: {
         bookmark: postBookmark,

@@ -14,6 +14,7 @@ import * as removeBookmark from './removeBookmark'
 import * as getWatchingHistory from './getWatchingHistory'
 import * as getCategory from './getCategory'
 import * as getFeed from './getFeed'
+import * as getBookmarkedIds from './getBookmarkedIds'
 
 export default actions = {
     getSaved,
@@ -31,5 +32,6 @@ export default actions = {
     removeBookmark,
     getWatchingHistory,
     getCategory,
-    getFeed
+    getFeed,
+    getBookmarkedIds
 }

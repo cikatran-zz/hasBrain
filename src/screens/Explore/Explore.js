@@ -54,7 +54,6 @@ export default class Explore extends React.Component {
             bookmarked: [],
             _animated: new Animated.Value(1)
         };
-
         this.offset = 0;
         this._currentPositionVal = 1;
         this._scrollView = null;
@@ -65,6 +64,7 @@ export default class Explore extends React.Component {
         this.props.getSaved();
         // this.props.getSourceList();
         this.props.getFeed(1, 10);
+        this.props.getBookmarkedIds();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
             StatusBar.setBarStyle('dark-content');
@@ -80,10 +80,12 @@ export default class Explore extends React.Component {
     _keyExtractor = (item, index) => index + '';
 
     _openReadingView = (item) => {
+        const {bookmarkedIds} = this.props;
+        let bookmarkedArticles = _.get(bookmarkedIds, 'data.articles', []);
 
         this.props.navigation.navigate("Reader", {
             ...item,
-            bookmarked: _.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1
+            bookmarked: _.findIndex(bookmarkedArticles, (o) => (o === item._id)) !== -1
         });
     };
 
@@ -142,17 +144,21 @@ export default class Explore extends React.Component {
     };
 
     _onBookmarkItem = (id) => {
-        if (_.findIndex(this.state.bookmarked, (o) => (o === id)) !== -1) {
-            this.setState({bookmarked: _.filter(this.state.bookmarked, (o) => (o !== id))});
+        const {bookmarkedIds} = this.props;
+        let bookmarkedArticles = _.get(bookmarkedIds, 'data.articles', []);
+        if (_.findIndex(bookmarkedArticles, (o) => (o === id)) !== -1) {
             this.props.removeBookmark(id, strings.bookmarkType.article, strings.trackingType.article);
         } else {
-            this.setState({bookmarked: this.state.bookmarked.concat(id)});
             this.props.createBookmark(id, strings.bookmarkType.article, strings.trackingType.article);
         }
     };
 
-    _renderVerticalItem = ({item}) => (
-            <VerticalRow title={_.get(item, 'contentData.title', '')}
+    _renderVerticalItem = ({item, index}) => {
+        const {bookmarkedIds} = this.props;
+        let bookmarkedArticles = _.get(bookmarkedIds, 'data.articles', []);
+        return (
+            <VerticalRow style={{marginTop: (index === 0) ? -20 : 0}}
+                         title={_.get(item, 'contentData.title', '')}
                          shortDescription={_.get(item, 'contentData.shortDescription', '')}
                          sourceName={_.get(item, 'sourceData.title', '')}
                          sourceCommentCount={_.get(item, 'contentData.sourceCommentCount')}
@@ -165,9 +171,10 @@ export default class Explore extends React.Component {
                          onClicked={() => this._openReadingView({...item.contentData})}
                          onMore={() => this._onMoreButtonClicked(item.contentData)}
                          onBookmark={() => this._onBookmarkItem(_.get(item, 'contentData._id', ''))}
-                         bookmarked={_.findIndex(this.state.bookmarked, (o) => (o === _.get(item, 'contentData._id'))) !== -1}
+                         bookmarked={_.findIndex(bookmarkedArticles, (o) => (o === _.get(item, 'contentData._id'))) !== -1}
                          image={_.get(item, 'contentData.sourceImage', '')}/>
         );
+    }
 
     _renderVerticalSeparator = () => (
         <View style={styles.horizontalItemSeparator}/>
@@ -229,8 +236,8 @@ export default class Explore extends React.Component {
         const {feed} = this.props;
         const {skip, count, isFetching} = feed;
         if (skip < count && !isFetching) {
-            let page = Math.round(skip/10) + 1;
-            this.props.getFeed(page,10)
+            let page = Math.round(skip / 10) + 1;
+            this.props.getFeed(page, 10)
         }
     };
 
@@ -337,9 +344,9 @@ export default class Explore extends React.Component {
         if (Math.abs(dif) < 0) {
         } else if ((dif < 0 || currentOffset <= 0) && (endOffset < event.nativeEvent.contentSize.height)) {
             // Show
-            this._currentPositionVal = Math.max(this._currentPositionVal - Math.abs(dif) / 112, 0);
+            this._currentPositionVal = Math.max(this._currentPositionVal - Math.abs(dif) / 67, 0);
             Animated.spring(this.state._animated, {
-                toValue: this._currentPositionVal * 112,
+                toValue: this._currentPositionVal * 67,
                 friction: 7,
                 tension: 40,
                 //useNativeDriver: true,
@@ -347,9 +354,9 @@ export default class Explore extends React.Component {
         } else {
 
             // Hide
-            this._currentPositionVal = Math.min(Math.abs(dif) / 112 + this._currentPositionVal, 1);
+            this._currentPositionVal = Math.min(Math.abs(dif) / 67 + this._currentPositionVal, 1);
             Animated.spring(this.state._animated, {
-                toValue: this._currentPositionVal * 112,
+                toValue: this._currentPositionVal * 67,
                 friction: 7,
                 tension: 40,
                 //useNativeDriver: true,
@@ -371,7 +378,7 @@ export default class Explore extends React.Component {
             // Hide
             this._currentPositionVal = 1;
             Animated.spring(this.state._animated, {
-                toValue: 112,
+                toValue: 67,
                 friction: 7,
                 tension: 40,
             }).start();
@@ -382,14 +389,14 @@ export default class Explore extends React.Component {
         styles.topView,
         {
             opacity: this.state._animated.interpolate({
-                inputRange: [0, 100, 112],
+                inputRange: [0, 50, 67],
                 outputRange: [1, 0.9, 0],
                 extrapolate: 'clamp',
             }),
             transform: [{
                 translateY: this.state._animated.interpolate({
-                    inputRange: [0, 112],
-                    outputRange: [0, -112],
+                    inputRange: [0, 67],
+                    outputRange: [0, -67],
                     extrapolate: 'clamp',
                 }),
             }],
@@ -402,7 +409,7 @@ export default class Explore extends React.Component {
         </View>);
 
     render() {
-        const {feed} = this.props;
+        const {feed, saved, source} = this.props;
         return (
             <View style={styles.rootView}>
                 <StatusBar
@@ -411,7 +418,7 @@ export default class Explore extends React.Component {
                     barStyle='dark-content'/>
                 <ActionSheet
                     ref={o => this.ActionSheet = o}
-                    options={['Share via ...','Show fewer articles like this','Cancel']}
+                    options={['Share via ...', 'Show fewer articles like this', 'Cancel']}
                     cancelButtonIndex={2}
                     onPress={this._onActionSheetButtonClicked}
                 />
@@ -419,7 +426,7 @@ export default class Explore extends React.Component {
                 <View style={styles.contentView}>
                     <SectionList
                         ref={(ref) => this._scrollView = ref}
-                        contentContainerStyle={{marginTop: 112, marginBottom: 0}}
+                        contentContainerStyle={{marginTop: 67, marginBottom: 0}}
                         refreshing={false}
                         onRefresh={() => this.props.getFeed(1, 10)}
                         onScrollEndDrag={this._onScrollEnd}
@@ -488,7 +495,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         position: 'absolute',
         backgroundColor: colors.mainWhite,
-        height: 112,
+        height: 67,
         left: 0,
         right: 0
     },
