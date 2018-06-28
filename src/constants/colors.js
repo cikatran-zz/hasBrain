@@ -20,4 +20,8 @@ export const colors = {
     lightGray: "#f7f8f9",
     tagGrayText: "#7b8ca8",
     whiteGray: '#EBEDF8',
+    graySearchBorder: '#EBEDF8',
+    articleCategory: '#97A3B4',
+    articleTitle: '#002257',
+    articleSubtitle: '#99A4B3'
 };

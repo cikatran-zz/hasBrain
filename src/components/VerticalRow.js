@@ -68,23 +68,41 @@ export default class VerticalRow extends React.PureComponent {
             },
         ];
 
+        let action = "";
+        if (this.props.sourceActionName && this.props.sourceActionCount) {
+            action += this.props.sourceActionCount + " " + this.props.sourceActionName;
+        }
+
+        if (this.props.sourceCommentCount) {
+            if (action !== "") {
+                action += "  \u2022  ";
+            }
+            action += this.props.sourceCommentCount + ((this.props.sourceCommentCount < 2)  ? " comment" : " comments");
+        }
+
+        if (action !== "") {
+            action += "  \u2022  ";
+        }
+
+        action += getPublishDateDescription(this.props.time);
+
         return (
             <TouchableOpacity onPress={this.props.onClicked}>
                 <Animated.View style={rowStyles}>
+                    <Text style={styles.categoryText}>{this.props.category ? this.props.category.toUpperCase() : ""}</Text>
                     <View style={styles.horizontalView}>
-                        <Text numberOfLines={3} style={[titleCardStyle, {
-                            flex: 3,
-                            marginRight: 10,
-                            maxHeight: 100,
-                            flexWrap: "wrap"
-                        }]}>{(this.props.title == null) ? "" : this.props.title}</Text>
+                        <Text numberOfLines={3} style={[titleCardStyle, styles.titleText]}>{(this.props.title == null) ? "" : this.props.title}</Text>
                         {this._renderImage()}
                     </View>
                     <View style={[styles.horizontalView, {marginTop: 15}]}>
                         <View style={styles.subTextView}>
-                            <Text
-                                style={[graySmallTextStyle, {marginBottom: 5}]}>{(this.props.author == null) ? "" : this.props.author}</Text>
-                            <Text style={grayTextStyle}>{getPublishDateDescription(this.props.time) + '   *   ' + getReadingTimeDescription(this.props.readingTime)}</Text>
+                            <View style={styles.sourceView}>
+                                <Image style={styles.sourceImage} source={{uri: this.props.sourceImage ? this.props.sourceImage : ""}}/>
+                                <Text
+                                    style={[graySmallTextStyle]}>{(this.props.author == null) ? "" : this.props.author}</Text>
+                            </View>
+
+                            <Text style={grayTextStyle}>{action}</Text>
                         </View>
                         <ArticleButton style={styles.articleButtonView}
                                        onShare={this.props.onShare}
@@ -98,13 +116,21 @@ export default class VerticalRow extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
+    categoryText: {
+        fontFamily: 'CircularStd-Book',
+        color: colors.articleCategory,
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginBottom: 13,
+        marginTop: 13
+    },
     cardView: {
         flexDirection: 'column',
         paddingHorizontal: 15,
         paddingVertical: 15,
         marginBottom: 10,
         marginHorizontal: 10,
-        backgroundColor: colors.mainWhite,
+        backgroundColor: colors.lightGray,
         borderRadius: 5,
     },
     horizontalView: {
@@ -121,12 +147,25 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end'
     },
     titleText: {
-        marginLeft: 0,
-        marginRight: 20,
-        height: '100%'
+        flex: 3,
+        marginRight: 10,
+        maxHeight: 100,
+        flexWrap: "wrap",
     },
     subTextView: {
         flexDirection: 'column',
+    },
+    sourceView: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10
+    },
+    sourceImage: {
+        width: 20,
+        height: 20,
+        resizeMode: 'cover',
+        marginRight: 10,
+        borderRadius: 10
     },
     articleButtonView: {
         marginRight: 0,
