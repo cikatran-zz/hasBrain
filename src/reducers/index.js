@@ -18,6 +18,7 @@ import removeBookmarkReducer from "./removeBookmarkReducer";
 import watchingHistoryReducer from "./watchingHistoryReducer";
 import categoryReducer from "./categoryReducer";
 import feedReducer from "./feedReducer";
+import bookmarkedIdsReducer from "./bookmarkedIdsReducer";
 
 export default combineReducers({
     nav,
@@ -38,5 +39,6 @@ export default combineReducers({
     removeBookmarkReducer,
     watchingHistoryReducer,
     categoryReducer,
-    feedReducer
+    feedReducer,
+    bookmarkedIdsReducer
 });

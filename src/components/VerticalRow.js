@@ -88,7 +88,7 @@ export default class VerticalRow extends React.PureComponent {
 
         return (
             <TouchableOpacity onPress={this.props.onClicked}>
-                <Animated.View style={rowStyles}>
+                <Animated.View style={[rowStyles, this.props.style]}>
                     <Text style={styles.categoryText}>{this.props.category ? this.props.category.toUpperCase() : ""}</Text>
                     <View style={styles.horizontalView}>
                         <View style={styles.titleTextView}>

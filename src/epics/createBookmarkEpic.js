@@ -3,6 +3,7 @@ import {createBookmarkFailure, createBookmarkSuccess} from '../actions/createBoo
 import {postCreateBookmark} from '../api';
 import 'rxjs';
 import {Observable} from 'rxjs/Observable';
+import {getSaved} from "../actions/getSaved";
 
 const createBookmarkEpic = (action$) =>
     action$.ofType(actionTypes.CREATING_BOOKMARK)

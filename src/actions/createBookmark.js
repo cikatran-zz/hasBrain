@@ -18,11 +18,13 @@ export function createBookmarkSuccess(contentId, trackingType) {
         [strings.contentEvent.mediaType]: trackingType
     };
     RNUserKit.track(strings.contentBookmarked.event, props);
-
     return {
-        type: actionTypes.CREATE_BOOKMARK_SUCCESS,
-        contentId: contentId
-    }
+        type: actionTypes.FETCHING_BOOKMARKEDIDS,
+    };
+    // return {
+    //     type: actionTypes.CREATE_BOOKMARK_SUCCESS,
+    //     contentId: contentId
+    // }
 }
 
 
