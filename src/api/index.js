@@ -341,14 +341,9 @@ export const getUserFollow = (kind) => {
 }
 
 export const updateSourceList = (sources) => {
-    return new Promise((resolve, reject) => {
-        RNUserKit.storeProperty({[strings.articleFilter]: sources}, (error, result) => {
-            if (error){
-                reject(error);
-            } else {
-                resolve("Successfully Update sources");
-            }
-        })
+    return gqlPost({
+        mutation: config.mutation.updateUserFollow,
+        variables: {kind:"sourcetype", sourceIds: sources}
     })
 }
 

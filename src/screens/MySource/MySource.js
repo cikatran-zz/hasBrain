@@ -41,29 +41,31 @@ export default class MySource extends React.Component {
         this.setState((state) => {
             let checkedState = state.checkedState;
             if (checkedState.size < 1) {
-                let keys = _.keys(chosenSources);
-                for (let key of keys) {
-                    checkedState.set(key, true);
+                let sources = source.data.map(item => {
+                    return item.sourceId
+                });
+                for (let key of sources) {
+                    checkedState.set(key, chosenSources.includes(key));
                 }
             }
             let checkedSourcesValues = Array.from(checkedState.values());
-            checkedSourcesValues = _.filter(checkedSourcesValues, (item) => {
-                return item == true;
-            })
-            if (checkedSourcesValues.length < 2) {
-                if (checkedState.get(id)) {
-                    Alert.alert('Oops!', 'You must have at least 1 source', [
-                        {text: 'Got it!'},
-                    ])
-                } else {
-                    let checked = !checkedState.get(id);
-                    checkedState.set(id, checked);
-
-                }
-            } else {
-                let checked = !checkedState.get(id);
-                checkedState.set(id, checked);
-            }
+            // checkedSourcesValues = _.filter(checkedSourcesValues, (item) => {
+            //     return item == true;
+            // })
+            // if (checkedSourcesValues.length < 2) {
+            //     if (checkedState.get(id)) {
+            //         Alert.alert('Oops!', 'You must have at least 1 source', [
+            //             {text: 'Got it!'},
+            //         ])
+            //     } else {
+            //         let checked = !checkedState.get(id);
+            //         checkedState.set(id, checked);
+            //
+            //     }
+            // } else {
+            let checked = !checkedState.get(id);
+            checkedState.set(id, checked);
+            // }
             return {checkedState}
         });
     }
@@ -75,18 +77,17 @@ export default class MySource extends React.Component {
         const {chosenSources} = source;
         let checkedItem = false;
         if (checkedState.size < 1) {
-            checkedItem = _.get(chosenSources, item.sourceId, undefined);
-            checkedItem = !_.isUndefined(checkedItem);
+            checkedItem = chosenSources.includes(item.sourceId);
+
         } else {
             checkedItem = checkedState.get(item.sourceId);
         }
-        console.log("Checked: ", item.sourceId, checkedItem, checkedState.size);
 
         return (
             <View style={styles.listRow}>
                 <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.sourceImage, width: 60, height: 60}}/>
-                    <Text style={styles.sourceText}>{item.title}</Text>
-                    <CheckComponent id={item.sourceId} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
+                <Text style={styles.sourceText}>{item.title}</Text>
+                <CheckComponent id={item.sourceId} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
             </View>
         )
     }
@@ -94,24 +95,15 @@ export default class MySource extends React.Component {
     _onBackPress = () => {
         const {checkedState} = this.state;
         const {source} = this.props;
-        let newSources = source.data.items.map((item) => {
+        let newSources = source.data.map((item) => {
             if (checkedState.get(item.sourceId)) {
-                return {[item.sourceId]: item.categories};
+                return item.sourceId;
             }
         });
         newSources = _.compact(newSources);
-        let newSourcesMap = {};
-
-        let newSourcesArray = [];
-        let newTagsArray = [];
-        for (let item of newSources) {
-            newSourcesMap[Object.keys(item)[0]] = Object.values(item)[0];
-            newSourcesArray = _.concat(newSourcesArray, Object.keys(item));
-            newTagsArray = _.uniq(_.flatten(_.concat(newTagsArray, Object.values(item))));
-        }
-        if (!_.isEmpty(newSourcesMap))
-            this.props.updateSourceList(newSourcesMap);
-        this.props.getArticles(10, 0, newSourcesArray, newTagsArray);
+        if (!_.isEmpty(newSources))
+            this.props.updateSourceList(newSources);
+        this.props.getFeed(1, 10);
         this.props.navigation.goBack();
     }
 
@@ -131,16 +123,16 @@ export default class MySource extends React.Component {
                     </View>
                 </View>
                 <View style={{backgroundColor: colors.lightGray}}>
-                <FlatList
-                    refreshing={source.isFetching}
-                    onRefresh={() => this.props.getSourceList()}
-                    style={{marginHorizontal:10}}
-                    extraData={this.state}
-                    keyExtractor={this._keyExtractor}
-                    horizontal={false}
-                    data={source.data}
-                    renderItem={this._renderListItem}
-                    showsVerticalScrollIndicator={false}/>
+                    <FlatList
+                        refreshing={source.isFetching}
+                        onRefresh={() => this.props.getSourceList()}
+                        style={{marginHorizontal:10}}
+                        extraData={this.state}
+                        keyExtractor={this._keyExtractor}
+                        horizontal={false}
+                        data={source.data}
+                        renderItem={this._renderListItem}
+                        showsVerticalScrollIndicator={false}/>
                 </View>
             </View>
         )

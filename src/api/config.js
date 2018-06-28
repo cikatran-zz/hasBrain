@@ -516,7 +516,7 @@ query getUserFollow($kind: EnumuserfollowtypeKind){
 `
 
 const updateUserFollow = gql`
-mutation updateUserFollow($kind: String!, $sourceIds: [String]){
+mutation updateUserFollow($kind: String!, $sourceIds: [ID]){
   user{
     followCreateMany(record: {
       kind: $kind,
