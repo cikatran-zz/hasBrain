@@ -418,5 +418,11 @@ export const getCategory = () => {
     return gqlQuery({
         query: config.queries.category
     })
-}
+};
 
+export const getFeed = (page, perPage) => {
+    return gqlQuery({
+        query: config.queries.feed,
+        variables: {page: page, perPage: perPage}
+    })
+};

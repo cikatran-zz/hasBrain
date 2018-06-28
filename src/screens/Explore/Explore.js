@@ -26,6 +26,7 @@ import * as moment from 'moment';
 import {rootViewTopPadding} from "../../utils/paddingUtils";
 import ToggleTagComponent from '../../components/ToggleTagComponent'
 import {DotsLoader} from 'react-native-indicator';
+import ActionSheet from "react-native-actionsheet";
 
 const horizontalMargin = 5;
 
@@ -58,11 +59,12 @@ export default class Explore extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getArticles(10, 0, "", "");
+        //this.props.getArticles(10, 0, "", "");
         // this.props.getPlaylist();
         this.props.getSaved();
         this.props.getSourceList();
         this.props.getCategory();
+        this.props.getFeed(1, 10);
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
             StatusBar.setBarStyle('dark-content');
@@ -110,12 +112,13 @@ export default class Explore extends React.Component {
     };
 
     _onShareItem = (item) => {
-        let content = {
-            message: _.get(item, 'shortDescription', ''),
-            title: _.get(item, 'title', ''),
-            url: _.get(item, 'contentId', 'http://www.hasbrain.com/')
-        };
-        Share.share(content, {subject: 'HasBrain - ' + item.title})
+        this.ActionSheet.show()
+        // let content = {
+        //     message: _.get(item, 'shortDescription', ''),
+        //     title: _.get(item, 'title', ''),
+        //     url: _.get(item, 'contentId', 'http://www.hasbrain.com/')
+        // };
+        // Share.share(content, {subject: 'HasBrain - ' + item.title})
     };
 
     _onBookmarkItem = (id) => {
@@ -129,26 +132,23 @@ export default class Explore extends React.Component {
     };
 
     _renderVerticalItem = ({item}) => {
-        let sourceName = _.get(item, '_source.sourceName', '');
-        if (sourceName != null && sourceName.length > 2) {
-            sourceName = sourceName.charAt(0).toUpperCase() + sourceName.substr(1);
-        }
 
         return (
-            <VerticalRow title={item._source.title}
-                         author={sourceName}
-                         sourceCommentCount={item._source.sourceCommentCount}
-                         sourceActionName={item._source.sourceActionName}
-                         sourceActionCount={item._source.sourceActionCount}
-                         sourceImage={item._source.sourceImage}
-                         category={item._source.category}
-                         time={item._source.sourceCreatedAt}
-                         readingTime={item._source.readingTime}
-                         onClicked={() => this._openReadingView({...item._source, _id: item._id})}
-                         onShare={() => this._onShareItem(item._source)}
-                         onBookmark={() => this._onBookmarkItem(item._id)}
-                         bookmarked={_.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1}
-                         image={item._source.sourceImage}/>
+            <VerticalRow title={_.get(item, 'contentData.title', '')}
+                         shortDescription={_.get(item, 'contentData.shortDescription', '')}
+                         sourceName={_.get(item, 'sourceData.title', '')}
+                         sourceCommentCount={_.get(item, 'contentData.sourceCommentCount')}
+                         sourceActionName={_.get(item, 'contentData.sourceActionName')}
+                         sourceActionCount={_.get(item, 'contentData.sourceActionCount')}
+                         sourceImage={_.get(item, 'sourceData.sourceImage', '')}
+                         category={item.reason}
+                         time={_.get(item, 'contentData.sourceCreatedAt', '')}
+                         readingTime={_.get(item, 'contentData.readingTime', '')}
+                         onClicked={() => this._openReadingView({...item.contentData})}
+                         onShare={() => this._onShareItem(item.contentData)}
+                         onBookmark={() => this._onBookmarkItem(_.get(item, 'contentData._id', ''))}
+                         bookmarked={_.findIndex(this.state.bookmarked, (o) => (o === _.get(item, 'contentData._id'))) !== -1}
+                         image={_.get(item, 'contentData.sourceImage', '')}/>
         );
     };
 
@@ -209,10 +209,12 @@ export default class Explore extends React.Component {
     };
 
     _fetchMore = () => {
-        const {articles} = this.props;
-        const {skip, count, isFetching} = articles;
-        if (skip < count && !isFetching)
-            this.props.getArticles(10, skip, "", "");
+        const {feed} = this.props;
+        const {skip, count, isFetching} = feed;
+        if (skip < count && !isFetching) {
+            let page = Math.round(skip/10) + 1;
+            this.props.getFeed(page,10)
+        }
     };
 
     _renderListFooter = (isFetching) => {
@@ -386,16 +388,22 @@ export default class Explore extends React.Component {
         </View>);
 
     render() {
-        const {articles, playlist, source, category} = this.props;
+        const {feed, playlist, source, category} = this.props;
         return (
             <View style={styles.rootView}>
+                <ActionSheet
+                    ref={o => this.ActionSheet = o}
+                    options={['Share via ...','Show fewer articles like this','Cancel']}
+                    cancelButtonIndex={2}
+                    onPress={(index) => { /* do something */ }}
+                />
                 <View style={styles.headerBackgroundView}/>
                 <View style={styles.contentView}>
                     <SectionList
                         ref={(ref) => this._scrollView = ref}
                         contentContainerStyle={{marginTop: 112, marginBottom: 0}}
                         refreshing={false}
-                        onRefresh={() => this.props.getArticles(10, 0, "", "")}
+                        onRefresh={() => this.props.feed(1, 10)}
                         onScrollEndDrag={this._onScrollEnd}
                         onScroll={this._onScroll}
                         scrollEventThrottle={16}
@@ -404,12 +412,12 @@ export default class Explore extends React.Component {
                         showsVerticalScrollIndicator={false}
                         bounces={true}
                         onEndReached={this._fetchMore}
-                        ListHeaderComponent={this._renderLoading(articles.isFetching)}
-                        ListFooterComponent={() => this._renderListFooter(articles.isFetching)}
+                        ListHeaderComponent={this._renderLoading(feed.isFetching)}
+                        ListFooterComponent={() => this._renderListFooter(feed.isFetching)}
                         onEndReachedThreshold={0.5}
                         sections={[
                             {
-                                data: [articles.data],
+                                data: [feed.data],
                                 renderItem: this._renderVerticalSection
                             }
                         ]}

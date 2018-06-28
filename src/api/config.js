@@ -405,7 +405,38 @@ const getSourceList = gql`
             }
          }
     }
-`
+`;
+
+const getFeed = gql`
+query getFeed($page: Int, $perPage: Int){
+  viewer{
+    feedPagination(sort:RANK_DESC, page: $page, perPage: $perPage) {
+      items {
+        contentId
+        reason
+        sourceData{
+          title
+          sourceImage
+        }
+        contentData{
+          _id
+          sourceName
+          kind
+          title
+          contentId
+          sourceImage
+          shortDescription
+          sourceActionName
+          sourceActionCount
+          sourceCommentCount
+          readingTime
+          sourceCreatedAt
+        }
+      }
+    }
+  }
+}
+`;
 
 const getExploreArticles = gql`
 query getExploreArticles($skip: Int, $limit: Int, $sources: [JSON], $tags: [JSON]){
@@ -480,7 +511,8 @@ export default {
         intents: intentMany,
         pathRecommend: getPathRecommend,
         sourceRecommend: getRecommendSource,
-        category: getCategory
+        category: getCategory,
+        feed: getFeed
     },
     mutation: {
         bookmark: postBookmark,
