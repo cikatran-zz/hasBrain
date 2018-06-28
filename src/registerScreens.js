@@ -72,7 +72,7 @@ const TabNav = TabNavigator({
         showIcon: true,
         upperCaseLabel: true,
         activeTintColor: colors.blueText,
-        inactiveTintColor: colors.blackHeader,
+        inactiveTintColor: colors.tabinactive,
         indicatorStyle: {
             backgroundColor: 'transparent',
         },
