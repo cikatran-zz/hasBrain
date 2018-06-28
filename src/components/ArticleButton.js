@@ -13,8 +13,8 @@ export default class ArticleButton extends React.PureComponent {
                 <TouchableOpacity style={styles.saveButton} onPress={this.props.onBookmark}>
                     <Image style={styles.image} source={ this.props.bookmarked ? require('../assets/ic_saved.png') : require('../assets/ic_save.png')}/>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.shareButton} onPress={this.props.onShare}>
-                    <Image style={styles.image} source={require('../assets/ic_share.png')}/>
+                <TouchableOpacity style={styles.shareButton} onPress={this.props.onMore}>
+                    <Image style={styles.image} source={require('../assets/ic_3dots.png')}/>
                 </TouchableOpacity>
             </View>
         )
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width: 15,
-        height: 25,
+        height: 15,
         resizeMode: 'contain'
     }
 });

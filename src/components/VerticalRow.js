@@ -91,7 +91,10 @@ export default class VerticalRow extends React.PureComponent {
                 <Animated.View style={rowStyles}>
                     <Text style={styles.categoryText}>{this.props.category ? this.props.category.toUpperCase() : ""}</Text>
                     <View style={styles.horizontalView}>
-                        <Text numberOfLines={3} style={[titleCardStyle, styles.titleText]}>{(this.props.title == null) ? "" : this.props.title}</Text>
+                        <View style={styles.titleTextView}>
+                            <Text numberOfLines={3} style={titleCardStyle}>{(this.props.title == null) ? "" : this.props.title}</Text>
+                            <Text numberOfLines={2} style={[grayTextStyle, {marginTop: 15}]}>{(this.props.shortDescription == null) ? "" : this.props.shortDescription}</Text>
+                        </View>
                         {this._renderImage()}
                     </View>
                     <View style={[styles.horizontalView, {marginTop: 15}]}>
@@ -99,13 +102,13 @@ export default class VerticalRow extends React.PureComponent {
                             <View style={styles.sourceView}>
                                 <Image style={styles.sourceImage} source={{uri: this.props.sourceImage ? this.props.sourceImage : ""}}/>
                                 <Text
-                                    style={[graySmallTextStyle]}>{(this.props.author == null) ? "" : this.props.author}</Text>
+                                    style={[graySmallTextStyle]}>{(this.props.sourceName == null) ? "" : this.props.sourceName}</Text>
                             </View>
 
                             <Text style={grayTextStyle}>{action}</Text>
                         </View>
                         <ArticleButton style={styles.articleButtonView}
-                                       onShare={this.props.onShare}
+                                       onMore={this.props.onMore}
                                        onBookmark={this.props.onBookmark}
                                        bookmarked={this.props.bookmarked}/>
                     </View>
@@ -119,7 +122,7 @@ const styles = StyleSheet.create({
     categoryText: {
         fontFamily: 'CircularStd-Book',
         color: colors.articleCategory,
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 'bold',
         marginBottom: 13,
         marginTop: 13
@@ -144,13 +147,13 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         borderRadius: 5,
         flex: 1,
-        alignSelf: 'flex-end'
+        marginTop: 10,
+        alignSelf: 'flex-start'
     },
-    titleText: {
+    titleTextView: {
         flex: 3,
         marginRight: 10,
-        maxHeight: 100,
-        flexWrap: "wrap",
+        flexDirection: 'column'
     },
     subTextView: {
         flexDirection: 'column',

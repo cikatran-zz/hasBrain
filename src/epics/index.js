@@ -24,6 +24,7 @@ import createBookmarkEpic from "./createBookmarkEpic";
 import removeBookmarkEpic from "./removeBookmarkEpic";
 import getWatchingHistoryEpic from "./watchingHistoryRequestEpic";
 import getCategoryEpic from "./categoryRequestEpic";
+import getFeedEpic from "./feedRequestEpic";
 
 const rootEpic = combineEpics(
     getSavedEpic,
@@ -47,7 +48,8 @@ const rootEpic = combineEpics(
     createBookmarkEpic,
     removeBookmarkEpic,
     getWatchingHistoryEpic,
-    getCategoryEpic
+    getCategoryEpic,
+    getFeedEpic
 );
 
 export default rootEpic;
