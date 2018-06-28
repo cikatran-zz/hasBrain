@@ -13,6 +13,9 @@ export default class VerticalRow extends React.PureComponent {
     constructor(props) {
         super(props);
         this._animated = new Animated.Value(0);
+        this.state = {
+            shortDesciptionNoLines: 0
+        }
     }
 
     _getImage = () => {
@@ -46,6 +49,16 @@ export default class VerticalRow extends React.PureComponent {
                 duration: 0,
             }).start();
         });
+    };
+
+    _calculateTitleNumberOfLines = ({nativeEvent: {layout: {height}}}) => {
+        if (height > 55) {
+            this.setState({shortDesciptionNoLines: 0})
+        } else if (height >30) {
+            this.setState({shortDesciptionNoLines: 1})
+        } else {
+            this.setState({shortDesciptionNoLines: 2})
+        }
     };
 
     render() {
@@ -92,8 +105,9 @@ export default class VerticalRow extends React.PureComponent {
                     <Text style={styles.categoryText}>{this.props.category ? this.props.category.toUpperCase() : ""}</Text>
                     <View style={styles.horizontalView}>
                         <View style={styles.titleTextView}>
-                            <Text numberOfLines={3} style={titleCardStyle}>{(this.props.title == null) ? "" : this.props.title}</Text>
-                            <Text numberOfLines={2} style={[grayTextStyle, {marginTop: 15}]}>{(this.props.shortDescription == null) ? "" : this.props.shortDescription}</Text>
+                            <Text onLayout={this._calculateTitleNumberOfLines} numberOfLines={3} style={titleCardStyle}>{(this.props.title == null) ? "" : this.props.title}</Text>
+                            {this.state.shortDesciptionNoLines > 0 && <Text numberOfLines={this.state.shortDesciptionNoLines} style={[grayTextStyle, {marginTop: 15}]}>{(this.props.shortDescription == null) ? "" : this.props.shortDescription}</Text>}
+
                         </View>
                         {this._renderImage()}
                     </View>
@@ -147,13 +161,13 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         borderRadius: 5,
         flex: 1,
-        marginTop: 10,
-        alignSelf: 'flex-start'
+        alignSelf: 'center'
     },
     titleTextView: {
         flex: 3,
         marginRight: 10,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        maxHeight: 100
     },
     subTextView: {
         flexDirection: 'column',
