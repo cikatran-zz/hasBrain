@@ -20,9 +20,13 @@ export function removeBookmarkSuccess(contentId, trackingType) {
     RNUserKit.track(strings.contentUnbookmarked.event, props);
 
     return {
-        type: actionTypes.REMOVE_BOOKMARK_SUCCESS,
-        contentId: contentId
+        type: actionTypes.FETCHING_BOOKMARKEDIDS
     }
+
+    // return {
+    //     type: actionTypes.REMOVE_BOOKMARK_SUCCESS,
+    //     contentId: contentId
+    // }
 }
 
 
