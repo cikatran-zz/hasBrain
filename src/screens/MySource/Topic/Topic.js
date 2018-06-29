@@ -74,10 +74,10 @@ export default class Topic extends React.Component {
 
         return (
             <View style={styles.listRow}>
-                <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.image, width: 60, height: 60}}/>
+                <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.image ? item.image : "", width: 60, height: 60}}/>
                 <View style={styles.detailsContainer}>
                     <HBText style={styles.titleText}>{item.title}</HBText>
-                    <HBText style={styles.descText}>{item.shortDescription}</HBText>
+                    <HBText style={styles.descText}>{item.shortDescription ? item.shortDescription : ""}</HBText>
                 </View>
                 <CheckComponent id={item.title} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
             </View>
