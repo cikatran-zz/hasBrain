@@ -606,6 +606,29 @@ mutation updateUserFollow($kind: String!, $sourceIds: [ID]){
 }
 `;
 
+const getTopic = gql`
+query{
+  viewer{
+    topicPagination {
+      count
+      items {
+        title
+        longDescription
+        shortDescription
+        state
+        image
+        privacy
+        group
+        updatedAt
+        createdAt
+        projectId
+        profileId
+      }
+    } 
+  }
+}
+`
+
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
@@ -625,6 +648,7 @@ export default {
         feed: getFeed,
         bookmaredIds: getBookmarkedIds,
         userFollow: getUserFollow,
+        topicList: getTopic
     },
     mutation: {
         bookmark: postBookmark,

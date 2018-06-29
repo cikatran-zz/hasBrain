@@ -346,6 +346,12 @@ export const getSourceList = () => {
     });
 }
 
+export const getTopicList = () => {
+    return gqlQuery({
+        query: config.queries.topicList
+    });
+}
+
 export const getUserFollow = (kind) => {
     return gqlQuery({
         query: config.queries.userFollow,
@@ -353,10 +359,10 @@ export const getUserFollow = (kind) => {
     })
 }
 
-export const updateSourceList = (sources) => {
+export const updateUserFollow = (kind, sourceIds) => {
     return gqlPost({
         mutation: config.mutation.updateUserFollow,
-        variables: {kind: "sourcetype", sourceIds: sources}
+        variables: {kind: kind, sourceIds: sourceIds}
     })
 }
 

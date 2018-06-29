@@ -172,7 +172,6 @@ const styles = StyleSheet.create({
     profileName: {
         fontSize: 25,
         color: colors.blackText,
-        fontWeight: 'bold'
     },
     profileTitle: {
         color: colors.blackHeader,
