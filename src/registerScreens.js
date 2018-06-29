@@ -68,7 +68,6 @@ const TabNav = createTabNavigator({
         },
         labelStyle: {
             fontSize: 8,
-            fontWeight: 'bold',
             fontFamily: 'CircularStd-Book'
         },
         showIcon: true,

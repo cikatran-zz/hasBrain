@@ -77,6 +77,12 @@ export default function sourcelistReducer(state = initialState, action) {
                 fetched: true,
                 errorMessage: action.errorMessage
             }
+        case actionTypes.UPDATING_USER_TOPIC:
+            let newTags = _.concat("ALL", action.topics);
+            return {
+                ...state,
+                tags: newTags
+            }
         case actionTypes.UPDATING_USER_SOURCES:
             return {
                 ...state,

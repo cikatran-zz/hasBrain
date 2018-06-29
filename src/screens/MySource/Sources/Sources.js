@@ -107,6 +107,11 @@ export default class Sources extends React.Component {
             this.props.updateSourceList(newSources);
     }
 
+    _renderListFooter = () => {
+        return <View style={{height: 50}}/>;
+
+    };
+
     render() {
         const {source} = this.props;
         if (!source.data)
@@ -122,6 +127,7 @@ export default class Sources extends React.Component {
                 horizontal={false}
                 data={source.data}
                 renderItem={this._renderListItem}
+                ListFooterComponent={() => this._renderListFooter()}
                 showsVerticalScrollIndicator={false}/>
         )
     }
