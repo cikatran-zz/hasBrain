@@ -1,6 +1,9 @@
 import React from "react";
 import {Image, Text, TouchableOpacity, View, StyleSheet, Animated} from "react-native";
-import {blackTextStyle, graySmallTextStyle, grayTextStyle, titleCardStyle} from "../constants/theme";
+import {
+    blackTextStyle, graySmallTextStyle, grayTextStyle, hightlightTextStyle, peopleNameCardStyle,
+    titleCardStyle
+} from "../constants/theme";
 import {getPublishDateDescription, getReadingTimeDescription} from "../utils/dateUtils";
 import {colors} from "../constants/colors";
 import ArticleButton from "./ArticleButton";
@@ -62,6 +65,24 @@ export default class VerticalRow extends React.PureComponent {
         }
     };
 
+    _renderHighlight = () => {
+
+        const {highlightData: {highlights, userData: {profileId="", name=""}}} = this.props;
+        if (highlights == null || highlights.length === 0) {
+            return null;
+        }
+        return (<View style={styles.hightlightRoot}>
+            <View style={[styles.hightlightHorizontalView, {alignItems: 'center'}]}>
+                <Image source={{uri: 'https://s3-ap-southeast-1.amazonaws.com/userkit-identity-pro/avatars/'+profileId+'medium.jpg?'}} style={styles.sourceImage}/>
+                <HBText style={peopleNameCardStyle}>{name}</HBText>
+            </View>
+            <View style={styles.hightlightHorizontalView}>
+                <View style={styles.lineView}/>
+                <HBText style={hightlightTextStyle}>{highlights[0].highlight}</HBText>
+            </View>
+        </View>
+    )};
+
     render() {
 
         const rowStyles = [
@@ -104,6 +125,7 @@ export default class VerticalRow extends React.PureComponent {
             <TouchableOpacity onPress={this.props.onClicked}>
                 <Animated.View style={[rowStyles, this.props.style]}>
                     <HBText style={styles.categoryText}>{this.props.category ? this.props.category.toUpperCase() : ""}</HBText>
+                    {this._renderHighlight()}
                     <View style={styles.horizontalView}>
                         <View style={styles.titleTextView}>
                             <HBText onLayout={this._calculateTitleNumberOfLines} numberOfLines={3} style={titleCardStyle}>{(this.props.title == null) ? "" : this.props.title}</HBText>
@@ -115,7 +137,9 @@ export default class VerticalRow extends React.PureComponent {
                     <View style={[styles.horizontalView, {marginTop: 15}]}>
                         <View style={styles.subTextView}>
                             <View style={styles.sourceView}>
-                                <Image style={styles.sourceImage} source={{uri: this.props.sourceImage ? this.props.sourceImage : ""}}/>
+                                {
+                                    this.props.sourceImage && <Image style={styles.sourceImage} source={{uri: this.props.sourceImage}}/>
+                                }
                                 <HBText
                                     style={[graySmallTextStyle]}>{(this.props.sourceName == null) ? "" : this.props.sourceName}</HBText>
                             </View>
@@ -188,4 +212,17 @@ const styles = StyleSheet.create({
         marginRight: 0,
         marginLeft: 'auto'
     },
+    hightlightRoot: {
+        flexDirection: 'column',
+    },
+    hightlightHorizontalView: {
+        flexDirection: 'row',
+        marginBottom: 20
+    },
+    lineView: {
+        width: 1,
+        backgroundColor: colors.articleCategory,
+        height: '100%',
+        marginRight: 10
+    }
 });
