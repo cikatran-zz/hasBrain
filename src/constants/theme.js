@@ -5,6 +5,7 @@ export const defaultHeaderStyle = {
         color: colors.blackHeader,
         fontWeight: '300',
         fontSize: 20,
+        fontFamily: 'CircularStd-Book'
     },
     headerStyle: {
         backgroundColor: '#ffffff',

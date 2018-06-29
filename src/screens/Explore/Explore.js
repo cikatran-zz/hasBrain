@@ -2,15 +2,12 @@ import React from 'react'
 import {
     FlatList,
     SectionList,
-    Text,
-    TouchableOpacity,
     TouchableWithoutFeedback,
     View,
     StyleSheet,
     Dimensions,
     Share, NativeModules, Platform, Image,
     Animated,
-    Alert, RefreshControl,
     StatusBar
 } from 'react-native'
 import {colors} from '../../constants/colors'
@@ -25,7 +22,7 @@ import {extractRootDomain} from "../../utils/stringUtils";
 import LoadingRow from "../../components/LoadingRow";
 import * as moment from 'moment';
 import {rootViewTopPadding} from "../../utils/paddingUtils";
-import ToggleTagComponent from '../../components/ToggleTagComponent'
+import HBText from '../../components/HBText'
 import {DotsLoader} from 'react-native-indicator';
 import ActionSheet from "react-native-actionsheet";
 
@@ -63,7 +60,7 @@ export default class Explore extends React.Component {
     componentDidMount() {
         this.props.getSaved();
         // this.props.getSourceList();
-        this.props.getFeed(1, 10);
+        this.props.getFeed(1, 10, null);
         this.props.getBookmarkedIds();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
@@ -215,7 +212,7 @@ export default class Explore extends React.Component {
         }
         return (
             <View>
-                <Text style={styles.sectionTitle}>{section.title.toUpperCase()}</Text>
+                <HBText style={styles.sectionTitle}>{section.title.toUpperCase()}</HBText>
                 <Carousel
                     data={item}
                     keyExtractor={this._keyExtractor}
@@ -234,10 +231,9 @@ export default class Explore extends React.Component {
 
     _fetchMore = () => {
         const {feed} = this.props;
-        const {skip, count, isFetching} = feed;
-        if (skip < count && !isFetching) {
-            let page = Math.round(skip / 10) + 1;
-            this.props.getFeed(page, 10)
+        const {page, data, count, isFetching, rank} = feed;
+        if (data != null && data.length < count && !isFetching) {
+            this.props.getFeed(1, 10, rank)
         }
     };
 
@@ -428,7 +424,7 @@ export default class Explore extends React.Component {
                         ref={(ref) => this._scrollView = ref}
                         contentContainerStyle={{marginTop: 67, marginBottom: 0}}
                         refreshing={false}
-                        onRefresh={() => this.props.getFeed(1, 10)}
+                        onRefresh={() => this.props.getFeed(1, 10, null)}
                         onScrollEndDrag={this._onScrollEnd}
                         onScroll={this._onScroll}
                         scrollEventThrottle={16}
@@ -451,7 +447,7 @@ export default class Explore extends React.Component {
                         <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('MySource')}>
                             <View style={styles.searchBar}>
                                 <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
-                                <Text style={styles.searchText}>For you</Text>
+                                <HBText style={styles.searchText}>For you</HBText>
 
                             </View>
                         </TouchableWithoutFeedback>
@@ -546,7 +542,6 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         fontSize: 14,
         color: colors.grayTextSearch,
-        fontFamily: 'CircularStd-Book',
         opacity: 0.5
     },
 });

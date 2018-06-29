@@ -1,8 +1,7 @@
 import React from "react";
-import {Image, Text, TouchableOpacity, View, StyleSheet, Animated} from "react-native";
-import {blackTextStyle, graySmallTextStyle, grayTextStyle, titleCardStyle} from "../../constants/theme";
-import {getPublishDateDescription, getReadingTimeDescription} from "../../utils/dateUtils";
+import {Image, TouchableOpacity, View, StyleSheet, Animated} from "react-native";
 import {colors} from "../../constants/colors";
+import HBText from "../../components/HBText";
 
 const ANIMATION_DURATION = 250;
 
@@ -57,9 +56,9 @@ export default class PathItem extends React.PureComponent {
         return (
             <TouchableOpacity onPress={this.props.onClicked}>
                 <Animated.View style={rowStyles}>
-                    <Text style={styles.pathTitleText}>{(data.title ? data.title : "").toUpperCase()}</Text>
+                    <HBText style={styles.pathTitleText}>{(data.title ? data.title : "").toUpperCase()}</HBText>
                     <View style={[styles.horizontalView, {marginTop: 15}]}>
-                        <Text style={styles.descriptionText}>{data.shortDescription ? data.shortDescription : ""}</Text>
+                        <HBText style={styles.descriptionText}>{data.shortDescription ? data.shortDescription : ""}</HBText>
                         <TouchableOpacity style={{padding: 10, flex: 1}} onPress={this.props.onBookmark}>
                             <Image style={styles.image} source={ this.props.bookmarked ? require('../../assets/ic_saved.png') : require('../../assets/ic_save.png')}/>
                         </TouchableOpacity>

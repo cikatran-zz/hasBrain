@@ -3,7 +3,6 @@ import {
     ActivityIndicator,
     FlatList,
     SectionList,
-    Text,
     TouchableOpacity,
     View,
     StyleSheet,
@@ -16,7 +15,8 @@ import _ from 'lodash'
 import {strings} from "../../constants/strings";
 import {rootViewTopPadding} from "../../utils/paddingUtils";
 import {navigationTitleStyle} from "../../constants/theme";
-import CheckComponent from '../../components/CheckComponent'
+import CheckComponent from '../../components/CheckComponent';
+import HBText from '../../components/HBText'
 
 export default class MySource extends React.Component {
 
@@ -86,7 +86,7 @@ export default class MySource extends React.Component {
         return (
             <View style={styles.listRow}>
                 <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.sourceImage, width: 60, height: 60}}/>
-                <Text style={styles.sourceText}>{item.title}</Text>
+                <HBText style={styles.sourceText}>{item.title}</HBText>
                 <CheckComponent id={item.sourceId} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
             </View>
         )
@@ -119,7 +119,7 @@ export default class MySource extends React.Component {
                     </TouchableOpacity>
                     <View style={styles.searchBar}>
                         <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
-                        <Text style={styles.searchText}>Search for sources, people and topics</Text>
+                        <HBText style={styles.searchText}>Search for sources, people and topics</HBText>
                     </View>
                 </View>
                 <View style={{backgroundColor: colors.lightGray}}>

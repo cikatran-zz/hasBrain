@@ -21,6 +21,7 @@ const TabNav = createTabNavigator({
         screen: ExploreStack,
         navigationOptions: ({ navigation }) => ({
             tabBarLabel: strings.exploreHeader,
+            labelStyles: {fontFamily: ''},
             header: null,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_explore.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
@@ -67,7 +68,8 @@ const TabNav = createTabNavigator({
         },
         labelStyle: {
             fontSize: 8,
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            fontFamily: 'CircularStd-Book'
         },
         showIcon: true,
         upperCaseLabel: true,
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
         width: 20,
         height: 20,
         resizeMode: 'contain'
-    }
+    },
 });
 
 export const ScreenStack = createStackNavigator({
@@ -135,7 +137,8 @@ export const ScreenStack = createStackNavigator({
             headerTitleStyle: {
                 color: colors.blackHeader,
                 fontSize: 25,
-                fontWeight: "bold"
+                fontWeight: "bold",
+                fontFamily: 'CircularStd-Book'
             },
             headerLeft: <BackNavigationButton goBack={()=>navigation.goBack()}/>,
             gesturesEnabled: true

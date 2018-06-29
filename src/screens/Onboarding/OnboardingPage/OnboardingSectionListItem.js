@@ -1,10 +1,11 @@
 import React from 'react'
 import {
-    Text, View, FlatList, StyleSheet, TouchableOpacity, Dimensions
+    View, FlatList, StyleSheet, TouchableOpacity, Dimensions
 } from 'react-native'
 import {colors} from "../../../constants/colors";
 import {onboardingItemStyle} from "../../../constants/theme";
 import _ from 'lodash'
+import HBText from "../../../components/HBText";
 
 export default class OnboardingSectionListItem extends React.PureComponent {
 
@@ -19,14 +20,14 @@ export default class OnboardingSectionListItem extends React.PureComponent {
             return (<TouchableOpacity style={[style, {borderColor: colors.grayOnboarding}]}
                                       onPress={onChangedSelected}>
                 <View style={[styles.item]}>
-                    <Text style={styles.itemText}>{title}</Text>
+                    <HBText style={styles.itemText}>{title}</HBText>
                 </View>
             </TouchableOpacity>);
         } else {
             return (<TouchableOpacity style={[style, {borderColor: colors.blueText}]}
                                       onPress={onChangedSelected}>
                 <View style={[styles.item]}>
-                    <Text style={styles.itemHighlightedText}>{title}</Text>
+                    <HBText style={styles.itemHighlightedText}>{title}</HBText>
                 </View>
             </TouchableOpacity>);
         }

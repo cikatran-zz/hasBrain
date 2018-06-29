@@ -1,11 +1,12 @@
 import React, {Component} from 'react'
 import {
-    Text, View, StyleSheet, NativeModules, Platform, TouchableWithoutFeedback, Image, SectionList, FlatList
+    View, StyleSheet, NativeModules, Platform, TouchableWithoutFeedback, Image, SectionList, FlatList
 } from 'react-native'
 import { colors } from '../../constants/colors'
 import _ from 'lodash'
 import PathRecommend from "./PathRecommend";
 import PathBookmarked from "./PathBookmarked";
+import HBText from "../../components/HBText";
 
 export default class Path extends Component {
 
@@ -48,10 +49,10 @@ export default class Path extends Component {
                             styles.toggleTab,
                             {borderBottomLeftRadius: 3, borderTopLeftRadius: 3},
                             selectedTab === 0 ? styles.activeTab : styles.inactiveTab]}>
-                            <Text style={[
+                            <HBText style={[
                                 styles.toggleTabTitle,
                                 selectedTab === 0 ? {color: colors.mainWhite} : {color: colors.darkBlue}
-                            ]}>Recommend</Text>
+                            ]}>Recommend</HBText>
                         </View>
                     </TouchableWithoutFeedback>
 
@@ -60,10 +61,10 @@ export default class Path extends Component {
                             styles.toggleTab,
                             {borderBottomRightRadius: 3, borderTopRightRadius: 3},
                             selectedTab === 1 ? styles.activeTab : styles.inactiveTab]}>
-                            <Text style={[
+                            <HBText style={[
                                 styles.toggleTabTitle,
                                 selectedTab === 1 ? {color: colors.mainWhite} : {color: colors.darkBlue}
-                            ]}>Current</Text>
+                            ]}>Current</HBText>
                         </View>
                     </TouchableWithoutFeedback>
                 </View>

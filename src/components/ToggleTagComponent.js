@@ -1,7 +1,8 @@
 import React, {PureComponent} from 'react';
-import {View, Text, TouchableWithoutFeedback, StyleSheet} from 'react-native';
+import {View, TouchableWithoutFeedback, StyleSheet} from 'react-native';
 import {Proptypes} from 'prop-types';
 import {colors} from '../constants/colors'
+import HBText from './HBText'
 
 type Props = {
     isOn: PropTypes.bool,
@@ -24,7 +25,7 @@ export default class ToggleTagComponent extends PureComponent<Props> {
         return (
             <TouchableWithoutFeedback onPress={this._onPress}>
                 <View style={[styles.container, isOn ? {borderColor: colors.blueText} : {backgroundColor: colors.lightGray, borderColor: colors.lightGray}]}>
-                    <Text style={[styles.text, isOn ? {color: colors.blueText} : {color: colors.tagGrayText}]}>{this.props.id}</Text>
+                    <HBText style={[styles.text, isOn ? {color: colors.blueText} : {color: colors.tagGrayText}]}>{this.props.id}</HBText>
                 </View>
             </TouchableWithoutFeedback>
         )
