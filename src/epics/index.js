@@ -26,6 +26,7 @@ import getWatchingHistoryEpic from "./watchingHistoryRequestEpic";
 import getCategoryEpic from "./categoryRequestEpic";
 import getFeedEpic from "./feedRequestEpic";
 import getBookmarkedIdsEpic from "./bookmarkedIdsRequestEpic";
+import getTopicListEpic from './getTopicRequestEpic'
 
 const rootEpic = combineEpics(
     getSavedEpic,
@@ -51,7 +52,8 @@ const rootEpic = combineEpics(
     getWatchingHistoryEpic,
     getCategoryEpic,
     getFeedEpic,
-    getBookmarkedIdsEpic
+    getBookmarkedIdsEpic,
+    getTopicListEpic
 );
 
 export default rootEpic;

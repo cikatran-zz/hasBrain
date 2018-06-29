@@ -12,13 +12,11 @@ import {
 } from 'react-native'
 import {colors} from '../../../constants/colors'
 import _ from 'lodash'
-import {strings} from "../../../constants/strings";
 import {rootViewTopPadding} from "../../../utils/paddingUtils";
-import {navigationTitleStyle} from "../../../constants/theme";
 import CheckComponent from '../../../components/CheckComponent';
 import HBText from '../../../components/HBText'
 
-export default class Sources extends React.Component {
+export default class Topic extends React.Component {
 
     constructor(props) {
         super(props);
@@ -28,8 +26,8 @@ export default class Sources extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getSourceList();
         this.props.onRef(this)
+        this.props.getTopicList();
     }
 
     componentWillUnmount() {
@@ -50,24 +48,8 @@ export default class Sources extends React.Component {
                     checkedState.set(key, chosenSources.includes(key));
                 }
             }
-            let checkedSourcesValues = Array.from(checkedState.values());
-            // checkedSourcesValues = _.filter(checkedSourcesValues, (item) => {
-            //     return item == true;
-            // })
-            // if (checkedSourcesValues.length < 2) {
-            //     if (checkedState.get(id)) {
-            //         Alert.alert('Oops!', 'You must have at least 1 source', [
-            //             {text: 'Got it!'},
-            //         ])
-            //     } else {
-            //         let checked = !checkedState.get(id);
-            //         checkedState.set(id, checked);
-            //
-            //     }
-            // } else {
             let checked = !checkedState.get(id);
             checkedState.set(id, checked);
-            // }
             return {checkedState}
         });
     }
@@ -75,21 +57,24 @@ export default class Sources extends React.Component {
     _keyExtractor = (item, index) => index.toString();
     _renderListItem = ({item}) => {
         const {checkedState} = this.state;
-        const {source} = this.props;
-        const {chosenSources} = source;
+        const {topic} = this.props;
+        const {chosenTopic} = topic;
         let checkedItem = false;
         if (checkedState.size < 1) {
-            checkedItem = chosenSources.includes(item.sourceId);
+            checkedItem = chosenTopic.includes(item.title);
 
         } else {
-            checkedItem = checkedState.get(item.sourceId);
+            checkedItem = checkedState.get(item.title);
         }
 
         return (
             <View style={styles.listRow}>
-                <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.sourceImage, width: 60, height: 60}}/>
-                <HBText style={styles.sourceText}>{item.title}</HBText>
-                <CheckComponent id={item.sourceId} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
+                <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.image, width: 60, height: 60}}/>
+                <View style={styles.detailsContainer}>
+                    <HBText style={styles.titleText}>{item.title}</HBText>
+                    <HBText style={styles.descText}>{item.shortDescription}</HBText>
+                </View>
+                <CheckComponent id={item.title} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
             </View>
         )
     }
@@ -108,22 +93,50 @@ export default class Sources extends React.Component {
         this.props.getFeed(1, 10);
     }
 
-    render() {
-        const {source} = this.props;
-        if (!source.data)
-            return null;
+    _renderSectionHeader = ({section}) => {
         return (
+            <HBText style={styles.sectionHeader}>{section.title.toUpperCase()}</HBText>
+        )
+    };
 
+    _renderSection = ({item}) => {
+        return(
             <FlatList
-                refreshing={source.isFetching}
-                onRefresh={() => this.props.getSourceList()}
-                style={{marginHorizontal:10}}
+                style={{marginHorizontal:10, flex: 1}}
                 extraData={this.state}
                 keyExtractor={this._keyExtractor}
                 horizontal={false}
-                data={source.data}
+                data={item}
                 renderItem={this._renderListItem}
                 showsVerticalScrollIndicator={false}/>
+        )
+    }
+
+    render() {
+        const {topic} = this.props;
+        if (!topic.data)
+            return null;
+        let sections = []
+        for (let group of _.keys(topic.groupTopics)) {
+            let section = {
+                    data: _.get(topic.groupTopics, group),
+                    renderItem: this._renderSection,
+                    showHeader: true,
+                    title: group
+                }
+                sections.push(section)
+        }
+
+        return (
+            <SectionList
+                keyExtractor={this._keyExtractor}
+                stickySectionHeadersEnabled={false}
+                showsVerticalScrollIndicator={false}
+                bounces={true}
+                renderSectionHeader={this._renderSectionHeader}
+                sections={sections}
+            />
+
         )
     }
 
@@ -162,36 +175,26 @@ const styles = StyleSheet.create({
         width: 60,
         overflow: 'hidden'
     },
-    sourceText: {
+    titleText: {
         color: colors.darkBlue,
         fontFamily: 'CircularStd-Book',
         fontSize: 16,
+        marginVertical:10
+    },
+    sectionHeader: {
+        color: colors.darkBlue,
+        fontSize: 16,
         marginLeft: 20,
-        width: '60%'
+        marginVertical: 20
     },
-    searchBar: {
-        flexDirection: 'row',
-        borderRadius: 3,
-        borderWidth: 1,
-        borderColor: colors.whiteGray,
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        marginTop: 5,
-        backgroundColor: colors.lightGray,
-        height: 49,
-        alignItems: 'center'
+    detailsContainer: {
+        width: '60%',
+        height: '100%',
+        marginLeft: 20,
     },
-    searchIcon: {
-        width: 20,
-        resizeMode: 'contain',
-        aspectRatio: 1,
-        tintColor: '#A6B2C4'
-    },
-    searchText: {
-        marginLeft: 15,
-        fontSize: 14,
-        color: colors.grayTextSearch,
-        fontFamily: 'CircularStd-Book',
-        opacity: 0.5
-    },
+    descText: {
+        fontSize: 12,
+        marginBottom: 5,
+        color: colors.tagGrayText
+    }
 });

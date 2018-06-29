@@ -333,6 +333,12 @@ export const getSourceList = () => {
     });
 }
 
+export const getTopicList = () => {
+    return gqlQuery({
+        query: config.queries.topicList
+    });
+}
+
 export const getUserFollow = (kind) => {
     return gqlQuery({
         query: config.queries.userFollow,

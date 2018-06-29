@@ -18,6 +18,7 @@ import {navigationTitleStyle} from "../../constants/theme";
 import CheckComponent from '../../components/CheckComponent';
 import HBText from '../../components/HBText'
 import Sources from './Sources'
+import Topic from './Topic'
 
 export default class MySource extends React.Component {
 
@@ -46,6 +47,20 @@ export default class MySource extends React.Component {
 
     _toggleTab = (index) => {
         this.setState({selectedTab: index});
+    }
+
+    _renderTabContainer (){
+        const  {selectedTab} = this.state;
+        switch (selectedTab) {
+            case 0:
+                return <Sources onRef={component => this._sources = component}/>
+            case 1:
+                return null;
+            case 2:
+                return <Topic onRef={component => this._topics = component}/>
+            default:
+                return null;
+        }
     }
 
     render() {
@@ -81,7 +96,7 @@ export default class MySource extends React.Component {
                             ]}>Topic</HBText>
                         </TouchableWithoutFeedback>
                     </View>
-                    <Sources onRef={component => this._sources = component}/>
+                    {this._renderTabContainer()}
                 </View>
             </View>
         )
