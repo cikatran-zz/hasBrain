@@ -1,7 +1,6 @@
 import React from "react";
 import {
     Image,
-    Text,
     TouchableOpacity,
     View,
     StyleSheet,
@@ -12,6 +11,7 @@ import {blackTextStyle, graySmallTextStyle, grayTextStyle, titleCardStyle} from 
 import {getPublishDateDescription, getReadingTimeDescription} from "../utils/dateUtils";
 import {colors} from "../constants/colors";
 import ArticleButton from "./ArticleButton";
+import HBText from '../components/HBText'
 
 export default class HorizontalCell extends React.PureComponent {
 
@@ -25,11 +25,11 @@ export default class HorizontalCell extends React.PureComponent {
                 <View style={[styles.cardView, this.props.style]} >
                     <Image style={styles.image} source={this._getImage()}/>
                     <View style={styles.textView}>
-                        <Text numberOfLines={2} style={[titleCardStyle, {height: 60, flexWrap: "wrap", width: '100%', flex: 1}]}>{(this.props.title == null) ? "" : this.props.title}</Text>
+                        <HBText numberOfLines={2} style={[titleCardStyle, {height: 60, flexWrap: "wrap", width: '100%', flex: 1}]}>{(this.props.title == null) ? "" : this.props.title}</HBText>
                         <View style={[styles.horizontalView, {marginTop: 15}]}>
                             <View style={styles.subTextView}>
-                                <Text style={[graySmallTextStyle, {marginBottom: 5}]}>{(this.props.author == null) ? "" : this.props.author}</Text>
-                                <Text style={grayTextStyle}>{getPublishDateDescription(this.props.time) + '   *   ' + getReadingTimeDescription(this.props.readingTime)}</Text>
+                                <HBText style={[graySmallTextStyle, {marginBottom: 5}]}>{(this.props.author == null) ? "" : this.props.author}</HBText>
+                                <HBText style={grayTextStyle}>{getPublishDateDescription(this.props.time) + '   *   ' + getReadingTimeDescription(this.props.readingTime)}</HBText>
                             </View>
                             <ArticleButton style={styles.articleButtonView}
                                            onShare={this.props.onShare}

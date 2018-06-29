@@ -1,11 +1,12 @@
 import React, {PureComponent} from 'react'
 import {
-    Text, View, StyleSheet, NativeModules, Platform, SectionList, TextInput
+    View, StyleSheet, NativeModules, Platform, SectionList, TextInput
 } from 'react-native'
 import { colors } from '../../../constants/colors';
 import RadarChart from '../../../components/RadarChart'
 import PropTypes from 'prop-types';
 import _ from 'lodash'
+import HBText from "../../../components/HBText";
 
 type Props = {
     editMode: PropTypes.bool
@@ -52,7 +53,7 @@ export default class About extends PureComponent<Props> {
         if (!user.userAnalystData)
             return (
                 <View style={{alignItems:'center', width: '100%', height: 300, flexDirection:'row', justifyContent: 'center'}}>
-                    <Text style={{color: colors.grayText, fontSize: 15}}>Something went wrongs.Cannot analyse your profile!</Text>
+                    <HBText style={{color: colors.grayText, fontSize: 15}}>Something went wrongs.Cannot analyse your profile!</HBText>
                 </View>
             );
         return (
@@ -78,12 +79,12 @@ export default class About extends PureComponent<Props> {
         let renderExperience = item.map((data, i) => {
             return (
                 <View key={i} style={{flexDirection:'column'}}>
-                    <Text style={{fontSize: 15, color: colors.grayTextExpTitle, marginTop: 5, marginLeft: 3}}>
+                    <HBText style={{fontSize: 15, color: colors.grayTextExpTitle, marginTop: 5, marginLeft: 3}}>
                         {data.title}
-                    </Text>
-                    <Text style={{fontSize: 10, color: colors.grayTextExpYear, marginVertical: 5, marginLeft: 5}}>
+                    </HBText>
+                    <HBText style={{fontSize: 10, color: colors.grayTextExpYear, marginVertical: 5, marginLeft: 5}}>
                         {data.level}
-                    </Text>
+                    </HBText>
                 </View>
             )
         });
@@ -100,7 +101,7 @@ export default class About extends PureComponent<Props> {
     _renderSectionHeader = ({section}) => {
         if (section.showHeader && section.data != null && section.data[0] != null) {
             return (
-                <Text style={styles.partHeader}>{section.title}</Text>
+                <HBText style={styles.partHeader}>{section.title}</HBText>
             )
         } else {
             return null
@@ -161,6 +162,7 @@ const styles = StyleSheet.create({
     descriptionText: {
         fontSize: 13,
         color: colors.blackHeader,
+        fontFamily: 'CircularStd-Book'
     },
     partHeader: {
         fontSize: 25,
@@ -168,5 +170,3 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
 });
-
-const tempExperienceData = [{title: 'Android Developer', exp: '5 years'}, {title: 'React Native Developer', exp: '2 years'}];

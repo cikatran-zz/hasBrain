@@ -8,10 +8,10 @@ import {
     Dimensions,
     Easing,
     TouchableOpacity,
-    Text,
     Platform
 } from "react-native";
 import {colors} from "../constants/colors";
+import HBText from './HBText'
 
 export default class ContinueReadingModal extends React.Component {
 
@@ -35,15 +35,15 @@ export default class ContinueReadingModal extends React.Component {
                 <View style={styles.rootView}>
                     <View style={styles.backgroundView}/>
                     <View style={styles.alertWindow}>
-                        <Text style={styles.message}>
+                        <HBText style={styles.message}>
                             {this.state.message}
-                        </Text>
+                        </HBText>
                         <View style={styles.buttons}>
                             <TouchableOpacity style={styles.button} onPress={this.props.onYes}>
-                                <Text style={{color: colors.blueText}}>Yes</Text>
+                                <HBText style={{color: colors.blueText}}>Yes</HBText>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.button} onPress={this.props.onNo}>
-                                <Text style={{color: colors.redButton}}>No</Text>
+                                <HBText style={{color: colors.redButton}}>No</HBText>
                             </TouchableOpacity>
                         </View>
                     </View>

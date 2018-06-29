@@ -2,15 +2,12 @@ import React from 'react'
 import {
     FlatList,
     SectionList,
-    Text,
-    TouchableOpacity,
     TouchableWithoutFeedback,
     View,
     StyleSheet,
     Dimensions,
     Share, NativeModules, Platform, Image,
     Animated,
-    Alert, RefreshControl,
     StatusBar
 } from 'react-native'
 import {colors} from '../../constants/colors'
@@ -25,7 +22,7 @@ import {extractRootDomain} from "../../utils/stringUtils";
 import LoadingRow from "../../components/LoadingRow";
 import * as moment from 'moment';
 import {rootViewTopPadding} from "../../utils/paddingUtils";
-import ToggleTagComponent from '../../components/ToggleTagComponent'
+import HBText from '../../components/HBText'
 import {DotsLoader} from 'react-native-indicator';
 import ActionSheet from "react-native-actionsheet";
 
@@ -215,7 +212,7 @@ export default class Explore extends React.Component {
         }
         return (
             <View>
-                <Text style={styles.sectionTitle}>{section.title.toUpperCase()}</Text>
+                <HBText style={styles.sectionTitle}>{section.title.toUpperCase()}</HBText>
                 <Carousel
                     data={item}
                     keyExtractor={this._keyExtractor}
@@ -451,7 +448,7 @@ export default class Explore extends React.Component {
                         <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('MySource')}>
                             <View style={styles.searchBar}>
                                 <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
-                                <Text style={styles.searchText}>For you</Text>
+                                <HBText style={styles.searchText}>For you</HBText>
 
                             </View>
                         </TouchableWithoutFeedback>
@@ -546,7 +543,6 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         fontSize: 14,
         color: colors.grayTextSearch,
-        fontFamily: 'CircularStd-Book',
         opacity: 0.5
     },
 });

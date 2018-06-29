@@ -1,5 +1,5 @@
 import React from "react";
-import {Image, Text, View, StyleSheet, Animated, TouchableOpacity} from "react-native";
+import {Image, View, StyleSheet, Animated, TouchableOpacity} from "react-native";
 import {colors} from "../constants/colors";
 import _ from 'lodash'
 
