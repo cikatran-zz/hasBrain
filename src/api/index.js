@@ -346,10 +346,10 @@ export const getUserFollow = (kind) => {
     })
 }
 
-export const updateSourceList = (sources) => {
+export const updateUserFollow = (kind, sourceIds) => {
     return gqlPost({
         mutation: config.mutation.updateUserFollow,
-        variables: {kind:"sourcetype", sourceIds: sources}
+        variables: {kind: kind, sourceIds: sourceIds}
     })
 }
 

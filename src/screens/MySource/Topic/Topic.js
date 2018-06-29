@@ -35,17 +35,17 @@ export default class Topic extends React.Component {
     }
 
     _onPressItem = (id) => {
-        const {source} = this.props;
-        const {chosenSources} = source;
+        const {topic} = this.props;
+        const {chosenTopic} = topic;
 
         this.setState((state) => {
             let checkedState = state.checkedState;
             if (checkedState.size < 1) {
-                let sources = source.data.map(item => {
-                    return item.sourceId
+                let topics = topic.data.map(item => {
+                    return item.title
                 });
-                for (let key of sources) {
-                    checkedState.set(key, chosenSources.includes(key));
+                for (let key of topics) {
+                    checkedState.set(key, chosenTopic.includes(key));
                 }
             }
             let checked = !checkedState.get(id);
@@ -53,6 +53,11 @@ export default class Topic extends React.Component {
             return {checkedState}
         });
     }
+
+    _renderListFooter = () => {
+        return <View style={{height: 50}}/>;
+
+    };
 
     _keyExtractor = (item, index) => index.toString();
     _renderListItem = ({item}) => {
@@ -79,18 +84,17 @@ export default class Topic extends React.Component {
         )
     }
 
-    _onBackPress() {
+    updateFollow() {
         const {checkedState} = this.state;
-        const {source} = this.props;
-        let newSources = source.data.map((item) => {
-            if (checkedState.get(item.sourceId)) {
-                return item.sourceId;
+        const {topic} = this.props;
+        let newTopics = topic.data.map((item) => {
+            if (checkedState.get(item.title)) {
+                return item.title;
             }
         });
-        newSources = _.compact(newSources);
-        if (!_.isEmpty(newSources))
-            this.props.updateSourceList(newSources);
-        this.props.getFeed(1, 10);
+        newTopics = _.compact(newTopics);
+        if (!_.isEmpty(newTopics))
+            this.props.updateFollowTopics(newTopics);
     }
 
     _renderSectionHeader = ({section}) => {
@@ -119,22 +123,25 @@ export default class Topic extends React.Component {
         let sections = []
         for (let group of _.keys(topic.groupTopics)) {
             let section = {
-                    data: [_.get(topic.groupTopics, group)],
-                    renderItem: this._renderSection,
-                    showHeader: true,
-                    title: group
-                }
-                sections.push(section)
+                data: [_.get(topic.groupTopics, group)],
+                renderItem: this._renderSection,
+                showHeader: true,
+                title: group
+            }
+            sections.push(section)
         }
 
         return (
             <SectionList
+                refreshing={topic.isFetching}
+                onRefresh={() => this.props.getTopicList()}
                 keyExtractor={this._keyExtractor}
                 stickySectionHeadersEnabled={false}
                 showsVerticalScrollIndicator={false}
                 bounces={true}
                 renderSectionHeader={this._renderSectionHeader}
                 sections={sections}
+                ListFooterComponent={() => this._renderListFooter()}
             />
 
         )

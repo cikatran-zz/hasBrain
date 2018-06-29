@@ -1,7 +1,7 @@
 import Topic from './Topic'
 import {connect} from 'react-redux';
-import {getFeed} from "../../../actions/getFeed";
 import {getTopicList} from '../../../actions/getTopicList'
+import {updateFollowTopics} from '../../../actions/updateFollowTopics'
 function mapStateToProps(state) {
     return {
         topic: state.topicListReducer
@@ -10,8 +10,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        getFeed: (page, perPage) => dispatch(getFeed(page, perPage)),
-        getTopicList: () => dispatch(getTopicList())
+        getTopicList: () => dispatch(getTopicList()),
+        updateFollowTopics: (topics) => dispatch(updateFollowTopics(topics))
     }
 }
 

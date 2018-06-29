@@ -35,17 +35,34 @@ export default class MySource extends React.Component {
         const {selectedTab} = this.state;
         switch (selectedTab) {
             case 0:
-                this._sources._onBackPress();
+                this._sources.updateFollow();
                 break;
             case 1:
                 break;
             case 2:
+                this._topics.updateFollow();
+                break;
+            default:
                 break;
         }
+        this.props.getFeed(1, 10);
         this.props.navigation.goBack();
     }
 
     _toggleTab = (index) => {
+        const {selectedTab} = this.state;
+        switch (selectedTab) {
+            case 0:
+                this._sources.updateFollow();
+                break;
+            case 1:
+                break;
+            case 2:
+                this._topics.updateFollow();
+                break;
+            default:
+                break;
+        }
         this.setState({selectedTab: index});
     }
 

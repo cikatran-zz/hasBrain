@@ -94,7 +94,7 @@ export default class Sources extends React.Component {
         )
     }
 
-    _onBackPress() {
+    updateFollow() {
         const {checkedState} = this.state;
         const {source} = this.props;
         let newSources = source.data.map((item) => {
@@ -105,7 +105,6 @@ export default class Sources extends React.Component {
         newSources = _.compact(newSources);
         if (!_.isEmpty(newSources))
             this.props.updateSourceList(newSources);
-        this.props.getFeed(1, 10);
     }
 
     render() {
