@@ -439,3 +439,31 @@ export const getBookmarkedIds = (page, perPage) => {
         variables: {page: page, perPage: perPage}
     })
 };
+
+const getContinueReadingIds = () => {
+    return new Promise((resolve, reject)=>{
+        RNUserKit.getProperty(strings.readingHistoryKey, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                let readingHistory = _.get(result[0], strings.readingHistoryKey);
+                if (readingHistory) {
+                    readingHistory = readingHistory.map((x)=>x.id);
+                }
+                resolve(readingHistory);
+            }
+        });
+    });
+};
+
+const getLastReadingHistory = (maximumNumber) => {
+    return new Promise((resolve, reject)=>{
+        getContinueReadingIds().then((ids)=>{
+            if (ids == null) {
+                resolve(ids);
+            }
+            let limitedIds = _.take(ids,maximumNumber)
+
+        }).catch(reason => reject(reason))
+    });
+};
