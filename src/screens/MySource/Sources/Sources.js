@@ -108,7 +108,7 @@ export default class Sources extends React.Component {
     }
 
     _renderListFooter = () => {
-        return <View style={{height: 50}}/>;
+        return <View style={{height: 150}}/>;
 
     };
 
