@@ -21,10 +21,9 @@ export default function feedReducer(state = initialState, action) {
             };
         case actionTypes.FETCH_FEED_SUCCESS:
             let newData = action.data;
-            if (state.data != null && action.skip > 0) {
+            if (state.data != null && action.page > 1) {
                 newData = _.union(state.data, newData);
             }
-            let skip = newData.length;
             let listUrl = newData.map(item => item.contentData.contentId)
             NativeModules.RNURLCache.cacheUrls(listUrl);
             return {
@@ -33,7 +32,7 @@ export default function feedReducer(state = initialState, action) {
                 isFetching: false,
                 fetched: true,
                 data: newData,
-                skip: skip
+                page: action.page
             };
         case actionTypes.FETCH_FEED_FAILURE:
             return {
