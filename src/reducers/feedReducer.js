@@ -8,7 +8,8 @@ const initialState = {
     isFetching: false,
     error: false,
     page: 0,
-    count: 0
+    count: 0,
+    rank: null
 };
 
 export default function feedReducer(state = initialState, action) {
@@ -21,18 +22,23 @@ export default function feedReducer(state = initialState, action) {
             };
         case actionTypes.FETCH_FEED_SUCCESS:
             let newData = action.data;
-            if (state.data != null && action.page > 1) {
+            if (state.data != null && action.rank != null) {
                 newData = _.union(state.data, newData);
             }
-            let listUrl = newData.map(item => item.contentData.contentId)
+            let listUrl = newData.map(item => item.contentData.contentId);
             NativeModules.RNURLCache.cacheUrls(listUrl);
+            let rank = null;
+            if (newData != null && newData.length > 0) {
+                rank = newData[newData.length -1].rank
+            }
             return {
                 ...state,
                 count: action.count,
                 isFetching: false,
                 fetched: true,
                 data: newData,
-                page: action.page
+                page: action.page,
+                rank: rank
             };
         case actionTypes.FETCH_FEED_FAILURE:
             return {

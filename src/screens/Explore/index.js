@@ -32,7 +32,7 @@ function mapDispatchToProps(dispatch) {
         updateSourceList: (sources) => dispatch(updateSourceList(sources)),
         createBookmark: (id, type, trackingType) => dispatch(createBookmark(id, type, trackingType)),
         removeBookmark: (id, type, trackingType) => (dispatch(removeBookmark(id, type, trackingType))),
-        getFeed: (page, perPage)=>(dispatch(getFeed(page, perPage))),
+        getFeed: (page, perPage, rank)=>(dispatch(getFeed(page, perPage, rank))),
         getBookmarkedIds: () => dispatch(getBookmarkedIds())
     }
 }

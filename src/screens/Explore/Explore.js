@@ -60,7 +60,7 @@ export default class Explore extends React.Component {
     componentDidMount() {
         this.props.getSaved();
         // this.props.getSourceList();
-        this.props.getFeed(1, 10);
+        this.props.getFeed(1, 10, null);
         this.props.getBookmarkedIds();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
@@ -231,9 +231,9 @@ export default class Explore extends React.Component {
 
     _fetchMore = () => {
         const {feed} = this.props;
-        const {page, data, count, isFetching} = feed;
+        const {page, data, count, isFetching, rank} = feed;
         if (data != null && data.length < count && !isFetching) {
-            this.props.getFeed(page+1, 10)
+            this.props.getFeed(1, 10, rank)
         }
     };
 
@@ -424,7 +424,7 @@ export default class Explore extends React.Component {
                         ref={(ref) => this._scrollView = ref}
                         contentContainerStyle={{marginTop: 67, marginBottom: 0}}
                         refreshing={false}
-                        onRefresh={() => this.props.getFeed(1, 10)}
+                        onRefresh={() => this.props.getFeed(1, 10, null)}
                         onScrollEndDrag={this._onScrollEnd}
                         onScroll={this._onScroll}
                         scrollEventThrottle={16}

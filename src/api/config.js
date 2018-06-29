@@ -425,6 +425,45 @@ const getSourceList = gql`
 `;
 
 const getFeed = gql`
+query getFeed($page: Int, $perPage: Int, $currentRank: Float){
+  viewer{
+    feedPagination(sort:RANK_DESC, page: $page, perPage: $perPage, filter:{
+      _operators: {
+        rank: {
+          lt: $currentRank
+        }
+      }
+    }) {
+      count
+      items {
+        contentId
+        reason
+        rank
+        sourceData{
+          title
+          sourceImage
+        }
+        contentData{
+          _id
+          sourceName
+          kind
+          title
+          contentId
+          sourceImage
+          shortDescription
+          sourceActionName
+          sourceActionCount
+          sourceCommentCount
+          readingTime
+          sourceCreatedAt
+        }
+      }
+    }
+  }
+}
+`;
+
+const getInitFeed = gql`
 query getFeed($page: Int, $perPage: Int){
   viewer{
     feedPagination(sort:RANK_DESC, page: $page, perPage: $perPage) {
@@ -432,6 +471,7 @@ query getFeed($page: Int, $perPage: Int){
       items {
         contentId
         reason
+        rank
         sourceData{
           title
           sourceImage
@@ -560,6 +600,7 @@ export default {
         sourceRecommend: getRecommendSource,
         category: getCategory,
         feed: getFeed,
+        initFeed: getInitFeed,
         bookmaredIds: getBookmarkedIds,
         userFollow: getUserFollow,
     },
