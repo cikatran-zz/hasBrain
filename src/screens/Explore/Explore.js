@@ -234,10 +234,9 @@ export default class Explore extends React.Component {
 
     _fetchMore = () => {
         const {feed} = this.props;
-        const {skip, count, isFetching} = feed;
-        if (skip < count && !isFetching) {
-            let page = Math.round(skip / 10) + 1;
-            this.props.getFeed(page, 10)
+        const {page, data, count, isFetching} = feed;
+        if (data != null && data.length < count && !isFetching) {
+            this.props.getFeed(page+1, 10)
         }
     };
 
