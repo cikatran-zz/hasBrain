@@ -119,7 +119,7 @@ export default class Topic extends React.Component {
         let sections = []
         for (let group of _.keys(topic.groupTopics)) {
             let section = {
-                    data: _.get(topic.groupTopics, group),
+                    data: [_.get(topic.groupTopics, group)],
                     renderItem: this._renderSection,
                     showHeader: true,
                     title: group

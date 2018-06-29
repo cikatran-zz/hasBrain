@@ -6,7 +6,7 @@ import { getTopicList, getUserFollow } from '../api'
 import { getTopicListSuccess, getTopicListFailure } from '../actions/getTopicList'
 
 const getTopicListEpic = (action$) =>
-    action$.pipe(ofType(actionTypes.FETCHING_SOURCE_LIST),
+    action$.pipe(ofType(actionTypes.FETCHING_TOPIC_LIST),
         mergeMap(action =>
             forkJoin([getTopicList(), getUserFollow("topictype")]).pipe(
                 map(response => {
