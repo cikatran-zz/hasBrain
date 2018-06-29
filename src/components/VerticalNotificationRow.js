@@ -1,8 +1,9 @@
 import React from "react";
-import {Image, Text, TouchableOpacity, View, StyleSheet} from "react-native";
+import {Image, TouchableOpacity, View, StyleSheet} from "react-native";
 import {blackTextStyle, grayTextStyle, titleCardStyle} from "../constants/theme";
 import {getPublishDateDescription} from "../utils/dateUtils";
 import {colors} from "../constants/colors";
+import HBText from './HBText'
 
 export default class VerticalNotificationRow extends React.PureComponent {
 
@@ -19,14 +20,14 @@ export default class VerticalNotificationRow extends React.PureComponent {
             <TouchableOpacity onPress={()=>this._openWebView()}>
                 <View style={[styles.cardView, this.props.style]}>
                     <View style={styles.horizontalView}>
-                        <Text style={[titleCardStyle, {flex: 2, flexWrap: "wrap"}]}>{(this.props.title == null) ? "" : this.props.title}</Text>
+                        <HBText style={[titleCardStyle, {flex: 2, flexWrap: "wrap"}]}>{(this.props.title == null) ? "" : this.props.title}</HBText>
                         <Image source={this._getImage()}
                                style={styles.thumbnailImage}/>
                     </View>
                     <View style={[styles.horizontalView, {marginTop: 15}]}>
                         <View style={styles.subTextView}>
-                            <Text style={blackTextStyle}>{(this.props.highlight == null) ? "" : this.props.highlight}</Text>
-                            <Text style={grayTextStyle}>{getPublishDateDescription(this.props.time)}</Text>
+                            <HBText style={blackTextStyle}>{(this.props.highlight == null) ? "" : this.props.highlight}</HBText>
+                            <HBText style={grayTextStyle}>{getPublishDateDescription(this.props.time)}</HBText>
                         </View>
                     </View>
                 </View>

@@ -1,11 +1,12 @@
 import React, {Component} from 'react'
 import {
-    Text, View, StyleSheet, NativeModules, ActivityIndicator, TouchableWithoutFeedback, Image, SectionList, FlatList
+    View, StyleSheet, NativeModules, ActivityIndicator, TouchableWithoutFeedback, Image, SectionList, FlatList
 } from 'react-native'
 import { colors } from '../../constants/colors'
 import _ from 'lodash'
 import {rootViewTopPadding} from '../../utils/paddingUtils'
 import { NavigationActions } from 'react-navigation';
+import HBText from "../../components/HBText";
 
 export default class UserPath extends Component {
 
@@ -44,10 +45,10 @@ export default class UserPath extends Component {
                 <View style={{flexDirection:'column', marginRight: 20, width: 217}}>
 
                     <View style={styles.placeHolder}>
-                        <Text style={styles.textPlaceHolder}>hasBrain</Text>
+                        <HBText style={styles.textPlaceHolder}>hasBrain</HBText>
                     </View>
                     <Image style={styles.seriesItemImage} source={{uri: item.sourceImage}}/>
-                    <Text style={styles.seriesItemText}>{item.title}</Text>
+                    <HBText style={styles.seriesItemText}>{item.title}</HBText>
                 </View>
             </TouchableWithoutFeedback>
         )
@@ -98,8 +99,8 @@ export default class UserPath extends Component {
             <View style={styles.container}>
 
                 <View style={styles.pathInfoContainer}>
-                    <Text style={styles.pathInfoTitle}>{userPath.data.title}</Text>
-                    <Text style={styles.pathInfoDescription}>{userPath.data.shortDescription}</Text>
+                    <HBText style={styles.pathInfoTitle}>{userPath.data.title}</HBText>
+                    <HBText style={styles.pathInfoDescription}>{userPath.data.shortDescription}</HBText>
                 </View>
                 <TouchableWithoutFeedback onPress={this._onClosePress} style={{height: 30, width: 30}}>
                     <Image style={{width:25, height: 25, position: 'absolute', right: 30, top: 30 + rootViewTopPadding()}} source={require('../../assets/ic_close.png')}/>

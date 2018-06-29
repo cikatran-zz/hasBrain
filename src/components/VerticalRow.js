@@ -4,6 +4,7 @@ import {blackTextStyle, graySmallTextStyle, grayTextStyle, titleCardStyle} from 
 import {getPublishDateDescription, getReadingTimeDescription} from "../utils/dateUtils";
 import {colors} from "../constants/colors";
 import ArticleButton from "./ArticleButton";
+import HBText from '../components/HBText'
 
 const ANIMATION_DURATION = 250;
 const ROW_HEIGHT = 70;
@@ -102,11 +103,11 @@ export default class VerticalRow extends React.PureComponent {
         return (
             <TouchableOpacity onPress={this.props.onClicked}>
                 <Animated.View style={[rowStyles, this.props.style]}>
-                    <Text style={styles.categoryText}>{this.props.category ? this.props.category.toUpperCase() : ""}</Text>
+                    <HBText style={styles.categoryText}>{this.props.category ? this.props.category.toUpperCase() : ""}</HBText>
                     <View style={styles.horizontalView}>
                         <View style={styles.titleTextView}>
-                            <Text onLayout={this._calculateTitleNumberOfLines} numberOfLines={3} style={titleCardStyle}>{(this.props.title == null) ? "" : this.props.title}</Text>
-                            {this.state.shortDesciptionNoLines > 0 && <Text numberOfLines={this.state.shortDesciptionNoLines} style={[grayTextStyle, {marginTop: 15}]}>{(this.props.shortDescription == null) ? "" : this.props.shortDescription}</Text>}
+                            <HBText onLayout={this._calculateTitleNumberOfLines} numberOfLines={3} style={titleCardStyle}>{(this.props.title == null) ? "" : this.props.title}</HBText>
+                            {this.state.shortDesciptionNoLines > 0 && <HBText numberOfLines={this.state.shortDesciptionNoLines} style={[grayTextStyle, {marginTop: 15}]}>{(this.props.shortDescription == null) ? "" : this.props.shortDescription}</HBText>}
 
                         </View>
                         {this._renderImage()}
@@ -115,11 +116,11 @@ export default class VerticalRow extends React.PureComponent {
                         <View style={styles.subTextView}>
                             <View style={styles.sourceView}>
                                 <Image style={styles.sourceImage} source={{uri: this.props.sourceImage ? this.props.sourceImage : ""}}/>
-                                <Text
-                                    style={[graySmallTextStyle]}>{(this.props.sourceName == null) ? "" : this.props.sourceName}</Text>
+                                <HBText
+                                    style={[graySmallTextStyle]}>{(this.props.sourceName == null) ? "" : this.props.sourceName}</HBText>
                             </View>
 
-                            <Text style={grayTextStyle}>{action}</Text>
+                            <HBText style={grayTextStyle}>{action}</HBText>
                         </View>
                         <ArticleButton style={styles.articleButtonView}
                                        onMore={this.props.onMore}
@@ -134,7 +135,6 @@ export default class VerticalRow extends React.PureComponent {
 
 const styles = StyleSheet.create({
     categoryText: {
-        fontFamily: 'CircularStd-Book',
         color: colors.articleCategory,
         fontSize: 12,
         fontWeight: 'bold',

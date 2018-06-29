@@ -1,14 +1,9 @@
 import React from 'react'
 import {
-    ActivityIndicator,
     FlatList,
     SectionList,
-    Text,
-    TouchableOpacity,
     View,
     StyleSheet,
-    Dimensions,
-    Share, NativeModules, Platform
 } from 'react-native'
 import {colors} from '../../../constants/colors'
 import _ from 'lodash'

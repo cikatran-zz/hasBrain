@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-    Text, View, StyleSheet, Image, Platform, TextInput, TouchableOpacity, NativeModules,
+    View, StyleSheet, Image, Platform, TextInput, TouchableOpacity, NativeModules,
     ActivityIndicator
 } from 'react-native'
 import {colors} from "../../constants/colors";
@@ -13,6 +13,7 @@ import PathSlider from "../../components/PathSlider";
 import {postCreateUser} from "../../api";
 import IndicatorModal from "../../components/IndicatorModal";
 import Toast from "react-native-root-toast";
+import HBText from '../../components/HBText'
 
 export default class Authentication extends React.PureComponent {
 
@@ -134,24 +135,24 @@ export default class Authentication extends React.PureComponent {
                     this.indicatorModal = modal
                 }} onDismiss={this.onDismissIndicatorModal.bind(this)}/>
                 <Image style={styles.image} source={require('../../assets/ic_hasbrain.png')}/>
-                <Text style={styles.text}>hasBrain</Text>
+                <HBText style={styles.text}>hasBrain</HBText>
                 <TouchableOpacity
                     style={[styles.colorButton, {marginTop: 44.5}]}
                     onPress={() => this._loginWithGooglePlus()}>
                     <Image source={require('../../assets/ic_gg_plus_icon.png')} style={{height: '100%', resizeMode: 'contain'}}/>
-                    <Text style={styles.buttonText}>Continue with Google</Text>
+                    <HBText style={styles.buttonText}>Continue with Google</HBText>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.colorButton, {marginTop: 15}]}
                     onPress={() => this._loginWithFacebook()}>
                     <Image source={require('../../assets/ic_fb_logo.png')} style={{height: '100%', resizeMode: 'contain'}}/>
-                    <Text style={styles.buttonText}>Continue with Facebook</Text>
+                    <HBText style={styles.buttonText}>Continue with Facebook</HBText>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.colorButton, {marginTop: 15}]}
                     onPress={() => navigation.navigate('AuthenticationEmail')}>
                     <Image source={require('../../assets/ic_mail.png')} style={{height: '100%', resizeMode: 'contain'}}/>
-                    <Text style={styles.buttonText}>Continue with email</Text>
+                    <HBText style={styles.buttonText}>Continue with email</HBText>
                 </TouchableOpacity>
             </View>
         )

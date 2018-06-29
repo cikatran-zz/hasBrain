@@ -1,5 +1,5 @@
 import React from "react";
-import {Image, Text, View, StyleSheet, SectionList, FlatList, Dimensions, TouchableOpacity} from "react-native";
+import {Image, View, StyleSheet, SectionList, FlatList, Dimensions, TouchableOpacity} from "react-native";
 import {colors} from "../../../constants/colors";
 import _ from 'lodash'
 import {
@@ -8,7 +8,7 @@ import {
 } from "../../../constants/theme";
 import OnboardingSectionList from "./OnboardingSectionList";
 import OnboardingSectionTags from "./OnboardingSectionTags";
-import PathSlider from "../../../components/PathSlider";
+import HBText from "../../../components/HBText";
 import OnboardingPageIntent from "./OnboardingPageIntent";
 
 export default class OnboardingPage extends React.Component {
@@ -26,9 +26,9 @@ export default class OnboardingPage extends React.Component {
 
     _renderSectionHeader = ({section}) =>
         (<View style={styles.header}>
-            {section.title != null && <Text style={[onboardingSectionTitleStyle]}>{section.title}</Text>}
+            {section.title != null && <HBText style={[onboardingSectionTitleStyle]}>{section.title}</HBText>}
             {section.subtitle != null &&
-            <Text style={[onboardingSubtitleStyle, {marginBottom: 10}]}>{section.subtitle}</Text>}
+            <HBText style={[onboardingSubtitleStyle, {marginBottom: 10}]}>{section.subtitle}</HBText>}
         </View>);
 
     _onItemSelectedChanged = (sectionIndex, itemIndexes) => {
@@ -66,8 +66,8 @@ export default class OnboardingPage extends React.Component {
                         <Image source={this.props.icon} style={styles.iconImage}/>
                     </View>
                     <View style={styles.textView}>
-                        <Text style={styles.titleText}>{this.props.pageTitle}</Text>
-                        <Text style={onboardingSubtitleStyle}>{this.props.subtitle}</Text>
+                        <HBText style={styles.titleText}>{this.props.pageTitle}</HBText>
+                        <HBText style={onboardingSubtitleStyle}>{this.props.subtitle}</HBText>
                     </View>
                 </View>
                 <View style={styles.lineView}/>
