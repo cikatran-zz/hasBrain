@@ -1,18 +1,19 @@
 import * as actionTypes from './actionTypes';
 
-export function getFeed(page, perPage) {
+export function getFeed(page, perPage, rank) {
     return {
         type: actionTypes.FETCHING_FEED,
         page: page,
-        perPage: perPage
+        perPage: perPage,
+        rank: rank
     }
 }
 
-export function getFeedSuccess(data, page) {
+export function getFeedSuccess(data, page, rank) {
     return {
         type: actionTypes.FETCH_FEED_SUCCESS,
         data: data.viewer.feedPagination.items,
-        page: page,
+        rank: rank,
         count: data.viewer.feedPagination.count
     }
 }

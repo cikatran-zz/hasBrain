@@ -426,11 +426,18 @@ export const getCategory = () => {
     })
 };
 
-export const getFeed = (page, perPage) => {
-    return gqlQuery({
-        query: config.queries.feed,
-        variables: {page: page, perPage: perPage}
-    })
+export const getFeed = (page, perPage, rank) => {
+    if (rank) {
+        return gqlQuery({
+            query: config.queries.feed,
+            variables: {page: page, perPage: perPage, currentRank: rank}
+        })
+    } else {
+        return gqlQuery({
+            query: config.queries.initFeed,
+            variables: {page: page, perPage: perPage}
+        })
+    }
 };
 
 export const getBookmarkedIds = (page, perPage) => {
