@@ -66,7 +66,7 @@ export default class VerticalRow extends React.PureComponent {
     };
 
     _renderHighlight = () => {
-
+        if (this.props.highlightData == null) {return null};
         const {highlightData: {highlights, userData: {profileId="", name=""}}} = this.props;
         if (highlights == null || highlights.length === 0) {
             return null;

@@ -161,6 +161,10 @@ export default class Explore extends React.Component {
             category = item.reason;
         }
 
+        if (item.actionType === "highlight") {
+            console.log("Highlight",category);
+        }
+
         return (
             <VerticalRow style={{marginTop: (index === 0) ? -20 : 0}}
                          title={_.get(item, 'contentData.title', '')}

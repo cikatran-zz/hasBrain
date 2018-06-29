@@ -171,7 +171,7 @@ mutation createUser($profileId: MongoID, $name: String) {
 const postHighlightedText = gql`
 mutation highlightedText($articleId: MongoID, $highlightedText: String){
   user{
-    userhighlightCreate(record: { articleId: $articleId, highlight: $highlightedText}) {
+    userhighlightCreate(record: { articleId: $articleId, highlights: {highlight: $highlightedText}}) {
       recordId
     }
   }
@@ -443,6 +443,8 @@ query getFeed($page: Int, $perPage: Int, $currentRank: Float, $topics: [String])
         reason
         rank
         topicId
+        actionType
+        actionId
         sourceData{
           title
           sourceImage
