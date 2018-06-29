@@ -38,5 +38,6 @@ export const strings = {
     mekey: '_me',
     experienceKey: 'experience',
     name: '_name',
-    articleFilter: 'articleFilter'
+    articleFilter: 'articleFilter',
+    chosenTopicsKey: 'chosen_topics'
 };

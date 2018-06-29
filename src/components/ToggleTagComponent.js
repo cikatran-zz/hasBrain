@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {View, TouchableWithoutFeedback, StyleSheet} from 'react-native';
+import {View, TouchableWithoutFeedback, StyleSheet, Image} from 'react-native';
 import {Proptypes} from 'prop-types';
 import {colors} from '../constants/colors'
 import HBText from './HBText'
@@ -22,6 +22,13 @@ export default class ToggleTagComponent extends PureComponent<Props> {
 
     render() {
         const {isOn} = this.props;
+        if (this.props.id === "_filter") {
+            return (<TouchableWithoutFeedback onPress={this._onPress}>
+                <View style={[styles.container, {backgroundColor: colors.lightGray, borderColor: colors.lightGray}]}>
+                    <Image source={require('../assets/ic_explore_filter.png')} style={{resizeMode: 'contain', width: 15, height: 15, marginHorizontal: 15}}/>
+                </View>
+            </TouchableWithoutFeedback>)
+        }
         return (
             <TouchableWithoutFeedback onPress={this._onPress}>
                 <View style={[styles.container, isOn ? {borderColor: colors.blueText} : {backgroundColor: colors.lightGray, borderColor: colors.lightGray}]}>

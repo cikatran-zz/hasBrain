@@ -1,6 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
 import _ from 'lodash';
-import {NativeModules} from "react-native";
+import {NativeModules, Platform} from "react-native";
 
 const initialState = {
     data: null,
@@ -23,10 +23,11 @@ export default function feedReducer(state = initialState, action) {
         case actionTypes.FETCH_FEED_SUCCESS:
             let newData = action.data;
             if (state.data != null && action.rank != null) {
-                newData = _.union(state.data, newData);
+                newData = state.data.concat(newData);//_.union(state.data, newData);
             }
             let listUrl = newData.map(item => item.contentData.contentId);
             NativeModules.RNURLCache.cacheUrls(listUrl);
+            //(Platform.OS !== "ios") &&
             let rank = null;
             if (newData != null && newData.length > 0) {
                 rank = newData[newData.length -1].rank

@@ -1,11 +1,12 @@
 import * as actionTypes from './actionTypes';
 
-export function getFeed(page, perPage, rank) {
+export function getFeed(page, perPage, rank, topics) {
     return {
         type: actionTypes.FETCHING_FEED,
         page: page,
         perPage: perPage,
-        rank: rank
+        rank: rank,
+        topics: topics
     }
 }
 

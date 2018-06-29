@@ -24,26 +24,22 @@ export default function sourcelistReducer(state = initialState, action) {
         case actionTypes.FETCH_SOURCE_LIST_SUCCESS:
             let sourceListData = action.data[0].data.viewer.sourcePagination.items;
             let followSourceData = action.data[1].data.viewer.userFollowMany;
-            let followCategoryData = action.data[2].data.viewer.userFollowMany;
-            let chosentags = followCategoryData.map(item => {
-                return item.sourceId
-            });
+            let followTopicData = action.data[2].data.viewer.userFollowMany;
+            let chosenTopicData = action.data[3];
             let chosenSources = followSourceData.map(item => {
                 return item.sourceId
             });
 
-            let tags = _.uniq(_.flatten(sourceListData.map(item => {
-                return item.categories;
-            })));
+            let tags = followTopicData.map((x)=>x.sourceId);
             let tagMap = new Map();
-            tagMap.set("All", false);
+            tagMap.set("ALL", false);
             let count = 0;
             for(let tag of tags) {
-                if (_.isEmpty(chosentags)) {
+                if (_.isEmpty(chosenTopicData)) {
                     tagMap.set(tag, true);
                     count++;
                 } else {
-                    if (_.indexOf(chosentags, tag) < 0) {
+                    if (_.indexOf(chosenTopicData, tag) < 0) {
                         tagMap.set(tag, false);
                     } else {
                         tagMap.set(tag, true);
@@ -53,12 +49,12 @@ export default function sourcelistReducer(state = initialState, action) {
             }
             //increase the count to check if all tags are chosen, then turn on All tag
             if (count == tags.length){
-                tagMap.set("All", true);
+                tagMap.set("ALL", true);
                 for(let tag of tags) {
                     tagMap.set(tag, false);
                 }
             }
-            tags = _.concat("All", tags);
+            tags = _.concat("ALL", tags);
             return {
                 ...state,
                 isFetching: false,
