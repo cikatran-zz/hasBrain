@@ -18,7 +18,6 @@ import watchingHistoryReducer from "./watchingHistoryReducer";
 import categoryReducer from "./categoryReducer";
 import feedReducer from "./feedReducer";
 import bookmarkedIdsReducer from "./bookmarkedIdsReducer";
-
 export default combineReducers({
     articlesReducer,
     savedReducer,

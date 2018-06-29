@@ -10,6 +10,7 @@ import HighLight from './HighLight'
 import _ from 'lodash'
 import {rootViewTopPadding} from '../../utils/paddingUtils';
 import HBText from "../../components/HBText";
+import {resetAuthToken} from "../../api"
 
 export default class Me extends React.Component {
     _titleTextInput = null;
@@ -30,6 +31,7 @@ export default class Me extends React.Component {
 
     _signOut = () => {
         NativeModules.RNUserKitIdentity.signOut();
+        resetAuthToken();
         this.props.navigation.navigate('Root')
     };
 

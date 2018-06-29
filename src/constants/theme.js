@@ -36,6 +36,18 @@ export const graySmallTextStyle = {
 
 };
 
+export const peopleNameCardStyle = {
+    fontSize: 16,
+    color: colors.articleTitle,
+    fontFamily: 'CircularStd-Book',
+};
+
+export const hightlightTextStyle = {
+    fontSize: 16,
+    fontStyle: 'italic',
+    color: colors.articleCategory
+};
+
 export const onboardingTitleStyle = {
     fontSize: 16,
     color: colors.blackText,
