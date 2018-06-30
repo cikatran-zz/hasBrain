@@ -36,6 +36,7 @@ const getApolloClient = () => {
             resolve(globalAppoloClient);
             return;
         }
+        console.log("Create new Token");
         getAuthToken().then((authToken) => {
             console.log("Auth", authToken);
             globalAuthToken = authToken;
