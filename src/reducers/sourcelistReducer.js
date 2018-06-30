@@ -48,13 +48,14 @@ export default function sourcelistReducer(state = initialState, action) {
                 }
             }
             //increase the count to check if all tags are chosen, then turn on All tag
-            if (count == tags.length){
+            if (count === 0 || count === tags.length){
                 tagMap.set("ALL", true);
-                for(let tag of tags) {
+                for (let tag of tags) {
                     tagMap.set(tag, false);
                 }
             }
             tags = _.concat("ALL", tags);
+            console.log("Tag map", tagMap, tags, count);
             return {
                 ...state,
                 isFetching: false,
@@ -78,11 +79,29 @@ export default function sourcelistReducer(state = initialState, action) {
                 errorMessage: action.errorMessage
             }
         case actionTypes.UPDATING_USER_TOPIC:
+
+            console.log("topics",newTags, state.tagMap.keys());
+            let newTagMap = new Map();
+            let countTag = 0;
+            for (let [key, value] of state.tagMap) {
+                if (newTags.indexOf(key) !== -1) {
+                    newTagMap.set(key,value);
+                    countTag += value ? 1 : 0;
+                }
+            }
+            if (countTag === 0 || countTag === action.topics.length) {
+                newTagMap.set("ALL", true);
+                for (let [key, value] of newTagMap) {
+                    newTagMap.set(key, false);
+                }
+            }
             let newTags = _.concat("ALL", action.topics);
+            console.log(newTagMap);
             return {
                 ...state,
-                tags: newTags
-            }
+                tags: newTags,
+                tagMap: newTagMap
+            };
         case actionTypes.UPDATING_USER_SOURCES:
             return {
                 ...state,

@@ -76,6 +76,7 @@ export default class Explore extends React.Component {
             this._setUpReadingTime();
             StatusBar.setBarStyle('dark-content');
             (Platform.OS !== 'ios') && StatusBar.setBackgroundColor('transparent');
+            this._onRefresh();
         });
         this._setUpReadingTime();
     }
