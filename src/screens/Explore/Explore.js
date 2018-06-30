@@ -64,7 +64,11 @@ export default class Explore extends React.Component {
         this.props.getSaved();
         this.props.getSourceList();
         getChosenTopics().then((value)=>{
-            this.props.getFeed(1, 10, null, value);
+            let topics = null;
+            if (value) {
+                topics = value.filter(x=>x !== "ALL");
+            }
+            this.props.getFeed(1, 10, null, topics);
         });
 
         this.props.getBookmarkedIds();
