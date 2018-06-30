@@ -356,7 +356,8 @@ export const getTopicList = () => {
 export const getUserFollow = (kind) => {
     return gqlQuery({
         query: config.queries.userFollow,
-        variables: {kind: kind}
+        variables: {kind: kind},
+        fetchPolicy: 'network-only'
     })
 }
 
