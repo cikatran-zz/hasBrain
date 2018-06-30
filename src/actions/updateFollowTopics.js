@@ -9,9 +9,16 @@ export function updateFollowTopics(topics) {
 
 export function updateFollowTopicsSuccess(data) {
     return {
-        type: actionTypes.UPDATE_USER_TOPIC_SUCCESS,
-        data: data,
+        type: actionTypes.FETCHING_FEED,
+        page: 1,
+        perPage: 10,
+        rank: null,
+        topics: data
     }
+    // return {
+    //     type: actionTypes.UPDATE_USER_TOPIC_SUCCESS,
+    //     data: data,
+    // }
 }
 
 export function updateFollowTopicsFailure(error) {
