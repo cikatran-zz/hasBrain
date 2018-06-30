@@ -3,7 +3,7 @@ import {
     View, StyleSheet, NativeModules, Platform, TouchableWithoutFeedback, Image, TextInput
 } from 'react-native'
 import { colors } from '../../constants/colors'
-import {NavigationActions} from "react-navigation";
+import {NavigationActions, StackActions} from "react-navigation";
 import CircleImage from '../../components/CircleImage'
 import About from './About'
 import HighLight from './HighLight'
@@ -32,7 +32,16 @@ export default class Me extends React.Component {
     _signOut = () => {
         NativeModules.RNUserKitIdentity.signOut();
         resetAuthToken();
-        this.props.navigation.navigate('Root')
+        //this.props.navigation.navigate('Root')
+        const resetAction = StackActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({ routeName: 'MeTab' }),
+                NavigationActions.navigate({ routeName: 'Root' }),
+            ],
+        });
+
+        this.props.navigation.dispatch(StackActions.popToTop());
     };
 
     _toggleTab = () => {
