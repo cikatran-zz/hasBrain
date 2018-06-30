@@ -26,6 +26,7 @@ import HBText from '../../components/HBText'
 import {DotsLoader} from 'react-native-indicator';
 import ActionSheet from "react-native-actionsheet";
 import ToggleTagComponent from "../../components/ToggleTagComponent";
+import {getChosenTopics} from "../../api";
 
 const horizontalMargin = 5;
 
@@ -62,7 +63,10 @@ export default class Explore extends React.Component {
     componentDidMount() {
         this.props.getSaved();
         this.props.getSourceList();
-        this.props.getFeed(1, 10, null, null);
+        getChosenTopics().then((value)=>{
+            this.props.getFeed(1, 10, null, value);
+        });
+
         this.props.getBookmarkedIds();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
@@ -244,11 +248,37 @@ export default class Explore extends React.Component {
     };
 
     _fetchMore = () => {
-        const {feed} = this.props;
+        const {feed, source} = this.props;
+        const {tagMap, tags} = source;
         const {data, count, isFetching, rank} = feed;
-        if (data != null && count > 10 && !isFetching) {
-            this.props.getFeed(1, 10, rank, null)
+        let topics = null;
+        if (!tagMap.get('ALL') && tags != null) {
+            topics = tags.map((item) => {
+                if (tagMap.get(item)) {
+                    return item;
+                }
+            });
+            topics = _.compact(topics)
         }
+        if (data != null && count > 10 && !isFetching) {
+
+            this.props.getFeed(1, 10, rank, topics)
+        }
+    };
+
+    _onRefresh = () => {
+        const {source} = this.props;
+        const {tagMap, tags} = source;
+        let topics = null;
+        if (!tagMap.get('ALL') && tags != null) {
+            topics = tags.map((item) => {
+                if (tagMap.get(item)) {
+                    return item;
+                }
+            });
+            topics = _.compact(topics)
+        }
+        this.props.getFeed(1, 10, null, topics);
     };
 
     _renderListFooter = (isFetching) => {
@@ -431,7 +461,7 @@ export default class Explore extends React.Component {
                         ref={(ref) => this._scrollView = ref}
                         contentContainerStyle={{marginTop: 67, marginBottom: 0}}
                         refreshing={false}
-                        onRefresh={() => this.props.getFeed(1, 10, null, null)}
+                        onRefresh={this._onRefresh}
                         onScrollEndDrag={this._onScrollEnd}
                         onScroll={this._onScroll}
                         scrollEventThrottle={16}

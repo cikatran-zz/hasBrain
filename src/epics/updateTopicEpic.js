@@ -10,7 +10,7 @@ const updateTopicListEpic = (action$) =>
         mergeMap(action =>
             from(updateUserFollow("topictype", action.topics)).pipe(
                 map(response => {
-                    return updateFollowTopicsSuccess()
+                    return updateFollowTopicsSuccess(action.topics)
                 }),
                 catchError(error => of(updateFollowTopicsFailure(error)))
             )));

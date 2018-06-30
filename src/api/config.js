@@ -595,10 +595,21 @@ query getUserFollow($kind: EnumuserfollowtypeKind){
 }
 `;
 
+// const updateUserFollow = gql`
+// mutation updateUserFollow($kind: String!, $sourceIds: [ID]){
+//   user{
+//     followCreateMany(record: {
+//       kind: $kind,
+//       sourceIds: $sourceIds
+//     })
+//   }
+// }
+// `;
+
 const updateUserFollow = gql`
 mutation updateUserFollow($kind: String!, $sourceIds: [ID]){
   user{
-    followCreateMany(record: {
+    followPushMany(record:{
       kind: $kind,
       sourceIds: $sourceIds
     })
