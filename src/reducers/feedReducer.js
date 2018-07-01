@@ -1,5 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
 import _ from 'lodash';
+import {NativeModules, Platform} from "react-native";
 
 const initialState = {
     data: null,
@@ -7,7 +8,8 @@ const initialState = {
     isFetching: false,
     error: false,
     page: 0,
-    count: 0
+    count: 0,
+    rank: null
 };
 
 export default function feedReducer(state = initialState, action) {
@@ -20,17 +22,24 @@ export default function feedReducer(state = initialState, action) {
             };
         case actionTypes.FETCH_FEED_SUCCESS:
             let newData = action.data;
-            if (state.data != null && action.skip > 0) {
-                newData = _.union(state.data, newData);
+            if (state.data != null && action.rank != null) {
+                newData = state.data.concat(newData);//_.union(state.data, newData);
             }
-            let skip = newData.length;
+            let listUrl = newData.map(item => item.contentData.contentId);
+            NativeModules.RNURLCache.cacheUrls(listUrl);
+            //(Platform.OS !== "ios") &&
+            let rank = null;
+            if (newData != null && newData.length > 0) {
+                rank = newData[newData.length -1].rank
+            }
             return {
                 ...state,
                 count: action.count,
                 isFetching: false,
                 fetched: true,
                 data: newData,
-                skip: skip
+                page: action.page,
+                rank: rank
             };
         case actionTypes.FETCH_FEED_FAILURE:
             return {

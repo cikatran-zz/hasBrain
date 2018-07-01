@@ -1,12 +1,13 @@
 import React from 'react'
 import {
-    Text, View, FlatList, StyleSheet, TouchableOpacity, Dimensions
+    View, FlatList, StyleSheet, TouchableOpacity, Dimensions
 } from 'react-native'
 import {colors} from "../../../constants/colors";
 import {onboardingItemStyle} from "../../../constants/theme";
 import _ from 'lodash'
 import OnboardingSectionListItem from "./OnboardingSectionListItem";
 import PathSlider from "../../../components/PathSlider";
+import HBText from "../../../components/HBText";
 
 export default class OnboardingSectionList extends React.Component {
 
@@ -63,7 +64,7 @@ export default class OnboardingSectionList extends React.Component {
             //                   renderItem={({item, index}) => this._renderItem(item, index, numColumns)}/>)
             return(
                 <View style={styles.pathView}>
-                    <Text style={styles.pathText}>{"\"" + data[this.state.selected].title + "\""}</Text>
+                    <HBText style={styles.pathText}>{"\"" + data[this.state.selected].title + "\""}</HBText>
                     <PathSlider style={styles.pathSlider} numberOfPoints={data.length} selected={this.state.selected}
                                 onChoose={this._onChangeSelected}/>
                 </View>

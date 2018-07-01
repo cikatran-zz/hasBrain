@@ -2,16 +2,13 @@ import React from 'react'
 import {
     FlatList,
     SectionList,
-    Text,
-    TouchableOpacity,
     TouchableWithoutFeedback,
     View,
     StyleSheet,
     Dimensions,
     Share, NativeModules, Platform, Image,
     Animated,
-    Alert, RefreshControl,
-    StatusBar
+    StatusBar, Alert
 } from 'react-native'
 import {colors} from '../../constants/colors'
 import VerticalRow from '../../components/VerticalRow'
@@ -25,9 +22,11 @@ import {extractRootDomain} from "../../utils/stringUtils";
 import LoadingRow from "../../components/LoadingRow";
 import * as moment from 'moment';
 import {rootViewTopPadding} from "../../utils/paddingUtils";
-import ToggleTagComponent from '../../components/ToggleTagComponent'
+import HBText from '../../components/HBText'
 import {DotsLoader} from 'react-native-indicator';
 import ActionSheet from "react-native-actionsheet";
+import ToggleTagComponent from "../../components/ToggleTagComponent";
+import {getChosenTopics} from "../../api";
 
 const horizontalMargin = 5;
 
@@ -57,18 +56,27 @@ export default class Explore extends React.Component {
         this.offset = 0;
         this._currentPositionVal = 1;
         this._scrollView = null;
-        // this._debounceReloadAndSave = _.debounce(this._reloadAndSaveTag, 500);
+        this.rank = null;
+        this._debounceReloadAndSave = _.debounce(this._reloadAndSaveTag, 500);
     }
 
     componentDidMount() {
         this.props.getSaved();
-        // this.props.getSourceList();
-        this.props.getFeed(1, 10);
+        this.props.getSourceList();
+        getChosenTopics().then((value)=>{
+            let topics = null;
+            if (value) {
+                topics = value.filter(x=>x !== "ALL");
+            }
+            this.props.getFeed(1, 10, null, topics);
+        });
+
         this.props.getBookmarkedIds();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
             StatusBar.setBarStyle('dark-content');
             (Platform.OS !== 'ios') && StatusBar.setBackgroundColor('transparent');
+            this._onRefresh();
         });
         this._setUpReadingTime();
     }
@@ -154,8 +162,18 @@ export default class Explore extends React.Component {
     };
 
     _renderVerticalItem = ({item, index}) => {
-        const {bookmarkedIds} = this.props;
+        const {bookmarkedIds, source} = this.props;
         let bookmarkedArticles = _.get(bookmarkedIds, 'data.articles', []);
+
+        let category = item.topicId;
+        if (source.tagMap.get('ALL')) {
+            category = item.reason;
+        }
+
+        if (item.actionType === "highlight") {
+            console.log("Highlight",category);
+        }
+
         return (
             <VerticalRow style={{marginTop: (index === 0) ? -20 : 0}}
                          title={_.get(item, 'contentData.title', '')}
@@ -165,7 +183,8 @@ export default class Explore extends React.Component {
                          sourceActionName={_.get(item, 'contentData.sourceActionName')}
                          sourceActionCount={_.get(item, 'contentData.sourceActionCount')}
                          sourceImage={_.get(item, 'sourceData.sourceImage', '')}
-                         category={item.reason}
+                         category={category}
+                         highlightData={item.highlightData}
                          time={_.get(item, 'contentData.sourceCreatedAt', '')}
                          readingTime={_.get(item, 'contentData.readingTime', '')}
                          onClicked={() => this._openReadingView({...item.contentData})}
@@ -188,7 +207,8 @@ export default class Explore extends React.Component {
             data={item}
             ItemSeparatorComponent={() => this._renderVerticalSeparator()}
             keyExtractor={this._keyExtractor}
-            renderItem={this._renderVerticalItem}/>
+            renderItem={this._renderVerticalItem}
+            removeClippedSubviews/>
     );
 
     _renderHorizontalItem = ({item}) => {
@@ -215,7 +235,7 @@ export default class Explore extends React.Component {
         }
         return (
             <View>
-                <Text style={styles.sectionTitle}>{section.title.toUpperCase()}</Text>
+                <HBText style={styles.sectionTitle}>{section.title.toUpperCase()}</HBText>
                 <Carousel
                     data={item}
                     keyExtractor={this._keyExtractor}
@@ -233,12 +253,37 @@ export default class Explore extends React.Component {
     };
 
     _fetchMore = () => {
-        const {feed} = this.props;
-        const {skip, count, isFetching} = feed;
-        if (skip < count && !isFetching) {
-            let page = Math.round(skip / 10) + 1;
-            this.props.getFeed(page, 10)
+        const {feed, source} = this.props;
+        const {tagMap, tags} = source;
+        const {data, count, isFetching, rank} = feed;
+        let topics = null;
+        if (!tagMap.get('ALL') && tags != null) {
+            topics = tags.map((item) => {
+                if (tagMap.get(item)) {
+                    return item;
+                }
+            });
+            topics = _.compact(topics)
         }
+        if (data != null && count > 10 && !isFetching) {
+
+            this.props.getFeed(1, 10, rank, topics)
+        }
+    };
+
+    _onRefresh = () => {
+        const {source} = this.props;
+        const {tagMap, tags} = source;
+        let topics = null;
+        if (!tagMap.get('ALL') && tags != null) {
+            topics = tags.map((item) => {
+                if (tagMap.get(item)) {
+                    return item;
+                }
+            });
+            topics = _.compact(topics)
+        }
+        this.props.getFeed(1, 10, null, topics);
     };
 
     _renderListFooter = (isFetching) => {
@@ -251,79 +296,72 @@ export default class Explore extends React.Component {
         }
 
     };
-    //
-    // _renderTagsItem = ({item}) => {
-    //     const {source} = this.props;
-    //     if (item == null)
-    //         return null;
-    //     if (!source.tagMap)
-    //         return null;
-    //     return (
-    //         <ToggleTagComponent id={item} onPressItem={this._onTagItemPress} isOn={source.tagMap.get(item)}/>
-    //     )
-    // };
 
-    // _onTagItemPress = (id) => {
-    //     const {source} = this.props;
-    //     const {tags, chosenSources} = source;
-    //     let isOn = source.tagMap.get(id);
-    //     let tagMap = new Map(source.tagMap);
-    //     let chosenSourceArray = Array.from(Object.keys(chosenSources));
-    //
-    //     if (id === 'All') {
-    //         if (!isOn) {
-    //             tagMap.set(id, !isOn);
-    //             let tagKeyArray = Array.from(tagMap.keys());
-    //             this._debounceReloadAndSave(chosenSourceArray, _.drop(tags));
-    //             for (let tagKey of tagKeyArray) {
-    //                 if (tagKey !== 'All') {
-    //                     tagMap.set(tagKey, false);
-    //                 }
-    //             }
-    //         }
-    //     } else {
-    //
-    //         let newTagsArray = tags.map((item) => {
-    //             if (tagMap.get(item)) {
-    //                 return item;
-    //             }
-    //         });
-    //         newTagsArray = _.compact(newTagsArray);
-    //         if (isOn && newTagsArray.length < 2) {
-    //             Alert.alert('Oops!', 'You must select at least 1 tag', [
-    //                 {text: 'Got it!'},
-    //             ])
-    //         } else {
-    //             tagMap.set(id, !isOn);
-    //             if (!isOn) {
-    //                 newTagsArray.push(id);
-    //             } else {
-    //                 _.remove(newTagsArray, (x) => x === id);
-    //             }
-    //             this._debounceReloadAndSave(chosenSourceArray, newTagsArray);
-    //         }
-    //         if (tagMap.get('All')) {
-    //             tagMap.set('All', false);
-    //         }
-    //     }
-    //     this.props.updateUserSourceTag(tagMap);
-    // };
+    _renderTagsItem = ({item}) => {
+        const {source} = this.props;
+        if (item == null)
+            return null;
+        if (!source.tagMap)
+            return null;
+        return (
+            <ToggleTagComponent id={item} onPressItem={this._onTagItemPress} isOn={source.tagMap.get(item)}/>
+        )
+    };
 
-    // _reloadAndSaveTag = (sources, tags) => {
-    //     const {source} = this.props;
-    //     const {data, chosenSources} = source;
-    //     // this.props.getArticles(10, 0, sources, tags);
-    //     let newSource = {};
-    //     for (let item of data) {
-    //         if (_.get(chosenSources, item.sourceId, undefined)) {
-    //             let defaultTagArray = item.categories;
-    //             let newChosenSourceTagArray = _.intersection(tags, defaultTagArray);
-    //             newSource[item.sourceId] = newChosenSourceTagArray;
-    //         }
-    //     }
-    //     if (!_.isEmpty(newSource))
-    //         this.props.updateSourceList(newSource);
-    // };
+    _onTagItemPress = (id) => {
+        if (id === "_filter") {
+            this.props.navigation.navigate('MySource')
+            return;
+        }
+        const {source} = this.props;
+        const {tags} = source;
+        let isOn = source.tagMap.get(id);
+        let tagMap = new Map(source.tagMap);
+
+        if (id === 'ALL') {
+            if (!isOn) {
+                tagMap.set(id, !isOn);
+                let tagKeyArray = Array.from(tagMap.keys());
+                this._debounceReloadAndSave(null);
+                for (let tagKey of tagKeyArray) {
+                    if (tagKey !== 'ALL') {
+                        tagMap.set(tagKey, false);
+                    }
+                }
+            }
+        } else {
+
+            let newTagsArray = tags.map((item) => {
+                if (tagMap.get(item)) {
+                    return item;
+                }
+            });
+            newTagsArray = _.compact(newTagsArray);
+            if (isOn && newTagsArray.length < 2) {
+                Alert.alert('Oops!', 'You must select at least 1 tag', [
+                    {text: 'Got it!'},
+                ])
+            } else {
+                tagMap.set(id, !isOn);
+                if (!isOn) {
+                    newTagsArray.push(id);
+                } else {
+                    _.remove(newTagsArray, (x) => x === id);
+                }
+                this._debounceReloadAndSave(newTagsArray);
+            }
+            if (tagMap.get('ALL')) {
+                tagMap.set('ALL', false);
+            }
+        }
+        this.props.updateUserSourceTag(tagMap);
+
+    };
+
+    _reloadAndSaveTag = (topics) => {
+        this.props.getFeed(1, 10, null, topics)
+        RNUserKit.storeProperty({[strings.chosenTopicsKey]: topics}, (e,r)=> {})
+    };
 
     _onScroll = (event) => {
         const {feed} = this.props;
@@ -428,7 +466,7 @@ export default class Explore extends React.Component {
                         ref={(ref) => this._scrollView = ref}
                         contentContainerStyle={{marginTop: 67, marginBottom: 0}}
                         refreshing={false}
-                        onRefresh={() => this.props.getFeed(1, 10)}
+                        onRefresh={this._onRefresh}
                         onScrollEndDrag={this._onScrollEnd}
                         onScroll={this._onScroll}
                         scrollEventThrottle={16}
@@ -448,13 +486,21 @@ export default class Explore extends React.Component {
                         ]}
                     />
                     <Animated.View style={this._animatedStyle()}>
-                        <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('MySource')}>
-                            <View style={styles.searchBar}>
-                                <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
-                                <Text style={styles.searchText}>For you</Text>
+                        {/*<TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('MySource')}>*/}
+                            {/*<View style={styles.searchBar}>*/}
+                                {/*<Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>*/}
+                                {/*<HBText style={styles.searchText}>For you</HBText>*/}
 
-                            </View>
-                        </TouchableWithoutFeedback>
+                            {/*</View>*/}
+                        {/*</TouchableWithoutFeedback>*/}
+                        <FlatList
+                            style={{marginLeft: 25, marginBottom: 0, marginTop: 10, height: 50}}
+                            keyExtractor={this._keyExtractor}
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                            data={['_filter'].concat(source.tags)}
+                            renderItem={this._renderTagsItem}
+                        />
                     </Animated.View>
                 </View>
             </View>
@@ -546,7 +592,6 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         fontSize: 14,
         color: colors.grayTextSearch,
-        fontFamily: 'CircularStd-Book',
         opacity: 0.5
     },
 });

@@ -9,9 +9,17 @@ import _ from 'lodash';
 import {forkJoin} from 'rxjs';
 
 const {RNCustomWebview, RNUserKit} = NativeModules;
+
+let globalAppoloClient = null;
+
+
+export const resetAuthToken = () => {
+    globalAppoloClient = null;
+};
+
 const getAuthToken = () => {
-    return new Promise((resolve, reject)=> {
-        NativeModules.RNUserKitIdentity.getProfileInfo((error, result)=> {
+    return new Promise((resolve, reject) => {
+        NativeModules.RNUserKitIdentity.getProfileInfo((error, result) => {
             if (error) {
                 reject(error)
             } else {
@@ -23,9 +31,15 @@ const getAuthToken = () => {
 };
 
 const getApolloClient = () => {
-    return new Promise((resolve, reject)=> {
-        getAuthToken().then((authToken)=> {
+    return new Promise((resolve, reject) => {
+        if (globalAppoloClient) {
+            resolve(globalAppoloClient);
+            return;
+        }
+        console.log("Create new Token");
+        getAuthToken().then((authToken) => {
             console.log("Auth", authToken);
+            globalAuthToken = authToken;
             const httpLinkContentkit = new HttpLink({
                 uri: config.serverURL,
                 headers: {
@@ -33,18 +47,18 @@ const getApolloClient = () => {
                     usertoken: authToken,
                 }
             });
-            resolve(new ApolloClient({
+            globalAppoloClient = new ApolloClient({
                 link: errorHandler.concat(httpLinkContentkit),
                 cache: new InMemoryCache()
-            }))
+            });
+            resolve(globalAppoloClient);
         })
     });
-
 };
 
 const postApolloClient = (body) => {
-    return new Promise((resolve, reject)=> {
-        getAuthToken().then((authToken)=> {
+    return new Promise((resolve, reject) => {
+        getAuthToken().then((authToken) => {
             const httpLinkContentkit = new HttpLink({
                 uri: config.serverURL,
                 headers: {
@@ -64,11 +78,11 @@ const postApolloClient = (body) => {
 };
 
 const gqlPost = (query) => {
-    return new Promise((resolve, reject)=> {
-        postApolloClient().then((client)=> {
-            client.mutate(query).then((result)=>{
+    return new Promise((resolve, reject) => {
+        postApolloClient().then((client) => {
+            client.mutate(query).then((result) => {
                 resolve(result)
-            }).catch((err)=> {
+            }).catch((err) => {
                 reject(err)
             })
         })
@@ -88,11 +102,11 @@ const errorHandler = onError(({networkError}) => {
 });
 
 const gqlQuery = (query) => {
-    return new Promise((resolve, reject)=> {
-        getApolloClient().then((client)=> {
-            client.query(query).then((result)=>{
+    return new Promise((resolve, reject) => {
+        getApolloClient().then((client) => {
+            client.query(query).then((result) => {
                 resolve(result)
-            }).catch((err)=> {
+            }).catch((err) => {
                 reject(err)
             })
         })
@@ -117,7 +131,7 @@ export const getUserHighLight = (page, perPage) => {
         query: config.queries.userHighlight,
         variables: {page: page, perPage: perPage}
     })
-}
+};
 
 export const postBookmark = (id) => {
     return gqlPost({
@@ -164,13 +178,13 @@ export const postArticleCreateIfNotExist = (article) => {
 export const postHighlightText = (articleId, text) => {
     return gqlPost({
         mutation: config.mutation.highlightText,
-        variables: { articleId: articleId, highlightedText: text}
+        variables: {articleId: articleId, highlightedText: text}
     })
 };
 
-_getProfileId = ()=> {
-    return new Promise((resolve, reject)=> {
-        NativeModules.RNUserKitIdentity.getProfileInfo((error, result)=> {
+_getProfileId = () => {
+    return new Promise((resolve, reject) => {
+        NativeModules.RNUserKitIdentity.getProfileInfo((error, result) => {
             let profileId = result[0].id;
             resolve(profileId);
         })
@@ -252,7 +266,7 @@ export const getIntents = (segments) => {
 };
 
 export const getUrlInfo = (url) => {
-    return fetch('https://w4gpgbc6mb.execute-api.ap-southeast-1.amazonaws.com/production/v1/metadata/extract?url='+url, {
+    return fetch('https://w4gpgbc6mb.execute-api.ap-southeast-1.amazonaws.com/production/v1/metadata/extract?url=' + url, {
         method: 'GET',
     }).then(response => {
         return response.json()
@@ -263,9 +277,9 @@ export const getUrlInfo = (url) => {
 
 export const getLastReadingPosition = (contentId) => {
     return new Promise((resolve, reject) => {
-        RNUserKit.getProperty(strings.readingPositionKey+"."+contentId, (error, result) => {
+        RNUserKit.getProperty(strings.readingPositionKey + "." + contentId, (error, result) => {
             if (error == null && result != null) {
-                let lastReadingPosition = _.get(result[0], strings.readingPositionKey+"."+contentId, {x:0, y:0}) ;
+                let lastReadingPosition = _.get(result[0], strings.readingPositionKey + "." + contentId, {x: 0, y: 0});
                 resolve(lastReadingPosition == null ? {x: 0, y: 0} : lastReadingPosition)
             } else {
                 reject(error);
@@ -314,14 +328,14 @@ export const updateRecommendSoureToProfile = (ids) => {
     return new Promise((resolve, reject) => {
         getRecommendSource(ids).then(value => {
             let articleFilter = {[strings.articleFilter]: value.data.viewer.sourceRecommend};
-            RNUserKit.storeProperty(articleFilter,(err, results)=>{
+            RNUserKit.storeProperty(articleFilter, (err, results) => {
                 if (err == null && results != null) {
                     resolve(articleFilter);
                 } else {
                     reject(err);
                 }
             })
-        }).catch(err=>{
+        }).catch(err => {
             reject(err);
         });
     });
@@ -333,17 +347,24 @@ export const getSourceList = () => {
     });
 }
 
+export const getTopicList = () => {
+    return gqlQuery({
+        query: config.queries.topicList
+    });
+}
+
 export const getUserFollow = (kind) => {
     return gqlQuery({
         query: config.queries.userFollow,
-        variables: {kind: kind}
+        variables: {kind: kind},
+        fetchPolicy: 'network-only'
     })
 }
 
-export const updateSourceList = (sources) => {
+export const updateUserFollow = (kind, sourceIds) => {
     return gqlPost({
         mutation: config.mutation.updateUserFollow,
-        variables: {kind:"sourcetype", sourceIds: sources}
+        variables: {kind: kind, sourceIds: sourceIds}
     })
 }
 
@@ -363,7 +384,9 @@ export const getExploreArticles = (limit, skip, sources, tags) => {
                     });
                     resolve(getExploreFunc(limit, skip, chosenSources, chosentags));
                 },
-                err => {reject(err)}
+                err => {
+                    reject(err)
+                }
             )
         })
     } else {
@@ -371,13 +394,13 @@ export const getExploreArticles = (limit, skip, sources, tags) => {
     }
 }
 
-const  getExploreFunc = (limit, skip, sources, tags) => {
+const getExploreFunc = (limit, skip, sources, tags) => {
     let destSources;
     let destTags;
     if (!_.isEmpty(sources))
-     destSources = sources.map((source)=> ({value: source}));
+        destSources = sources.map((source) => ({value: source}));
     if (!_.isEmpty(tags))
-     destTags = tags.map((tag)=>({value: tag}));
+        destTags = tags.map((tag) => ({value: tag}));
     let query = getExploreArticlesQuery(!_.isEmpty(sources), !_.isEmpty(tags));
     let variables;
     if (!_.isEmpty(sources) && !_.isEmpty(tags)) {
@@ -398,7 +421,7 @@ const  getExploreFunc = (limit, skip, sources, tags) => {
 
 export const getWatchingHistory = (contentId) => {
     return new Promise((resolve, reject) => {
-        RNUserKit.getProperty(strings.readingHistoryKey, (error, result)=> {
+        RNUserKit.getProperty(strings.readingHistoryKey, (error, result) => {
             if (error == null && result != null) {
                 let readingHistory = _.get(result[0], strings.readingHistoryKey, []);
                 if (readingHistory == null) {
@@ -426,10 +449,17 @@ export const getCategory = () => {
     })
 };
 
-export const getFeed = (page, perPage) => {
+export const getFeed = (page, perPage, rank, topics) => {
+    let variables = {page: page, perPage: perPage}
+    if (rank) {
+        variables["currentRank"] = rank;
+    }
+    if (topics) {
+        variables["topics"] = topics;
+    }
     return gqlQuery({
         query: config.queries.feed,
-        variables: {page: page, perPage: perPage}
+        variables: variables
     })
 };
 
@@ -438,4 +468,17 @@ export const getBookmarkedIds = (page, perPage) => {
         query: config.queries.bookmaredIds,
         variables: {page: page, perPage: perPage}
     })
+};
+
+export const getChosenTopics = () => {
+    return new Promise((resolve, reject) => {
+        RNUserKit.getProperty(strings.chosenTopicsKey, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                let chosenTopics = _.get(result[0], strings.chosenTopicsKey, null);
+                resolve(chosenTopics);
+            }
+        });
+    });
 };

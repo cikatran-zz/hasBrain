@@ -171,7 +171,7 @@ mutation createUser($profileId: MongoID, $name: String) {
 const postHighlightedText = gql`
 mutation highlightedText($articleId: MongoID, $highlightedText: String){
   user{
-    userhighlightCreate(record: { articleId: $articleId, highlight: $highlightedText}) {
+    userhighlightCreate(record: { articleId: $articleId, highlights: {highlight: $highlightedText}}) {
       recordId
     }
   }
@@ -425,13 +425,26 @@ const getSourceList = gql`
 `;
 
 const getFeed = gql`
-query getFeed($page: Int, $perPage: Int){
+query getFeed($page: Int, $perPage: Int, $currentRank: Float, $topics: [String]){
   viewer{
-    feedPagination(sort:RANK_DESC, page: $page, perPage: $perPage) {
+    feedPagination(sort:RANK_DESC, page: $page, perPage: $perPage, filter:{
+      _operators: {
+        rank: {
+          lt: $currentRank
+        }
+        topicId: {
+          in: $topics
+        }
+      }
+    }) {
       count
       items {
         contentId
         reason
+        rank
+        topicId
+        actionType
+        actionId
         sourceData{
           title
           sourceImage
@@ -450,11 +463,61 @@ query getFeed($page: Int, $perPage: Int){
           readingTime
           sourceCreatedAt
         }
+        highlightData {
+          userData {
+            profileId
+            name
+          }
+          highlights {
+            highlight
+          }
+        }
       }
     }
   }
 }
 `;
+
+// const getFeedFilter = gql`
+//
+// `;
+//
+// const getInitFeedFilter = gql`
+//
+// `;
+
+// const getInitFeed = gql`
+// query getFeed($page: Int, $perPage: Int){
+//   viewer{
+//     feedPagination(sort:RANK_DESC, page: $page, perPage: $perPage) {
+//       count
+//       items {
+//         contentId
+//         reason
+//         rank
+//         sourceData{
+//           title
+//           sourceImage
+//         }
+//         contentData{
+//           _id
+//           sourceName
+//           kind
+//           title
+//           contentId
+//           sourceImage
+//           shortDescription
+//           sourceActionName
+//           sourceActionCount
+//           sourceCommentCount
+//           readingTime
+//           sourceCreatedAt
+//         }
+//       }
+//     }
+//   }
+// }
+// `;
 
 const getExploreArticles = gql`
 query getExploreArticles($skip: Int, $limit: Int, $sources: [JSON], $tags: [JSON]){
@@ -530,15 +593,49 @@ query getUserFollow($kind: EnumuserfollowtypeKind){
     }
   }
 }
-`
+`;
+
+// const updateUserFollow = gql`
+// mutation updateUserFollow($kind: String!, $sourceIds: [ID]){
+//   user{
+//     followCreateMany(record: {
+//       kind: $kind,
+//       sourceIds: $sourceIds
+//     })
+//   }
+// }
+// `;
 
 const updateUserFollow = gql`
 mutation updateUserFollow($kind: String!, $sourceIds: [ID]){
   user{
-    followCreateMany(record: {
+    followPushMany(record:{
       kind: $kind,
       sourceIds: $sourceIds
     })
+  }
+}
+`;
+
+const getTopic = gql`
+query{
+  viewer{
+    topicPagination {
+      count
+      items {
+        title
+        longDescription
+        shortDescription
+        state
+        image
+        privacy
+        group
+        updatedAt
+        createdAt
+        projectId
+        profileId
+      }
+    } 
   }
 }
 `
@@ -562,6 +659,7 @@ export default {
         feed: getFeed,
         bookmaredIds: getBookmarkedIds,
         userFollow: getUserFollow,
+        topicList: getTopic
     },
     mutation: {
         bookmark: postBookmark,

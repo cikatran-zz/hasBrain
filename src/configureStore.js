@@ -8,6 +8,7 @@ import { createLogger } from 'redux-logger';
 import { persistStore, persistReducer } from 'redux-persist'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import storage from 'redux-persist/lib/storage'
+import feedReducer from "./reducers/feedReducer";
 
 
 const epicMiddleware = createEpicMiddleware();
@@ -16,7 +17,7 @@ let applyMiddlewares = applyMiddleware(epicMiddleware);
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['articlesReducer', 'playlistReducer', 'savedReducer', 'sourcelistReducer', 'userPathReducer', 'pathBookmarkedReducer', 'pathRecommendReducer'],
+    blacklist: ['articlesReducer', 'playlistReducer', 'savedReducer', 'sourcelistReducer', 'userPathReducer', 'pathBookmarkedReducer', 'pathRecommendReducer', 'feedReducer'],
     stateReconciler: autoMergeLevel2
 }
 

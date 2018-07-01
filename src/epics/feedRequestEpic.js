@@ -8,8 +8,8 @@ import { ofType } from 'redux-observable';
 const getFeedEpic = (action$) =>
     action$.pipe(ofType(actionTypes.FETCHING_FEED),
         mergeMap(action =>
-            from(getFeed(action.page, action.perPage)).pipe(
-                map(response => getFeedSuccess(response.data, action.skip)),
+            from(getFeed(action.page, action.perPage, action.rank, action.topics)).pipe(
+                map(response => getFeedSuccess(response.data, action.page, action.rank)),
                 catchError(error => of(getFeedFailure(error)))
         )));
 

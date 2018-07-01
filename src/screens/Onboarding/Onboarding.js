@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-    Text, View, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, NativeModules
+    View, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, NativeModules
 } from 'react-native'
 import {colors} from "../../constants/colors";
 import OnboardingPage from "./OnboardingPage/OnboardingPage";
@@ -9,6 +9,7 @@ import {rootViewBottomPadding, rootViewTopPadding} from "../../utils/paddingUtil
 import _ from 'lodash'
 import {postUserInterest} from '../../api'
 import {strings} from "../../constants/strings";
+import HBText from '../../components/HBText'
 
 export default class Onboarding extends React.Component {
 
@@ -110,9 +111,9 @@ export default class Onboarding extends React.Component {
 
     _renderNextButton = () => {
         if (this.state.isNextEnable) {
-            return (<Text style={[styles.nextButtonText,{backgroundColor: colors.blueText}]}>{this.state.nextText}</Text>)
+            return (<HBText style={[styles.nextButtonText,{backgroundColor: colors.blueText}]}>{this.state.nextText}</HBText>)
         } else {
-            return (<Text style={[styles.nextButtonText,{backgroundColor: colors.grayLine}]}>{this.state.nextText}</Text>)
+            return (<HBText style={[styles.nextButtonText,{backgroundColor: colors.grayLine}]}>{this.state.nextText}</HBText>)
         }
     };
 
