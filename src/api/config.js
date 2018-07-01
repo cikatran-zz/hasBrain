@@ -620,7 +620,7 @@ mutation updateUserFollow($kind: String!, $sourceIds: [ID]){
 const getTopic = gql`
 query{
   viewer{
-    topicPagination {
+    topicPagination(page: 1, perPage: 1000) {
       count
       items {
         title
