@@ -269,37 +269,18 @@ query getUserPath($id: MongoID){
     pathOne(filter: {_id: $id}) {
       title
       shortDescription
-      contentData {
-        contentId
-        content
-        readingTime
-        title
-        longDescription
-        shortDescription
-        sourceImage
-        state
-        custom
+      topic {
+        topicId
+        levelId
         createdAt
-        updatedAt
-        projectId
-        type
-        kind
-        contentData {
-          _id
+      }
+      topicData {
+        _id
+        title
+        articleData {
           contentId
-          content
-          readingTime
           title
-          longDescription
-          shortDescription
           sourceImage
-          state
-          custom
-          createdAt
-          updatedAt
-          projectId
-          type
-          kind
         }
       }
     }
