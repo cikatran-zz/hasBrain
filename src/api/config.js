@@ -643,6 +643,8 @@ query{
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
+    userkitURL: 'https://userkit-identity.mstage.io/v2/client/',
+    authenKeyUserKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0X2lkIjoiNWFkODU4MjRiM2NlYzM0MTUzMDRhZWI2IiwiaWF0IjoxNTI0MTI5MTI2fQ.4HywQhdO-7LEEYcwrAsybLqBArgzHbD0sy2yScU2Rjk',
     queries: {
         articles: articles,
         playlist: playlist,
@@ -672,5 +674,6 @@ export default {
         createBookmark: createBookmark,
         removeBookmark: removeBookmark,
         updateUserFollow: updateUserFollow
-    }
+    },
+    USERKIT_PROFILE_SEARCH: 'profiles/search'
 };

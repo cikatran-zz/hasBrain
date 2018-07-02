@@ -7,6 +7,7 @@ import {NativeModules} from "react-native";
 import {strings} from "../constants/strings";
 import _ from 'lodash';
 import {forkJoin} from 'rxjs';
+import axios from 'axios'
 
 const {RNCustomWebview, RNUserKit} = NativeModules;
 
@@ -482,3 +483,45 @@ export const getChosenTopics = () => {
         });
     });
 };
+
+
+//Axios
+
+const instance = axios.create({
+    baseURL: `${config.userkitURL}`,
+    headers: {'X-USERKIT-TOKEN': config.authenKeyUserKit}
+});
+
+
+const requestResponse = (response) => {
+    switch (response.status) {
+        case 403:
+            return {error: {message: 'Invalid token'}};
+        case 404:
+            return {error: {message: 'Cannot connect to server'}};
+        default:
+            return response.data;
+    }
+};
+
+const requestError = (err) => {
+    throw err;
+};
+
+const post = (endpoints, params) => {
+    return instance.post(`${endpoints}`, params)
+        .then(requestResponse)
+        .catch(requestError);
+};
+
+export const getUserKitProfile = (accountRole = 'contributor', offset = 0, limit = 20) => {
+    return post(`${config.USERKIT_PROFILE_SEARCH}`,
+        {
+            query: {
+                _account_role: accountRole
+            },
+            limit: limit,
+            offset: offset
+        }
+    );
+}

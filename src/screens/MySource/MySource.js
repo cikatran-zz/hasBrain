@@ -19,6 +19,7 @@ import CheckComponent from '../../components/CheckComponent';
 import HBText from '../../components/HBText'
 import Sources from './Sources'
 import Topic from './Topic'
+import People from './People'
 
 export default class MySource extends React.Component {
 
@@ -38,6 +39,7 @@ export default class MySource extends React.Component {
                 this._sources.updateFollow();
                 break;
             case 1:
+                this._people.updateFollow();
                 break;
             case 2:
                 this._topics.updateFollow();
@@ -56,6 +58,7 @@ export default class MySource extends React.Component {
                 this._sources.updateFollow();
                 break;
             case 1:
+                this._people.updateFollow();
                 break;
             case 2:
                 this._topics.updateFollow();
@@ -72,7 +75,7 @@ export default class MySource extends React.Component {
             case 0:
                 return <Sources onRef={component => this._sources = component}/>
             case 1:
-                return null;
+                return <People onRef={component => this._people = component}/>;
             case 2:
                 return <Topic onRef={component => this._topics = component}/>
             default:

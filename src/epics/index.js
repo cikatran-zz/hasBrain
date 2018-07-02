@@ -28,6 +28,8 @@ import getFeedEpic from "./feedRequestEpic";
 import getBookmarkedIdsEpic from "./bookmarkedIdsRequestEpic";
 import getTopicListEpic from './getTopicRequestEpic'
 import updateTopicListEpic from './updateTopicEpic'
+import getContributorListEpic from './getContributorRequestEpic'
+import updateFollowContributorEpic from './updateFollowContributorEpic'
 
 const rootEpic = combineEpics(
     getSavedEpic,
@@ -55,7 +57,9 @@ const rootEpic = combineEpics(
     getFeedEpic,
     getBookmarkedIdsEpic,
     getTopicListEpic,
-    updateTopicListEpic
+    updateTopicListEpic,
+    getContributorListEpic,
+    updateFollowContributorEpic
 );
 
 export default rootEpic;
