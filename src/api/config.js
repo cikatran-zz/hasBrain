@@ -168,11 +168,42 @@ mutation createUser($profileId: MongoID, $name: String) {
 }
 `;
 
+// const postHighlightedText = gql`
+// mutation highlightedText($articleId: MongoID, $highlightedText: String){
+//   user{
+//     userhighlightCreate(record: { articleId: $articleId, highlights: {highlight: $highlightedText}}) {
+//       recordId
+//     }
+//   }
+// }
+// `;
+
 const postHighlightedText = gql`
-mutation highlightedText($articleId: MongoID, $highlightedText: String){
-  user{
-    userhighlightCreate(record: { articleId: $articleId, highlights: {highlight: $highlightedText}}) {
-      recordId
+mutation highlightedText($articleId: ID!, $highlightedText: String, $comment: String, $note: String, $position: String) {
+  user {
+    userhighlightAddOrUpdateOne(filter:{
+      articleId: $articleId
+    }, record: {
+      position: $position,
+      highlight: $highlightedText,
+      comment: $comment,
+      note: $note
+    }) {
+      recordId,
+      record {
+        articleId
+        createdAt
+        updatedAt
+        profileId
+        projectId
+        highlights {
+          comment
+          highlight
+          note
+          position
+          _id
+        }
+      }
     }
   }
 }
@@ -252,7 +283,13 @@ const getUserHighLight = gql`
                 count
                 items {
                     articleId
-                    highlight
+                    highlights {
+                        comment
+                        highlight
+                        note
+                        position
+                        _id
+                    }
                     state
                     article {
                         url
@@ -262,6 +299,24 @@ const getUserHighLight = gql`
             }
         }
     }`;
+
+const getUserHighlightOne = gql`
+query getHighlightOne($id: MongoID){
+  viewer {
+    userhighlightOne(filter: {
+      articleId: $id
+    }) {
+      highlights {
+        comment
+        highlight
+        note
+        position
+        _id
+      }
+    }
+  }
+}
+`;
 
 const getUserPath = gql`
 query getUserPath($id: MongoID){
@@ -638,7 +693,17 @@ query{
     } 
   }
 }
-`
+`;
+
+const postFollowingPersonas = gql`
+mutation followPersonas($ids: [ID]!){
+  user {
+    followByPersonas(record: {
+      personaIds: $ids
+    })
+  }
+}
+`;
 
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
@@ -673,7 +738,8 @@ export default {
         createIntent: intentCreate,
         createBookmark: createBookmark,
         removeBookmark: removeBookmark,
-        updateUserFollow: updateUserFollow
+        updateUserFollow: updateUserFollow,
+        followByPersonas: postFollowingPersonas
     },
     USERKIT_PROFILE_SEARCH: 'profiles/search'
 };

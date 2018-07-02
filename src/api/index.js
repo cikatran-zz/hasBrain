@@ -148,6 +148,7 @@ export const postUnbookmark = (id) => {
     })
 };
 
+
 export const postCreateIntent = (name) => {
     return gqlPost({
         mutation: config.mutation.createIntent,
@@ -155,11 +156,17 @@ export const postCreateIntent = (name) => {
     });
 };
 
-export const postCreateUser = (profileId, name) => {
-    return gqlPost({
-        mutation: config.mutation.createUser,
-        variables: {profileId: profileId, name: name}
-    })
+export const postCreateUser = () => {
+    return new Promise((resolve, reject) => {
+        Promise.all([_getProfileId(), getUserName()]).then((values)=>{
+            gqlPost({
+                mutation: config.mutation.createUser,
+                variables: {profileId:values[0], name: values[1]}
+            }).then(value => {resolve(value)}).catch((e)=>reject(e));
+        }).catch((err)=>{
+            reject(err);
+        });
+    });
 };
 
 export const postUserInterest = (segments, intents) => {
@@ -176,16 +183,17 @@ export const postArticleCreateIfNotExist = (article) => {
     })
 };
 
-export const postHighlightText = (articleId, text) => {
+export const postHighlightText = (articleId, text, position, comment, note) => {
     return gqlPost({
         mutation: config.mutation.highlightText,
-        variables: {articleId: articleId, highlightedText: text}
+        variables: {articleId: articleId, highlightedText: text, comment: comment, note: note, position: position}
     })
 };
 
 _getProfileId = () => {
     return new Promise((resolve, reject) => {
         NativeModules.RNUserKitIdentity.getProfileInfo((error, result) => {
+            console.log("Profile", result);
             let profileId = result[0].id;
             resolve(profileId);
         })
@@ -523,4 +531,21 @@ export const getUserKitProfile = (accountRole = 'contributor', offset = 0, limit
             offset: offset
         }
     );
-}
+};
+
+export const getAvatar = () => {
+    return new Promise((resolve, reject) => {
+        NativeModules.RNUserKitIdentity.getProfileInfo((error, result) => {
+            let avatar = result[0].avatars;
+            resolve(avatar);
+        })
+    });
+};
+
+export const followByPersonas = (personaIds) => {
+    return gqlPost({
+        mutation: config.mutation.followByPersonas,
+        variables: {ids: personaIds}
+    })
+};
+

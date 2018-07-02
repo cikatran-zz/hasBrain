@@ -9,8 +9,6 @@ import {strings} from "../../constants/strings";
 import { facebookLogin } from '../../utils/facebookLogin'
 import { googleLogin } from '../../utils/googleLogin'
 import NavigationActions from 'react-navigation/src/NavigationActions'
-import PathSlider from "../../components/PathSlider";
-import {postCreateUser} from "../../api";
 import IndicatorModal from "../../components/IndicatorModal";
 import Toast from "react-native-root-toast";
 import HBText from '../../components/HBText'
@@ -59,20 +57,12 @@ export default class Authentication extends React.PureComponent {
         this.props.navigation.dispatch(resetAction);
     };
 
-    _createUser = (profile) => {
-        postCreateUser(_.get(profile, 'id', ''), _.get(profile, '_name', '')).then((value) => {
-            //console.log(value);
-        }).catch((error) => {
-            //console.log(error);
-        });
-    };
-
     _loginWithFacebook = () => {
         this.indicatorModal.setState({isShow: true});
         facebookLogin().then((value) => {
             this.indicatorModal.setState({isShow: false});
             if (value.new) {
-                this._createUser(_.get(value, 'profiles[0]', {}));
+                this.props.createUser();
             }
             this._goToNextScreen();
         }).catch((error) => {
@@ -86,7 +76,7 @@ export default class Authentication extends React.PureComponent {
         googleLogin().then((value) => {
             this.indicatorModal.setState({isShow: false});
             if (value.new) {
-                this._createUser(_.get(value, 'profiles[0]', {}));
+                this.props.createUser();
             }
             this._goToNextScreen();
         })

@@ -44,8 +44,8 @@ export const peopleNameCardStyle = {
 
 export const hightlightTextStyle = {
     fontSize: 16,
-    fontStyle: 'italic',
-    color: colors.articleCategory
+    color: colors.articleCategory,
+    fontFamily: 'CircularStd-BookItalic'
 };
 
 export const onboardingTitleStyle = {
