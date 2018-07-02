@@ -104,7 +104,7 @@ const errorHandler = onError(({networkError}) => {
 const gqlQuery = (query) => {
     return new Promise((resolve, reject) => {
         getApolloClient().then((client) => {
-            client.query(query).then((result) => {
+            client.query({fetchPolicy: 'network-only', ...query}).then((result) => {
                 resolve(result)
             }).catch((err) => {
                 reject(err)
@@ -356,8 +356,7 @@ export const getTopicList = () => {
 export const getUserFollow = (kind) => {
     return gqlQuery({
         query: config.queries.userFollow,
-        variables: {kind: kind},
-        fetchPolicy: 'network-only'
+        variables: {kind: kind}
     })
 }
 
