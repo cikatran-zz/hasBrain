@@ -92,12 +92,12 @@ export default function sourcelistReducer(state = initialState, action) {
             }
             if (countTag === 0 || countTag === action.topics.length) {
                 newTagMap.set("ALL", true);
-                for (let [key, value] of newTagMap) {
+                for (let key of newTags) {
                     newTagMap.set(key, false);
                 }
             }
             newTags = _.concat("ALL", newTags);
-            console.log(newTagMap);
+            console.log(countTag, newTagMap);
             return {
                 ...state,
                 tags: newTags,

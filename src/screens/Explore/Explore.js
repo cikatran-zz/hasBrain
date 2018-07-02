@@ -63,20 +63,20 @@ export default class Explore extends React.Component {
     componentDidMount() {
         this.props.getSaved();
         this.props.getSourceList();
-        getChosenTopics().then((value)=>{
-            let topics = null;
-            if (value) {
-                topics = value.filter(x=>x !== "ALL");
-            }
-            this.props.getFeed(1, 10, null, topics);
-        });
+        // getChosenTopics().then((value)=>{
+        //     let topics = null;
+        //     if (value) {
+        //         topics = value.filter(x=>x !== "ALL");
+        //     }
+        //     this.props.getFeed(1, 10, null, topics);
+        // });
 
         this.props.getBookmarkedIds();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
             this._setUpReadingTime();
             StatusBar.setBarStyle('dark-content');
             (Platform.OS !== 'ios') && StatusBar.setBackgroundColor('transparent');
-            this._onRefresh();
+            //this._onRefresh();
         });
         this._setUpReadingTime();
     }
@@ -95,6 +95,53 @@ export default class Explore extends React.Component {
             ...item,
             bookmarked: _.findIndex(bookmarkedArticles, (o) => (o === item._id)) !== -1
         });
+    };
+
+    _compareMaps = (map1, map2) => {
+        let testVal;
+        if (map1.size !== map2.size) {
+            return false;
+        }
+        for (let [key, val] of map1) {
+            testVal = map2.get(key);
+            if (testVal !== val || (testVal === undefined && !map2.has(key))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    componentWillReceiveProps(nextProps) {
+
+        const {source} = this.props;
+        const {tagMap} = source;
+
+        const newTagMap = _.get(nextProps, 'source.tagMap');
+        if (tagMap == null && newTagMap != null) {
+            this._reloadData(newTagMap)
+        }
+        if (newTagMap == null) {
+            return;
+        }
+
+        let isSame = true;
+        if (!this._compareMaps(tagMap, newTagMap)) {
+            this._reloadData(newTagMap);
+        }
+    }
+
+    _reloadData = (tagMap) => {
+        let topics = null;
+        if (!tagMap.get('ALL')) {
+            topics = [];
+            tagMap.forEach((value, key, map) => {
+                if (value) {
+                    topics = topics.concat([key]);
+                }
+            });
+            topics = _.compact(topics)
+        }
+        this.props.getFeed(1, 10, null, topics);
     };
 
     _setUpReadingTime = () => {
