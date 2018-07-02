@@ -79,7 +79,7 @@ export default class People extends React.Component {
                 </View>
                 <View style={styles.detailsContainer}>
                     <HBText style={styles.titleText}>{item.name}</HBText>
-                    <HBText style={styles.descText}>{item.topics ? item.topics : ""}</HBText>
+                    <HBText numberOfLines={2} ellipsizeMode="tail" style={styles.descText}>{item.topics ? item.topics : ""}</HBText>
                 </View>
                 <CheckComponent id={item._id} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
             </View>
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
         marginVertical: 20
     },
     detailsContainer: {
-        width: '60%',
+        width: '58%',
         height: '100%',
         marginLeft: 20,
     },
