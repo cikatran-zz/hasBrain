@@ -55,7 +55,7 @@ export default class Topic extends React.Component {
     }
 
     _renderListFooter = () => {
-        return <View style={{height: 50}}/>;
+        return <View style={{height: 150}}/>;
 
     };
 
@@ -74,14 +74,24 @@ export default class Topic extends React.Component {
 
         return (
             <View style={styles.listRow}>
-                <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.image ? item.image : "", width: 60, height: 60}}/>
+                {/*<Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.image ? item.image : "", width: 60, height: 60}}/>*/}
+                <View style={{height: 60, width: 60, justifyContent: 'center', alignItems: 'center', backgroundColor: this.random_bg_color()}}>
+                    <HBText style={{fontSize: 25, color: colors.mainWhite}}>{item.title.toUpperCase().charAt(0)}</HBText>
+                </View>
                 <View style={styles.detailsContainer}>
                     <HBText style={styles.titleText}>{item.title}</HBText>
-                    <HBText style={styles.descText}>{item.shortDescription ? item.shortDescription : ""}</HBText>
+                    {/*<HBText style={styles.descText}>{item.shortDescription ? item.shortDescription : ""}</HBText>*/}
                 </View>
                 <CheckComponent id={item.title} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
             </View>
         )
+    }
+
+    random_bg_color() {
+        let x = Math.floor(Math.random() * 256);
+        let y = Math.floor(Math.random() * 256);
+        let z = Math.floor(Math.random() * 256);
+        return "rgb(" + x + "," + y + "," + z + ")";
     }
 
     updateFollow() {
@@ -198,6 +208,8 @@ const styles = StyleSheet.create({
         width: '60%',
         height: '100%',
         marginLeft: 20,
+        flexDirection: 'row',
+        alignItems: 'center'
     },
     descText: {
         fontSize: 12,
