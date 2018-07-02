@@ -1,5 +1,5 @@
 import config, {getExploreArticlesQuery} from './config';
-import {ApolloClient} from 'apollo-client';
+import {ApolloClient} from 'apollo-boost';
 import {HttpLink} from 'apollo-link-http';
 import {onError} from 'apollo-link-error'
 import {InMemoryCache} from 'apollo-cache-inmemory';
