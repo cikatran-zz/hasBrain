@@ -11,6 +11,7 @@ import _ from 'lodash'
 import {rootViewTopPadding} from '../../utils/paddingUtils';
 import HBText from "../../components/HBText";
 import {resetAuthToken} from "../../api"
+import NavigationServices from '../../NavigationService'
 
 export default class Me extends React.Component {
     _titleTextInput = null;
@@ -32,16 +33,7 @@ export default class Me extends React.Component {
     _signOut = () => {
         NativeModules.RNUserKitIdentity.signOut();
         resetAuthToken();
-        //this.props.navigation.navigate('Root')
-        const resetAction = StackActions.reset({
-            index: 0,
-            actions: [
-                NavigationActions.navigate({ routeName: 'MeTab' }),
-                NavigationActions.navigate({ routeName: 'Root' }),
-            ],
-        });
-
-        this.props.navigation.dispatch(StackActions.popToTop());
+        NavigationServices.navigateToTop();
     };
 
     _toggleTab = () => {
