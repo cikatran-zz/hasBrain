@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     categoryText: {
         color: colors.articleCategory,
         fontSize: 12,
-        fontWeight: 'bold',
+        fontFamily: 'CircularStd-Bold',
         marginBottom: 13,
         marginTop: 13
     },

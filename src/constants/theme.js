@@ -51,13 +51,13 @@ export const hightlightTextStyle = {
 export const onboardingTitleStyle = {
     fontSize: 16,
     color: colors.blackText,
-    fontWeight: '600'
+    fontFamily: 'CircularStd-Bold'
 };
 
 export const onboardingSectionTitleStyle = {
     fontSize: 16,
     color: colors.grayText1,
-    fontWeight: 'bold'
+    fontFamily: 'CircularStd-Bold'
 };
 
 export const onboardingSubtitleStyle = {
