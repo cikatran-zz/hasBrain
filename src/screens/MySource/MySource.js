@@ -47,7 +47,7 @@ export default class MySource extends React.Component {
             default:
                 break;
         }
-        this.props.getFeed(1, 10);
+        //this.props.getFeed(1, 10);
         this.props.navigation.goBack();
     }
 
