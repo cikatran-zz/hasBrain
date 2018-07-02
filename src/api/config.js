@@ -168,11 +168,42 @@ mutation createUser($profileId: MongoID, $name: String) {
 }
 `;
 
+// const postHighlightedText = gql`
+// mutation highlightedText($articleId: MongoID, $highlightedText: String){
+//   user{
+//     userhighlightCreate(record: { articleId: $articleId, highlights: {highlight: $highlightedText}}) {
+//       recordId
+//     }
+//   }
+// }
+// `;
+
 const postHighlightedText = gql`
-mutation highlightedText($articleId: MongoID, $highlightedText: String){
-  user{
-    userhighlightCreate(record: { articleId: $articleId, highlight: $highlightedText}) {
-      recordId
+mutation highlightedText($articleId: ID!, $highlightedText: String, $comment: String, $note: String, $position: String) {
+  user {
+    userhighlightAddOrUpdateOne(filter:{
+      articleId: $articleId
+    }, record: {
+      position: $position,
+      highlight: $highlightedText,
+      comment: $comment,
+      note: $note
+    }) {
+      recordId,
+      record {
+        articleId
+        createdAt
+        updatedAt
+        profileId
+        projectId
+        highlights {
+          comment
+          highlight
+          note
+          position
+          _id
+        }
+      }
     }
   }
 }
@@ -252,7 +283,13 @@ const getUserHighLight = gql`
                 count
                 items {
                     articleId
-                    highlight
+                    highlights {
+                        comment
+                        highlight
+                        note
+                        position
+                        _id
+                    }
                     state
                     article {
                         url
@@ -262,6 +299,24 @@ const getUserHighLight = gql`
             }
         }
     }`;
+
+const getUserHighlightOne = gql`
+query getHighlightOne($id: MongoID){
+  viewer {
+    userhighlightOne(filter: {
+      articleId: $id
+    }) {
+      highlights {
+        comment
+        highlight
+        note
+        position
+        _id
+      }
+    }
+  }
+}
+`;
 
 const getUserPath = gql`
 query getUserPath($id: MongoID){
@@ -425,12 +480,15 @@ const getSourceList = gql`
 `;
 
 const getFeed = gql`
-query getFeed($page: Int, $perPage: Int, $currentRank: Float){
+query getFeed($page: Int, $perPage: Int, $currentRank: Float, $topics: [String]){
   viewer{
     feedPagination(sort:RANK_DESC, page: $page, perPage: $perPage, filter:{
       _operators: {
         rank: {
           lt: $currentRank
+        }
+        topicId: {
+          in: $topics
         }
       }
     }) {
@@ -439,6 +497,9 @@ query getFeed($page: Int, $perPage: Int, $currentRank: Float){
         contentId
         reason
         rank
+        topicId
+        actionType
+        actionId
         sourceData{
           title
           sourceImage
@@ -456,6 +517,15 @@ query getFeed($page: Int, $perPage: Int, $currentRank: Float){
           sourceCommentCount
           readingTime
           sourceCreatedAt
+        }
+        highlightData {
+          userData {
+            profileId
+            name
+          }
+          highlights {
+            highlight
+          }
         }
       }
     }
@@ -463,38 +533,46 @@ query getFeed($page: Int, $perPage: Int, $currentRank: Float){
 }
 `;
 
-const getInitFeed = gql`
-query getFeed($page: Int, $perPage: Int){
-  viewer{
-    feedPagination(sort:RANK_DESC, page: $page, perPage: $perPage) {
-      count
-      items {
-        contentId
-        reason
-        rank
-        sourceData{
-          title
-          sourceImage
-        }
-        contentData{
-          _id
-          sourceName
-          kind
-          title
-          contentId
-          sourceImage
-          shortDescription
-          sourceActionName
-          sourceActionCount
-          sourceCommentCount
-          readingTime
-          sourceCreatedAt
-        }
-      }
-    }
-  }
-}
-`;
+// const getFeedFilter = gql`
+//
+// `;
+//
+// const getInitFeedFilter = gql`
+//
+// `;
+
+// const getInitFeed = gql`
+// query getFeed($page: Int, $perPage: Int){
+//   viewer{
+//     feedPagination(sort:RANK_DESC, page: $page, perPage: $perPage) {
+//       count
+//       items {
+//         contentId
+//         reason
+//         rank
+//         sourceData{
+//           title
+//           sourceImage
+//         }
+//         contentData{
+//           _id
+//           sourceName
+//           kind
+//           title
+//           contentId
+//           sourceImage
+//           shortDescription
+//           sourceActionName
+//           sourceActionCount
+//           sourceCommentCount
+//           readingTime
+//           sourceCreatedAt
+//         }
+//       }
+//     }
+//   }
+// }
+// `;
 
 const getExploreArticles = gql`
 query getExploreArticles($skip: Int, $limit: Int, $sources: [JSON], $tags: [JSON]){
@@ -570,22 +648,68 @@ query getUserFollow($kind: EnumuserfollowtypeKind){
     }
   }
 }
-`
+`;
+
+// const updateUserFollow = gql`
+// mutation updateUserFollow($kind: String!, $sourceIds: [ID]){
+//   user{
+//     followCreateMany(record: {
+//       kind: $kind,
+//       sourceIds: $sourceIds
+//     })
+//   }
+// }
+// `;
 
 const updateUserFollow = gql`
 mutation updateUserFollow($kind: String!, $sourceIds: [ID]){
   user{
-    followCreateMany(record: {
+    followPushMany(record:{
       kind: $kind,
       sourceIds: $sourceIds
     })
   }
 }
-`
+`;
+
+const getTopic = gql`
+query{
+  viewer{
+    topicPagination(page: 1, perPage: 1000) {
+      count
+      items {
+        title
+        longDescription
+        shortDescription
+        state
+        image
+        privacy
+        group
+        updatedAt
+        createdAt
+        projectId
+        profileId
+      }
+    } 
+  }
+}
+`;
+
+const postFollowingPersonas = gql`
+mutation followPersonas($ids: [ID]!){
+  user {
+    followByPersonas(record: {
+      personaIds: $ids
+    })
+  }
+}
+`;
 
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
+    userkitURL: 'https://userkit-identity.mstage.io/v2/client/',
+    authenKeyUserKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0X2lkIjoiNWFkODU4MjRiM2NlYzM0MTUzMDRhZWI2IiwiaWF0IjoxNTI0MTI5MTI2fQ.4HywQhdO-7LEEYcwrAsybLqBArgzHbD0sy2yScU2Rjk',
     queries: {
         articles: articles,
         playlist: playlist,
@@ -600,9 +724,9 @@ export default {
         sourceRecommend: getRecommendSource,
         category: getCategory,
         feed: getFeed,
-        initFeed: getInitFeed,
         bookmaredIds: getBookmarkedIds,
         userFollow: getUserFollow,
+        topicList: getTopic
     },
     mutation: {
         bookmark: postBookmark,
@@ -614,6 +738,8 @@ export default {
         createIntent: intentCreate,
         createBookmark: createBookmark,
         removeBookmark: removeBookmark,
-        updateUserFollow: updateUserFollow
-    }
+        updateUserFollow: updateUserFollow,
+        followByPersonas: postFollowingPersonas
+    },
+    USERKIT_PROFILE_SEARCH: 'profiles/search'
 };

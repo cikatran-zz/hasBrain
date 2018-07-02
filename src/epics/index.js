@@ -26,6 +26,13 @@ import getWatchingHistoryEpic from "./watchingHistoryRequestEpic";
 import getCategoryEpic from "./categoryRequestEpic";
 import getFeedEpic from "./feedRequestEpic";
 import getBookmarkedIdsEpic from "./bookmarkedIdsRequestEpic";
+import getTopicListEpic from './getTopicRequestEpic'
+import updateTopicListEpic from './updateTopicEpic'
+import createHighlightEpic from "./createHighlightEpic";
+import getContributorListEpic from './getContributorRequestEpic'
+import updateFollowContributorEpic from './updateFollowContributorEpic'
+import createUserEpic from "./createUserEpic";
+import updateFollowPersonaEpic from "./updateFollowPersonaEpic";
 
 const rootEpic = combineEpics(
     getSavedEpic,
@@ -51,7 +58,14 @@ const rootEpic = combineEpics(
     getWatchingHistoryEpic,
     getCategoryEpic,
     getFeedEpic,
-    getBookmarkedIdsEpic
+    getBookmarkedIdsEpic,
+    getTopicListEpic,
+    updateTopicListEpic,
+    getContributorListEpic,
+    updateFollowContributorEpic,
+    createHighlightEpic,
+    createUserEpic,
+    updateFollowPersonaEpic
 );
 
 export default rootEpic;

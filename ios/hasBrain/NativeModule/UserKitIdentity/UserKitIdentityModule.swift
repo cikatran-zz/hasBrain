@@ -70,9 +70,11 @@ class UserKitIdentityModule: NSObject {
     
     @objc func profileInfo() -> [String: Any] {
         let profile = module.loginProfiles.first
+        let avatars: [String] = profile?.avatar?.map{$0.urlString ?? ""} ?? []
         let info = [
             "id": profile?.id ?? "" as Any,
             "authToken": module.authToken,
+            "avatars": avatars as Any,
             "name": profile?.name ?? "" as Any,
             "email": profile?.customProperties?["_account_email"] ?? "" as Any,
             "age": profile?.customProperties?["age"] ?? "" as Any,

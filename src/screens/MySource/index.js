@@ -1,19 +1,17 @@
 import MySource from './MySource'
 import {connect} from 'react-redux';
-import {getSourceList} from "../../actions/getSourceList";
-import {updateSourceList} from '../../actions/updateUserSources';
 import {getFeed} from "../../actions/getFeed";
 function mapStateToProps(state) {
     return {
-        source: state.sourcelistReducer
+        // source: state.sourcelistReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getSourceList: () => dispatch(getSourceList()),
-        updateSourceList: (sources) => dispatch(updateSourceList(sources)),
-        getFeed: (page, perPage) => dispatch(getFeed(page, perPage)),
+        // getSourceList: () => dispatch(getSourceList()),
+        // updateSourceList: (sources) => dispatch(updateSourceList(sources)),
+        getFeed: (page, perPage) => dispatch(getFeed(page, perPage))
     }
 }
 

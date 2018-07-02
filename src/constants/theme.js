@@ -36,16 +36,28 @@ export const graySmallTextStyle = {
 
 };
 
+export const peopleNameCardStyle = {
+    fontSize: 16,
+    color: colors.articleTitle,
+    fontFamily: 'CircularStd-Book',
+};
+
+export const hightlightTextStyle = {
+    fontSize: 16,
+    color: colors.articleCategory,
+    fontFamily: 'CircularStd-BookItalic'
+};
+
 export const onboardingTitleStyle = {
     fontSize: 16,
     color: colors.blackText,
-    fontWeight: '600'
+    fontFamily: 'CircularStd-Bold'
 };
 
 export const onboardingSectionTitleStyle = {
     fontSize: 16,
     color: colors.grayText1,
-    fontWeight: 'bold'
+    fontFamily: 'CircularStd-Bold'
 };
 
 export const onboardingSubtitleStyle = {

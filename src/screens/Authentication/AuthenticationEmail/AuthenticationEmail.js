@@ -3,14 +3,14 @@ import {
     View, StyleSheet, Image, Platform, TextInput, TouchableOpacity, NativeModules,
     ActivityIndicator, Animated, ScrollView, FlatList
 } from 'react-native'
-import {colors} from "../../constants/colors";
-import IndicatorModal from "../../components/IndicatorModal";
+import {colors} from "../../../constants/colors";
+import IndicatorModal from "../../../components/IndicatorModal";
 import Toast from 'react-native-root-toast';
-import {postCreateUser} from "../../api";
+import {postCreateUser} from "../../../api/index";
 import _ from 'lodash'
-import {strings} from "../../constants/strings";
-import {rootViewBottomPadding, rootViewTopPadding} from "../../utils/paddingUtils";
-import HBText from '../../components/HBText'
+import {strings} from "../../../constants/strings";
+import {rootViewBottomPadding, rootViewTopPadding} from "../../../utils/paddingUtils";
+import HBText from '../../../components/HBText'
 
 export default class Explore extends React.PureComponent {
 
@@ -56,7 +56,7 @@ export default class Explore extends React.PureComponent {
                 this.callbackMessage = JSON.parse(error).message;
                 this.indicatorModal.setState({isShow: false});
             } else {
-                this._createUser(_.get(JSON.parse(results[0]), 'profiles[0]', {}));
+                this.props.createUser();
                 this.indicatorModal.setState({isShow: false});
                 this._nextScreen()
             }
@@ -75,18 +75,11 @@ export default class Explore extends React.PureComponent {
                 this.callbackMessage = JSON.parse(error).message;
                 this.indicatorModal.setState({isShow: false});
             } else {
+                this.props.createUser();
                 this.indicatorModal.setState({isShow: false});
                 this._nextScreen();
             }
         })
-    };
-
-    _createUser = (profile) => {
-        postCreateUser(_.get(profile, 'id', ''), _.get(profile, '_name', '')).then((value) => {
-            //console.log(value);
-        }).catch((error) => {
-            //console.log(error);
-        });
     };
 
     _nextScreen = () => {
@@ -178,7 +171,7 @@ export default class Explore extends React.PureComponent {
                 <TouchableOpacity
                     style={[styles.colorButton]}
                     onPress={() => this._signIn()}>
-                    <Image source={require('../../assets/ic_signin.png')}
+                    <Image source={require('../../../assets/ic_signin.png')}
                            style={{height: '100%', width: 64, resizeMode: 'contain'}}/>
                     <HBText style={styles.buttonText}>Sign in</HBText>
                 </TouchableOpacity>
@@ -228,7 +221,7 @@ export default class Explore extends React.PureComponent {
                 <TouchableOpacity
                     style={[styles.colorButton]}
                     onPress={() => this._signUp()}>
-                    <Image source={require('../../assets/ic_signup.png')}
+                    <Image source={require('../../../assets/ic_signup.png')}
                            style={{height: '100%', width: 64, resizeMode: 'contain'}}/>
                     <HBText style={styles.buttonText}>Sign up</HBText>
                 </TouchableOpacity>
@@ -247,9 +240,9 @@ export default class Explore extends React.PureComponent {
                     this.indicatorModal = modal
                 }} onDismiss={this.onDismissIndicatorModal.bind(this)}/>
                 <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                    <Image style={styles.backImage} source={require('../../assets/ic_back_button.png')}/>
+                    <Image style={styles.backImage} source={require('../../../assets/ic_back_button.png')}/>
                 </TouchableOpacity>
-                <Image style={styles.image} source={require('../../assets/ic_hasbrain.png')}/>
+                <Image style={styles.image} source={require('../../../assets/ic_hasbrain.png')}/>
                 <HBText style={styles.text}>hasBrain</HBText>
                 {this.state.signUp ? this._signUpForm() : this._signInForm()}
 

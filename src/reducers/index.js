@@ -18,6 +18,11 @@ import watchingHistoryReducer from "./watchingHistoryReducer";
 import categoryReducer from "./categoryReducer";
 import feedReducer from "./feedReducer";
 import bookmarkedIdsReducer from "./bookmarkedIdsReducer";
+import topicListReducer from './topicListReducer';
+import contributorListReducer from './contributorListReducer';
+import createHighlightReducer from "./createHighlightReducer";
+import updateFollowPersonaReducer from "./updateFollowPersonaReducer";
+import createUserReducer from "./createUserReducer";
 
 export default combineReducers({
     articlesReducer,
@@ -38,5 +43,10 @@ export default combineReducers({
     watchingHistoryReducer,
     categoryReducer,
     feedReducer,
-    bookmarkedIdsReducer
+    bookmarkedIdsReducer,
+    topicListReducer,
+    contributorListReducer,
+    createHighlightReducer,
+    createUserReducer,
+    updateFollowPersonaReducer
 });

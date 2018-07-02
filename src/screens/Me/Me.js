@@ -3,13 +3,15 @@ import {
     View, StyleSheet, NativeModules, Platform, TouchableWithoutFeedback, Image, TextInput
 } from 'react-native'
 import { colors } from '../../constants/colors'
-import {NavigationActions} from "react-navigation";
+import {NavigationActions, StackActions} from "react-navigation";
 import CircleImage from '../../components/CircleImage'
 import About from './About'
 import HighLight from './HighLight'
 import _ from 'lodash'
 import {rootViewTopPadding} from '../../utils/paddingUtils';
 import HBText from "../../components/HBText";
+import {resetAuthToken} from "../../api"
+import NavigationServices from '../../NavigationService'
 
 export default class Me extends React.Component {
     _titleTextInput = null;
@@ -30,7 +32,8 @@ export default class Me extends React.Component {
 
     _signOut = () => {
         NativeModules.RNUserKitIdentity.signOut();
-        this.props.navigation.navigate('Root')
+        resetAuthToken();
+        NavigationServices.navigateToTop();
     };
 
     _toggleTab = () => {
@@ -170,7 +173,6 @@ const styles = StyleSheet.create({
     profileName: {
         fontSize: 25,
         color: colors.blackText,
-        fontWeight: 'bold'
     },
     profileTitle: {
         color: colors.blackHeader,
