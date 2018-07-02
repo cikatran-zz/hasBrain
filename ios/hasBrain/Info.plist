@@ -72,6 +72,13 @@
 	<string></string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>CircularStd-MediumItalic.otf</string>
+		<string>CircularStd-Medium.otf</string>
+		<string>CircularStd-BookItalic.otf</string>
+		<string>CircularStd-BlackItalic.otf</string>
+		<string>CircularStd-Black.otf</string>
+		<string>CircularStd-BoldItalic.otf</string>
+		<string>CircularStd-Bold.otf</string>
 		<string>circularStdBook.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
