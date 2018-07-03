@@ -10,6 +10,7 @@ import {createBookmark} from "../../actions/createBookmark";
 import {removeBookmark} from "../../actions/removeBookmark";
 import {getFeed} from "../../actions/getFeed";
 import {getBookmarkedIds} from "../../actions/getBookmarkedIds";
+import {getTopicList} from "../../actions/getTopicList";
 
 function mapStateToProps(state) {
     return {
@@ -18,7 +19,8 @@ function mapStateToProps(state) {
         saved: state.savedReducer,
         source: state.sourcelistReducer,
         feed: state.feedReducer,
-        bookmarkedIds: state.bookmarkedIdsReducer
+        bookmarkedIds: state.bookmarkedIdsReducer,
+        topics: state.topicListReducer
     }
 }
 
@@ -33,7 +35,8 @@ function mapDispatchToProps(dispatch) {
         createBookmark: (id, type, trackingType) => dispatch(createBookmark(id, type, trackingType)),
         removeBookmark: (id, type, trackingType) => (dispatch(removeBookmark(id, type, trackingType))),
         getFeed: (page, perPage, rank, topics)=>(dispatch(getFeed(page, perPage, rank, topics))),
-        getBookmarkedIds: () => dispatch(getBookmarkedIds())
+        getBookmarkedIds: () => dispatch(getBookmarkedIds()),
+        getTopics: () => dispatch(getTopicList())
     }
 }
 

@@ -63,6 +63,7 @@ export default class Explore extends React.Component {
     componentDidMount() {
         this.props.getSaved();
         this.props.getSourceList();
+        this.props.getTopics();
         // getChosenTopics().then((value)=>{
         //     let topics = null;
         //     if (value) {
@@ -97,8 +98,20 @@ export default class Explore extends React.Component {
         });
     };
 
+    _compareArr = (array1, array2)=>{
+        if (array1 == null || array2 == null) {
+            return true;
+        }
+        if (array1.length !== array2.length) return false;
+        for (let i = 0; i < array1.length; i++){
+            if (array2.indexOf(array1[i]) < 0) return false;
+        }
+        return true;
+    };
+
     _compareMaps = (map1, map2) => {
         let testVal;
+
         if (map1.size !== map2.size) {
             return false;
         }
@@ -117,15 +130,14 @@ export default class Explore extends React.Component {
         const {tagMap} = source;
 
         const newTagMap = _.get(nextProps, 'source.tagMap');
+        const newChosenSources = _.get(nextProps, 'source.chosenSources');
         if (tagMap == null && newTagMap != null) {
             this._reloadData(newTagMap)
         }
-        if (newTagMap == null) {
+        if (!newTagMap) {
             return;
         }
-
-        let isSame = true;
-        if (!this._compareMaps(tagMap, newTagMap)) {
+        if (!this._compareMaps(tagMap, newTagMap) || !this._compareArr(source.chosenSources, newChosenSources) || source.updating !== nextProps.source.updating) {
             this._reloadData(newTagMap);
         }
     }
@@ -217,21 +229,25 @@ export default class Explore extends React.Component {
             category = item.reason;
         }
 
-        if (item.actionType === "highlight") {
-            console.log("Highlight",category);
+        let author = _.get(item, 'sourceData.title');
+        if (author == null) {
+            author = extractRootDomain(_.get(item, 'contentData.contentId'))
         }
 
         return (
             <VerticalRow style={{marginTop: (index === 0) ? -20 : 0}}
+                         showHighlight={item.actionType === "highlight"}
+                         highlightData={item.highlightData}
+                         showComment={item.actionType === "comment"}
+                         commentData={item.commentData}
                          title={_.get(item, 'contentData.title', '')}
                          shortDescription={_.get(item, 'contentData.shortDescription', '')}
-                         sourceName={_.get(item, 'sourceData.title', '')}
+                         sourceName={author}
                          sourceCommentCount={_.get(item, 'contentData.sourceCommentCount')}
                          sourceActionName={_.get(item, 'contentData.sourceActionName')}
                          sourceActionCount={_.get(item, 'contentData.sourceActionCount')}
                          sourceImage={_.get(item, 'sourceData.sourceImage', '')}
                          category={category}
-                         highlightData={item.highlightData}
                          time={_.get(item, 'contentData.sourceCreatedAt', '')}
                          readingTime={_.get(item, 'contentData.readingTime', '')}
                          onClicked={() => this._openReadingView({...item.contentData})}
@@ -345,13 +361,17 @@ export default class Explore extends React.Component {
     };
 
     _renderTagsItem = ({item}) => {
-        const {source} = this.props;
+        const {source, topics} = this.props;
         if (item == null)
             return null;
         if (!source.tagMap)
             return null;
+        let title = (topics.tagTitle != null && topics.tagTitle.size > 0) ? topics.tagTitle.get(item) : "";
+        if (item === "ALL" || item === "_filter") {
+            title = item;
+        }
         return (
-            <ToggleTagComponent id={item} onPressItem={this._onTagItemPress} isOn={source.tagMap.get(item)}/>
+            <ToggleTagComponent id={title} onPressItem={(id)=>this._onTagItemPress(item)} isOn={source.tagMap.get(item)}/>
         )
     };
 

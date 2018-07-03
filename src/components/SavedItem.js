@@ -12,7 +12,7 @@ import HBText from '../components/HBText'
 const ANIMATION_DURATION = 250;
 const ROW_HEIGHT = 70;
 
-export default class VerticalRow extends React.PureComponent {
+export default class SavedItem extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -64,44 +64,6 @@ export default class VerticalRow extends React.PureComponent {
             this.setState({shortDesciptionNoLines: 2})
         }
     };
-
-    _renderHighlight = () => {
-        if (this.props.highlightData == null) {return null};
-        const {highlightData: {highlights, userData: {profileId="", name=""}}, showHighlight} = this.props;
-
-        if (!showHighlight && (highlights == null || highlights.length === 0)) {
-            return null;
-        }
-        return (<View style={styles.hightlightRoot}>
-            <View style={[styles.hightlightHorizontalView, {alignItems: 'center'}]}>
-                <Image source={{uri: 'https://s3-ap-southeast-1.amazonaws.com/userkit-identity-pro/avatars/'+profileId+'medium.jpg?'}} style={styles.sourceImage}/>
-                <HBText style={peopleNameCardStyle}>{name}</HBText>
-            </View>
-            <View style={styles.hightlightHorizontalView}>
-                <View style={styles.lineView}/>
-                <HBText style={hightlightTextStyle}>{highlights[0].highlight}</HBText>
-            </View>
-        </View>
-    )};
-
-    _renderComment = () => {
-        if (this.props.commentData == null) {return null};
-        const {commentData: {comment, userData: {profileId="", name=""}}, showComment} = this.props;
-        if (!showComment && (comment == null || comment.length === 0)) {
-            return null;
-        }
-
-        return (<View style={styles.hightlightRoot}>
-                <View style={[styles.hightlightHorizontalView, {alignItems: 'center'}]}>
-                    <Image source={{uri: 'https://s3-ap-southeast-1.amazonaws.com/userkit-identity-pro/avatars/'+profileId+'medium.jpg?'}} style={styles.sourceImage}/>
-                    <HBText style={peopleNameCardStyle}>{name}</HBText>
-                </View>
-                <View style={styles.hightlightHorizontalView}>
-                    <HBText style={commentTextStyle}>{comment}</HBText>
-                </View>
-            </View>)
-    };
-
     _renderCategory = () => {
         const {category} = this.props;
         if (category == null || category === "") {
@@ -146,14 +108,12 @@ export default class VerticalRow extends React.PureComponent {
             action += "  \u2022  ";
         }
 
-        action += getPublishDateDescription(this.props.time);
+        action += getReadingTimeDescription(this.props.time);//getPublishDateDescription(this.props.time);
 
         return (
             <TouchableOpacity onPress={this.props.onClicked}>
                 <Animated.View style={[rowStyles, this.props.style]}>
                     {this._renderCategory()}
-                    {this._renderHighlight()}
-                    {this._renderComment()}
                     <View style={styles.horizontalView}>
                         <View style={styles.titleTextView}>
                             <HBText onLayout={this._calculateTitleNumberOfLines} numberOfLines={3} style={titleCardStyle}>{(this.props.title == null) ? "" : this.props.title}</HBText>
@@ -175,8 +135,8 @@ export default class VerticalRow extends React.PureComponent {
                             <HBText style={grayTextStyle}>{action}</HBText>
                         </View>
                         <ArticleButton style={styles.articleButtonView}
+                                       show3Dots={false}
                                        onMore={this.props.onMore}
-                                       show3Dots={true}
                                        onBookmark={this.props.onBookmark}
                                        bookmarked={this.props.bookmarked}/>
                     </View>

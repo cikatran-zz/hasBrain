@@ -25,6 +25,7 @@ export default class Sources extends React.Component {
         this.state = {
             checkedState: (new Map(): Map<string, boolean>)
         }
+        this._debounceReloadAndSave = _.debounce(this.updateFollow, 2000);
     }
 
     componentDidMount() {
@@ -39,7 +40,7 @@ export default class Sources extends React.Component {
     _onPressItem = (id) => {
         const {source} = this.props;
         const {chosenSources} = source;
-
+        this._debounceReloadAndSave();
         this.setState((state) => {
             let checkedState = state.checkedState;
             if (checkedState.size < 1) {
@@ -103,8 +104,8 @@ export default class Sources extends React.Component {
             }
         });
         newSources = _.compact(newSources);
-        if (!_.isEmpty(newSources))
-            this.props.updateSourceList(newSources);
+        //if (!_.isEmpty(newSources))
+        this.props.updateSourceList(newSources);
     }
 
     _renderListFooter = () => {
