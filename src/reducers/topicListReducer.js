@@ -11,7 +11,8 @@ const initialState = {
     updated: false,
     updateError: null,
     followTopics: null,
-    groupTopic: null
+    groupTopic: null,
+    tagTitle: new Map()
 }
 
 export default function topicListReducer(state = initialState, action) {
@@ -28,6 +29,10 @@ export default function topicListReducer(state = initialState, action) {
                 return item.sourceId
             });
             let groupTopics = _.groupBy(topicListData, 'group');
+            let tagTitle = new Map();
+            topicListData.forEach((x)=>{
+                tagTitle.set(x._id, x.title);
+            });
 
             return {
                 ...state,
@@ -35,7 +40,8 @@ export default function topicListReducer(state = initialState, action) {
                 fetched: true,
                 data: topicListData,
                 chosenTopic: chosenTopics,
-                groupTopics: groupTopics
+                groupTopics: groupTopics,
+                tagTitle: tagTitle
             }
 
         case actionTypes.FETCH_TOPIC_LIST_FAILURE:
@@ -43,7 +49,8 @@ export default function topicListReducer(state = initialState, action) {
                 ...state,
                 isFetching: false,
                 fetched: true,
-                errorMessage: action.errorMessage
+                errorMessage: action.errorMessage,
+                tagTitle: new Map()
             }
         case actionTypes.UPDATING_USER_TOPIC:
             return {
