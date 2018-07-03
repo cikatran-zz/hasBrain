@@ -30,7 +30,7 @@ export default class UserPath extends Component {
             <View style={styles.sectionContainer}>
                 <View style={styles.verticalLine}/>
                 <FlatList
-                    style={{marginTop: 15}}
+                    style={{marginVertical: 15}}
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                     data={item.articleData}

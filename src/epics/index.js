@@ -33,6 +33,7 @@ import getContributorListEpic from './getContributorRequestEpic'
 import updateFollowContributorEpic from './updateFollowContributorEpic'
 import createUserEpic from "./createUserEpic";
 import updateFollowPersonaEpic from "./updateFollowPersonaEpic";
+import getPathCurrentEpic from './currentPathEpicRequest'
 
 const rootEpic = combineEpics(
     getSavedEpic,
@@ -65,7 +66,8 @@ const rootEpic = combineEpics(
     updateFollowContributorEpic,
     createHighlightEpic,
     createUserEpic,
-    updateFollowPersonaEpic
+    updateFollowPersonaEpic,
+    getPathCurrentEpic
 );
 
 export default rootEpic;

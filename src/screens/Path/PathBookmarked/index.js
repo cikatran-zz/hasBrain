@@ -1,18 +1,16 @@
 import PathBookmarked from './PathBookmarked'
 import {connect} from 'react-redux';
-import {getPathBookmarked} from "../../../actions/getPathBookmarked";
-import {removeBookmark} from "../../../actions/removeBookmark";
+import {getPathCurrent} from "../../../actions/getPathCurrent";
 
 function mapStateToProps(state) {
     return {
-        pathBookmarked: state.pathBookmarkedReducer,
+        pathCurrent: state.pathCurrentReducer,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getPathBookmarked: (page, perPage) => dispatch(getPathBookmarked(page, perPage)),
-        removeBookmark: (id, type, trackingType) => (dispatch(removeBookmark(id, type, trackingType)))
+        getPathCurrent: () => dispatch(getPathCurrent()),
     }
 }
 
