@@ -11,6 +11,7 @@ import {removeBookmark} from "../../actions/removeBookmark";
 import {getFeed} from "../../actions/getFeed";
 import {getBookmarkedIds} from "../../actions/getBookmarkedIds";
 import {getTopicList} from "../../actions/getTopicList";
+import {getOwnpath} from "../../actions/getOwnpath";
 
 function mapStateToProps(state) {
     return {
@@ -36,7 +37,8 @@ function mapDispatchToProps(dispatch) {
         removeBookmark: (id, type, trackingType) => (dispatch(removeBookmark(id, type, trackingType))),
         getFeed: (page, perPage, rank, topics)=>(dispatch(getFeed(page, perPage, rank, topics))),
         getBookmarkedIds: () => dispatch(getBookmarkedIds()),
-        getTopics: () => dispatch(getTopicList())
+        getTopics: () => dispatch(getTopicList()),
+        getOwnpath: ()=>dispatch(getOwnpath()),
     }
 }
 

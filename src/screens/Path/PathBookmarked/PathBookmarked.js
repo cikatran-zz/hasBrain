@@ -26,13 +26,14 @@ export default class PathBookmarked extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getPathBookmarked(1,20)
+        //this.props.getPathBookmarked(1,20)
+        this.props.getOwnpath()
     }
 
     _keyExtractor = (item, index) => index + '';
 
-    _openPathDetail = (item) => {
-        this.props.navigation.navigate("UserPath", item);
+    _openPathDetail = (id) => {
+        this.props.navigation.navigate("UserPath", {_id: id});
 
     };
 
@@ -46,14 +47,14 @@ export default class PathBookmarked extends React.Component {
     };
 
     _renderVerticalItem = ({item}) => {
-        let {content} = item;
+        let {_source: content, _id: id} = item;
         if (content == null) {
             return null;
         }
         return (<PathItem data={content}
                           ref={(ref)=> this.rows[content._id] = ref}
-                          onBookmark={()=>this._onUnbookmarkItem(content._id)}
-                          onClicked={() => this._openPathDetail(content)}
+                          onBookmark={()=>this._onUnbookmarkItem(content)}
+                          onClicked={() => this._openPathDetail(id)}
                           bookmarked={true}/>)
     }
 
@@ -102,23 +103,23 @@ export default class PathBookmarked extends React.Component {
     };
 
     render() {
-        const {pathBookmarked} = this.props;
+        const {ownpath} = this.props;
 
-        let data = [];
-        if (pathBookmarked.data != null) {
-            data = pathBookmarked.data.filter((x)=> (x.content != null && _.indexOf(this.state.deleteItems, x.content._id) < 0));
-        }
-
-        if (data.length === 0) {
-            data = null;
-        }
+        // let data = [];
+        // if (pathBookmarked.data != null) {
+        //     data = pathBookmarked.data.filter((x)=> (x.content != null && _.indexOf(this.state.deleteItems, x.content._id) < 0));
+        // }
+        //
+        // if (data.length === 0) {
+        //     data = null;
+        // }
         return (
             <View style={[{
                 flex: 1,
                 flexDirection: 'column'
             },this.props.style]}>
                 <SectionList
-                    refreshing={pathBookmarked.isFetching}
+                    refreshing={ownpath.isFetching}
                     onRefresh={() => {
                         this.setState({deleteItems: []});
                         this.props.getPathBookmarked(1,10);
@@ -129,12 +130,12 @@ export default class PathBookmarked extends React.Component {
                     stickySectionHeadersEnabled={false}
                     showsVerticalScrollIndicator={false}
                     bounces={true}
-                    ListFooterComponent={() => this._renderListFooter(pathBookmarked.isFetching)}
-                    ListEmptyComponent={this._renderEmptyList(pathBookmarked.isFetching)}
+                    ListFooterComponent={() => this._renderListFooter(ownpath.isFetching)}
+                    ListEmptyComponent={this._renderEmptyList(ownpath.isFetching)}
                     onEndReachedThreshold={0.5}
                     sections={[
                         {
-                            data: [data],
+                            data: [ownpath.data],
                             renderItem: this._renderVerticalSection
                         }
                     ]}

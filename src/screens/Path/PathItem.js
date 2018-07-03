@@ -59,9 +59,9 @@ export default class PathItem extends React.PureComponent {
                     <HBText style={styles.pathTitleText}>{(data.title ? data.title : "").toUpperCase()}</HBText>
                     <View style={[styles.horizontalView, {marginTop: 15}]}>
                         <HBText style={styles.descriptionText}>{data.shortDescription ? data.shortDescription : ""}</HBText>
-                        <TouchableOpacity style={{padding: 10, flex: 1}} onPress={this.props.onBookmark}>
-                            <Image style={styles.image} source={ this.props.bookmarked ? require('../../assets/ic_saved.png') : require('../../assets/ic_save.png')}/>
-                        </TouchableOpacity>
+                        {/*<TouchableOpacity style={{padding: 10, flex: 1}} onPress={this.props.onBookmark}>*/}
+                            {/*<Image style={styles.image} source={ this.props.bookmarked ? require('../../assets/ic_saved.png') : require('../../assets/ic_save.png')}/>*/}
+                        {/*</TouchableOpacity>*/}
                     </View>
                 </Animated.View>
             </TouchableOpacity>

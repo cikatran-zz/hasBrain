@@ -549,3 +549,9 @@ export const followByPersonas = (personaIds) => {
     })
 };
 
+export const getOwnpath = () => {
+    return gqlQuery({
+        query: config.queries.ownpath
+    })
+}
+
