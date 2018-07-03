@@ -61,7 +61,7 @@ export default class Save extends React.Component {
                            image={content.sourceImage}
                            onClicked={() => this._openReadingView(content)}
                            onBookmark={() => this._onUnbookmarkItem(content._id)}
-                           bookmarked={_.findIndex(bookmarkedIds.data.articles, (x)=>(x === content._id)) !== -1}/>)
+                           bookmarked={_.findIndex(_.get(bookmarkedIds.data, 'articles',[]), (x)=>(x === content._id)) !== -1}/>)
     };
 
     _keyExtractor = (item, index) => index + "";
