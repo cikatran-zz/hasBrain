@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
         marginTop: rootViewTopPadding() + 10,
         alignItems: 'center',
         backgroundColor: colors.mainWhite,
-        paddingBottom: 10
+        paddingBottom: 10,
     },
     tabContainer: {
         flexDirection: 'row',

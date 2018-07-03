@@ -23,5 +23,7 @@ export const colors = {
     graySearchBorder: '#EBEDF8',
     articleCategory: '#97A3B4',
     articleTitle: '#002257',
-    articleSubtitle: '#99A4B3'
+    articleSubtitle: '#99A4B3',
+    pathSection: '#A6B2C4',
+    pathVerticalLine: '#D8D8D8'
 };

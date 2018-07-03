@@ -15,6 +15,16 @@ function navigate(routeName, params) {
     );
 }
 
+function reset(routeName) {
+    const resetAction = StackActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({ routeName: routeName })],
+        key: null
+    });
+
+    _navigator.dispatch(resetAction)
+}
+
 function navigateToTop() {
     _navigator.dispatch(
         StackActions.popToTop()
@@ -26,5 +36,6 @@ function navigateToTop() {
 export default {
     navigate,
     navigateToTop,
+    reset,
     setTopLevelNavigator,
 };

@@ -1,11 +1,10 @@
 import React, {Component} from 'react'
 import {
-    View, StyleSheet, NativeModules, ActivityIndicator, TouchableWithoutFeedback, Image, SectionList, FlatList
+    View, StyleSheet, TouchableOpacity, ActivityIndicator, TouchableWithoutFeedback, Image, SectionList, FlatList
 } from 'react-native'
 import { colors } from '../../constants/colors'
 import _ from 'lodash'
 import {rootViewTopPadding} from '../../utils/paddingUtils'
-import { NavigationActions } from 'react-navigation';
 import HBText from "../../components/HBText";
 
 export default class UserPath extends Component {
@@ -19,8 +18,10 @@ export default class UserPath extends Component {
 
     componentDidMount() {
         const {_id} = this.props.navigation.state.params;
-        this.props.getUserPath(_id);
+        // this.props.getUserPath(_id);
+        this.props.getUserPath("5b39e7bb0baeb500283b8a6b");
     }
+
     _renderSection = ({item}) => {
         if (item == null || _.isEmpty(item)) {
             return null;
@@ -32,7 +33,7 @@ export default class UserPath extends Component {
                     style={{marginTop: 15}}
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
-                    data={item.contentData}
+                    data={item.articleData}
                     keyExtractor={this._keyExtractor}
                     renderItem={this._renderSeriesItem}/>
             </View>
@@ -42,12 +43,13 @@ export default class UserPath extends Component {
     _renderSeriesItem = ({item}) => {
         return (
             <TouchableWithoutFeedback onPress={() => this._openReadingView(item)}>
-                <View style={{flexDirection:'column', marginRight: 20, width: 217}}>
-
-                    <View style={styles.placeHolder}>
-                        <HBText style={styles.textPlaceHolder}>hasBrain</HBText>
+                <View style={styles.seriesContainer}>
+                    <View style={{height: 120, width: 260}}>
+                        <View style={styles.placeHolder}>
+                            <HBText style={styles.textPlaceHolder}>hasBrain</HBText>
+                        </View>
+                        <Image style={styles.seriesItemImage} source={{uri: item.sourceImage, height: 120, width: 260}}/>
                     </View>
-                    <Image style={styles.seriesItemImage} source={{uri: item.sourceImage}}/>
                     <HBText style={styles.seriesItemText}>{item.title}</HBText>
                 </View>
             </TouchableWithoutFeedback>
@@ -57,12 +59,29 @@ export default class UserPath extends Component {
 
     _keyExtractor = (item, index) => index.toString();
 
+    _renderVerticalLine(index, isTop) {
+        if (isTop) {
+            return (
+                <View style={[styles.verticalLine, {marginLeft: 4.5, height: 3, backgroundColor: (index > 0) ?  colors.pathVerticalLine : 'transparent'}]}/>
+            )
+        } else {
+            return (
+                <View style={[styles.verticalLine, {marginLeft: 4.5, height: 3}]}/>
+            )
+        }
+    }
+
     _renderSectionHeader = ({section}) => {
         let title = section.title.toUpperCase();
         return (
             <View style={styles.sectionHeader}>
-                <View style={styles.circlePoint}/>
-                <Text ellipsizeMode="tail" numberOfLines={1} style={styles.seriesTitle}>{title}</Text>
+                <View style={{flexDirection: 'column', height: 13, width: 10, marginLeft: 30,
+                    marginRight: 15}}>
+                    {this._renderVerticalLine(section.index, true)}
+                    <View style={styles.circlePoint}/>
+                    {this._renderVerticalLine(section.index, false)}
+                </View>
+                <HBText ellipsizeMode="tail" numberOfLines={1} style={styles.seriesTitle}>{title}</HBText>
             </View>
         )
     };
@@ -75,7 +94,13 @@ export default class UserPath extends Component {
     _onClosePress = () => {
         this.props.navigation.goBack();
     }
-    render() {
+
+    _renderListFooter = () => {
+        return <View style={{height: 150}}/>;
+
+    };
+
+    _renderContain() {
         const {userPath} = this.props;
         const {firstLoad} = this.state;
         const {_id} = this.props.navigation.state.params;
@@ -87,24 +112,21 @@ export default class UserPath extends Component {
             );
         if (!userPath.data)
             return null;
-        let sections = userPath.data.contentData.map(data => {
+        let sections = userPath.data.topicData.map((data, i) => {
             return {
                 data: [data],
                 renderItem: this._renderSection,
                 showHeader: true,
-                title: data.title
+                title: data.title,
+                index: i
             }
         })
         return (
-            <View style={styles.container}>
-
+            <View style={{backgroundColor: colors.lightGray, width: '100%', height: '100%', alignItems:'center',}}>
                 <View style={styles.pathInfoContainer}>
                     <HBText style={styles.pathInfoTitle}>{userPath.data.title}</HBText>
-                    <HBText style={styles.pathInfoDescription}>{userPath.data.shortDescription}</HBText>
+                    <HBText numberOfLines={2} ellipziseMode="tail" style={styles.pathInfoDescription}>{userPath.data.shortDescription}</HBText>
                 </View>
-                <TouchableWithoutFeedback onPress={this._onClosePress} style={{height: 30, width: 30}}>
-                    <Image style={{width:25, height: 25, position: 'absolute', right: 30, top: 30 + rootViewTopPadding()}} source={require('../../assets/ic_close.png')}/>
-                </TouchableWithoutFeedback>
                 <SectionList
                     style={{marginTop: 20, marginRight: 2, width:'100%', paddingTop: 2}}
                     refreshing={!firstLoad && userPath.isFetching}
@@ -117,10 +139,25 @@ export default class UserPath extends Component {
                     showsHorizontalIndicator={false}
                     horizontal={false}
                     alwaysBounceHorizontal={false}
+                    ListFooterComponent={() => this._renderListFooter()}
                     renderSectionHeader={this._renderSectionHeader}
                     bounces={true}
                     sections={sections}
                 />
+            </View>
+        )
+    }
+    render() {
+
+        return (
+            <View style={styles.container}>
+                <View style={styles.headerView}>
+                    <TouchableOpacity style={styles.backButton} onPress={() => this._onClosePress()}>
+                        <Image style={styles.backIcon} source={require('../../assets/ic_arrow_left.png')}/>
+                    </TouchableOpacity>
+                    <HBText style={styles.headerTitle}>Path Details</HBText>
+                </View>
+                {this._renderContain()}
             </View>
         )
     }
@@ -133,62 +170,59 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: colors.mainWhite,
         alignItems:'center',
-        paddingTop: 30 + rootViewTopPadding(),
         width: '100%'
     },
     pathInfoContainer: {
         flexDirection: 'column',
         width: '85%',
+        marginTop: 20
     },
     pathInfoTitle: {
-        color: colors.blackText,
-        fontSize: 30,
+        color: colors.darkBlue,
+        fontSize: 24,
+        fontFamily: 'CircularStd-Bold',
         fontWeight: 'bold'
     },
     pathInfoDescription: {
-        color: colors.blackHeader,
-        fontSize: 15,
+        color: colors.tagGrayText,
+        fontSize: 14,
+        marginTop: 5
     },
     circlePoint: {
-        borderColor: colors.darkBlue,
-        borderWidth: 3,
-        borderRadius: 12,
-        height: 24,
-        width: 24,
-        marginLeft: 30,
-        marginRight: 15
+        backgroundColor: colors.pathSection,
+        borderRadius: 5,
+        height: 10,
+        width: 10,
     },
     seriesTitle: {
-        color: colors.darkBlue,
-        fontSize: 20
+        color: colors.pathSection,
+        fontSize: 14,
+        fontFamily: 'CircularStd-Bold',
+        fontWeight: 'bold'
     },
     sectionHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical:-1.5,
-        width: '80%'
+        width: '80%',
+        marginTop: -3
     },
     sectionContainer: {
         flexDirection: 'row',
     },
     verticalLine: {
-        backgroundColor: colors.darkBlue,
-        marginLeft: 40.5,
+        backgroundColor: colors.pathVerticalLine,
+        marginLeft: 34.5,
         marginRight: 18,
-        width: 3,
+        width: 1,
         height:'100%',
-        paddingTop: -2,
-        paddingBottom: -2
     },
     seriesItemImage: {
-        borderRadius: 3,
-        overflow: 'hidden',
-        width: 217,
-        height: 115
+        width: 260,
+        height: 120
     },
     seriesItemText: {
-        color: colors.blackText,
-        fontSize: 15,
+        color: colors.darkBlue,
+        fontSize: 16,
         marginVertical: 20,
         width: 217
     },
@@ -207,5 +241,42 @@ const styles = StyleSheet.create({
     },
     textPlaceHolder: {
         color: colors.grayText
+    },
+    headerTitle: {
+        color: colors.darkBlue,
+        fontSize: 18,
+        left: 0,
+        right: 0,
+        height: '100%',
+        alignItems:'center',
+        position: 'absolute',
+        textAlign: 'center',
+        zIndex: -1
+    },
+    backIcon: {
+        width: 16,
+        height: 12,
+        resizeMode: 'contain'
+    },
+    backButton: {
+        padding: 10,
+        marginRight: 5
+    },
+    headerView: {
+        flexDirection: 'row',
+        marginTop: rootViewTopPadding() + 10,
+        alignItems: 'center',
+        backgroundColor: colors.mainWhite,
+        paddingBottom: 10,
+        width: '100%'
+    },
+    seriesContainer: {
+        flexDirection: 'column',
+        width: 260,
+        height: 190,
+        marginRight: 20,
+        backgroundColor: colors.mainWhite,
+        borderRadius: 5,
+        overflow:'hidden'
     }
 })
