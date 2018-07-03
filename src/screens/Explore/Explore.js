@@ -367,7 +367,14 @@ export default class Explore extends React.Component {
             return null;
         if (!source.tagMap)
             return null;
-        let title = (topics.tagTitle != null && topics.tagTitle.size > 0) ? topics.tagTitle.get(item) : "";
+
+        let title = "";
+        try {
+            title = topics.tagTitle.get(item);
+        }catch (err) {
+            console.log(err);
+        }
+
         if (item === "ALL" || item === "_filter") {
             title = item;
         }
