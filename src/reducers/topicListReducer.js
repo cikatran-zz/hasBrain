@@ -23,7 +23,7 @@ export default function topicListReducer(state = initialState, action) {
             }
         case actionTypes.FETCH_TOPIC_LIST_SUCCESS:
             let topicListData = action.data[0].data.viewer.topicPagination.items;
-            let followTopicData = action.data[1].data.viewer.userFollowMany;
+            let followTopicData = action.data[1].data.viewer.userFollowPagination.items;
             let chosenTopics = followTopicData.map(item => {
                 return item.sourceId
             });

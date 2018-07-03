@@ -349,8 +349,12 @@ export default class Explore extends React.Component {
             return null;
         if (!source.tagMap)
             return null;
+        let title = source.tagTitle.get(item);
+        if (item === "ALL" || item === "_filter") {
+            title = item;
+        }
         return (
-            <ToggleTagComponent id={item} onPressItem={this._onTagItemPress} isOn={source.tagMap.get(item)}/>
+            <ToggleTagComponent id={title} onPressItem={(id)=>this._onTagItemPress(item)} isOn={source.tagMap.get(item)}/>
         )
     };
 
@@ -405,6 +409,7 @@ export default class Explore extends React.Component {
     };
 
     _reloadAndSaveTag = (topics) => {
+        console.log("Tag", topics);
         this.props.getFeed(1, 10, null, topics)
         RNUserKit.storeProperty({[strings.chosenTopicsKey]: topics}, (e,r)=> {})
     };

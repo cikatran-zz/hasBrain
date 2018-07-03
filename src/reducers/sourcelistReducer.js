@@ -12,6 +12,7 @@ const initialState = {
     updateError: null,
     tags: null,
     tagMap: new Map(),
+    tagTitle: new Map()
 }
 
 export default function sourcelistReducer(state = initialState, action) {
@@ -23,14 +24,18 @@ export default function sourcelistReducer(state = initialState, action) {
             }
         case actionTypes.FETCH_SOURCE_LIST_SUCCESS:
             let sourceListData = action.data[0].data.viewer.sourcePagination.items;
-            let followSourceData = action.data[1].data.viewer.userFollowMany;
-            let followTopicData = action.data[2].data.viewer.userFollowMany;
+            let followSourceData = action.data[1].data.viewer.userFollowPagination.items;
+            let followTopicData = action.data[2].data.viewer.userFollowPagination.items;
             let chosenTopicData = action.data[3];
             let chosenSources = followSourceData.map(item => {
                 return item.sourceId
             });
 
             let tags = followTopicData.map((x)=>x.sourceId);
+            let tagTitle = new Map();
+            followTopicData.forEach((x)=>{
+                tagTitle.set(x.sourceId, x.topicData.title);
+            });
             let tagMap = new Map();
             tagMap.set("ALL", false);
             let count = 0;
@@ -64,6 +69,7 @@ export default function sourcelistReducer(state = initialState, action) {
                 chosenSources: chosenSources,
                 tagMap: tagMap,
                 tags: tags,
+                tagTitle: tagTitle
             }
         case actionTypes.UPDATE_USER_SOURCE_TAG:
             return {
