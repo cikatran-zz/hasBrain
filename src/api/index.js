@@ -382,8 +382,8 @@ export const getExploreArticles = (limit, skip, sources, tags) => {
             const observable = forkJoin([getUserFollow("sourcetype"), getUserFollow("categorytype")]);
             observable.subscribe(
                 value => {
-                    let followSourceData = value[0].data.viewer.userFollowMany;
-                    let followCategoryData = value[1].data.viewer.userFollowMany;
+                    let followSourceData = value[0].data.viewer.userFollowPagination.items;
+                    let followCategoryData = value[1].data.viewer.userFollowPagination.items;
                     let chosentags = followCategoryData.map(item => {
                         return item.sourceId
                     });

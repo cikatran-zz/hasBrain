@@ -10,6 +10,7 @@ import {createBookmark} from "../../actions/createBookmark";
 import {removeBookmark} from "../../actions/removeBookmark";
 import {getFeed} from "../../actions/getFeed";
 import {getBookmarkedIds} from "../../actions/getBookmarkedIds";
+import {getTopicList} from "../../actions/getTopicList";
 
 function mapStateToProps(state) {
     return {

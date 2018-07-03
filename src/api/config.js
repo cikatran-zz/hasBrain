@@ -642,16 +642,21 @@ query {
 const getUserFollow = gql`
 query getUserFollow($kind: EnumuserfollowtypeKind){
   viewer{
-    userFollowMany(filter: {
+    userFollowPagination(filter: {
       kind: $kind
-    }) {
-      sourceId
-      kind
-      state
-      createdAt
-      updatedAt
-      profileId
-      projectId
+    }, page: 1, perPage: 1000) {
+      items {
+        sourceId
+        kind
+        state
+        createdAt
+        updatedAt
+        profileId
+        projectId
+        topicData {
+          title
+        }
+      }
     }
   }
 }
@@ -685,6 +690,7 @@ query{
     topicPagination(page: 1, perPage: 1000) {
       count
       items {
+        _id
         title
         longDescription
         shortDescription
