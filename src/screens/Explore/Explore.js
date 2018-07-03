@@ -225,7 +225,7 @@ export default class Explore extends React.Component {
         const {bookmarkedIds, source} = this.props;
         let bookmarkedArticles = _.get(bookmarkedIds, 'data.articles', []);
 
-        let category = item.topicId;
+        let category = _.get(item,'topicData.title','');
         if (source.tagMap.get('ALL')) {
             category = item.reason;
         }
