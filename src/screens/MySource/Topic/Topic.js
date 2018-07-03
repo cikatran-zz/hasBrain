@@ -97,7 +97,8 @@ export default class Topic extends React.Component {
         });
         newTopics = _.compact(newTopics);
         //if (!_.isEmpty(newTopics))
-        this.props.updateFollowTopics(newTopics);
+        if (checkedState.size !== 0)
+            this.props.updateFollowTopics(newTopics);
     }
 
     _renderSectionHeader = ({section}) => {

@@ -98,8 +98,8 @@ export default class People extends React.Component {
             }
         });
         newContributors = _.compact(newContributors);
-        //if (!_.isEmpty(newContributors))
-        this.props.updateFollowContributor(newContributors);
+        if (checkedState.size !== 0)//!_.isEmpty(newContributors))
+            this.props.updateFollowContributor(newContributors);
     }
 
     _renderSectionHeader = ({section}) => {

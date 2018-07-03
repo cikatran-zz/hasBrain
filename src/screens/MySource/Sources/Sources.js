@@ -105,7 +105,8 @@ export default class Sources extends React.Component {
         });
         newSources = _.compact(newSources);
         //if (!_.isEmpty(newSources))
-        this.props.updateSourceList(newSources);
+        if (checkedState.size !== 0)
+            this.props.updateSourceList(newSources);
     }
 
     _renderListFooter = () => {
