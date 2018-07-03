@@ -72,10 +72,13 @@ export default class People extends React.Component {
             checkedItem = checkedState.get(item._id);
         }
 
+        const avatarLen = item.avatar.length;
+        const url = avatarLen > 0 ? item.avatar[avatarLen - 1].url : ""
+
         return (
             <View style={styles.listRow}>
                 <View style={{alignSelf: 'center', borderRadius: 25, overflow: 'hidden'}}>
-                    <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.avatar[1].url ? item.avatar[1].url : "", width: 50, height: 50}}/>
+                    <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: url, width: 50, height: 50}}/>
                 </View>
                 <View style={styles.detailsContainer}>
                     <HBText style={styles.titleText}>{item.name}</HBText>

@@ -19,7 +19,7 @@ export default function contributorListReducer(state = initialState, action) {
             }
         case actionTypes.FETCH_CONTRIBUTOR_LIST_SUCCESS:
             let contributorListData = action.data[0].profiles;
-            let followContributorData = action.data[1].data.viewer.userFollowPagination;
+            let followContributorData = action.data[1].data.viewer.userFollowPagination.items;
             let chosenContributors = followContributorData.map(item => {
                 return item.sourceId
             });
