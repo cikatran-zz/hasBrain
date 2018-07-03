@@ -63,6 +63,7 @@ export default class Explore extends React.Component {
     componentDidMount() {
         this.props.getSaved();
         this.props.getSourceList();
+        this.props.getTopics();
         // getChosenTopics().then((value)=>{
         //     let topics = null;
         //     if (value) {
@@ -344,12 +345,12 @@ export default class Explore extends React.Component {
     };
 
     _renderTagsItem = ({item}) => {
-        const {source} = this.props;
+        const {source, topics} = this.props;
         if (item == null)
             return null;
         if (!source.tagMap)
             return null;
-        let title = source.tagTitle.get(item);
+        let title = (topics.tagTitle != null && topics.tagTitle.size > 0) ? topics.tagTitle.get(item) : "";
         if (item === "ALL" || item === "_filter") {
             title = item;
         }
@@ -409,7 +410,6 @@ export default class Explore extends React.Component {
     };
 
     _reloadAndSaveTag = (topics) => {
-        console.log("Tag", topics);
         this.props.getFeed(1, 10, null, topics)
         RNUserKit.storeProperty({[strings.chosenTopicsKey]: topics}, (e,r)=> {})
     };
