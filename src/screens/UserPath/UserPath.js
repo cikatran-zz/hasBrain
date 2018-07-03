@@ -12,14 +12,14 @@ export default class UserPath extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            firstLoad: true
+            firstLoad: true,
+            sectionMap: new Map()
         };
     }
 
     componentDidMount() {
         const {_id} = this.props.navigation.state.params;
-        // this.props.getUserPath(_id);
-        this.props.getUserPath("5b39e7bb0baeb500283b8a6b");
+        this.props.getUserPath(_id);
     }
 
     _renderSection = ({item}) => {
@@ -50,7 +50,7 @@ export default class UserPath extends Component {
                         </View>
                         <Image style={styles.seriesItemImage} source={{uri: item.sourceImage, height: 120, width: 260}}/>
                     </View>
-                    <HBText style={styles.seriesItemText}>{item.title}</HBText>
+                    <HBText numberOfLines={2} ellipsizeMode="tail" style={styles.seriesItemText}>{item.title}</HBText>
                 </View>
             </TouchableWithoutFeedback>
         )
@@ -73,6 +73,8 @@ export default class UserPath extends Component {
 
     _renderSectionHeader = ({section}) => {
         let title = section.title.toUpperCase();
+        const {sectionMap} = this.state;
+        let expanded = sectionMap.get(section.index);
         return (
             <View style={styles.sectionHeader}>
                 <View style={{flexDirection: 'column', height: 13, width: 10, marginLeft: 30,
@@ -82,6 +84,7 @@ export default class UserPath extends Component {
                     {this._renderVerticalLine(section.index, false)}
                 </View>
                 <HBText ellipsizeMode="tail" numberOfLines={1} style={styles.seriesTitle}>{title}</HBText>
+                <Image />
             </View>
         )
     };
@@ -127,12 +130,14 @@ export default class UserPath extends Component {
                     <HBText style={styles.pathInfoTitle}>{userPath.data.title}</HBText>
                     <HBText numberOfLines={2} ellipziseMode="tail" style={styles.pathInfoDescription}>{userPath.data.shortDescription}</HBText>
                 </View>
+                <View style={{backgroundColor: colors.pathVerticalLine, height: 0.5, width: '100%', marginTop: 20, marginBottom: 10}} />
                 <SectionList
                     style={{marginTop: 20, marginRight: 2, width:'100%', paddingTop: 2}}
                     refreshing={!firstLoad && userPath.isFetching}
                     onRefresh={() => {
                         this.setState({firstLoad: false});
-                        this.props.getUserPath(_id)}}
+                        this.props.getUserPath(_id)
+                    }}
                     keyExtractor={this._keyExtractor}
                     stickySectionHeadersEnabled={false}
                     showsVerticalScrollIndicator={false}
@@ -224,7 +229,7 @@ const styles = StyleSheet.create({
         color: colors.darkBlue,
         fontSize: 16,
         marginVertical: 20,
-        width: 217
+        marginHorizontal: 10,
     },
     placeHolder: {
         position: 'absolute',
@@ -235,7 +240,8 @@ const styles = StyleSheet.create({
         zIndex: -1,
         borderWidth: 0.5,
         borderColor: colors.grayText,
-        borderRadius: 3,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'
     },
