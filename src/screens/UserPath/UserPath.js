@@ -284,6 +284,11 @@ const styles = StyleSheet.create({
         marginRight: 20,
         backgroundColor: colors.mainWhite,
         borderRadius: 5,
-        overflow:'hidden'
+        shadowColor: colors.grayText,
+        shadowOffset: {width:5, height: 5},
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        marginBottom: 20,
+        elevation: 1
     }
 })

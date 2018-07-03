@@ -340,17 +340,20 @@ const getUserPath = gql`
 query getUserPath($id: MongoID){
   viewer {
     pathOne(filter: {_id: $id}) {
+      _id
       title
       shortDescription
       topic {
+        
         topicId
         levelId
         createdAt
       }
       topicData {
-        _id
         title
+        levelId
         articleData {
+          _id
           contentId
           title
           sourceImage
