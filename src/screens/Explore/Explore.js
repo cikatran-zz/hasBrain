@@ -98,8 +98,21 @@ export default class Explore extends React.Component {
         });
     };
 
+    _compareArr = (array1, array2)=>{
+        if (array1 == null || array2 == null) {
+            return true;
+        }
+        if (array1.length !== array2.length) return false;
+        for (let i = 0; i < array1.length; i++){
+            if (array2.indexOf(array1[i]) < 0) return false;
+        }
+        console.log("Compare",array2, array1, true);
+        return true;
+    };
+
     _compareMaps = (map1, map2) => {
         let testVal;
+
         if (map1.size !== map2.size) {
             return false;
         }
@@ -118,15 +131,16 @@ export default class Explore extends React.Component {
         const {tagMap} = source;
 
         const newTagMap = _.get(nextProps, 'source.tagMap');
+        const newChosenSources = _.get(nextProps, 'source.chosenSources');
         if (tagMap == null && newTagMap != null) {
             this._reloadData(newTagMap)
         }
-        if (newTagMap == null) {
+        if (!newTagMap) {
             return;
         }
 
-        let isSame = true;
-        if (!this._compareMaps(tagMap, newTagMap)) {
+        console.log("Update",source.updating, nextProps.source.updating);
+        if (!this._compareMaps(tagMap, newTagMap) || !this._compareArr(source.chosenSources, newChosenSources) || source.updating !== nextProps.source.updating) {
             this._reloadData(newTagMap);
         }
     }
@@ -218,6 +232,11 @@ export default class Explore extends React.Component {
             category = item.reason;
         }
 
+        let author = _.get(item, 'sourceData.title');
+        if (author == null) {
+            author = extractRootDomain(_.get(item, 'contentData.contentId'))
+        }
+
         return (
             <VerticalRow style={{marginTop: (index === 0) ? -20 : 0}}
                          showHighlight={item.actionType === "highlight"}
@@ -226,7 +245,7 @@ export default class Explore extends React.Component {
                          commentData={item.commentData}
                          title={_.get(item, 'contentData.title', '')}
                          shortDescription={_.get(item, 'contentData.shortDescription', '')}
-                         sourceName={_.get(item, 'sourceData.title', '')}
+                         sourceName={author}
                          sourceCommentCount={_.get(item, 'contentData.sourceCommentCount')}
                          sourceActionName={_.get(item, 'contentData.sourceActionName')}
                          sourceActionCount={_.get(item, 'contentData.sourceActionCount')}

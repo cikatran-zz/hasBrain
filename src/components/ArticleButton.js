@@ -7,15 +7,25 @@ export default class ArticleButton extends React.PureComponent {
         super(props);
     }
 
+    _render3dots = () => {
+        if (this.props.show3Dots) {
+            return (<TouchableOpacity style={styles.shareButton} onPress={this.props.onMore}>
+                <Image style={styles.image} source={require('../assets/ic_3dots.png')}/>
+            </TouchableOpacity>)
+        }
+        return null;
+
+    };
+
     render() {
         return (
             <View style={[this.props.style, styles.buttonView]}>
                 <TouchableOpacity style={styles.saveButton} onPress={this.props.onBookmark}>
-                    <Image style={styles.image} source={ this.props.bookmarked ? require('../assets/ic_saved.png') : require('../assets/ic_save.png')}/>
+                    <Image style={styles.image}
+                           source={this.props.bookmarked ? require('../assets/ic_saved.png') : require('../assets/ic_save.png')}/>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.shareButton} onPress={this.props.onMore}>
-                    <Image style={styles.image} source={require('../assets/ic_3dots.png')}/>
-                </TouchableOpacity>
+                {this._render3dots()}
+
             </View>
         )
     }
