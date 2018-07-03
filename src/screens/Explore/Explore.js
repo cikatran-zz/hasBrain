@@ -225,7 +225,7 @@ export default class Explore extends React.Component {
         const {bookmarkedIds, source} = this.props;
         let bookmarkedArticles = _.get(bookmarkedIds, 'data.articles', []);
 
-        let category = item.topicId;
+        let category = _.get(item,'topicData.title','');
         if (source.tagMap.get('ALL')) {
             category = item.reason;
         }
@@ -367,7 +367,14 @@ export default class Explore extends React.Component {
             return null;
         if (!source.tagMap)
             return null;
-        let title = (topics.tagTitle != null && topics.tagTitle.size > 0) ? topics.tagTitle.get(item) : "";
+
+        let title = "";
+        try {
+            title = topics.tagTitle.get(item);
+        }catch (err) {
+            console.log(err);
+        }
+
         if (item === "ALL" || item === "_filter") {
             title = item;
         }

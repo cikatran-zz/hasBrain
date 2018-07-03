@@ -500,6 +500,9 @@ query getFeed($page: Int, $perPage: Int, $currentRank: Float, $topics: [String])
         reason
         rank
         topicId
+        topicData{
+          title
+        }
         actionType
         actionId
         sourceData{
