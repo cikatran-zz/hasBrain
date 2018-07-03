@@ -63,6 +63,7 @@ export default class Explore extends React.Component {
     componentDidMount() {
         this.props.getSaved();
         this.props.getSourceList();
+        this.props.getTopics();
         // getChosenTopics().then((value)=>{
         //     let topics = null;
         //     if (value) {
@@ -344,13 +345,17 @@ export default class Explore extends React.Component {
     };
 
     _renderTagsItem = ({item}) => {
-        const {source} = this.props;
+        const {source, topics} = this.props;
         if (item == null)
             return null;
         if (!source.tagMap)
             return null;
+        let title = (topics.tagTitle != null && topics.tagTitle.size > 0) ? topics.tagTitle.get(item) : "";
+        if (item === "ALL" || item === "_filter") {
+            title = item;
+        }
         return (
-            <ToggleTagComponent id={item} onPressItem={this._onTagItemPress} isOn={source.tagMap.get(item)}/>
+            <ToggleTagComponent id={title} onPressItem={(id)=>this._onTagItemPress(item)} isOn={source.tagMap.get(item)}/>
         )
     };
 

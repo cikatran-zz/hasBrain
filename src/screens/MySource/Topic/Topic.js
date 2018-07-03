@@ -42,7 +42,7 @@ export default class Topic extends React.Component {
             let checkedState = state.checkedState;
             if (checkedState.size < 1) {
                 let topics = topic.data.map(item => {
-                    return item.title
+                    return item._id
                 });
                 for (let key of topics) {
                     checkedState.set(key, chosenTopic.includes(key));
@@ -66,10 +66,10 @@ export default class Topic extends React.Component {
         const {chosenTopic} = topic;
         let checkedItem = false;
         if (checkedState.size < 1) {
-            checkedItem = chosenTopic.includes(item.title);
+            checkedItem = chosenTopic.includes(item._id);
 
         } else {
-            checkedItem = checkedState.get(item.title);
+            checkedItem = checkedState.get(item._id);
         }
 
         return (
@@ -82,7 +82,7 @@ export default class Topic extends React.Component {
                     <HBText style={styles.titleText}>{item.title}</HBText>
                     {/*<HBText style={styles.descText}>{item.shortDescription ? item.shortDescription : ""}</HBText>*/}
                 </View>
-                <CheckComponent id={item.title} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
+                <CheckComponent id={item.title} checkedItem={checkedItem} onPressItem={(title)=>this._onPressItem(item._id)}/>
             </View>
         )
     }
@@ -91,13 +91,13 @@ export default class Topic extends React.Component {
         const {checkedState} = this.state;
         const {topic} = this.props;
         let newTopics = topic.data.map((item) => {
-            if (checkedState.get(item.title)) {
-                return item.title;
+            if (checkedState.get(item._id)) {
+                return item._id;
             }
         });
         newTopics = _.compact(newTopics);
-        if (!_.isEmpty(newTopics))
-            this.props.updateFollowTopics(newTopics);
+        //if (!_.isEmpty(newTopics))
+        this.props.updateFollowTopics(newTopics);
     }
 
     _renderSectionHeader = ({section}) => {
