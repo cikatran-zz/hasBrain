@@ -295,6 +295,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 10,
         marginBottom: 20,
-        elevation: 1
+        elevation: 1,
+        overflow: 'hidden'
     }
 })
