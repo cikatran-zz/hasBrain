@@ -33,7 +33,7 @@ export default class Me extends React.Component {
     _signOut = () => {
         NativeModules.RNUserKitIdentity.signOut();
         resetAuthToken();
-        NavigationServices.navigateToTop();
+        NavigationServices.reset('Authentication');
     };
 
     _toggleTab = () => {

@@ -340,39 +340,23 @@ const getUserPath = gql`
 query getUserPath($id: MongoID){
   viewer {
     pathOne(filter: {_id: $id}) {
+      _id
       title
       shortDescription
-      contentData {
-        contentId
-        content
-        readingTime
-        title
-        longDescription
-        shortDescription
-        sourceImage
-        state
-        custom
+      topic {
+        
+        topicId
+        levelId
         createdAt
-        updatedAt
-        projectId
-        type
-        kind
-        contentData {
+      }
+      topicData {
+        title
+        levelId
+        articleData {
           _id
           contentId
-          content
-          readingTime
           title
-          longDescription
-          shortDescription
           sourceImage
-          state
-          custom
-          createdAt
-          updatedAt
-          projectId
-          type
-          kind
         }
       }
     }
@@ -736,6 +720,24 @@ mutation followPersonas($ids: [ID]!){
 }
 `;
 
+const getOwnpath = gql`
+query{
+  viewer {
+    pathSearchUser {
+      count
+      hits {
+        _id
+        _source {
+          privacy
+          title
+          shortDescription
+        }
+      }
+    }
+  }
+}
+`;
+
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
@@ -757,7 +759,8 @@ export default {
         feed: getFeed,
         bookmaredIds: getBookmarkedIds,
         userFollow: getUserFollow,
-        topicList: getTopic
+        topicList: getTopic,
+        ownpath: getOwnpath
     },
     mutation: {
         bookmark: postBookmark,

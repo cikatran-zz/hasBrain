@@ -64,6 +64,7 @@ export default class Explore extends React.Component {
         this.props.getSaved();
         this.props.getSourceList();
         this.props.getTopics();
+        this.props.getOwnpath()
         // getChosenTopics().then((value)=>{
         //     let topics = null;
         //     if (value) {

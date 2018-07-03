@@ -18,6 +18,7 @@ import * as getBookmarkedIds from './getBookmarkedIds'
 import * as createHighlight from './createHightlight'
 import * as createUser from './createUser'
 import * as updateFollowPersona from './updateFollowPersona'
+import * as getOwnpath from './getOwnpath'
 
 export default actions = {
     getSaved,
@@ -39,5 +40,6 @@ export default actions = {
     getBookmarkedIds,
     createHighlight,
     createUser,
-    updateFollowPersona
+    updateFollowPersona,
+    getOwnpath
 }
