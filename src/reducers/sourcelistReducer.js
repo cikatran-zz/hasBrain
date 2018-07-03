@@ -34,7 +34,7 @@ export default function sourcelistReducer(state = initialState, action) {
             let tags = followTopicData.map((x)=>x.sourceId);
             let tagTitle = new Map();
             followTopicData.forEach((x)=>{
-                tagTitle.set(x.sourceId, x.topicData.title);
+                tagTitle.set(x.sourceId, _.get(x,'topicData.title'));
             });
             let tagMap = new Map();
             tagMap.set("ALL", false);

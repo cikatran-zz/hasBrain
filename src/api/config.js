@@ -45,6 +45,24 @@ query getBookmark($page: Int, $perPage: Int, $kind: String){
       count
       items {
         _id
+        article {
+          _id
+          custom
+          author
+          authorImage
+          category
+          sourceName
+          sourceCreatedAt
+          sourceActionCount
+          sourceActionName
+          sourceCommentCount
+          contentId
+          readingTime
+          title
+          shortDescription
+          sourceImage
+          createdAt
+        }
         content {
           _id
           contentId
