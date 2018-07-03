@@ -4,6 +4,7 @@ import {getOnboarding} from "../../actions/getOnboarding";
 import {getIntents} from "../../actions/getIntention";
 import {updateRecommendSource} from "../../actions/updateRecommendSource";
 import {getAllIntents} from "../../actions/getAllIntention";
+import {updateFollowPersona} from "../../actions/updateFollowPersona";
 
 function mapStateToProps(state) {
     return {
@@ -18,7 +19,8 @@ function mapDispatchToProps(dispatch) {
         getOnboarding: () => dispatch(getOnboarding()),
         getIntentions: (segments) => dispatch(getIntents(segments)),
         getAllIntentions: ()=>dispatch(getAllIntents()),
-        updateRecommendSource: (personaIds) => dispatch(updateRecommendSource(personaIds))
+        updateRecommendSource: (personaIds) => dispatch(updateRecommendSource(personaIds)),
+        updateFollowPersona: (personaIds)=>dispatch(updateFollowPersona(personaIds))
     }
 }
 

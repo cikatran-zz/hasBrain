@@ -8,10 +8,10 @@ import { colors } from './constants/colors'
 import { strings } from './constants/strings'
 import { defaultHeaderStyle } from './constants/theme'
 import AuthenticationEmail from './screens/Authentication/AuthenticationEmail'
-import Authentication from './screens/Authentication/Authentication'
+import Authentication from './screens/Authentication'
 import MeStack from './screenStacks/MeStack'
 import BackNavigationButton from "./components/BackNavigationButton";
-import Launch from "./screens/Launch/Launch";
+import Launch from "./screens/Launch";
 import Onboarding from "./screens/Onboarding";
 import Reader from "./screens/Reader";
 import MySource from "./screens/MySource";

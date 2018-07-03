@@ -75,7 +75,7 @@ export default class Topic extends React.Component {
         return (
             <View style={styles.listRow}>
                 {/*<Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.image ? item.image : "", width: 60, height: 60}}/>*/}
-                <View style={{height: 60, width: 60, justifyContent: 'center', alignItems: 'center', backgroundColor: this.random_bg_color()}}>
+                <View style={{height: 60, width: 60, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.darkBlue}}>
                     <HBText style={{fontSize: 25, color: colors.mainWhite}}>{item.title.toUpperCase().charAt(0)}</HBText>
                 </View>
                 <View style={styles.detailsContainer}>
@@ -85,13 +85,6 @@ export default class Topic extends React.Component {
                 <CheckComponent id={item.title} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
             </View>
         )
-    }
-
-    random_bg_color() {
-        let x = Math.floor(Math.random() * 256);
-        let y = Math.floor(Math.random() * 256);
-        let z = Math.floor(Math.random() * 256);
-        return "rgb(" + x + "," + y + "," + z + ")";
     }
 
     updateFollow() {

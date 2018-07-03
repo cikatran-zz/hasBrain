@@ -36,6 +36,7 @@ export default class Onboarding extends React.Component {
         if (this.currentIndex === 0) {
             let personaIds = this.experience.map((ex)=>ex.personaId);
             this.props.updateRecommendSource(personaIds);
+            this.props.updateFollowPersona(personaIds)
         }
         if (this.currentIndex === 1) {
             this.setState({nextText: 'Done'})

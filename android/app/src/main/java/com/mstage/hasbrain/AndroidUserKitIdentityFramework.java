@@ -74,6 +74,11 @@ public class AndroidUserKitIdentityFramework extends ReactContextBaseJavaModule 
                     } else {
                         map.putString("authToken", UserKitIdentity.getInstance().getAccountManager().getAccessToken());
                     }
+                    WritableNativeArray avatars = new WritableNativeArray();
+                    for (int i = 0; i < profile.getAvatars().size(); i++) {
+                        avatars.pushString(profile.getAvatars().get(i).getImageUri().toString());
+                    }
+                    map.putArray("avatars", avatars);
 
                     WritableNativeArray array = new WritableNativeArray();
                     array.pushMap(map);

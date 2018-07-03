@@ -174,13 +174,13 @@ export default class Reader extends React.Component {
 
     _highlight = (highlightObj) => {
         let highlightedText = highlightObj.text;
-        console.log("HIGHLIGHT", highlightedText);
         let id = _.get(this.state.currentItem, '_id', '');
-        postHighlightText(id, highlightedText).then(value => {
-            console.log("SUCCESS highlight");
-        }).catch(err => {
-            console.log("ERROR highlight", err);
-        })
+        this.props.createHighlight(id, highlightedText, "", "", "")
+        // postHighlightText(id, highlightedText).then(value => {
+        //     console.log("SUCCESS highlight");
+        // }).catch(err => {
+        //     console.log("ERROR highlight", err);
+        // })
     };
 
     _bookmarkPress = () => {
