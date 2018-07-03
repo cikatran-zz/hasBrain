@@ -24,6 +24,7 @@ import createHighlightReducer from "./createHighlightReducer";
 import updateFollowPersonaReducer from "./updateFollowPersonaReducer";
 import createUserReducer from "./createUserReducer";
 import ownpathReducer from "./ownpathReducer";
+import pathCurrentReducer from "./pathCurrentReducer";
 
 export default combineReducers({
     articlesReducer,
@@ -50,5 +51,6 @@ export default combineReducers({
     createHighlightReducer,
     createUserReducer,
     updateFollowPersonaReducer,
-    ownpathReducer
+    ownpathReducer,
+    pathCurrentReducer
 });

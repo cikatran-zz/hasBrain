@@ -738,6 +738,24 @@ query{
 }
 `;
 
+const getCurrentPath = gql `
+      query{
+        viewer{
+          pathSearchUser {
+            count
+            hits {
+              _id
+              _source {
+                privacy
+                title
+                shortDescription
+              }
+            }
+          }
+        }
+      }
+`
+
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
@@ -760,7 +778,8 @@ export default {
         bookmaredIds: getBookmarkedIds,
         userFollow: getUserFollow,
         topicList: getTopic,
-        ownpath: getOwnpath
+        ownpath: getOwnpath,
+        getCurrentPath: getCurrentPath
     },
     mutation: {
         bookmark: postBookmark,

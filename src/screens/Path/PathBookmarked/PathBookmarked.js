@@ -6,12 +6,9 @@ import {
     StyleSheet,
 } from 'react-native'
 import {colors} from '../../../constants/colors'
-import _ from 'lodash'
-import {postRemoveBookmark} from "../../../api";
 import LoadingRow from "../../../components/LoadingRow";
 import PathItem from "../PathItem";
 import NoDataView from "../../../components/NoDataView";
-import {strings} from "../../../constants/strings";
 
 
 export default class PathBookmarked extends React.Component {
@@ -26,35 +23,24 @@ export default class PathBookmarked extends React.Component {
     }
 
     componentDidMount() {
-        //this.props.getPathBookmarked(1,20)
-        this.props.getOwnpath()
+        this.props.getPathCurrent()
     }
 
     _keyExtractor = (item, index) => index + '';
 
-    _openPathDetail = (id) => {
-        this.props.navigation.navigate("UserPath", {_id: id});
+    _openPathDetail = (item) => {
+        this.props.navigation.navigate("UserPath", item);
 
-    };
-
-    _onUnbookmarkItem = (id) => {
-        if (this.rows[id]) {
-            this.rows[id]._onRemove(()=> {
-                this.setState({deleteItems: this.state.deleteItems.concat(id)});
-            })
-        }
-        this.props.removeBookmark(id, strings.bookmarkType.path, strings.trackingType.path);
     };
 
     _renderVerticalItem = ({item}) => {
-        let {_source: content, _id: id} = item;
-        if (content == null) {
+        if (item == null) {
             return null;
         }
-        return (<PathItem data={content}
-                          ref={(ref)=> this.rows[content._id] = ref}
-                          onBookmark={()=>this._onUnbookmarkItem(content)}
-                          onClicked={() => this._openPathDetail(id)}
+        return (<PathItem data={item._source}
+                          hideBookmark={true}
+                          ref={(ref)=> this.rows[item._id] = ref}
+                          onClicked={() => this._openPathDetail(item)}
                           bookmarked={true}/>)
     }
 
@@ -72,17 +58,6 @@ export default class PathBookmarked extends React.Component {
             keyExtractor={this._keyExtractor}
             renderItem={this._renderVerticalItem}/>
     );
-
-    _fetchMore = () => {
-        if (this.props.pathBookmarked.data != null) {
-            if (this.props.pathBookmarked.data.length === this.currentPage * 10) {
-                this.currentPage += 1;
-                this.props.getPathBookmarked(this.currentPage, 10);
-                this.setState({deleteItems: []});
-            }
-        }
-
-    };
 
     _renderListFooter = (isFetching) => {
         if (isFetching) {
@@ -103,26 +78,17 @@ export default class PathBookmarked extends React.Component {
     };
 
     render() {
-        const {ownpath} = this.props;
-
-        // let data = [];
-        // if (pathBookmarked.data != null) {
-        //     data = pathBookmarked.data.filter((x)=> (x.content != null && _.indexOf(this.state.deleteItems, x.content._id) < 0));
-        // }
-        //
-        // if (data.length === 0) {
-        //     data = null;
-        // }
+        const {pathCurrent} = this.props;
         return (
             <View style={[{
                 flex: 1,
                 flexDirection: 'column'
             },this.props.style]}>
                 <SectionList
-                    refreshing={ownpath.isFetching}
+                    refreshing={pathCurrent.isFetching}
                     onRefresh={() => {
                         this.setState({deleteItems: []});
-                        this.props.getPathBookmarked(1,10);
+                        this.props.getPathCurrent();
                         this.currentPage = 1;
                     }}
                     style={styles.alertWindow}
@@ -130,12 +96,12 @@ export default class PathBookmarked extends React.Component {
                     stickySectionHeadersEnabled={false}
                     showsVerticalScrollIndicator={false}
                     bounces={true}
-                    ListFooterComponent={() => this._renderListFooter(ownpath.isFetching)}
-                    ListEmptyComponent={this._renderEmptyList(ownpath.isFetching)}
+                    ListFooterComponent={() => this._renderListFooter(pathCurrent.isFetching)}
+                    ListEmptyComponent={this._renderEmptyList(pathCurrent.isFetching)}
                     onEndReachedThreshold={0.5}
                     sections={[
                         {
-                            data: [ownpath.data],
+                            data: [pathCurrent.data],
                             renderItem: this._renderVerticalSection
                         }
                     ]}

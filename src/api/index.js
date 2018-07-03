@@ -356,6 +356,12 @@ export const getSourceList = () => {
     });
 }
 
+export const getCurrentPath = () => {
+    return gqlQuery({
+        query: config.queries.getCurrentPath
+    });
+}
+
 export const getTopicList = () => {
     return gqlQuery({
         query: config.queries.topicList
