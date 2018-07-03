@@ -504,6 +504,13 @@ query getFeed($page: Int, $perPage: Int, $currentRank: Float, $topics: [String])
           title
           sourceImage
         }
+        commentData {
+          userData {
+            profileId
+            name
+          }
+          comment
+        }
         contentData{
           _id
           sourceName

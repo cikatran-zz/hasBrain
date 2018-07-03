@@ -217,12 +217,12 @@ export default class Explore extends React.Component {
             category = item.reason;
         }
 
-        if (item.actionType === "highlight") {
-            console.log("Highlight",category);
-        }
-
         return (
             <VerticalRow style={{marginTop: (index === 0) ? -20 : 0}}
+                         showHighlight={item.actionType === "highlight"}
+                         highlightData={item.highlightData}
+                         showComment={item.actionType === "comment"}
+                         commentData={item.commentData}
                          title={_.get(item, 'contentData.title', '')}
                          shortDescription={_.get(item, 'contentData.shortDescription', '')}
                          sourceName={_.get(item, 'sourceData.title', '')}
@@ -231,7 +231,6 @@ export default class Explore extends React.Component {
                          sourceActionCount={_.get(item, 'contentData.sourceActionCount')}
                          sourceImage={_.get(item, 'sourceData.sourceImage', '')}
                          category={category}
-                         highlightData={item.highlightData}
                          time={_.get(item, 'contentData.sourceCreatedAt', '')}
                          readingTime={_.get(item, 'contentData.readingTime', '')}
                          onClicked={() => this._openReadingView({...item.contentData})}
