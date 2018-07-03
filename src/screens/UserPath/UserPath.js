@@ -34,6 +34,7 @@ export default class UserPath extends Component {
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                     data={item.articleData}
+                    ListEmptyComponent={() => this._renderEmptyList()}
                     keyExtractor={this._keyExtractor}
                     renderItem={this._renderSeriesItem}/>
             </View>
@@ -100,6 +101,11 @@ export default class UserPath extends Component {
 
     _renderListFooter = () => {
         return <View style={{height: 150}}/>;
+
+    };
+
+    _renderEmptyList = () => {
+        return <HBText style={{color: colors.pathVerticalLine, fontSize: 12}}>There are no series</HBText>
 
     };
 
