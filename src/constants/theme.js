@@ -48,6 +48,12 @@ export const hightlightTextStyle = {
     fontFamily: 'CircularStd-BookItalic'
 };
 
+export const commentTextStyle = {
+    fontSize: 16,
+    color: colors.articleCategory,
+    fontFamily: 'CircularStd-Medium'
+};
+
 export const onboardingTitleStyle = {
     fontSize: 16,
     color: colors.blackText,

@@ -1,7 +1,7 @@
 import React from "react";
 import {Image, Text, TouchableOpacity, View, StyleSheet, Animated} from "react-native";
 import {
-    blackTextStyle, graySmallTextStyle, grayTextStyle, hightlightTextStyle, peopleNameCardStyle,
+    blackTextStyle, commentTextStyle, graySmallTextStyle, grayTextStyle, hightlightTextStyle, peopleNameCardStyle,
     titleCardStyle
 } from "../constants/theme";
 import {getPublishDateDescription, getReadingTimeDescription} from "../utils/dateUtils";
@@ -67,8 +67,9 @@ export default class VerticalRow extends React.PureComponent {
 
     _renderHighlight = () => {
         if (this.props.highlightData == null) {return null};
-        const {highlightData: {highlights, userData: {profileId="", name=""}}} = this.props;
-        if (highlights == null || highlights.length === 0) {
+        const {highlightData: {highlights, userData: {profileId="", name=""}}, showHighlight} = this.props;
+
+        if (!showHighlight && (highlights == null || highlights.length === 0)) {
             return null;
         }
         return (<View style={styles.hightlightRoot}>
@@ -82,6 +83,24 @@ export default class VerticalRow extends React.PureComponent {
             </View>
         </View>
     )};
+
+    _renderComment = () => {
+        if (this.props.commentData == null) {return null};
+        const {commentData: {comment, userData: {profileId="", name=""}}, showComment} = this.props;
+        if (!showComment && (comment == null || comment.length === 0)) {
+            return null;
+        }
+
+        return (<View style={styles.hightlightRoot}>
+                <View style={[styles.hightlightHorizontalView, {alignItems: 'center'}]}>
+                    <Image source={{uri: 'https://s3-ap-southeast-1.amazonaws.com/userkit-identity-pro/avatars/'+profileId+'medium.jpg?'}} style={styles.sourceImage}/>
+                    <HBText style={peopleNameCardStyle}>{name}</HBText>
+                </View>
+                <View style={styles.hightlightHorizontalView}>
+                    <HBText style={commentTextStyle}>{comment}</HBText>
+                </View>
+            </View>)
+    };
 
     render() {
 
@@ -126,6 +145,7 @@ export default class VerticalRow extends React.PureComponent {
                 <Animated.View style={[rowStyles, this.props.style]}>
                     <HBText style={styles.categoryText}>{this.props.category ? this.props.category.toUpperCase() : ""}</HBText>
                     {this._renderHighlight()}
+                    {this._renderComment()}
                     <View style={styles.horizontalView}>
                         <View style={styles.titleTextView}>
                             <HBText onLayout={this._calculateTitleNumberOfLines} numberOfLines={3} style={titleCardStyle}>{(this.props.title == null) ? "" : this.props.title}</HBText>
