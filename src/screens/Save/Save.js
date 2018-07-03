@@ -113,7 +113,7 @@ export default class Save extends React.Component {
         }
 
         return (
-            <View style={{backgroundColor: colors.mainWhite, flex: 1}}>
+            <View style={{backgroundColor: colors.lightGray, flex: 1}}>
                 <FlatList
                     refreshing={saved.isFetching}
                     onRefresh={() => {
