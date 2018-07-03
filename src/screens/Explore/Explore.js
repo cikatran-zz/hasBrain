@@ -106,7 +106,6 @@ export default class Explore extends React.Component {
         for (let i = 0; i < array1.length; i++){
             if (array2.indexOf(array1[i]) < 0) return false;
         }
-        console.log("Compare",array2, array1, true);
         return true;
     };
 
@@ -138,8 +137,6 @@ export default class Explore extends React.Component {
         if (!newTagMap) {
             return;
         }
-
-        console.log("Update",source.updating, nextProps.source.updating);
         if (!this._compareMaps(tagMap, newTagMap) || !this._compareArr(source.chosenSources, newChosenSources) || source.updating !== nextProps.source.updating) {
             this._reloadData(newTagMap);
         }
