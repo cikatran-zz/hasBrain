@@ -100,10 +100,10 @@ export default class VerticalRow extends React.PureComponent {
             return null;
         }
         let highlights = _.get(this.props.action, "highlightData.highlights");
-        return highlights.map((x)=>(<View style={styles.hightlightHorizontalView}>
+        return highlights.map((x)=>{return (<View style={styles.hightlightHorizontalView}>
                                         <View style={styles.lineView}/>
-                                        <HBText style={[hightlightTextStyle]}>{x.highlight}</HBText>))}
-                                    </View>))
+                                        <HBText style={[hightlightTextStyle]}>{x.highlight}</HBText>
+                                    </View>)});
     };
 
     _renderComment = () => {

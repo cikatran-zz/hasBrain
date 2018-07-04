@@ -234,7 +234,7 @@ export default class Explore extends React.Component {
             category = item.reason;
         }
 
-        let author = _.get(item, 'sourceData.title');
+        let author = _.get(item, 'contentData.sourceData.title');
         if (author == null) {
             author = extractRootDomain(_.get(item, 'contentData.contentId'))
         }
