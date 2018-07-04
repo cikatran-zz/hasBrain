@@ -9,7 +9,7 @@ import _ from 'lodash';
 import {forkJoin} from 'rxjs';
 import axios from 'axios'
 
-const {RNCustomWebview, RNUserKit} = NativeModules;
+const {RNCustomWebview, RNUserKit, RNUserKitIdentity} = NativeModules;
 
 let globalAppoloClient = null;
 
@@ -541,7 +541,7 @@ export const getUserKitProfile = (accountRole = 'contributor', offset = 0, limit
 
 export const getAvatar = () => {
     return new Promise((resolve, reject) => {
-        NativeModules.RNUserKitIdentity.getProfileInfo((error, result) => {
+        RNUserKitIdentity.getProfileInfo((error, result) => {
             let avatar = result[0].avatars;
             resolve(avatar);
         })
@@ -559,5 +559,5 @@ export const getOwnpath = () => {
     return gqlQuery({
         query: config.queries.ownpath
     })
-}
+};
 

@@ -27,47 +27,77 @@ export default class MySource extends React.Component {
         super(props);
         this.state = {
             selectedTab: 0,
+        };
+
+        this._debounceToggleTab = _.debounce(this._selectTab, 500);
+    }
+
+    componentDidMount() {
+        if (!this.props.source.fetched) {
+            this.props.getSourceList();
         }
     }
 
 
 
     _onBackPress = () => {
-        const {selectedTab} = this.state;
-        switch (selectedTab) {
-            case 0:
-                this._sources.updateFollow();
-                break;
-            case 1:
-                this._people.updateFollow();
-                break;
-            case 2:
-                this._topics.updateFollow();
-                break;
-            default:
-                break;
-        }
+        //const {selectedTab} = this.state;
+        // switch (selectedTab) {
+        //     case 0:
+        //         this._sources.updateFollow();
+        //         break;
+        //     case 1:
+        //         this._people.updateFollow();
+        //         break;
+        //     case 2:
+        //         this._topics.updateFollow();
+        //         break;
+        //     default:
+        //         break;
+        // }
         //this.props.getFeed(1, 10);
         this.props.navigation.goBack();
-    }
+    };
 
-    _toggleTab = (index) => {
-        const {selectedTab} = this.state;
-        switch (selectedTab) {
+    _selectTab = (index) => {
+        switch (index) {
             case 0:
-                this._sources.updateFollow();
+                if (!this.props.source.fetched) {
+                    this.props.getSourceList();
+                }
                 break;
             case 1:
-                this._people.updateFollow();
+                if (!this.props.contributor.fetched) {
+                    this.props.getContributorList();
+                }
                 break;
             case 2:
-                this._topics.updateFollow();
+                if (!this.props.topic.fetched) {
+                    this.props.getTopicList();
+                }
                 break;
             default:
                 break;
         }
+    };
+
+    _toggleTab = (index) => {
+        // switch (selectedTab) {
+        //     case 0:
+        //         this._sources.updateFollow();
+        //         break;
+        //     case 1:
+        //         this._people.updateFollow();
+        //         break;
+        //     case 2:
+        //         this._topics.updateFollow();
+        //         break;
+        //     default:
+        //         break;
+        // }
         this.setState({selectedTab: index});
-    }
+        this._debounceToggleTab(index)
+    };
 
     _renderTabContainer (){
         const  {selectedTab} = this.state;

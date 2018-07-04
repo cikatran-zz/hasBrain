@@ -127,7 +127,7 @@ export default class Explore extends React.Component {
 
     componentWillReceiveProps(nextProps) {
 
-        const {source} = this.props;
+        const {source, userFollowedTopic, userFollowedContributor} = this.props;
         const {tagMap} = source;
 
         const newTagMap = _.get(nextProps, 'source.tagMap');
@@ -138,7 +138,11 @@ export default class Explore extends React.Component {
         if (!newTagMap) {
             return;
         }
-        if (!this._compareMaps(tagMap, newTagMap) || !this._compareArr(source.chosenSources, newChosenSources) || source.updating !== nextProps.source.updating) {
+        if ((source.updating === true && nextProps.source.updating === false) ||
+            (userFollowedTopic.isUpdating === true && nextProps.userFollowedTopic.isUpdating === false) ||
+            (userFollowedContributor.isUpdating === true && nextProps.userFollowedContributor.isUpdating === false) ||
+            !this._compareMaps(tagMap, newTagMap) ||
+            !this._compareArr(source.chosenSources, newChosenSources)) {
             this._reloadData(newTagMap);
         }
     }
@@ -237,17 +241,14 @@ export default class Explore extends React.Component {
 
         return (
             <VerticalRow style={{marginTop: (index === 0) ? -20 : 0}}
-                         showHighlight={item.actionType === "highlight"}
-                         highlightData={item.highlightData}
-                         showComment={item.actionType === "comment"}
-                         commentData={item.commentData}
+                         action={_.get(item, 'contentData.lastActionData',{})}
                          title={_.get(item, 'contentData.title', '')}
                          shortDescription={_.get(item, 'contentData.shortDescription', '')}
                          sourceName={author}
                          sourceCommentCount={_.get(item, 'contentData.sourceCommentCount')}
                          sourceActionName={_.get(item, 'contentData.sourceActionName')}
                          sourceActionCount={_.get(item, 'contentData.sourceActionCount')}
-                         sourceImage={_.get(item, 'sourceData.sourceImage', '')}
+                         sourceImage={_.get(item, 'contentData.sourceData.sourceImage', '')}
                          category={category}
                          time={_.get(item, 'contentData.sourceCreatedAt', '')}
                          readingTime={_.get(item, 'contentData.readingTime', '')}
@@ -444,6 +445,11 @@ export default class Explore extends React.Component {
         const dif = currentOffset - (this.offset || 0);
         let endOffset = event.nativeEvent.layoutMeasurement.height + currentOffset;
 
+        const feedData = _.get(feed, 'data', [])
+        if (feedData == null || feedData.length < 5) {
+            return
+        }
+
         // Check data is not null
         if (feed.data == null || feed.data.length === 0) {
             this._currentPositionVal = 0;
@@ -479,7 +485,10 @@ export default class Explore extends React.Component {
     };
 
     _onScrollEnd = (event) => {
-        if (this._currentPositionVal < 0.5) {
+        const {feed} = this.props;
+        let feedData = _.get(feed, 'data', [])
+        if (!feedData) feedData = [];
+        if (this._currentPositionVal < 0.5 || feedData.length < 5) {
             // Show
             this._currentPositionVal = 0;
             Animated.spring(this.state._animated, {
@@ -543,6 +552,7 @@ export default class Explore extends React.Component {
                         refreshing={false}
                         onRefresh={this._onRefresh}
                         onScrollEndDrag={this._onScrollEnd}
+                        onMomentumScrollEnd={this._onScrollEnd}
                         onScroll={this._onScroll}
                         scrollEventThrottle={16}
                         keyExtractor={this._keyExtractor}

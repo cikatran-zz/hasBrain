@@ -25,8 +25,12 @@ import updateFollowPersonaReducer from "./updateFollowPersonaReducer";
 import createUserReducer from "./createUserReducer";
 import ownpathReducer from "./ownpathReducer";
 import pathCurrentReducer from "./pathCurrentReducer";
+import updateUserTopicReducer from "./updateUserTopicReducer";
+import updateUserContributorFollowReducer from "./updateUserContributorFollowReducer";
+import {SIGN_OUT} from "../actions/actionTypes";
+import signOutReducer from "./signOutReducer";
 
-export default combineReducers({
+const myAccountReducer = combineReducers({
     articlesReducer,
     savedReducer,
     playlistReducer,
@@ -52,5 +56,18 @@ export default combineReducers({
     createUserReducer,
     updateFollowPersonaReducer,
     ownpathReducer,
-    pathCurrentReducer
+    pathCurrentReducer,
+    updateUserTopicReducer,
+    updateUserContributorFollowReducer,
+    signOutReducer
 });
+
+
+const rootReducer = (state, action) => {
+    if (action.type === SIGN_OUT ) {
+        state = undefined
+    }
+    return myAccountReducer(state, action)
+}
+
+export default rootReducer;

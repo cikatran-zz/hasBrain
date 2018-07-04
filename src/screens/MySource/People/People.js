@@ -8,7 +8,7 @@ import {
     StyleSheet,
     Dimensions,
     Share, NativeModules, Platform, Image,
-    Alert
+    Alert, TouchableWithoutFeedback
 } from 'react-native'
 import {colors} from '../../../constants/colors'
 import _ from 'lodash'
@@ -23,11 +23,12 @@ export default class People extends React.Component {
         this.state = {
             checkedState: (new Map(): Map<string, boolean>)
         }
+        this._debounceReloadAndSave = _.debounce(this.updateFollow, 2000);
     }
 
     componentDidMount() {
         this.props.onRef(this)
-        this.props.getContributorList();
+        // this.props.getContributorList();
     }
 
     componentWillUnmount() {
@@ -37,6 +38,8 @@ export default class People extends React.Component {
     _onPressItem = (id) => {
         const {contributor} = this.props;
         const {chosenContributors} = contributor;
+        this._debounceReloadAndSave();
+        if (!contributor.data) return;
 
         this.setState((state) => {
             let checkedState = state.checkedState;
@@ -56,7 +59,6 @@ export default class People extends React.Component {
 
     _renderListFooter = () => {
         return <View style={{height: 150}}/>;
-ß
     };
 
     _keyExtractor = (item, index) => index.toString();
@@ -76,22 +78,30 @@ export default class People extends React.Component {
         const url = avatarLen > 0 ? item.avatar[avatarLen - 1].url : ""
 
         return (
-            <View style={styles.listRow}>
-                <View style={{alignSelf: 'center', borderRadius: 25, overflow: 'hidden'}}>
-                    <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: url, width: 50, height: 50}}/>
+            <TouchableWithoutFeedback onPress={() => this._onPressItem(item._id)}>
+                <View style={styles.listRow}>
+                    <View style={{alignSelf: 'center', borderRadius: 25, overflow: 'hidden'}}>
+                        <Image resizeMode='contain' sytle={styles.iconImage}
+                               source={{uri: url, width: 50, height: 50}}/>
+                    </View>
+                    <View style={styles.detailsContainer}>
+                        <HBText style={styles.titleText}>{item.name}</HBText>
+                        <HBText numberOfLines={2} ellipsizeMode="tail"
+                                style={styles.descText}>{item.topics ? item.topics : ""}</HBText>
+                    </View>
+                    <CheckComponent id={item._id} checkedItem={checkedItem} onPressItem={(id) => {}}/>
                 </View>
-                <View style={styles.detailsContainer}>
-                    <HBText style={styles.titleText}>{item.name}</HBText>
-                    <HBText numberOfLines={2} ellipsizeMode="tail" style={styles.descText}>{item.topics ? item.topics : ""}</HBText>
-                </View>
-                <CheckComponent id={item._id} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
-            </View>
+            </TouchableWithoutFeedback>
         )
     }
 
     updateFollow() {
         const {checkedState} = this.state;
         const {contributor} = this.props;
+
+        if (!contributor.data)
+            return null;
+
         let newContributors = contributor.data.map((item) => {
             if (checkedState.get(item._id)) {
                 return item._id;
@@ -109,9 +119,9 @@ export default class People extends React.Component {
     };
 
     _renderSection = ({item}) => {
-        return(
+        return (
             <FlatList
-                style={{marginHorizontal:10, flex: 1}}
+                style={{marginHorizontal: 10, flex: 1}}
                 extraData={this.state}
                 keyExtractor={this._keyExtractor}
                 horizontal={false}
@@ -173,8 +183,8 @@ const styles = StyleSheet.create({
     },
     listRow: {
         flexDirection: 'row',
-        width:'100%',
-        alignItems:'center',
+        width: '100%',
+        alignItems: 'center',
         marginVertical: 10,
         backgroundColor: colors.mainWhite,
         borderRadius: 5,

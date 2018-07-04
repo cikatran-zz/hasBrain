@@ -17,7 +17,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
  * Created by henry on 4/10/18.
  */
 public class MyOkhttpModule {
-    static String HASBRAIN_CACHE_DIR = "hasbrain_http_cache";
+    static String HASBRAIN_CACHE_DIR = "webpage";
     static long DEFAULT_CACHE_SIZE = 30 * 1024 * 1024L; // 30MB
     static long DEFAULT_READ_TIMEOUT_MILLIS = 20 * 1000L; // 20s
     static long DEFAULT_WRITE_TIMEOUT_MILLIS = 20 * 1000L; // 20s

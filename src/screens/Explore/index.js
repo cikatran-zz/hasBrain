@@ -21,7 +21,9 @@ function mapStateToProps(state) {
         source: state.sourcelistReducer,
         feed: state.feedReducer,
         bookmarkedIds: state.bookmarkedIdsReducer,
-        topics: state.topicListReducer
+        topics: state.topicListReducer,
+        userFollowedTopic: state.updateUserTopicReducer,
+        userFollowedContributor: state.updateUserContributorFollowReducer
     }
 }
 

@@ -54,7 +54,7 @@ public class WebpageCache {
 
     private final Pattern fileNameReplacementPattern = Pattern.compile("[^a-zA-Z0-9-_\\.]");
     private List<String> listGrabExt = new ArrayList<>(Arrays.asList("js", "woff", "ttf", "eot", "css", "ico", "xml", "woff2", "json")); //take out this  "png", "jpg",
-    private List<String> cacheImageList = new ArrayList<>(Arrays.asList("png", "jpg", "ico"));
+    private List<String> cacheImageList = new ArrayList<>(Arrays.asList());//"png", "jpg", "ico"
     String TAG = "WEBPAGECACHE";
 
     @SuppressLint("CheckResult")
