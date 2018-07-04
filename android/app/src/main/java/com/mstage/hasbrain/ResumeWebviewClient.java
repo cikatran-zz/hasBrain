@@ -47,7 +47,7 @@ public class ResumeWebviewClient extends WebViewClient {
 
     File folder;
 
-    public void updateFolder(File folder){
+    public void updateFolder(File folder) {
         this.folder = folder;
     }
 
@@ -92,7 +92,8 @@ public class ResumeWebviewClient extends WebViewClient {
         return true;
     }
 
-    String TAG  = "RESUMEWEBVIEWCLIENT";
+    String TAG = "RESUMEWEBVIEWCLIENT";
+
     @Nullable
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
@@ -109,7 +110,7 @@ public class ResumeWebviewClient extends WebViewClient {
                         try {
                             Log.e(TAG, fileName);
                             WebResourceResponse temp = WebviewResourceMappingHelper.getWebResourceResponseFromFile(fileName, folder, mimeType, encoding);
-                            if(temp != null){
+                            if (temp != null) {
                                 return temp;
                             } else {
                                 return super.shouldInterceptRequest(view, request);
@@ -135,7 +136,6 @@ public class ResumeWebviewClient extends WebViewClient {
         }
         return super.shouldInterceptRequest(view, request);
     }
-
 
 
     @Override
