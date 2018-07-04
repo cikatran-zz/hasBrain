@@ -241,17 +241,14 @@ export default class Explore extends React.Component {
 
         return (
             <VerticalRow style={{marginTop: (index === 0) ? -20 : 0}}
-                         showHighlight={item.actionType === "highlight"}
-                         highlightData={item.highlightData}
-                         showComment={item.actionType === "comment"}
-                         commentData={item.commentData}
+                         action={_.get(item, 'contentData.lastActionData',{})}
                          title={_.get(item, 'contentData.title', '')}
                          shortDescription={_.get(item, 'contentData.shortDescription', '')}
                          sourceName={author}
                          sourceCommentCount={_.get(item, 'contentData.sourceCommentCount')}
                          sourceActionName={_.get(item, 'contentData.sourceActionName')}
                          sourceActionCount={_.get(item, 'contentData.sourceActionCount')}
-                         sourceImage={_.get(item, 'sourceData.sourceImage', '')}
+                         sourceImage={_.get(item, 'contentData.sourceData.sourceImage', '')}
                          category={category}
                          time={_.get(item, 'contentData.sourceCreatedAt', '')}
                          readingTime={_.get(item, 'contentData.readingTime', '')}
@@ -448,7 +445,8 @@ export default class Explore extends React.Component {
         const dif = currentOffset - (this.offset || 0);
         let endOffset = event.nativeEvent.layoutMeasurement.height + currentOffset;
 
-        if (_.get(feed, 'data', []).length < 5) {
+        const feedData = _.get(feed, 'data', [])
+        if (feedData == null || feedData.length < 5) {
             return
         }
 
@@ -488,8 +486,9 @@ export default class Explore extends React.Component {
 
     _onScrollEnd = (event) => {
         const {feed} = this.props;
-
-        if (this._currentPositionVal < 0.5 || _.get(feed, 'data', []).length < 5) {
+        let feedData = _.get(feed, 'data', [])
+        if (!feedData) feedData = [];
+        if (this._currentPositionVal < 0.5 || feedData.length < 5) {
             // Show
             this._currentPositionVal = 0;
             Animated.spring(this.state._animated, {

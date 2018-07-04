@@ -482,67 +482,57 @@ const getSourceList = gql`
 `;
 
 const getFeed = gql`
-query getFeed($page: Int, $perPage: Int, $currentRank: Float, $topics: [String]){
-  viewer{
-    feedPagination(sort:RANK_DESC, page: $page, perPage: $perPage, filter:{
-      _operators: {
-        rank: {
-          lt: $currentRank
-        }
-        topicId: {
-          in: $topics
-        }
-      }
-    }) {
+query getFeed($page: Int, $perPage: Int, $currentRank: Float, $topics: [String]) {
+  viewer {
+    feedPagination(sort: RANK_DESC, page: $page, perPage: $perPage, filter: {_operators: {rank: {lt: $currentRank}, topicId: {in: $topics}}}) {
       count
       items {
         contentId
         reason
         rank
         topicId
-        topicData{
+        topicData {
           title
         }
         actionType
         actionId
-        sourceData{
-          title
-          sourceImage
-        }
-        commentData {
-          userData {
-            profileId
-            name
-          }
-          comment
-        }
-        contentData{
+        contentData {
           _id
           sourceName
           kind
           title
           contentId
           sourceImage
+          sourceData {
+            title
+            sourceImage
+          }
           shortDescription
           sourceActionName
           sourceActionCount
           sourceCommentCount
           readingTime
           sourceCreatedAt
-        }
-        highlightData {
-          userData {
-            profileId
-            name
-          }
-          highlights {
-            highlight
+          lastActionData {
+            userData {
+              profileId
+              name
+            }
+            commentData {
+              comment
+            }
+            highlightData {
+              highlights {
+                highlight
+              }
+            }
           }
         }
       }
     }
   }
 }
+
 `;
 
 // const getFeedFilter = gql`
