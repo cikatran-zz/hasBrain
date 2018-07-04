@@ -52,20 +52,19 @@ export default class MySource extends React.Component {
     }
 
     _toggleTab = (index) => {
-        const {selectedTab} = this.state;
-        switch (selectedTab) {
-            case 0:
-                this._sources.updateFollow();
-                break;
-            case 1:
-                this._people.updateFollow();
-                break;
-            case 2:
-                this._topics.updateFollow();
-                break;
-            default:
-                break;
-        }
+        // switch (selectedTab) {
+        //     case 0:
+        //         this._sources.updateFollow();
+        //         break;
+        //     case 1:
+        //         this._people.updateFollow();
+        //         break;
+        //     case 2:
+        //         this._topics.updateFollow();
+        //         break;
+        //     default:
+        //         break;
+        // }
         this.setState({selectedTab: index});
     }
 
