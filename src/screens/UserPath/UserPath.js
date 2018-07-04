@@ -16,6 +16,7 @@ export default class UserPath extends Component {
             firstLoad: true,
             sectionMap: new Map()
         };
+        this._pathItems = {};
     }
 
     componentDidMount() {
@@ -24,12 +25,12 @@ export default class UserPath extends Component {
         this.props.getUserPath(_id);
     }
 
-    _renderSection = ({item}) => {
+    _renderSection = ({item, section}) => {
         if (item == null || _.isEmpty(item)) {
             return null;
         }
         return (
-            <PathSectionItem data={item.articleData}/>
+            <PathSectionItem ref={ref => this._pathItems[section.index] = ref} data={item.articleData}/>
         )
     }
 
@@ -49,18 +50,24 @@ export default class UserPath extends Component {
     }
 
     _toggleCollapse = (index) => {
+        let pathItem = this._pathItems[index];
         this.setState((state) => {
             let sectionMap = state.sectionMap;
             let expanded = sectionMap.get(index);
+            if (expanded == undefined)
+                expanded = true;
+            pathItem._toggle(expanded);
             sectionMap.set(index, !expanded);
             return {sectionMap}
-        })
+        });
     }
 
     _renderSectionHeader = ({section}) => {
         let title = section.title.toUpperCase();
         const {sectionMap} = this.state;
         let expanded = sectionMap.get(section.index);
+        if (expanded == undefined)
+            expanded = true;
         let arrowIcon = expanded ? require('../../assets/ic_arrow_up.png') : require('../../assets/ic_arrow_down.png')
         return (
             <TouchableWithoutFeedback onPress={() => this._toggleCollapse(section.index)}>

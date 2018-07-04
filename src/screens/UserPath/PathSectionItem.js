@@ -4,23 +4,26 @@ import {colors} from "../../constants/colors";
 import HBText from '../../components/HBText'
 import NavigationService from '../../NavigationService'
 
-
+const maxHeight = 230;
 export default class PathSectionItem extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        this._animated = new Animated.Value(0);
         this.state = {
+            minHeight: 0,
+            maxHeight: 0,
         }
+        this._animated = new Animated.Value(maxHeight);
     }
 
 
 
-    componentDidMount() {
-        Animated.timing(this._animated, {
-            toValue: 1,
-            duration: 0,
-        }).start();
+
+    _setMaxHeight = ({nativeEvent}) => {
+        console.log("Height: ", nativeEvent.layout.height);
+        this.setState({
+            maxHeight: nativeEvent.layout.height
+        });
     }
 
     _renderSeriesItem = ({item}) => {
@@ -51,10 +54,39 @@ export default class PathSectionItem extends React.PureComponent {
 
     };
 
+    componentDidMount() {
+    }
+
+    componentWillUnmount() {
+    }
+
+    _toggle(expanded) {
+        let initialValue = expanded ? maxHeight : 0;
+        let finalValue = expanded ? 0 : maxHeight;
+        this._animated.setValue(initialValue);
+        if (expanded) {
+            Animated.timing(
+                this._animated,
+                {
+                    toValue: finalValue,
+                }
+            ).start();
+        } else {
+            Animated.spring(
+                this._animated,
+                {
+                    toValue: finalValue,
+                    fiction: 1
+                }
+            ).start();
+        }
+
+    }
+
     render() {
 
         return (
-            <View style={styles.sectionContainer}>
+            <Animated.View style={[styles.sectionContainer, {height: this._animated}]}>
                 <View style={styles.verticalLine}/>
                 <FlatList
                     style={{marginVertical: 15}}
@@ -64,7 +96,7 @@ export default class PathSectionItem extends React.PureComponent {
                     ListEmptyComponent={() => this._renderEmptyList()}
                     keyExtractor={this._keyExtractor}
                     renderItem={this._renderSeriesItem}/>
-            </View>
+            </Animated.View>
         )
     }
 }
@@ -72,6 +104,7 @@ export default class PathSectionItem extends React.PureComponent {
 const styles = StyleSheet.create({
     sectionContainer: {
         flexDirection: 'row',
+        height: 260,
     },
     verticalLine: {
         backgroundColor: colors.pathVerticalLine,
@@ -100,7 +133,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        height: 115,
+        height: 120,
         zIndex: -1,
         borderWidth: 0.5,
         borderColor: colors.grayText,
