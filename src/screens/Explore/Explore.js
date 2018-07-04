@@ -458,6 +458,7 @@ export default class Explore extends React.Component {
         } else if ((dif < 0 || currentOffset <= 0) && (endOffset < event.nativeEvent.contentSize.height)) {
             // Show
             this._currentPositionVal = Math.max(this._currentPositionVal - Math.abs(dif) / 67, 0);
+            console.log("Current value", this._currentPositionVal);
             Animated.spring(this.state._animated, {
                 toValue: this._currentPositionVal * 67,
                 friction: 7,
@@ -468,6 +469,7 @@ export default class Explore extends React.Component {
 
             // Hide
             this._currentPositionVal = Math.min(Math.abs(dif) / 67 + this._currentPositionVal, 1);
+            console.log("Current value", this._currentPositionVal);
             Animated.spring(this.state._animated, {
                 toValue: this._currentPositionVal * 67,
                 friction: 7,
@@ -479,9 +481,12 @@ export default class Explore extends React.Component {
     };
 
     _onScrollEnd = (event) => {
-        if (this._currentPositionVal < 0.5) {
+        const {feed} = this.props;
+
+        if (this._currentPositionVal < 0.5 || _.get(feed, 'data', []).length < 5) {
             // Show
             this._currentPositionVal = 0;
+            console.log("Current value", this._currentPositionVal);
             Animated.spring(this.state._animated, {
                 toValue: 0,
                 friction: 7,
@@ -490,6 +495,7 @@ export default class Explore extends React.Component {
         } else {
             // Hide
             this._currentPositionVal = 1;
+            console.log("Current value", this._currentPositionVal);
             Animated.spring(this.state._animated, {
                 toValue: 67,
                 friction: 7,
@@ -543,6 +549,7 @@ export default class Explore extends React.Component {
                         refreshing={false}
                         onRefresh={this._onRefresh}
                         onScrollEndDrag={this._onScrollEnd}
+                        onMomentumScrollEnd={this._onScrollEnd}
                         onScroll={this._onScroll}
                         scrollEventThrottle={16}
                         keyExtractor={this._keyExtractor}
