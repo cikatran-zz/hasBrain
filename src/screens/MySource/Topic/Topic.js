@@ -8,7 +8,7 @@ import {
     StyleSheet,
     Dimensions,
     Share, NativeModules, Platform, Image,
-    Alert
+    Alert, TouchableWithoutFeedback
 } from 'react-native'
 import {colors} from '../../../constants/colors'
 import _ from 'lodash'
@@ -74,17 +74,29 @@ export default class Topic extends React.Component {
         }
 
         return (
-            <View style={styles.listRow}>
-                {/*<Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.image ? item.image : "", width: 60, height: 60}}/>*/}
-                <View style={{height: 60, width: 60, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.darkBlue}}>
-                    <HBText style={{fontSize: 25, color: colors.mainWhite}}>{item.title.toUpperCase().charAt(0)}</HBText>
+            <TouchableWithoutFeedback onPress={() => this._onPressItem(item._id)}>
+                <View style={styles.listRow}>
+                    {/*<Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.image ? item.image : "", width: 60, height: 60}}/>*/}
+                    <View style={{
+                        height: 60,
+                        width: 60,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: colors.darkBlue
+                    }}>
+                        <HBText style={{
+                            fontSize: 25,
+                            color: colors.mainWhite
+                        }}>{item.title.toUpperCase().charAt(0)}</HBText>
+                    </View>
+                    <View style={styles.detailsContainer}>
+                        <HBText style={styles.titleText}>{item.title}</HBText>
+                        {/*<HBText style={styles.descText}>{item.shortDescription ? item.shortDescription : ""}</HBText>*/}
+                    </View>
+                    <CheckComponent id={item.title} checkedItem={checkedItem}
+                                    onPressItem={(title) => {}}/>
                 </View>
-                <View style={styles.detailsContainer}>
-                    <HBText style={styles.titleText}>{item.title}</HBText>
-                    {/*<HBText style={styles.descText}>{item.shortDescription ? item.shortDescription : ""}</HBText>*/}
-                </View>
-                <CheckComponent id={item.title} checkedItem={checkedItem} onPressItem={(title)=>this._onPressItem(item._id)}/>
-            </View>
+            </TouchableWithoutFeedback>
         )
     }
 
@@ -109,9 +121,9 @@ export default class Topic extends React.Component {
     };
 
     _renderSection = ({item}) => {
-        return(
+        return (
             <FlatList
-                style={{marginHorizontal:10, flex: 1}}
+                style={{marginHorizontal: 10, flex: 1}}
                 extraData={this.state}
                 keyExtractor={this._keyExtractor}
                 horizontal={false}
@@ -173,8 +185,8 @@ const styles = StyleSheet.create({
     },
     listRow: {
         flexDirection: 'row',
-        width:'100%',
-        alignItems:'center',
+        width: '100%',
+        alignItems: 'center',
         marginVertical: 10,
         backgroundColor: colors.mainWhite,
         borderRadius: 5,
@@ -191,7 +203,7 @@ const styles = StyleSheet.create({
         color: colors.darkBlue,
         fontFamily: 'CircularStd-Book',
         fontSize: 16,
-        marginVertical:10
+        marginVertical: 10
     },
     sectionHeader: {
         color: colors.darkBlue,

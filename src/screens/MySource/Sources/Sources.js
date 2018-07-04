@@ -8,7 +8,7 @@ import {
     StyleSheet,
     Dimensions,
     Share, NativeModules, Platform, Image,
-    Alert
+    Alert, TouchableWithoutFeedback
 } from 'react-native'
 import {colors} from '../../../constants/colors'
 import _ from 'lodash'
@@ -87,11 +87,13 @@ export default class Sources extends React.Component {
         }
 
         return (
-            <View style={styles.listRow}>
-                <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.sourceImage, width: 60, height: 60}}/>
-                <HBText style={styles.sourceText}>{item.title}</HBText>
-                <CheckComponent id={item.sourceId} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
-            </View>
+            <TouchableWithoutFeedback onPress={()=>this._onPressItem(item.sourceId)}>
+                <View style={styles.listRow}>
+                    <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.sourceImage, width: 60, height: 60}}/>
+                    <HBText style={styles.sourceText}>{item.title}</HBText>
+                    <CheckComponent id={item.sourceId} checkedItem={checkedItem} onPressItem={(id)=>{}}/>
+                </View>
+            </TouchableWithoutFeedback>
         )
     }
 
