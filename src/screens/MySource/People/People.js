@@ -8,7 +8,7 @@ import {
     StyleSheet,
     Dimensions,
     Share, NativeModules, Platform, Image,
-    Alert
+    Alert, TouchableWithoutFeedback
 } from 'react-native'
 import {colors} from '../../../constants/colors'
 import _ from 'lodash'
@@ -78,16 +78,20 @@ export default class People extends React.Component {
         const url = avatarLen > 0 ? item.avatar[avatarLen - 1].url : ""
 
         return (
-            <View style={styles.listRow}>
-                <View style={{alignSelf: 'center', borderRadius: 25, overflow: 'hidden'}}>
-                    <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: url, width: 50, height: 50}}/>
+            <TouchableWithoutFeedback onPress={() => this._onPressItem(item._id)}>
+                <View style={styles.listRow}>
+                    <View style={{alignSelf: 'center', borderRadius: 25, overflow: 'hidden'}}>
+                        <Image resizeMode='contain' sytle={styles.iconImage}
+                               source={{uri: url, width: 50, height: 50}}/>
+                    </View>
+                    <View style={styles.detailsContainer}>
+                        <HBText style={styles.titleText}>{item.name}</HBText>
+                        <HBText numberOfLines={2} ellipsizeMode="tail"
+                                style={styles.descText}>{item.topics ? item.topics : ""}</HBText>
+                    </View>
+                    <CheckComponent id={item._id} checkedItem={checkedItem} onPressItem={(id) => {}}/>
                 </View>
-                <View style={styles.detailsContainer}>
-                    <HBText style={styles.titleText}>{item.name}</HBText>
-                    <HBText numberOfLines={2} ellipsizeMode="tail" style={styles.descText}>{item.topics ? item.topics : ""}</HBText>
-                </View>
-                <CheckComponent id={item._id} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
-            </View>
+            </TouchableWithoutFeedback>
         )
     }
 
@@ -115,9 +119,9 @@ export default class People extends React.Component {
     };
 
     _renderSection = ({item}) => {
-        return(
+        return (
             <FlatList
-                style={{marginHorizontal:10, flex: 1}}
+                style={{marginHorizontal: 10, flex: 1}}
                 extraData={this.state}
                 keyExtractor={this._keyExtractor}
                 horizontal={false}
@@ -179,8 +183,8 @@ const styles = StyleSheet.create({
     },
     listRow: {
         flexDirection: 'row',
-        width:'100%',
-        alignItems:'center',
+        width: '100%',
+        alignItems: 'center',
         marginVertical: 10,
         backgroundColor: colors.mainWhite,
         borderRadius: 5,

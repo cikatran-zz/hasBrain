@@ -63,19 +63,16 @@ export default class MySource extends React.Component {
         switch (index) {
             case 0:
                 if (!this.props.source.fetched) {
-                    console.log("Get source");
                     this.props.getSourceList();
                 }
                 break;
             case 1:
                 if (!this.props.contributor.fetched) {
-                    console.log("Get contributor");
                     this.props.getContributorList();
                 }
                 break;
             case 2:
                 if (!this.props.topic.fetched) {
-                    console.log("Get topic");
                     this.props.getTopicList();
                 }
                 break;
