@@ -55,7 +55,7 @@ export default function topicListReducer(state = initialState, action) {
         case actionTypes.UPDATING_USER_TOPIC:
             return {
                 ...state,
-                chosenTopics: action.topics
+                chosenTopic: action.topics
             }
         default:
             return state
