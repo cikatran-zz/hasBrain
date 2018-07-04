@@ -127,7 +127,7 @@ export default class Explore extends React.Component {
 
     componentWillReceiveProps(nextProps) {
 
-        const {source} = this.props;
+        const {source, userFollowedTopic, userFollowedContributor} = this.props;
         const {tagMap} = source;
 
         const newTagMap = _.get(nextProps, 'source.tagMap');
@@ -138,7 +138,11 @@ export default class Explore extends React.Component {
         if (!newTagMap) {
             return;
         }
-        if (!this._compareMaps(tagMap, newTagMap) || !this._compareArr(source.chosenSources, newChosenSources) || source.updating !== nextProps.source.updating) {
+        if ((source.updating === true && nextProps.source.updating === false) ||
+            (userFollowedTopic.isUpdating === true && nextProps.userFollowedTopic.isUpdating === false) ||
+            (userFollowedContributor.isUpdating === true && nextProps.userFollowedContributor.isUpdating === false) ||
+            !this._compareMaps(tagMap, newTagMap) ||
+            !this._compareArr(source.chosenSources, newChosenSources)) {
             this._reloadData(newTagMap);
         }
     }

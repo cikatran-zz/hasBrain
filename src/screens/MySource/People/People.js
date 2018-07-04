@@ -23,6 +23,7 @@ export default class People extends React.Component {
         this.state = {
             checkedState: (new Map(): Map<string, boolean>)
         }
+        this._debounceReloadAndSave = _.debounce(this.updateFollow, 2000);
     }
 
     componentDidMount() {
@@ -37,7 +38,7 @@ export default class People extends React.Component {
     _onPressItem = (id) => {
         const {contributor} = this.props;
         const {chosenContributors} = contributor;
-
+        this._debounceReloadAndSave();
         if (!contributor.data) return;
 
         this.setState((state) => {
@@ -58,7 +59,6 @@ export default class People extends React.Component {
 
     _renderListFooter = () => {
         return <View style={{height: 150}}/>;
-ß
     };
 
     _keyExtractor = (item, index) => index.toString();
