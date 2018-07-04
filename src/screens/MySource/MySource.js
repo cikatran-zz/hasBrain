@@ -82,8 +82,6 @@ export default class MySource extends React.Component {
             default:
                 break;
         }
-
-        this.setState({selectedTab: index});
     };
 
     _toggleTab = (index) => {
@@ -100,6 +98,7 @@ export default class MySource extends React.Component {
         //     default:
         //         break;
         // }
+        this.setState({selectedTab: index});
         this._debounceToggleTab(index)
     };
 
