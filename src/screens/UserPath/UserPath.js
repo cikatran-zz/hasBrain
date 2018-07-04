@@ -198,6 +198,7 @@ const styles = StyleSheet.create({
         color: colors.pathSection,
         fontSize: 14,
         fontFamily: 'CircularStd-Bold',
+        marginTop: 3
     },
     sectionHeader: {
         flexDirection: 'row',
@@ -288,7 +289,7 @@ const styles = StyleSheet.create({
     collapseArrow: {
         position: 'absolute',
         right: 15,
-        top: 8,
+        top: 9,
         width: 8,
         height: 5
     }
