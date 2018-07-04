@@ -38,6 +38,8 @@ export default class People extends React.Component {
         const {contributor} = this.props;
         const {chosenContributors} = contributor;
 
+        if (!contributor.data) return;
+
         this.setState((state) => {
             let checkedState = state.checkedState;
             if (checkedState.size < 1) {
@@ -92,6 +94,10 @@ export default class People extends React.Component {
     updateFollow() {
         const {checkedState} = this.state;
         const {contributor} = this.props;
+
+        if (!contributor.data)
+            return null;
+
         let newContributors = contributor.data.map((item) => {
             if (checkedState.get(item._id)) {
                 return item._id;
