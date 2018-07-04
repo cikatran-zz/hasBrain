@@ -80,7 +80,7 @@ export default class People extends React.Component {
         return (
             <TouchableWithoutFeedback onPress={() => this._onPressItem(item._id)}>
                 <View style={styles.listRow}>
-                    <View style={{alignSelf: 'center', borderRadius: 25, overflow: 'hidden'}}>
+                    <View style={{alignSelf: 'center', borderRadius: 25, overflow: 'hidden', width: 50, height: 50}}>
                         <Image resizeMode='contain' sytle={styles.iconImage}
                                source={{uri: url, width: 50, height: 50}}/>
                     </View>
