@@ -23,6 +23,7 @@ export default class People extends React.Component {
         this.state = {
             checkedState: (new Map(): Map<string, boolean>)
         }
+        this._debounceReloadAndSave = _.debounce(this.updateFollow, 2000);
     }
 
     componentDidMount() {
@@ -37,6 +38,8 @@ export default class People extends React.Component {
     _onPressItem = (id) => {
         const {contributor} = this.props;
         const {chosenContributors} = contributor;
+        this._debounceReloadAndSave();
+        if (!contributor.data) return;
 
         this.setState((state) => {
             let checkedState = state.checkedState;
@@ -56,7 +59,6 @@ export default class People extends React.Component {
 
     _renderListFooter = () => {
         return <View style={{height: 150}}/>;
-ß
     };
 
     _keyExtractor = (item, index) => index.toString();
@@ -92,14 +94,18 @@ export default class People extends React.Component {
     updateFollow() {
         const {checkedState} = this.state;
         const {contributor} = this.props;
+
+        if (!contributor.data)
+            return null;
+
         let newContributors = contributor.data.map((item) => {
             if (checkedState.get(item._id)) {
                 return item._id;
             }
         });
         newContributors = _.compact(newContributors);
-        //if (!_.isEmpty(newContributors))
-        this.props.updateFollowContributor(newContributors);
+        if (checkedState.size !== 0)//!_.isEmpty(newContributors))
+            this.props.updateFollowContributor(newContributors);
     }
 
     _renderSectionHeader = ({section}) => {

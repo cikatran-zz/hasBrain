@@ -23,6 +23,7 @@ export default class Topic extends React.Component {
         this.state = {
             checkedState: (new Map(): Map<string, boolean>)
         }
+        this._debounceReloadAndSave = _.debounce(this.updateFollow, 2000);
     }
 
     componentDidMount() {
@@ -37,7 +38,7 @@ export default class Topic extends React.Component {
     _onPressItem = (id) => {
         const {topic} = this.props;
         const {chosenTopic} = topic;
-
+        this._debounceReloadAndSave();
         this.setState((state) => {
             let checkedState = state.checkedState;
             if (checkedState.size < 1) {
@@ -97,7 +98,8 @@ export default class Topic extends React.Component {
         });
         newTopics = _.compact(newTopics);
         //if (!_.isEmpty(newTopics))
-        this.props.updateFollowTopics(newTopics);
+        if (checkedState.size !== 0)
+            this.props.updateFollowTopics(newTopics);
     }
 
     _renderSectionHeader = ({section}) => {
