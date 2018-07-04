@@ -116,11 +116,15 @@ export default class UserPath extends Component {
                 index: i
             }
         })
+        let url = `https://s3-ap-southeast-1.amazonaws.com/userkit-identity-pro/avatars/${userPath.data.profileId}medium.jpg`;
         return (
             <View style={{backgroundColor: colors.lightGray, width: '100%', height: '100%', alignItems:'center',}}>
                 <View style={styles.pathInfoContainer}>
                     <HBText style={styles.pathInfoTitle}>{userPath.data.title}</HBText>
                     <HBText numberOfLines={2} ellipziseMode="tail" style={styles.pathInfoDescription}>{userPath.data.shortDescription}</HBText>
+                    <View style={{height: 30, width: 30, borderRadius: 15, overflow:'hidden', marginTop: 10}}>
+                        <Image resizeMode='contain' source={{uri: url, height: 30, width: 30}}/>
+                    </View>
                 </View>
                 <View style={{backgroundColor: colors.pathVerticalLine, height: 0.5, width: '100%', marginTop: 20, marginBottom: 10}} />
                 <SectionList
@@ -181,7 +185,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     pathInfoDescription: {
-        color: colors.tagGrayText,
+        color: colors.articleCategory,
         fontSize: 14,
         marginTop: 5
     },
