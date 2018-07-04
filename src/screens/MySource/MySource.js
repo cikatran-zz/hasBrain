@@ -125,7 +125,7 @@ export default class MySource extends React.Component {
                 </View>
                 <View style={{backgroundColor: colors.lightGray}}>
                     <View style={styles.tabContainer}>
-                        <TouchableWithoutFeedback onPress={() => this._toggleTab(0)}>
+                        <TouchableWithoutFeedback style={{height: 17, width: 73}} onPress={() => this._toggleTab(0)}>
                             <HBText style={[
                                 styles.tabTitle,
                                 selectedTab == 0 ? {color: colors.blueText} : {color: colors.tagGrayText}

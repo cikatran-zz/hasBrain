@@ -182,7 +182,6 @@ const styles = StyleSheet.create({
         color: colors.darkBlue,
         fontSize: 24,
         fontFamily: 'CircularStd-Bold',
-        fontWeight: 'bold'
     },
     pathInfoDescription: {
         color: colors.articleCategory,
@@ -199,7 +198,6 @@ const styles = StyleSheet.create({
         color: colors.pathSection,
         fontSize: 14,
         fontFamily: 'CircularStd-Bold',
-        fontWeight: 'bold'
     },
     sectionHeader: {
         flexDirection: 'row',
