@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ActionMode;
@@ -65,9 +66,9 @@ public class CustomWebview extends WebView implements NotificationObserver {
 
     @Override
     protected void finalize() throws Throwable {
-        NotificationCenter.shared.removeObserver(this,getResources().getString(R.string.webview_reload));
-        NotificationCenter.shared.removeObserver(this,getResources().getString(R.string.webview_goBack));
-        NotificationCenter.shared.removeObserver(this,getResources().getString(R.string.webview_goForward));
+        NotificationCenter.shared.removeObserver(this, getResources().getString(R.string.webview_reload));
+        NotificationCenter.shared.removeObserver(this, getResources().getString(R.string.webview_goBack));
+        NotificationCenter.shared.removeObserver(this, getResources().getString(R.string.webview_goForward));
         super.finalize();
     }
 
@@ -119,13 +120,16 @@ public class CustomWebview extends WebView implements NotificationObserver {
     }
 
     public void sendOnUrlChanged() {
-        WritableMap event = Arguments.createMap();
-        event.putString("url", this.getUrl());
-        ReactContext reactContext = (ReactContext) getContext();
-        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
-                getId(),
-                "urlChanged",
-                event);
+        String url = this.getUrl();
+        if (!TextUtils.isEmpty(url) && !url.equals("about:blank")) {
+            WritableMap event = Arguments.createMap();
+            event.putString("url", url);
+            ReactContext reactContext = (ReactContext) getContext();
+            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+                    getId(),
+                    "urlChanged",
+                    event);
+        }
     }
 
     public void sendOnHighlight(String text) {
@@ -158,9 +162,9 @@ public class CustomWebview extends WebView implements NotificationObserver {
             setWebViewClient(webViewClient);
         }
 
-        NotificationCenter.shared.addObserver(this,getResources().getString(R.string.webview_reload));
-        NotificationCenter.shared.addObserver(this,getResources().getString(R.string.webview_goBack));
-        NotificationCenter.shared.addObserver(this,getResources().getString(R.string.webview_goForward));
+        NotificationCenter.shared.addObserver(this, getResources().getString(R.string.webview_reload));
+        NotificationCenter.shared.addObserver(this, getResources().getString(R.string.webview_goBack));
+        NotificationCenter.shared.addObserver(this, getResources().getString(R.string.webview_goForward));
         WebSettings settings = this.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setBuiltInZoomControls(true);
@@ -188,7 +192,7 @@ public class CustomWebview extends WebView implements NotificationObserver {
         if (current.get("x") == null || current.get("y") == null || current.get("scale") == null) {
             return;
         }
-        resume = new Point(((Double)current.get("x")).intValue(), ((Double) current.get("y")).intValue());
+        resume = new Point(((Double) current.get("x")).intValue(), ((Double) current.get("y")).intValue());
         if (webViewClient == null) {
             webViewClient = new ResumeWebviewClient(this, getContext());
         }
@@ -227,23 +231,23 @@ public class CustomWebview extends WebView implements NotificationObserver {
     @Override
     public void receiveNotification(String name) {
         if (name.equals(getResources().getString(R.string.webview_reload))) {
-            new Handler(Looper.getMainLooper()).post(new Runnable () {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
-                public void run () {
+                public void run() {
                     reload();
                 }
             });
         } else if (name.equals(getResources().getString(R.string.webview_goBack))) {
-            new Handler(Looper.getMainLooper()).post(new Runnable () {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
-                public void run () {
+                public void run() {
                     goBack();
                 }
             });
         } else if (name.equals(getResources().getString(R.string.webview_goForward))) {
-            new Handler(Looper.getMainLooper()).post(new Runnable () {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
-                public void run () {
+                public void run() {
                     goForward();
                 }
             });
@@ -337,10 +341,10 @@ public class CustomWebview extends WebView implements NotificationObserver {
         }
     }
 
-    public void executeHighlight(){
+    public void executeHighlight() {
         evaluateJavascript(highlightJS, value -> {
             if (value != null) {
-                String text = value.substring(1, value.length()-1);
+                String text = value.substring(1, value.length() - 1);
                 sendOnHighlight(text);
             }
         });
