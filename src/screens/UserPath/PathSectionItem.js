@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         width: 260,
         height: 190,
-        marginRight: 20,
+        marginRight: 10,
         backgroundColor: colors.mainWhite,
         borderRadius: 5,
         shadowColor: colors.grayText,
