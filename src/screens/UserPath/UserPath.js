@@ -6,6 +6,7 @@ import { colors } from '../../constants/colors'
 import _ from 'lodash'
 import {rootViewTopPadding} from '../../utils/paddingUtils'
 import HBText from "../../components/HBText";
+import PathSectionItem from './PathSectionItem'
 
 export default class UserPath extends Component {
 
@@ -28,33 +29,7 @@ export default class UserPath extends Component {
             return null;
         }
         return (
-            <View style={styles.sectionContainer}>
-                <View style={styles.verticalLine}/>
-                <FlatList
-                    style={{marginVertical: 15}}
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    data={item.articleData}
-                    ListEmptyComponent={() => this._renderEmptyList()}
-                    keyExtractor={this._keyExtractor}
-                    renderItem={this._renderSeriesItem}/>
-            </View>
-        )
-    }
-
-    _renderSeriesItem = ({item}) => {
-        return (
-            <TouchableWithoutFeedback onPress={() => this._openReadingView(item)}>
-                <View style={styles.seriesContainer}>
-                    <View style={{height: 120, width: 260}}>
-                        <View style={styles.placeHolder}>
-                            <HBText style={styles.textPlaceHolder}>hasBrain</HBText>
-                        </View>
-                        <Image style={styles.seriesItemImage} source={{uri: item.sourceImage, height: 120, width: 260}}/>
-                    </View>
-                    <HBText numberOfLines={2} ellipsizeMode="tail" style={styles.seriesItemText}>{item.title}</HBText>
-                </View>
-            </TouchableWithoutFeedback>
+            <PathSectionItem data={item.articleData}/>
         )
     }
 
@@ -103,10 +78,6 @@ export default class UserPath extends Component {
         )
     };
 
-    _openReadingView = (item) => {
-        this.props.navigation.navigate("Reader", {...item, bookmarked: false});
-
-    };
 
     _onClosePress = () => {
         this.props.navigation.goBack();
@@ -114,11 +85,6 @@ export default class UserPath extends Component {
 
     _renderListFooter = () => {
         return <View style={{height: 150}}/>;
-
-    };
-
-    _renderEmptyList = () => {
-        return <HBText style={{color: colors.pathVerticalLine, fontSize: 12}}>There are no series</HBText>
 
     };
 
