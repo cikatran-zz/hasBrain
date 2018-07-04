@@ -342,9 +342,9 @@ query getUserPath($id: MongoID){
     pathOne(filter: {_id: $id}) {
       _id
       title
+      profileId
       shortDescription
       topic {
-        
         topicId
         levelId
         createdAt
