@@ -28,7 +28,7 @@ export default class People extends React.Component {
 
     componentDidMount() {
         this.props.onRef(this)
-        this.props.getContributorList();
+        // this.props.getContributorList();
     }
 
     componentWillUnmount() {

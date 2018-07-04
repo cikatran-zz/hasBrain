@@ -28,7 +28,7 @@ export default class Topic extends React.Component {
 
     componentDidMount() {
         this.props.onRef(this)
-        this.props.getTopicList();
+        //this.props.getTopicList();
     }
 
     componentWillUnmount() {

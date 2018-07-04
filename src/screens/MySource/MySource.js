@@ -27,29 +27,64 @@ export default class MySource extends React.Component {
         super(props);
         this.state = {
             selectedTab: 0,
+        };
+
+        this._debounceToggleTab = _.debounce(this._selectTab, 500);
+    }
+
+    componentDidMount() {
+        if (!this.props.source.fetched) {
+            this.props.getSourceList();
         }
     }
 
 
 
     _onBackPress = () => {
-        const {selectedTab} = this.state;
-        switch (selectedTab) {
+        //const {selectedTab} = this.state;
+        // switch (selectedTab) {
+        //     case 0:
+        //         this._sources.updateFollow();
+        //         break;
+        //     case 1:
+        //         this._people.updateFollow();
+        //         break;
+        //     case 2:
+        //         this._topics.updateFollow();
+        //         break;
+        //     default:
+        //         break;
+        // }
+        //this.props.getFeed(1, 10);
+        this.props.navigation.goBack();
+    };
+
+    _selectTab = (index) => {
+        switch (index) {
             case 0:
-                this._sources.updateFollow();
+                if (!this.props.source.fetched) {
+                    console.log("Get source");
+                    this.props.getSourceList();
+                }
                 break;
             case 1:
-                this._people.updateFollow();
+                if (!this.props.contributor.fetched) {
+                    console.log("Get contributor");
+                    this.props.getContributorList();
+                }
                 break;
             case 2:
-                this._topics.updateFollow();
+                if (!this.props.topic.fetched) {
+                    console.log("Get topic");
+                    this.props.getTopicList();
+                }
                 break;
             default:
                 break;
         }
-        //this.props.getFeed(1, 10);
-        this.props.navigation.goBack();
-    }
+
+        this.setState({selectedTab: index});
+    };
 
     _toggleTab = (index) => {
         // switch (selectedTab) {
@@ -65,8 +100,8 @@ export default class MySource extends React.Component {
         //     default:
         //         break;
         // }
-        this.setState({selectedTab: index});
-    }
+        this._debounceToggleTab(index)
+    };
 
     _renderTabContainer (){
         const  {selectedTab} = this.state;

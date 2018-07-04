@@ -29,7 +29,7 @@ export default class Sources extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getSourceList();
+        //this.props.getSourceList();
         this.props.onRef(this)
     }
 
@@ -44,7 +44,7 @@ export default class Sources extends React.Component {
         this.setState((state) => {
             let checkedState = state.checkedState;
             if (checkedState.size < 1) {
-                let sources = source.data.map(item => {
+                let sources = (source.data ? source.data : []).map(item => {
                     return item.sourceId
                 });
                 for (let key of sources) {
@@ -98,7 +98,7 @@ export default class Sources extends React.Component {
     updateFollow() {
         const {checkedState} = this.state;
         const {source} = this.props;
-        let newSources = source.data.map((item) => {
+        let newSources = (source.data ? source.data : []).map((item) => {
             if (checkedState.get(item.sourceId)) {
                 return item.sourceId;
             }

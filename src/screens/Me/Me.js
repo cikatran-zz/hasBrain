@@ -31,8 +31,7 @@ export default class Me extends React.Component {
     }
 
     _signOut = () => {
-        NativeModules.RNUserKitIdentity.signOut();
-        resetAuthToken();
+        this.props.signOut();
         NavigationServices.reset('Authentication');
     };
 
