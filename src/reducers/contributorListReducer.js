@@ -44,7 +44,7 @@ export default function contributorListReducer(state = initialState, action) {
         case actionTypes.UPDATE_USER_CONTRIBUTOR_FOLLOW:
             return {
                 ...state,
-                contributors: action.contributors
+                chosenContributors: action.contributors
             }
         default:
             return state
