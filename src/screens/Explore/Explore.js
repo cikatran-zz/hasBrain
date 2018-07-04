@@ -448,6 +448,10 @@ export default class Explore extends React.Component {
         const dif = currentOffset - (this.offset || 0);
         let endOffset = event.nativeEvent.layoutMeasurement.height + currentOffset;
 
+        if (_.get(feed, 'data', []).length < 5) {
+            return
+        }
+
         // Check data is not null
         if (feed.data == null || feed.data.length === 0) {
             this._currentPositionVal = 0;
