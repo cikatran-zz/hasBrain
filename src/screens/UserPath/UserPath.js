@@ -73,21 +73,33 @@ export default class UserPath extends Component {
         }
     }
 
+    _toggleCollapse = (index) => {
+        this.setState((state) => {
+            let sectionMap = state.sectionMap;
+            let expanded = sectionMap.get(index);
+            sectionMap.set(index, !expanded);
+            return {sectionMap}
+        })
+    }
+
     _renderSectionHeader = ({section}) => {
         let title = section.title.toUpperCase();
         const {sectionMap} = this.state;
         let expanded = sectionMap.get(section.index);
+        let arrowIcon = expanded ? require('../../assets/ic_arrow_up.png') : require('../../assets/ic_arrow_down.png')
         return (
-            <View style={styles.sectionHeader}>
-                <View style={{flexDirection: 'column', height: 13, width: 10, marginLeft: 30,
-                    marginRight: 15}}>
-                    {this._renderVerticalLine(section.index, true)}
-                    <View style={styles.circlePoint}/>
-                    {this._renderVerticalLine(section.index, false)}
+            <TouchableWithoutFeedback onPress={() => this._toggleCollapse(section.index)}>
+                <View style={styles.sectionHeader}>
+                    <View style={{flexDirection: 'column', height: 13, width: 10, marginLeft: 30,
+                        marginRight: 15}}>
+                        {this._renderVerticalLine(section.index, true)}
+                        <View style={styles.circlePoint}/>
+                        {this._renderVerticalLine(section.index, false)}
+                    </View>
+                    <HBText ellipsizeMode="tail" numberOfLines={1} style={styles.seriesTitle}>{title}</HBText>
+                    <Image style={styles.collapseArrow} source={arrowIcon}/>
                 </View>
-                <HBText ellipsizeMode="tail" numberOfLines={1} style={styles.seriesTitle}>{title}</HBText>
-                <Image />
-            </View>
+            </TouchableWithoutFeedback>
         )
     };
 
@@ -215,7 +227,7 @@ const styles = StyleSheet.create({
     sectionHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        width: '80%',
+        width: '100%',
         marginTop: -3
     },
     sectionContainer: {
@@ -297,5 +309,12 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         elevation: 1,
         overflow: 'hidden'
+    },
+    collapseArrow: {
+        position: 'absolute',
+        right: 15,
+        top: 8,
+        width: 8,
+        height: 5
     }
 })
