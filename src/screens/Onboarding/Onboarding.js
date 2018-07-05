@@ -40,7 +40,6 @@ export default class Onboarding extends React.Component {
         }
         if (this.currentIndex === 1) {
             this.setState({nextText: 'Done'})
-            this.props.getIntentions(this.experience)
         }
         if (this.currentIndex !== 2) {
             this.swiper.scrollBy(1);
@@ -91,6 +90,7 @@ export default class Onboarding extends React.Component {
         }
 
         this.setState({experience: data, isNextEnable: data.length !== 0});
+        this.props.getIntentions(this.experience)
     };
 
     _onChangeExperience = (selectedExperience) => {

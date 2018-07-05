@@ -106,11 +106,10 @@ export default class OnboardingPageIntent extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        let {selected} = this.props;
+        let {selected} = nextProps;
         const {selectedIntentions} = this.state;
-        console.log('componentWillReceiveProps', selected, selectedIntentions);
         //====Temporary fix same intent type disappeared=====
-        if (!_.isEmpty(selectedIntentions) && _.isEqual(intents, this.state.selectedIntentions))
+        if (!_.isEmpty(selectedIntentions) && _.isEqual(selected, this.props.selected))
             return;
         //====================================================
         if (selected == null) {
@@ -132,7 +131,7 @@ export default class OnboardingPageIntent extends React.Component {
                 });
             }
         });
-        console.log("Update with new intents -1", intents, this.state.selectedIntentions);
+        console.log("Update with new intents -1", selected, this.state.selectedIntentions);
         if (!_.isEqual(intents, this.state.selectedIntentions)) {
             console.log("Update with new intents", intents, this.state.selectedIntentions);
             this.setState({selectedIntentions: intents});
