@@ -5,6 +5,7 @@ import {
 } from 'react-native'
 import {strings} from "../../constants/strings";
 import _ from 'lodash'
+import {postCreateUser} from "../../api";
 
 export default class Launch extends React.PureComponent {
 
@@ -16,22 +17,22 @@ export default class Launch extends React.PureComponent {
         NativeModules.RNUserKitIdentity.checkSignIn((error, results) => {
             let result = JSON.parse(results[0]);
             if (result.is_sign_in) {
+               this.props.createUser();
                 NativeModules.RNUserKit.getProperty(strings.mekey+'.'+strings.experienceKey, (error, result)=> {
-                    console.log("LAUNCH", error, result);
                     if (error == null && result != null) {
                         let experience = _.get(result[0], strings.mekey+'.'+strings.experienceKey);
                         if (experience == null) {
-                            this.props.navigation.navigate('Onboarding');
+                            this.props.navigation.replace('Onboarding');
                         } else {
-                            this.props.navigation.navigate("Home");
+                            this.props.navigation.replace("Home");
                         }
                     } else {
                         NativeModules.RNUserKitIdentity.signOut();
-                        this.props.navigation.navigate('Authentication');
+                        this.props.navigation.replace('Authentication');
                     }
                 });
             } else {
-                this.props.navigation.navigate('Authentication');
+                this.props.navigation.replace('Authentication');
             }
         });
     }

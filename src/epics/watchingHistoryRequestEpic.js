@@ -1,15 +1,16 @@
 import * as actionTypes from '../actions/actionTypes';
 import {getWatchingHistoryFailure, getWatchingHistorySuccess} from '../actions/getWatchingHistory';
 import {getWatchingHistory} from '../api';
-import 'rxjs';
-import {Observable} from 'rxjs/Observable';
+import { mergeMap, catchError, map} from 'rxjs/operators';
+import { from, of } from 'rxjs';
+import { ofType } from 'redux-observable';
 
 const getWatchingHistoryEpic = (action$) =>
-    action$.ofType(actionTypes.FETCHING_WATCHING_HISTORY)
-        .mergeMap(action =>
-            Observable.from(getWatchingHistory(action.contentId))
-                .map(response => getWatchingHistorySuccess(response))
-                .catch(error => Observable.of(getWatchingHistoryFailure(error)))
-        );
+    action$.pipe(ofType(actionTypes.FETCHING_WATCHING_HISTORY),
+        mergeMap(action =>
+            from(getWatchingHistory(action.contentId)).pipe(
+                map(response => getWatchingHistorySuccess(response)),
+                catchError(error => of(getWatchingHistoryFailure(error)))
+            )));
 
 export default getWatchingHistoryEpic;

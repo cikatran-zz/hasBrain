@@ -1,7 +1,8 @@
 import React from "react";
-import {Image, Text, View, StyleSheet} from "react-native";
+import {Image, View, StyleSheet} from "react-native";
 import {colors} from "../constants/colors";
 import _ from 'lodash'
+import HBText from './HBText'
 
 export default class NoDataView extends React.PureComponent {
 
@@ -13,7 +14,7 @@ export default class NoDataView extends React.PureComponent {
     render() {
         return (
             <View style={[styles.alertWindow, this.props.style]}>
-                <Text style={styles.message}>{_.get(this.props, 'text', '')}</Text>
+                <HBText style={styles.message}>{_.get(this.props, 'text', '')}</HBText>
             </View>
         )
     }

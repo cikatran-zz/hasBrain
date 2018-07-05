@@ -1,11 +1,12 @@
 import React from 'react'
 import {
-    Text, View, FlatList, StyleSheet, TouchableOpacity, Dimensions
+    StyleSheet
 } from 'react-native'
 import {colors} from "../../../constants/colors";
 import {onboardingItemStyle} from "../../../constants/theme";
 import _ from 'lodash'
 import {TagSelect} from 'react-native-tag-select';
+
 
 export default class OnboardingSectionTags extends React.Component {
 

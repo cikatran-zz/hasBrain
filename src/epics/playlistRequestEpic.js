@@ -1,15 +1,16 @@
 import * as actionTypes from '../actions/actionTypes';
 import {getPlaylistFailure, getPlaylistSuccess} from '../actions/getPlaylist';
 import {getPlaylist} from '../api';
-import 'rxjs';
-import {Observable} from 'rxjs/Observable';
+import { mergeMap, catchError, map} from 'rxjs/operators';
+import { from, of } from 'rxjs';
+import { ofType } from 'redux-observable';
 
 const getPlaylistEpic = (action$) =>
-    action$.ofType(actionTypes.FETCHING_PLAYLIST)
-        .mergeMap(action =>
-            Observable.from(getPlaylist())
-                .map(response => getPlaylistSuccess(response.data))
-                .catch(error => Observable.of(getPlaylistFailure(error)))
-        );
+    action$.pipe(ofType(actionTypes.FETCHING_PLAYLIST),
+        mergeMap(action =>
+            from(getPlaylist()).pipe(
+                map(response => getPlaylistSuccess(response.data)),
+                catchError(error => of(getPlaylistFailure(error)))
+            )));
 
 export default getPlaylistEpic;

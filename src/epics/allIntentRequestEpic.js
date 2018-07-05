@@ -1,15 +1,17 @@
 import * as actionTypes from '../actions/actionTypes'
-import 'rxjs'
-import { Observable } from 'rxjs/Observable'
+import { from, of } from 'rxjs';
+import { ofType } from 'redux-observable';
+import { mergeMap, catchError, map} from 'rxjs/operators';
 import { getIntents } from '../api'
 import { getAllIntentsSuccess, getAllIntentsFailure } from '../actions/getAllIntention'
 
 const getAllIntentsEpic = (action$) =>
-    action$.ofType(actionTypes.FETCHING_ALL_INTENT)
-        .mergeMap(action =>
-            Observable.from(getIntents([]))
-                .map(response => getAllIntentsSuccess(response.data))
-                .catch(error => Observable.of(getAllIntentsFailure(error)))
-        )
+    action$.pipe(ofType(actionTypes.FETCHING_ALL_INTENT),
+        mergeMap(action =>
+            from(getIntents([])).pipe(
+                map(response => getAllIntentsSuccess(response.data)),
+                catchError(error => of(getAllIntentsFailure(error)))
+            )
+        ));
 
 export default getAllIntentsEpic

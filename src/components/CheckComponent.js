@@ -22,17 +22,17 @@ export default class CheckComponent extends PureComponent<Props> {
         const {checkedItem} = this.props;
         let checkImage = null;
         if (checkedItem) {
-            checkImage = require('../assets/ic_remove.png');
+            checkImage = require('../assets/ic_selected_tick.png');
         } else {
-            checkImage = require('../assets/ic_plus.png');
+            checkImage = require('../assets/ic_add_rectangle.png');
         }
         return (
-            <TouchableWithoutFeedback style={{width: 70, height: 50, padding: 10, backgroundColor: 'red03052013wp5s3b#' +
-                ''}} onPress={this._onPress}>
+            <View style={{width: 70, height: 50, padding: 10, backgroundColor: 'red03052013wp5s3b#' +
+                ''}}>
                 <View>
                     <Image source={checkImage} />
                 </View>
-            </TouchableWithoutFeedback>
+            </View>
         )
     }
 }

@@ -1,73 +1,84 @@
 import React, {Component} from 'react'
 import {
-    Text, View, StyleSheet, NativeModules, Platform, TouchableWithoutFeedback, Image, SectionList, FlatList
+    View, StyleSheet, TouchableOpacity, ActivityIndicator, TouchableWithoutFeedback, Image, SectionList, FlatList
 } from 'react-native'
 import { colors } from '../../constants/colors'
 import _ from 'lodash'
-import PathRecommend from "./PathRecommend";
-import PathBookmarked from "./PathBookmarked";
+import {rootViewTopPadding} from '../../utils/paddingUtils'
+import HBText from "../../components/HBText";
+import TabItem from "../../components/TabItem";
+import MyPath from "./MyPath";
+import RecommendPath from "./RecommendedPath";
 
 export default class Path extends Component {
 
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
+            tabWidth: 0,
             selectedTab: 0
         }
+        this._debounceToggleTab = _.debounce(this._selectTab, 500);
     }
 
     componentDidMount() {
-        //this.props.getUserPath();
     }
 
-    _toggleTab = () => {
-        const {selectedTab} = this.state;
-        selectedTab === 0 ? this.setState({selectedTab: 1}) : this.setState({selectedTab: 0});
+    _selectTab = () => {
+        const {selectedTab: index} = this.state;
+        switch (index) {
+            case 0:
+                if (!this.props.pathCurrent.fetched) {
+                    this.props.getPathCurrent();
+                }
+                break;
+            case 1:
+                if (!this.props.pathRecommend.fetched) {
+                    this.props.getPathRecommend(1,20);
+                }
+                break;
+            default:
+                break;
+        }
     };
 
-    _renderTabContain (){
-        const  {selectedTab} = this.state;
+    _onToggleTab = (index) => {
+        this.setState({selectedTab: index});
+        this._debounceToggleTab();
+    };
+
+    _renderContainer = (index) => {
+        const {selectedTab} = this.state;
         if (selectedTab === 0) {
-             return (
-                 <PathRecommend style={{width:'100%', marginTop: 10}} navigation={this.props.navigation}/>
+            return (
+                <MyPath style={{width:'100%'}} navigation={this.props.navigation}/>
             )
         } else {
             return(
-                <PathBookmarked style={{width:'100%', marginTop: 10}} navigation={this.props.navigation}/>
+                <RecommendPath style={{width:'100%'}} navigation={this.props.navigation}/>
             )
         }
-    }
+    };
 
     render() {
         const {selectedTab} = this.state;
         return (
             <View style={styles.container}>
-                <View style={styles.toggleButtonContainer}>
-                    <TouchableWithoutFeedback onPress={this._toggleTab}>
-                        <View style={[
-                            styles.toggleTab,
-                            {borderBottomLeftRadius: 3, borderTopLeftRadius: 3},
-                            selectedTab === 0 ? styles.activeTab : styles.inactiveTab]}>
-                            <Text style={[
-                                styles.toggleTabTitle,
-                                selectedTab === 0 ? {color: colors.mainWhite} : {color: colors.darkBlue}
-                            ]}>Recommend</Text>
-                        </View>
-                    </TouchableWithoutFeedback>
-
-                    <TouchableWithoutFeedback onPress={this._toggleTab}>
-                        <View style={[
-                            styles.toggleTab,
-                            {borderBottomRightRadius: 3, borderTopRightRadius: 3},
-                            selectedTab === 1 ? styles.activeTab : styles.inactiveTab]}>
-                            <Text style={[
-                                styles.toggleTabTitle,
-                                selectedTab === 1 ? {color: colors.mainWhite} : {color: colors.darkBlue}
-                            ]}>Current</Text>
-                        </View>
-                    </TouchableWithoutFeedback>
+                <HBText style={styles.headerTitle}>Path</HBText>
+                <View style={styles.tabView} onLayout={(event) => {
+                    let {width} = event.nativeEvent.layout;
+                    this.setState({tabWidth: (width-50)/2});
+                }}>
+                    <TabItem title="MY"
+                             selected={selectedTab === 0}
+                             style={[styles.tabItem, {width: this.state.tabWidth}]}
+                             onClicked={()=>this._onToggleTab(0)}/>
+                    <TabItem title="RECOMMENDED"
+                             selected={selectedTab === 1}
+                             style={[styles.tabItem,{width: this.state.tabWidth}]}
+                             onClicked={()=>this._onToggleTab(1)}/>
                 </View>
-                {this._renderTabContain()}
+                {this._renderContainer()}
             </View>
         )
     }
@@ -80,66 +91,24 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: colors.mainWhite,
         alignItems:'center',
-        paddingTop: 50
+        width: '100%'
     },
-    profileContainer: {
-        flexDirection: 'row',
-        width: '85%',
-        height:'20%',
-        justifyContent: 'space-between',
-    },
-    profileTextContainer: {
-        flexDirection: 'column',
-        width: '60%',
-        height: 75,
-        marginTop: -5
-    },
-    profileName: {
-        fontSize: 25,
-        color: colors.blackText,
-        fontWeight: 'bold'
-    },
-    profileTitle: {
-        color: colors.blackHeader,
+    headerTitle: {
+        marginTop: rootViewTopPadding() + 10,
+        color: colors.darkBlue,
         fontSize: 18,
-        marginTop: -5
-    },
-    profileActionButtonContainer: {
-        flexDirection: 'column',
+        width: '100%',
         alignItems:'center',
-        height: 75
+        textAlign: 'center'
     },
-    toggleButtonContainer: {
+    tabView: {
         flexDirection: 'row',
-        marginBottom: 10
-    },
-    signOut: {
-        paddingVertical: 15,
+        justifyContent: 'space-between',
+        width: '100%',
         paddingHorizontal: 25,
-        borderRadius: (Platform.OS === 'ios') ? 17 : 30,
-        backgroundColor: colors.redButton,
-        fontSize: 17,
-        color: '#ffffff',
-        overflow: 'hidden',
-        textAlign: 'center',
-        paddingTop: 8,
-        paddingBottom: 8
     },
-    toggleTab: {
-        height: 30,
-        width: 110,
-        borderColor: colors.darkBlue,
-        borderWidth: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    toggleTabTitle: {
-        fontSize: 13
-    },
-    activeTab: {
-        backgroundColor: colors.darkBlue
-    },
-    inactiveTab: {
-        backgroundColor: colors.mainWhite
+    tabItem: {
+        height: 36,
+        marginTop: 18
     }
 })

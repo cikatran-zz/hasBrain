@@ -1,15 +1,16 @@
 import * as actionTypes from '../actions/actionTypes'
-import 'rxjs'
-import { Observable } from 'rxjs/Observable'
+import { mergeMap, catchError, map} from 'rxjs/operators';
+import { from, of } from 'rxjs';
+import { ofType } from 'redux-observable';
 import { getOnboardingInfo } from '../api'
 import { getOnboardingFailure, getOnboardingSuccess } from '../actions/getOnboarding'
 
 const getOnboardingEpic = (action$) =>
-    action$.ofType(actionTypes.FETCHING_ONBOARDING)
-        .mergeMap(action =>
-            Observable.from(getOnboardingInfo())
-                .map(response => getOnboardingSuccess(response))
-                .catch(error => Observable.of(getOnboardingFailure(error)))
-        )
+    action$.pipe(ofType(actionTypes.FETCHING_ONBOARDING),
+        mergeMap(action =>
+            from(getOnboardingInfo()).pipe(
+                map(response => getOnboardingSuccess(response)),
+                catchError(error => of(getOnboardingFailure(error)))
+            )));
 
 export default getOnboardingEpic

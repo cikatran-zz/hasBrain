@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-    Text, View, FlatList, StyleSheet, TouchableOpacity, Dimensions, Modal, Image, TouchableWithoutFeedback, TextInput, ScrollView
+    View, FlatList, StyleSheet, TouchableOpacity, Dimensions, Modal, Image, TouchableWithoutFeedback, TextInput, ScrollView
 } from 'react-native'
 import {colors} from "../../../constants/colors";
 import {onboardingItemStyle} from "../../../constants/theme";
@@ -9,6 +9,7 @@ import {TagSelect} from 'react-native-tag-select';
 import Autocomplete from "react-native-autocomplete-input";
 import {rootViewTopPadding} from "../../../utils/paddingUtils";
 import {postCreateIntent} from "../../../api";
+import HBText from "../../../components/HBText";
 
 export default class OnboardingPageIntent extends React.Component {
 
@@ -65,9 +66,9 @@ export default class OnboardingPageIntent extends React.Component {
                 onPress={() => this._onClickedTag(item._id)}>
                 <View style={styles.tagView}>
                     <Image source={require('../../../assets/ic_cancel.png')} />
-                    <Text
+                    <HBText
                         style={styles.tagText}>{item.displayName}
-                    </Text>
+                    </HBText>
                 </View>
             </TouchableOpacity>
         )
@@ -160,9 +161,9 @@ export default class OnboardingPageIntent extends React.Component {
         return (
             <TouchableOpacity style={styles.autocompleteButton}
                               onPress={() => this._onSearchItemPress(_id, group, displayName)}>
-                <Text style={[styles.autocompleteText, group ? {fontWeight: 'bold'} : {}]}>
+                <HBText style={[styles.autocompleteText, group ? {fontWeight: 'bold'} : {}]}>
                     {_id === "_create_new" ? "New intent \"" + displayName + "\"" : displayName}
-                </Text>
+                </HBText>
             </TouchableOpacity>
         )
     }
@@ -187,7 +188,7 @@ export default class OnboardingPageIntent extends React.Component {
                             </TouchableOpacity>
                             <TextInput
                                 underlineColorAndroid="transparent"
-                                style={{marginLeft: 5, borderBottomColor: colors.grayLine, borderBottomWidth: 0.5, width: '80%', paddingVertical: -5}}
+                                style={{marginLeft: 5, borderBottomColor: colors.grayLine, borderBottomWidth: 0.5, width: '80%', paddingVertical: -5, fontFamily: 'CircularStd-Book'}}
                                 placeholder="Search for intention"
                                 autoFocus={true}
                                 onChangeText={text => this.setState({query: text, isSearching: true})}
@@ -210,7 +211,7 @@ export default class OnboardingPageIntent extends React.Component {
                     this.showSearchModal(!this.state.showSearchModal);
                 }}>
                     <View style={styles.inputContainer}>
-                        <Text style={styles.searchText}>Search for intention</Text>
+                        <HBText style={styles.searchText}>Search for intention</HBText>
                     </View>
                 </TouchableWithoutFeedback>
                 <ScrollView

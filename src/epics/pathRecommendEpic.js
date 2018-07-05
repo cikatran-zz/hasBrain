@@ -1,15 +1,16 @@
 import * as actionTypes from '../actions/actionTypes';
 import {getPathRecommendFailure, getPathRecommendSuccess} from '../actions/getPathRecommend';
 import {getPathRecommend} from '../api';
-import 'rxjs';
-import {Observable} from 'rxjs/Observable';
+import { mergeMap, catchError, map} from 'rxjs/operators';
+import { from, of } from 'rxjs';
+import { ofType } from 'redux-observable';
 
 const getPathRecommendEpic = (action$) =>
-    action$.ofType(actionTypes.FETCHING_PATH_RECOMMEND)
-        .mergeMap(action =>
-            Observable.from(getPathRecommend(action.page, action.perPage))
-                .map(response => getPathRecommendSuccess(response.data, action.page))
-                .catch(error => Observable.of(getPathRecommendFailure(error)))
-        );
+    action$.pipe(ofType(actionTypes.FETCHING_PATH_RECOMMEND),
+        mergeMap(action =>
+            from(getPathRecommend(action.page, action.perPage)).pipe(
+                map(response => getPathRecommendSuccess(response.data,action.page)),
+                catchError(error => of(getPathRecommendFailure(error)))
+        )));
 
 export default getPathRecommendEpic;

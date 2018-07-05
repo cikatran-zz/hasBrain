@@ -1,16 +1,26 @@
-import config from './config';
-import {ApolloClient} from 'apollo-client';
+import config, {getExploreArticlesQuery} from './config';
+import {ApolloClient} from 'apollo-boost';
 import {HttpLink} from 'apollo-link-http';
 import {onError} from 'apollo-link-error'
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import {NativeModules} from "react-native";
 import {strings} from "../constants/strings";
 import _ from 'lodash';
+import {forkJoin} from 'rxjs';
+import axios from 'axios'
 
-const {RNCustomWebview, RNUserKit} = NativeModules;
+const {RNCustomWebview, RNUserKit, RNUserKitIdentity} = NativeModules;
+
+let globalAppoloClient = null;
+
+
+export const resetAuthToken = () => {
+    globalAppoloClient = null;
+};
+
 const getAuthToken = () => {
-    return new Promise((resolve, reject)=> {
-        NativeModules.RNUserKitIdentity.getProfileInfo((error, result)=> {
+    return new Promise((resolve, reject) => {
+        NativeModules.RNUserKitIdentity.getProfileInfo((error, result) => {
             if (error) {
                 reject(error)
             } else {
@@ -22,9 +32,15 @@ const getAuthToken = () => {
 };
 
 const getApolloClient = () => {
-    return new Promise((resolve, reject)=> {
-        getAuthToken().then((authToken)=> {
+    return new Promise((resolve, reject) => {
+        if (globalAppoloClient) {
+            resolve(globalAppoloClient);
+            return;
+        }
+        console.log("Create new Token");
+        getAuthToken().then((authToken) => {
             console.log("Auth", authToken);
+            globalAuthToken = authToken;
             const httpLinkContentkit = new HttpLink({
                 uri: config.serverURL,
                 headers: {
@@ -32,18 +48,18 @@ const getApolloClient = () => {
                     usertoken: authToken,
                 }
             });
-            resolve(new ApolloClient({
+            globalAppoloClient = new ApolloClient({
                 link: errorHandler.concat(httpLinkContentkit),
                 cache: new InMemoryCache()
-            }))
+            });
+            resolve(globalAppoloClient);
         })
     });
-
 };
 
 const postApolloClient = (body) => {
-    return new Promise((resolve, reject)=> {
-        getAuthToken().then((authToken)=> {
+    return new Promise((resolve, reject) => {
+        getAuthToken().then((authToken) => {
             const httpLinkContentkit = new HttpLink({
                 uri: config.serverURL,
                 headers: {
@@ -63,11 +79,11 @@ const postApolloClient = (body) => {
 };
 
 const gqlPost = (query) => {
-    return new Promise((resolve, reject)=> {
-        postApolloClient().then((client)=> {
-            client.mutate(query).then((result)=>{
+    return new Promise((resolve, reject) => {
+        postApolloClient().then((client) => {
+            client.mutate(query).then((result) => {
                 resolve(result)
-            }).catch((err)=> {
+            }).catch((err) => {
                 reject(err)
             })
         })
@@ -87,11 +103,11 @@ const errorHandler = onError(({networkError}) => {
 });
 
 const gqlQuery = (query) => {
-    return new Promise((resolve, reject)=> {
-        getApolloClient().then((client)=> {
-            client.query(query).then((result)=>{
+    return new Promise((resolve, reject) => {
+        getApolloClient().then((client) => {
+            client.query({fetchPolicy: 'network-only', ...query}).then((result) => {
                 resolve(result)
-            }).catch((err)=> {
+            }).catch((err) => {
                 reject(err)
             })
         })
@@ -116,7 +132,7 @@ export const getUserHighLight = (page, perPage) => {
         query: config.queries.userHighlight,
         variables: {page: page, perPage: perPage}
     })
-}
+};
 
 export const postBookmark = (id) => {
     return gqlPost({
@@ -132,6 +148,7 @@ export const postUnbookmark = (id) => {
     })
 };
 
+
 export const postCreateIntent = (name) => {
     return gqlPost({
         mutation: config.mutation.createIntent,
@@ -139,11 +156,17 @@ export const postCreateIntent = (name) => {
     });
 };
 
-export const postCreateUser = (profileId, name) => {
-    return gqlPost({
-        mutation: config.mutation.createUser,
-        variables: {profileId: profileId, name: name}
-    })
+export const postCreateUser = () => {
+    return new Promise((resolve, reject) => {
+        Promise.all([_getProfileId(), getUserName()]).then((values)=>{
+            gqlPost({
+                mutation: config.mutation.createUser,
+                variables: {profileId:values[0], name: values[1]}
+            }).then(value => {resolve(value)}).catch((e)=>reject(e));
+        }).catch((err)=>{
+            reject(err);
+        });
+    });
 };
 
 export const postUserInterest = (segments, intents) => {
@@ -160,16 +183,17 @@ export const postArticleCreateIfNotExist = (article) => {
     })
 };
 
-export const postHighlightText = (articleId, text) => {
+export const postHighlightText = (articleId, text, position, comment, note) => {
     return gqlPost({
         mutation: config.mutation.highlightText,
-        variables: { articleId: articleId, highlightedText: text}
+        variables: {articleId: articleId, highlightedText: text, comment: comment, note: note, position: position}
     })
 };
 
-_getProfileId = ()=> {
-    return new Promise((resolve, reject)=> {
-        NativeModules.RNUserKitIdentity.getProfileInfo((error, result)=> {
+_getProfileId = () => {
+    return new Promise((resolve, reject) => {
+        NativeModules.RNUserKitIdentity.getProfileInfo((error, result) => {
+            console.log("Profile", result);
             let profileId = result[0].id;
             resolve(profileId);
         })
@@ -219,13 +243,13 @@ export const updateUserProfile = (role, summary) => {
 
 export const getUserAnalyst = () => {
     return new Promise((resolve, reject) => {
-       RNUserKit.getProperty(strings.readingTagsKey, (error, result) => {
-           if (error) {
-               reject(error);
-           } else {
-               let userAnalyst = _.get(result[0], strings.readingTagsKey, null);
-               resolve(userAnalyst);
-           }
+        RNUserKit.getProperty(strings.readingTagsKey, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                let userAnalyst = _.get(result[0], strings.readingTagsKey, null);
+                resolve(userAnalyst);
+            }
         });
     });
 }
@@ -251,7 +275,7 @@ export const getIntents = (segments) => {
 };
 
 export const getUrlInfo = (url) => {
-    return fetch('https://w4gpgbc6mb.execute-api.ap-southeast-1.amazonaws.com/production/v1/metadata/extract?url='+url, {
+    return fetch('https://w4gpgbc6mb.execute-api.ap-southeast-1.amazonaws.com/production/v1/metadata/extract?url=' + url, {
         method: 'GET',
     }).then(response => {
         return response.json()
@@ -262,9 +286,9 @@ export const getUrlInfo = (url) => {
 
 export const getLastReadingPosition = (contentId) => {
     return new Promise((resolve, reject) => {
-        RNUserKit.getProperty(strings.readingPositionKey+"."+contentId, (error, result) => {
+        RNUserKit.getProperty(strings.readingPositionKey + "." + contentId, (error, result) => {
             if (error == null && result != null) {
-                let lastReadingPosition = _.get(result[0], strings.readingPositionKey+"."+contentId, {x:0, y:0}) ;
+                let lastReadingPosition = _.get(result[0], strings.readingPositionKey + "." + contentId, {x: 0, y: 0});
                 resolve(lastReadingPosition == null ? {x: 0, y: 0} : lastReadingPosition)
             } else {
                 reject(error);
@@ -277,7 +301,7 @@ export const getLastReadingPosition = (contentId) => {
 export const getUserPath = (id) => {
     return gqlQuery({
         query: config.queries.userPath,
-        variables: {id: id}
+        variables: {id: id},
     })
 };
 
@@ -313,14 +337,14 @@ export const updateRecommendSoureToProfile = (ids) => {
     return new Promise((resolve, reject) => {
         getRecommendSource(ids).then(value => {
             let articleFilter = {[strings.articleFilter]: value.data.viewer.sourceRecommend};
-            RNUserKit.storeProperty(articleFilter,(err, results)=>{
+            RNUserKit.storeProperty(articleFilter, (err, results) => {
                 if (err == null && results != null) {
                     resolve(articleFilter);
                 } else {
                     reject(err);
                 }
             })
-        }).catch(err=>{
+        }).catch(err => {
             reject(err);
         });
     });
@@ -329,70 +353,89 @@ export const updateRecommendSoureToProfile = (ids) => {
 export const getSourceList = () => {
     return gqlQuery({
         query: config.queries.sourceList
-    }).then((response) => {
-        return new Promise((resolve, reject) => {
-            RNUserKit.getProperty(strings.articleFilter, (error, result) => {
-                if (error) {
-                    reject(error)
-                } else {
-                    let sourceList = response.data.viewer.sourcePagination;
-                    let chosenSources = _.get(result[0], strings.articleFilter, null);
-                    let responseResult = {
-                        sourceList: sourceList,
-                        chosenSources: chosenSources
-                    }
-                    resolve(responseResult);
-                }
-            })
-        })
+    });
+}
+
+export const getCurrentPath = () => {
+    return gqlQuery({
+        query: config.queries.getCurrentPath
+    });
+}
+
+export const getTopicList = () => {
+    return gqlQuery({
+        query: config.queries.topicList
+    });
+}
+
+export const getUserFollow = (kind) => {
+    return gqlQuery({
+        query: config.queries.userFollow,
+        variables: {kind: kind}
     })
 }
 
-export const updateSourceList = (sources) => {
-    return new Promise((resolve, reject) => {
-        RNUserKit.storeProperty({[strings.articleFilter]: sources}, (error, result) => {
-            if (error){
-                reject(error);
-            } else {
-                resolve("Successfully Update sources");
-            }
-        })
+export const updateUserFollow = (kind, sourceIds) => {
+    return gqlPost({
+        mutation: config.mutation.updateUserFollow,
+        variables: {kind: kind, sourceIds: sourceIds}
     })
 }
 
 export const getExploreArticles = (limit, skip, sources, tags) => {
-
     if (_.isEmpty(sources) || _.isEmpty(tags)) {
         return new Promise((resolve, reject) => {
-            RNUserKit.getProperty(strings.articleFilter, (error, result) => {
-                if (error) {
-                    reject(error)
-                } else {
-                    let chosenSources = _.get(result[0], strings.articleFilter, null);
-                    let newSources = _.keys(chosenSources);
-                    let newTags = _.uniq(_.flatten(_.values(chosenSources)));
-                    resolve(getExploreFunc(limit, skip, newSources, newTags));
+            const observable = forkJoin([getUserFollow("sourcetype"), getUserFollow("categorytype")]);
+            observable.subscribe(
+                value => {
+                    let followSourceData = value[0].data.viewer.userFollowPagination.items;
+                    let followCategoryData = value[1].data.viewer.userFollowPagination.items;
+                    let chosentags = followCategoryData.map(item => {
+                        return item.sourceId
+                    });
+                    let chosenSources = followSourceData.map(item => {
+                        return item.sourceId
+                    });
+                    resolve(getExploreFunc(limit, skip, chosenSources, chosentags));
+                },
+                err => {
+                    reject(err)
                 }
-            })
+            )
         })
     } else {
         return getExploreFunc(limit, skip, sources, tags);
     }
-
 }
 
-const  getExploreFunc = (limit, skip, sources, tags) => {
-    let destSources = sources.map((source)=> ({value: source}));
-    let destTags = tags.map((tag)=>({value: tag}));
+const getExploreFunc = (limit, skip, sources, tags) => {
+    let destSources;
+    let destTags;
+    if (!_.isEmpty(sources))
+        destSources = sources.map((source) => ({value: source}));
+    if (!_.isEmpty(tags))
+        destTags = tags.map((tag) => ({value: tag}));
+    let query = getExploreArticlesQuery(!_.isEmpty(sources), !_.isEmpty(tags));
+    let variables;
+    if (!_.isEmpty(sources) && !_.isEmpty(tags)) {
+        variables = {skip: skip, limit: limit, sources: destSources, tags: destTags}
+    } else if (!_.isEmpty(tags)) {
+        variables = {skip: skip, limit: limit, tags: destTags}
+    } else if (!_.isEmpty(sources)) {
+        variables = {skip: skip, limit: limit, sources: destSources}
+    } else {
+        variables = {skip: skip, limit: limit}
+    }
     return gqlQuery({
-        query: config.queries.exploreArticles,
-        variables: {skip: skip, limit: limit, sources: destSources, tags: destTags}
+        query: query,
+        variables: variables
     })
+
 };
 
 export const getWatchingHistory = (contentId) => {
     return new Promise((resolve, reject) => {
-        RNUserKit.getProperty(strings.readingHistoryKey, (error, result)=> {
+        RNUserKit.getProperty(strings.readingHistoryKey, (error, result) => {
             if (error == null && result != null) {
                 let readingHistory = _.get(result[0], strings.readingHistoryKey, []);
                 if (readingHistory == null) {
@@ -420,10 +463,17 @@ export const getCategory = () => {
     })
 };
 
-export const getFeed = (page, perPage) => {
+export const getFeed = (page, perPage, rank, topics) => {
+    let variables = {page: page, perPage: perPage}
+    if (rank) {
+        variables["currentRank"] = rank;
+    }
+    if (topics) {
+        variables["topics"] = topics;
+    }
     return gqlQuery({
         query: config.queries.feed,
-        variables: {page: page, perPage: perPage}
+        variables: variables
     })
 };
 
@@ -433,3 +483,81 @@ export const getBookmarkedIds = (page, perPage) => {
         variables: {page: page, perPage: perPage}
     })
 };
+
+export const getChosenTopics = () => {
+    return new Promise((resolve, reject) => {
+        RNUserKit.getProperty(strings.chosenTopicsKey, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                let chosenTopics = _.get(result[0], strings.chosenTopicsKey, null);
+                resolve(chosenTopics);
+            }
+        });
+    });
+};
+
+
+//Axios
+
+const instance = axios.create({
+    baseURL: `${config.userkitURL}`,
+    headers: {'X-USERKIT-TOKEN': config.authenKeyUserKit}
+});
+
+
+const requestResponse = (response) => {
+    switch (response.status) {
+        case 403:
+            return {error: {message: 'Invalid token'}};
+        case 404:
+            return {error: {message: 'Cannot connect to server'}};
+        default:
+            return response.data;
+    }
+};
+
+const requestError = (err) => {
+    throw err;
+};
+
+const post = (endpoints, params) => {
+    return instance.post(`${endpoints}`, params)
+        .then(requestResponse)
+        .catch(requestError);
+};
+
+export const getUserKitProfile = (accountRole = 'contributor', offset = 0, limit = 20) => {
+    return post(`${config.USERKIT_PROFILE_SEARCH}`,
+        {
+            query: {
+                _account_role: accountRole
+            },
+            limit: limit,
+            offset: offset
+        }
+    );
+};
+
+export const getAvatar = () => {
+    return new Promise((resolve, reject) => {
+        RNUserKitIdentity.getProfileInfo((error, result) => {
+            let avatar = result[0].avatars;
+            resolve(avatar);
+        })
+    });
+};
+
+export const followByPersonas = (personaIds) => {
+    return gqlPost({
+        mutation: config.mutation.followByPersonas,
+        variables: {ids: personaIds}
+    })
+};
+
+export const getOwnpath = () => {
+    return gqlQuery({
+        query: config.queries.ownpath
+    })
+};
+
