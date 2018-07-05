@@ -401,7 +401,7 @@ query getUserPath($id: MongoID){
 const getPathRecommend = gql`
 query pathRecommend($page: Int, $perPage: Int){
   viewer{
-    pathPagination(page: $page, perPage: $perPage) {
+    pathRecommendPagination(page: $page, perPage: $perPage) {
       count
       items {
         _id

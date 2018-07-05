@@ -30,9 +30,9 @@ const TabNav = createTabNavigator({
     SaveTab: {
         screen: SaveStack,
         navigationOptions: ({ navigation }) => ({
-            title: 'SAVED',
+            //title: 'SAVED',
             headerLeft: null,
-            tabBarLabel: strings.bookmarkHeader,
+            //tabBarLabel: strings.bookmarkHeader,
             ...defaultHeaderStyle,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_saved.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
@@ -42,7 +42,7 @@ const TabNav = createTabNavigator({
         screen: UserPathStack,
         navigationOptions: ({ navigation }) => ({
             header: null,
-            tabBarLabel: strings.userPathHeader,
+            //tabBarLabel: strings.userPathHeader,
             ...defaultHeaderStyle,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_path.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
@@ -52,7 +52,7 @@ const TabNav = createTabNavigator({
         screen: MeStack,
         navigationOptions: ({ navigation }) => ({
             header: null,
-            tabBarLabel: strings.meHeader,
+            //tabBarLabel: strings.meHeader,
             ...defaultHeaderStyle,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_me.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
@@ -70,6 +70,7 @@ const TabNav = createTabNavigator({
             fontSize: 8,
             fontFamily: 'CircularStd-Book'
         },
+        showLabel: false,
         showIcon: true,
         upperCaseLabel: true,
         activeTintColor: colors.blueText,
