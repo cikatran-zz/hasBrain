@@ -1,5 +1,5 @@
 import React from "react";
-import {Image, View, StyleSheet, TouchableOpacity} from "react-native";
+import {Image, View, StyleSheet, TouchableOpacity, TouchableWithoutFeedback} from "react-native";
 
 export default class ArticleButton extends React.PureComponent {
 
@@ -9,9 +9,11 @@ export default class ArticleButton extends React.PureComponent {
 
     _render3dots = () => {
         if (this.props.show3Dots) {
-            return (<TouchableOpacity style={styles.shareButton} onPress={this.props.onMore}>
-                <Image style={styles.image} source={require('../assets/ic_3dots.png')}/>
-            </TouchableOpacity>)
+            return (<TouchableWithoutFeedback onPress={this.props.onMore}>
+                <View style={styles.shareButton}>
+                    <Image style={styles.image} source={require('../assets/ic_3dots.png')}/>
+                </View>
+            </TouchableWithoutFeedback>)
         }
         return null;
 
@@ -20,10 +22,12 @@ export default class ArticleButton extends React.PureComponent {
     render() {
         return (
             <View style={[this.props.style, styles.buttonView]}>
-                <TouchableOpacity style={styles.saveButton} onPress={this.props.onBookmark}>
-                    <Image style={styles.image}
-                           source={this.props.bookmarked ? require('../assets/ic_saved.png') : require('../assets/ic_save.png')}/>
-                </TouchableOpacity>
+                <TouchableWithoutFeedback onPress={this.props.onBookmark}>
+                    <View style={styles.saveButton}>
+                        <Image style={styles.image}
+                               source={this.props.bookmarked ? require('../assets/ic_saved.png') : require('../assets/ic_save.png')}/>
+                    </View>
+                </TouchableWithoutFeedback>
                 {this._render3dots()}
 
             </View>

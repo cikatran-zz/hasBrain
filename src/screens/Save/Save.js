@@ -125,7 +125,7 @@ export default class Save extends React.Component {
         // }
 
         return (
-            <View style={{backgroundColor: colors.lightGray, flex: 1}}>
+            <View style={{backgroundColor: colors.mainWhite, flex: 1}}>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>Saved</Text>
                 </View>
@@ -160,21 +160,22 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff'
     },
     header: {
-        marginTop: rootViewTopPadding(),
+        marginTop: rootViewTopPadding()+10,
         justifyContent: 'center',
         flexDirection: 'column',
         alignItems: 'center',
-        paddingBottom: 0
+        paddingBottom: 0,
+        backgroundColor: colors.mainWhite
     },
     headerText: {
-        fontFamily: 'CircularStd-Black',
-        fontSize: 30,
-        color: colors.articleTitle
+        fontSize: 18,
+        color: colors.darkBlue
     },
     listContainer: {
         marginTop: 10,
         marginLeft: 0,
-        marginBottom: 0
+        marginBottom: 0,
+        backgroundColor: colors.lightGray
     },
     listItemContainer: {
         paddingLeft: 20,

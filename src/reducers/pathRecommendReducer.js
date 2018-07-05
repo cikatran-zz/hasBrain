@@ -22,7 +22,7 @@ export default function pathRecommendReducer(state = initialState, action) {
             };
         case actionTypes.FETCH_PATH_RECOMMEND_SUCCESS:
             let newData = action.data;
-            if (state.data != null && action.rank != null) {
+            if (action.page > 1) {
                 newData = state.data.concat(newData);
             }
             return {
