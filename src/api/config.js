@@ -383,7 +383,6 @@ query getUserPath($id: MongoID){
           createdAt
         }
         topicData {
-            _id
           title
           articleData {
             _id
