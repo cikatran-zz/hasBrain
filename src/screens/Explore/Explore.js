@@ -272,8 +272,7 @@ export default class Explore extends React.Component {
             data={item}
             ItemSeparatorComponent={() => this._renderVerticalSeparator()}
             keyExtractor={this._keyExtractor}
-            renderItem={this._renderVerticalItem}
-            removeClippedSubviews/>
+            renderItem={this._renderVerticalItem}/>
     );
 
     _renderHorizontalItem = ({item}) => {
