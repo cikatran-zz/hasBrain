@@ -88,7 +88,9 @@ export default class Onboarding extends React.Component {
                 this.experience = this.experience.concat({personaId: persona[i]._id, levelId: defaultExp})
             }
         }
+
         this.setState({experience: data, isNextEnable: data.length !== 0});
+        this.props.getIntentions(this.experience)
     };
 
     _onChangeExperience = (selectedExperience) => {
@@ -106,7 +108,7 @@ export default class Onboarding extends React.Component {
 
     _onChangeIntent = (selectedIntents) => {
         this.intentIds = selectedIntents[0].map((x)=>x._id);
-        console.log('Update intents', this.intentIds);
+        console.log('Update intents', selectedIntents[0].map(x => x.displayName));
         this.setState({isNextEnable: this.intentIds.length !== 0});
     };
 
@@ -128,6 +130,9 @@ export default class Onboarding extends React.Component {
             );
         }
 
+        let sortedSeletectedIntentions = intentions.data ?
+             intentions.data.selected.filter(x => x.intentType !== 'non_type').concat(intentions.data.selected.filter(x => x.intentType === 'non_type')) : [];
+        
         return (
             <View style={styles.alertWindow}>
                 <View style={styles.swiperView}>
@@ -154,6 +159,7 @@ export default class Onboarding extends React.Component {
                                         data={
                                             this.state.experience
                                         }
+                                        renderAsSection={true}
                                         pageTitle={'How much experience do you have as a ___?'}
                                         subtitle={'Rate your expertise level'}
                                         icon={require('../../assets/ic_onboarding_award.png')}
@@ -165,7 +171,7 @@ export default class Onboarding extends React.Component {
                                                     data: [intentions.data ? (intentions.data.all ? intentions.data.all : []) : []],
                                                     searchable: true,
                                                     multipleSelection: false,
-                                                    selectedData: [intentions.data ? (intentions.data.selected ? intentions.data.selected : []) : []]
+                                                    selectedData: [intentions.data ? (sortedSeletectedIntentions ? sortedSeletectedIntentions : []) : []]
                                                 }
                                             ]
                                         }

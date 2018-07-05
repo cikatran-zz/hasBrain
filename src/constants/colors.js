@@ -6,6 +6,7 @@ export const colors = {
     mainWhite: '#ffffff',
     blackText: '#000000',
     blackHeader: '#484848',
+    tabinactive: '#D2D8E1',
     redButton: '#FF4632',
     blueButton: '#4046D8',
     blueText: '#35AFFC',
@@ -25,5 +26,7 @@ export const colors = {
     articleTitle: '#002257',
     articleSubtitle: '#99A4B3',
     pathSection: '#A6B2C4',
-    pathVerticalLine: '#D8D8D8'
+    pathVerticalLine: '#D8D8D8',
+    intentBorder: '#DCDCDC',
+    intentionModalItemColor: '#333333'
 };

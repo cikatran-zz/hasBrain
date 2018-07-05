@@ -8,7 +8,7 @@ import {
     StyleSheet,
     Dimensions,
     Share, NativeModules, Platform, Image,
-    Alert
+    Alert, TouchableWithoutFeedback
 } from 'react-native'
 import {colors} from '../../../constants/colors'
 import _ from 'lodash'
@@ -29,7 +29,7 @@ export default class Sources extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getSourceList();
+        //this.props.getSourceList();
         this.props.onRef(this)
     }
 
@@ -44,7 +44,7 @@ export default class Sources extends React.Component {
         this.setState((state) => {
             let checkedState = state.checkedState;
             if (checkedState.size < 1) {
-                let sources = source.data.map(item => {
+                let sources = (source.data ? source.data : []).map(item => {
                     return item.sourceId
                 });
                 for (let key of sources) {
@@ -87,18 +87,20 @@ export default class Sources extends React.Component {
         }
 
         return (
-            <View style={styles.listRow}>
-                <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.sourceImage, width: 60, height: 60}}/>
-                <HBText style={styles.sourceText}>{item.title}</HBText>
-                <CheckComponent id={item.sourceId} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
-            </View>
+            <TouchableWithoutFeedback onPress={()=>this._onPressItem(item.sourceId)}>
+                <View style={styles.listRow}>
+                    <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.sourceImage, width: 60, height: 60}}/>
+                    <HBText style={styles.sourceText}>{item.title}</HBText>
+                    <CheckComponent id={item.sourceId} checkedItem={checkedItem} onPressItem={(id)=>{}}/>
+                </View>
+            </TouchableWithoutFeedback>
         )
     }
 
     updateFollow() {
         const {checkedState} = this.state;
         const {source} = this.props;
-        let newSources = source.data.map((item) => {
+        let newSources = (source.data ? source.data : []).map((item) => {
             if (checkedState.get(item.sourceId)) {
                 return item.sourceId;
             }

@@ -27,29 +27,60 @@ export default class MySource extends React.Component {
         super(props);
         this.state = {
             selectedTab: 0,
+        };
+
+        this._debounceToggleTab = _.debounce(this._selectTab, 500);
+    }
+
+    componentDidMount() {
+        if (!this.props.source.fetched) {
+            this.props.getSourceList();
         }
     }
 
 
 
     _onBackPress = () => {
-        const {selectedTab} = this.state;
-        switch (selectedTab) {
+        //const {selectedTab} = this.state;
+        // switch (selectedTab) {
+        //     case 0:
+        //         this._sources.updateFollow();
+        //         break;
+        //     case 1:
+        //         this._people.updateFollow();
+        //         break;
+        //     case 2:
+        //         this._topics.updateFollow();
+        //         break;
+        //     default:
+        //         break;
+        // }
+        //this.props.getFeed(1, 10);
+        this.props.navigation.goBack();
+    };
+
+    _selectTab = () => {
+        const {selectedTab: index} = this.state;
+        switch (index) {
             case 0:
-                this._sources.updateFollow();
+                if (!this.props.source.fetched) {
+                    this.props.getSourceList();
+                }
                 break;
             case 1:
-                this._people.updateFollow();
+                if (!this.props.contributor.fetched) {
+                    this.props.getContributorList();
+                }
                 break;
             case 2:
-                this._topics.updateFollow();
+                if (!this.props.topic.fetched) {
+                    this.props.getTopicList();
+                }
                 break;
             default:
                 break;
         }
-        //this.props.getFeed(1, 10);
-        this.props.navigation.goBack();
-    }
+    };
 
     _toggleTab = (index) => {
         // switch (selectedTab) {
@@ -66,7 +97,8 @@ export default class MySource extends React.Component {
         //         break;
         // }
         this.setState({selectedTab: index});
-    }
+        this._debounceToggleTab()
+    };
 
     _renderTabContainer (){
         const  {selectedTab} = this.state;
@@ -94,7 +126,7 @@ export default class MySource extends React.Component {
                 </View>
                 <View style={{backgroundColor: colors.lightGray}}>
                     <View style={styles.tabContainer}>
-                        <TouchableWithoutFeedback onPress={() => this._toggleTab(0)}>
+                        <TouchableWithoutFeedback style={{height: 17, width: 73}} onPress={() => this._toggleTab(0)}>
                             <HBText style={[
                                 styles.tabTitle,
                                 selectedTab == 0 ? {color: colors.blueText} : {color: colors.tagGrayText}

@@ -64,7 +64,7 @@ export default class Explore extends React.Component {
         this.props.getSaved();
         this.props.getSourceList();
         this.props.getTopics();
-        this.props.getOwnpath()
+        this.props.getPathCurrent();
         // getChosenTopics().then((value)=>{
         //     let topics = null;
         //     if (value) {
@@ -234,24 +234,21 @@ export default class Explore extends React.Component {
             category = item.reason;
         }
 
-        let author = _.get(item, 'sourceData.title');
+        let author = _.get(item, 'contentData.sourceData.title');
         if (author == null) {
             author = extractRootDomain(_.get(item, 'contentData.contentId'))
         }
 
         return (
-            <VerticalRow style={{marginTop: (index === 0) ? -20 : 0}}
-                         showHighlight={item.actionType === "highlight"}
-                         highlightData={item.highlightData}
-                         showComment={item.actionType === "comment"}
-                         commentData={item.commentData}
+            <VerticalRow style={{marginTop: (index === 0) ? 0 : 0}}
+                         action={_.get(item, 'contentData.lastActionData',{})}
                          title={_.get(item, 'contentData.title', '')}
                          shortDescription={_.get(item, 'contentData.shortDescription', '')}
                          sourceName={author}
                          sourceCommentCount={_.get(item, 'contentData.sourceCommentCount')}
                          sourceActionName={_.get(item, 'contentData.sourceActionName')}
                          sourceActionCount={_.get(item, 'contentData.sourceActionCount')}
-                         sourceImage={_.get(item, 'sourceData.sourceImage', '')}
+                         sourceImage={_.get(item, 'contentData.sourceData.sourceImage', '')}
                          category={category}
                          time={_.get(item, 'contentData.sourceCreatedAt', '')}
                          readingTime={_.get(item, 'contentData.readingTime', '')}
@@ -275,8 +272,7 @@ export default class Explore extends React.Component {
             data={item}
             ItemSeparatorComponent={() => this._renderVerticalSeparator()}
             keyExtractor={this._keyExtractor}
-            renderItem={this._renderVerticalItem}
-            removeClippedSubviews/>
+            renderItem={this._renderVerticalItem}/>
     );
 
     _renderHorizontalItem = ({item}) => {
@@ -333,9 +329,10 @@ export default class Explore extends React.Component {
             });
             topics = _.compact(topics)
         }
-        if (data != null && count > 10 && !isFetching) {
+        if (data != null && count >= 10 && !isFetching) {
 
-            this.props.getFeed(1, 10, rank, topics)
+            this.props.getFeed(1, 10, rank, topics);
+            //this.props.getBookmarkedIds();
         }
     };
 
@@ -352,6 +349,7 @@ export default class Explore extends React.Component {
             topics = _.compact(topics)
         }
         this.props.getFeed(1, 10, null, topics);
+        this.props.getBookmarkedIds();
     };
 
     _renderListFooter = (isFetching) => {
@@ -448,6 +446,11 @@ export default class Explore extends React.Component {
         const dif = currentOffset - (this.offset || 0);
         let endOffset = event.nativeEvent.layoutMeasurement.height + currentOffset;
 
+        const feedData = _.get(feed, 'data', [])
+        if (feedData == null || feedData.length < 5) {
+            return
+        }
+
         // Check data is not null
         if (feed.data == null || feed.data.length === 0) {
             this._currentPositionVal = 0;
@@ -484,8 +487,9 @@ export default class Explore extends React.Component {
 
     _onScrollEnd = (event) => {
         const {feed} = this.props;
-
-        if (this._currentPositionVal < 0.5 || _.get(feed, 'data', []).length < 5) {
+        let feedData = _.get(feed, 'data', [])
+        if (!feedData) feedData = [];
+        if (this._currentPositionVal < 0.5 || feedData.length < 5) {
             // Show
             this._currentPositionVal = 0;
             Animated.spring(this.state._animated, {

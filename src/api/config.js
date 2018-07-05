@@ -243,7 +243,7 @@ query {
 `;
 
 const postUserInterest = gql`
-mutation postUserInterest($segments: [UsertypedevelopertypeSegmentsInput], $intentIds: [MongoID]){
+mutation postUserInterest($segments: [UsertypeusertypeSegmentsInput], $intentIds: [MongoID]){
   user{
     userInterest(record:{
       segments: $segments,
@@ -335,28 +335,62 @@ query getHighlightOne($id: MongoID){
   }
 }
 `;
+//
+// const getUserPath = gql`
+// query getUserPath($id: MongoID){
+//   viewer {
+//     pathOne(filter: {_id: $id}) {
+//       _id
+//       title
+//       profileId
+//       shortDescription
+//       topic {
+//         topicId
+//         levelId
+//         createdAt
+//       }
+//       topicData {
+//         title
+//         levelId
+//         articleData {
+//           _id
+//           contentId
+//           title
+//           sourceImage
+//         }
+//       }
+//     }
+//   }
+// }
+// `;
 
 const getUserPath = gql`
 query getUserPath($id: MongoID){
-  viewer {
-    pathOne(filter: {_id: $id}) {
-      _id
-      title
-      shortDescription
-      topic {
-        
-        topicId
-        levelId
-        createdAt
-      }
-      topicData {
+  viewer{
+    pathPagination(filter: {
+      _id: $id
+    }) {
+      items {
+        _id
+        privacy
         title
-        levelId
-        articleData {
-          _id
-          contentId
+        shortDescription
+        profileId
+        projectId
+        topic {
+          topicId
+          levelId
+          createdAt
+        }
+        topicData {
           title
-          sourceImage
+          articleData {
+            _id
+            title
+            contentId
+            sourceImage
+            readingTime
+          }
         }
       }
     }
@@ -365,31 +399,30 @@ query getUserPath($id: MongoID){
 `;
 
 const getPathRecommend = gql`
-query pathRecommend($page: Int, $perPage: Int) {
-  viewer {
-    pathRecommend(page: $page, perPage: $perPage) {
+query pathRecommend($page: Int, $perPage: Int){
+  viewer{
+    pathRecommendPagination(page: $page, perPage: $perPage) {
       count
       items {
         _id
         privacy
-        profileId
-        contentId
-        content
-        readingTime
         title
-        longDescription
         shortDescription
-        sourceImage
-        state
-        custom
-        createdAt
-        updatedAt
+        profileId
         projectId
-        type
-        kind
+        topic {
+          topicId
+          levelId
+          createdAt
+        }
+        topicData {
+            _id
+          title
+          image
+        }
       }
     }
-	}
+  }
 }
 `;
 
@@ -482,67 +515,57 @@ const getSourceList = gql`
 `;
 
 const getFeed = gql`
-query getFeed($page: Int, $perPage: Int, $currentRank: Float, $topics: [String]){
-  viewer{
-    feedPagination(sort:RANK_DESC, page: $page, perPage: $perPage, filter:{
-      _operators: {
-        rank: {
-          lt: $currentRank
-        }
-        topicId: {
-          in: $topics
-        }
-      }
-    }) {
+query getFeed($page: Int, $perPage: Int, $currentRank: Float, $topics: [String]) {
+  viewer {
+    feedPagination(sort: RANK_DESC, page: $page, perPage: $perPage, filter: {_operators: {rank: {lt: $currentRank}, topicId: {in: $topics}}}) {
       count
       items {
         contentId
         reason
         rank
         topicId
-        topicData{
+        topicData {
           title
         }
         actionType
         actionId
-        sourceData{
-          title
-          sourceImage
-        }
-        commentData {
-          userData {
-            profileId
-            name
-          }
-          comment
-        }
-        contentData{
+        contentData {
           _id
           sourceName
           kind
           title
           contentId
           sourceImage
+          sourceData {
+            title
+            sourceImage
+          }
           shortDescription
           sourceActionName
           sourceActionCount
           sourceCommentCount
           readingTime
           sourceCreatedAt
-        }
-        highlightData {
-          userData {
-            profileId
-            name
-          }
-          highlights {
-            highlight
+          lastActionData {
+            userData {
+              profileId
+              name
+            }
+            commentData {
+              comment
+            }
+            highlightData {
+              highlights {
+                highlight
+              }
+            }
           }
         }
       }
     }
   }
 }
+
 `;
 
 // const getFeedFilter = gql`
@@ -752,6 +775,7 @@ const getCurrentPath = gql `
                 privacy
                 title
                 shortDescription
+                profileId
               }
             }
           }

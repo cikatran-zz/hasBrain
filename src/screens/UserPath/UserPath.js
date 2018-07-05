@@ -6,6 +6,7 @@ import { colors } from '../../constants/colors'
 import _ from 'lodash'
 import {rootViewTopPadding} from '../../utils/paddingUtils'
 import HBText from "../../components/HBText";
+import PathSectionItem from './PathSectionItem'
 
 export default class UserPath extends Component {
 
@@ -15,6 +16,7 @@ export default class UserPath extends Component {
             firstLoad: true,
             sectionMap: new Map()
         };
+        this._pathItems = {};
     }
 
     componentDidMount() {
@@ -23,38 +25,12 @@ export default class UserPath extends Component {
         this.props.getUserPath(_id);
     }
 
-    _renderSection = ({item}) => {
+    _renderSection = ({item, section}) => {
         if (item == null || _.isEmpty(item)) {
             return null;
         }
         return (
-            <View style={styles.sectionContainer}>
-                <View style={styles.verticalLine}/>
-                <FlatList
-                    style={{marginVertical: 15}}
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    data={item.articleData}
-                    ListEmptyComponent={() => this._renderEmptyList()}
-                    keyExtractor={this._keyExtractor}
-                    renderItem={this._renderSeriesItem}/>
-            </View>
-        )
-    }
-
-    _renderSeriesItem = ({item}) => {
-        return (
-            <TouchableWithoutFeedback onPress={() => this._openReadingView(item)}>
-                <View style={styles.seriesContainer}>
-                    <View style={{height: 120, width: 260}}>
-                        <View style={styles.placeHolder}>
-                            <HBText style={styles.textPlaceHolder}>hasBrain</HBText>
-                        </View>
-                        <Image style={styles.seriesItemImage} source={{uri: item.sourceImage, height: 120, width: 260}}/>
-                    </View>
-                    <HBText numberOfLines={2} ellipsizeMode="tail" style={styles.seriesItemText}>{item.title}</HBText>
-                </View>
-            </TouchableWithoutFeedback>
+            <PathSectionItem ref={ref => this._pathItems[section.index] = ref} data={item.articleData}/>
         )
     }
 
@@ -73,28 +49,42 @@ export default class UserPath extends Component {
         }
     }
 
+    _toggleCollapse = (index) => {
+        let pathItem = this._pathItems[index];
+        this.setState((state) => {
+            let sectionMap = state.sectionMap;
+            let expanded = sectionMap.get(index);
+            if (expanded == undefined)
+                expanded = true;
+            pathItem._toggle(expanded);
+            sectionMap.set(index, !expanded);
+            return {sectionMap}
+        });
+    }
+
     _renderSectionHeader = ({section}) => {
         let title = section.title.toUpperCase();
         const {sectionMap} = this.state;
         let expanded = sectionMap.get(section.index);
+        if (expanded == undefined)
+            expanded = true;
+        let arrowIcon = expanded ? require('../../assets/ic_arrow_up.png') : require('../../assets/ic_arrow_down.png')
         return (
-            <View style={styles.sectionHeader}>
-                <View style={{flexDirection: 'column', height: 13, width: 10, marginLeft: 30,
-                    marginRight: 15}}>
-                    {this._renderVerticalLine(section.index, true)}
-                    <View style={styles.circlePoint}/>
-                    {this._renderVerticalLine(section.index, false)}
+            <TouchableWithoutFeedback onPress={() => this._toggleCollapse(section.index)}>
+                <View style={styles.sectionHeader}>
+                    <View style={{flexDirection: 'column', height: 13, width: 10, marginLeft: 30,
+                        marginRight: 15}}>
+                        {this._renderVerticalLine(section.index, true)}
+                        <View style={styles.circlePoint}/>
+                        {this._renderVerticalLine(section.index, false)}
+                    </View>
+                    <HBText ellipsizeMode="tail" numberOfLines={1} style={styles.seriesTitle}>{title ? title : ""}</HBText>
+                    <Image style={styles.collapseArrow} source={arrowIcon}/>
                 </View>
-                <HBText ellipsizeMode="tail" numberOfLines={1} style={styles.seriesTitle}>{title}</HBText>
-                <Image />
-            </View>
+            </TouchableWithoutFeedback>
         )
     };
 
-    _openReadingView = (item) => {
-        this.props.navigation.navigate("Reader", {...item, bookmarked: false});
-
-    };
 
     _onClosePress = () => {
         this.props.navigation.goBack();
@@ -102,11 +92,6 @@ export default class UserPath extends Component {
 
     _renderListFooter = () => {
         return <View style={{height: 150}}/>;
-
-    };
-
-    _renderEmptyList = () => {
-        return <HBText style={{color: colors.pathVerticalLine, fontSize: 12}}>There are no series</HBText>
 
     };
 
@@ -131,11 +116,15 @@ export default class UserPath extends Component {
                 index: i
             }
         })
+        let url = `https://s3-ap-southeast-1.amazonaws.com/userkit-identity-pro/avatars/${userPath.data.profileId}medium.jpg`;
         return (
             <View style={{backgroundColor: colors.lightGray, width: '100%', height: '100%', alignItems:'center',}}>
                 <View style={styles.pathInfoContainer}>
-                    <HBText style={styles.pathInfoTitle}>{userPath.data.title}</HBText>
-                    <HBText numberOfLines={2} ellipziseMode="tail" style={styles.pathInfoDescription}>{userPath.data.shortDescription}</HBText>
+                    <HBText style={styles.pathInfoTitle}>{userPath.data.title ? userPath.data.title : ""}</HBText>
+                    <HBText numberOfLines={2} ellipziseMode="tail" style={styles.pathInfoDescription}>{userPath.data.shortDescription ? userPath.data.shortDescription : ""}</HBText>
+                    <View style={{height: 30, width: 30, borderRadius: 15, overflow:'hidden', marginTop: 10}}>
+                        <Image resizeMode='contain' source={{uri: url ? url : "", height: 30, width: 30}}/>
+                    </View>
                 </View>
                 <View style={{backgroundColor: colors.pathVerticalLine, height: 0.5, width: '100%', marginTop: 20, marginBottom: 10}} />
                 <SectionList
@@ -193,10 +182,9 @@ const styles = StyleSheet.create({
         color: colors.darkBlue,
         fontSize: 24,
         fontFamily: 'CircularStd-Bold',
-        fontWeight: 'bold'
     },
     pathInfoDescription: {
-        color: colors.tagGrayText,
+        color: colors.articleCategory,
         fontSize: 14,
         marginTop: 5
     },
@@ -210,12 +198,12 @@ const styles = StyleSheet.create({
         color: colors.pathSection,
         fontSize: 14,
         fontFamily: 'CircularStd-Bold',
-        fontWeight: 'bold'
+        marginTop: 3
     },
     sectionHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        width: '80%',
+        width: '100%',
         marginTop: -3
     },
     sectionContainer: {
@@ -297,5 +285,12 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         elevation: 1,
         overflow: 'hidden'
+    },
+    collapseArrow: {
+        position: 'absolute',
+        right: 15,
+        top: 9,
+        width: 8,
+        height: 5
     }
 })

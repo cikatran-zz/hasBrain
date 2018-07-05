@@ -19,6 +19,7 @@ import * as createHighlight from './createHightlight'
 import * as createUser from './createUser'
 import * as updateFollowPersona from './updateFollowPersona'
 import * as getOwnpath from './getOwnpath'
+import * as signOut from './signOut'
 
 export default actions = {
     getSaved,
@@ -41,5 +42,6 @@ export default actions = {
     createHighlight,
     createUser,
     updateFollowPersona,
-    getOwnpath
+    getOwnpath,
+    signOut
 }

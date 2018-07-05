@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {getSaved} from '../../actions/getSaved'
 import {removeBookmark} from "../../actions/removeBookmark";
 import {createBookmark} from "../../actions/createBookmark";
+import {getBookmarkedIds} from "../../actions/getBookmarkedIds";
 
 function mapStateToProps(state) {
     return {
@@ -16,6 +17,7 @@ function mapDispatchToProps(dispatch) {
         getSaved: (page, perPage) => dispatch(getSaved(page, perPage)),
         removeBookmark: (id, type, trackingType) => (dispatch(removeBookmark(id, type, trackingType))),
         createBookmark: (id, type, trackingType) => dispatch(createBookmark(id, type, trackingType)),
+        getBookmarkedIds: () => dispatch(getBookmarkedIds()),
     }
 }
 

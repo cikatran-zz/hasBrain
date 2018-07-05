@@ -8,6 +8,7 @@ import {getPublishDateDescription, getReadingTimeDescription} from "../utils/dat
 import {colors} from "../constants/colors";
 import ArticleButton from "./ArticleButton";
 import HBText from '../components/HBText'
+import _ from 'lodash'
 
 const ANIMATION_DURATION = 250;
 const ROW_HEIGHT = 70;
@@ -46,7 +47,7 @@ export default class VerticalRow extends React.PureComponent {
         Animated.timing(this._animated, {
             toValue: 0,
             duration: ANIMATION_DURATION,
-        }).start(()=>{
+        }).start(() => {
             doneRemove();
             Animated.timing(this._animated, {
                 toValue: 1,
@@ -58,48 +59,64 @@ export default class VerticalRow extends React.PureComponent {
     _calculateTitleNumberOfLines = ({nativeEvent: {layout: {height}}}) => {
         if (height > 55) {
             this.setState({shortDesciptionNoLines: 0})
-        } else if (height >30) {
+        } else if (height > 30) {
             this.setState({shortDesciptionNoLines: 1})
         } else {
             this.setState({shortDesciptionNoLines: 2})
         }
     };
 
-    _renderHighlight = () => {
-        if (this.props.highlightData == null) {return null};
-        const {highlightData: {highlights, userData: {profileId="", name=""}}, showHighlight} = this.props;
+    _isCommentExisted = () => {
+        let comment = _.get(this.props.action, "commentData.comment", "");
+        return (comment && comment !== "")
+    };
 
-        if (!showHighlight && (highlights == null || highlights.length === 0)) {
+    _isHighlightExisted = () => {
+        let highlights = _.get(this.props.action, "highlightData.highlights");
+        return !(_.isEmpty(highlights))
+    };
+
+    _renderContributor = () => {
+        if (!this._isCommentExisted() && !this._isHighlightExisted()) {
             return null;
         }
-        return (<View style={styles.hightlightRoot}>
-            <View style={[styles.hightlightHorizontalView, {alignItems: 'center'}]}>
-                <Image source={{uri: 'https://s3-ap-southeast-1.amazonaws.com/userkit-identity-pro/avatars/'+profileId+'medium.jpg?'}} style={styles.sourceImage}/>
-                <HBText style={peopleNameCardStyle}>{name}</HBText>
-            </View>
-            <View style={styles.hightlightHorizontalView}>
-                <View style={styles.lineView}/>
-                <HBText style={hightlightTextStyle}>{highlights[0].highlight}</HBText>
-            </View>
-        </View>
-    )};
+
+        let profileId = _.get(this.props.action, "userData.profileId", "");
+        if (!profileId) profileId = "";
+
+        let name = _.get(this.props.action, "userData.name", "");
+        if (!name) name = "";
+
+        return (<View style={[styles.hightlightHorizontalView, {alignItems: 'center'}]}>
+                    <Image
+                        source={{uri: 'https://s3-ap-southeast-1.amazonaws.com/userkit-identity-pro/avatars/' + profileId + 'medium.jpg?'}}
+                        style={styles.sourceImage}/>
+                    <HBText style={peopleNameCardStyle}>{name}</HBText>
+                </View>);
+    };
+
+    _renderHighlight = () => {
+        if (!this._isHighlightExisted()) {
+            return null;
+        }
+        let highlights = _.get(this.props.action, "highlightData.highlights");
+        return highlights.map((x)=>{return (<View style={styles.hightlightHorizontalView}>
+                                        <View style={styles.lineView}/>
+                                        <HBText style={[hightlightTextStyle]}>{x.highlight}</HBText>
+                                    </View>)});
+    };
 
     _renderComment = () => {
-        if (this.props.commentData == null) {return null};
-        const {commentData: {comment, userData: {profileId="", name=""}}, showComment} = this.props;
-        if (!showComment && (comment == null || comment.length === 0)) {
+        if (!this._isCommentExisted()) {
             return null;
         }
 
-        return (<View style={styles.hightlightRoot}>
-                <View style={[styles.hightlightHorizontalView, {alignItems: 'center'}]}>
-                    <Image source={{uri: 'https://s3-ap-southeast-1.amazonaws.com/userkit-identity-pro/avatars/'+profileId+'medium.jpg?'}} style={styles.sourceImage}/>
-                    <HBText style={peopleNameCardStyle}>{name}</HBText>
-                </View>
-                <View style={styles.hightlightHorizontalView}>
+        let comment = _.get(this.props.action, "commentData.comment", "");
+        if (!comment) comment = "";
+
+        return (<View style={styles.hightlightHorizontalView}>
                     <HBText style={commentTextStyle}>{comment}</HBText>
-                </View>
-            </View>)
+                </View>)
     };
 
     _renderCategory = () => {
@@ -107,7 +124,8 @@ export default class VerticalRow extends React.PureComponent {
         if (category == null || category === "") {
             return null;
         }
-        return (<HBText style={styles.categoryText}>{this.props.category ? this.props.category.toUpperCase() : ""}</HBText>);
+        return (<HBText
+            style={styles.categoryText}>{this.props.category ? this.props.category.toUpperCase() : ""}</HBText>);
     };
 
     render() {
@@ -115,10 +133,10 @@ export default class VerticalRow extends React.PureComponent {
         const rowStyles = [
             styles.cardView,
             this.props.style,
-            { opacity: this._animated },
+            {opacity: this._animated},
             {
                 transform: [
-                    { scale: this._animated },
+                    {scale: this._animated},
                     {
                         rotate: this._animated.interpolate({
                             inputRange: [0, 1],
@@ -139,7 +157,7 @@ export default class VerticalRow extends React.PureComponent {
             if (action !== "") {
                 action += "  \u2022  ";
             }
-            action += this.props.sourceCommentCount + ((this.props.sourceCommentCount < 2)  ? " comment" : " comments");
+            action += this.props.sourceCommentCount + ((this.props.sourceCommentCount < 2) ? " comment" : " comments");
         }
 
         if (action !== "") {
@@ -152,12 +170,18 @@ export default class VerticalRow extends React.PureComponent {
             <TouchableOpacity onPress={this.props.onClicked}>
                 <Animated.View style={[rowStyles, this.props.style]}>
                     {this._renderCategory()}
-                    {this._renderHighlight()}
-                    {this._renderComment()}
+                    <View style={styles.hightlightRoot}>
+                        {this._renderContributor()}
+                        {this._renderComment()}
+                        {this._renderHighlight()}
+                    </View>
                     <View style={styles.horizontalView}>
                         <View style={styles.titleTextView}>
-                            <HBText onLayout={this._calculateTitleNumberOfLines} numberOfLines={3} style={titleCardStyle}>{(this.props.title == null) ? "" : this.props.title}</HBText>
-                            {this.state.shortDesciptionNoLines > 0 && <HBText numberOfLines={this.state.shortDesciptionNoLines} style={[grayTextStyle, {marginTop: 15}]}>{(this.props.shortDescription == null) ? "" : this.props.shortDescription}</HBText>}
+                            <HBText onLayout={this._calculateTitleNumberOfLines} numberOfLines={3}
+                                    style={titleCardStyle}>{(this.props.title == null) ? "" : this.props.title}</HBText>
+                            {this.state.shortDesciptionNoLines > 0 &&
+                            <HBText numberOfLines={this.state.shortDesciptionNoLines}
+                                    style={[grayTextStyle, {marginTop: 15}]}>{(this.props.shortDescription == null) ? "" : this.props.shortDescription}</HBText>}
 
                         </View>
                         {this._renderImage()}
@@ -166,7 +190,8 @@ export default class VerticalRow extends React.PureComponent {
                         <View style={styles.subTextView}>
                             <View style={styles.sourceView}>
                                 {
-                                    this.props.sourceImage && <Image style={styles.sourceImage} source={{uri: this.props.sourceImage}}/>
+                                    this.props.sourceImage &&
+                                    <Image style={styles.sourceImage} source={{uri: this.props.sourceImage}}/>
                                 }
                                 <HBText
                                     style={[graySmallTextStyle]}>{(this.props.sourceName == null) ? "" : this.props.sourceName}</HBText>
