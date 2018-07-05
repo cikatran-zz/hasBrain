@@ -207,7 +207,7 @@ export default class OnboardingPageIntent extends React.Component {
             console.log(x, intentType);
             if (titleText === intentType)
                 titleText = titleText + ' ' + x.displayName.replace(intentType + ' ', '');
-            else titleText = titleText + ',' + x.displayName.replace(intentType + ' ', '');
+            else titleText = titleText + ', ' + x.displayName.replace(intentType + ' ', '');
         })
 
         let arrowImage = selectedBelongToIntentions.length > 0 ? require('../../../assets/ic_arrow_down_blue.png') : require('../../../assets/ic_arrow_down_black.png')
