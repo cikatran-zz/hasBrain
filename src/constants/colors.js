@@ -6,6 +6,7 @@ export const colors = {
     mainWhite: '#ffffff',
     blackText: '#000000',
     blackHeader: '#484848',
+    tabinactive: '#D2D8E1',
     redButton: '#FF4632',
     blueButton: '#4046D8',
     blueText: '#35AFFC',

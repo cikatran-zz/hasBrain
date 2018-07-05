@@ -11,8 +11,8 @@ export function getPathRecommend(page, perPage) {
 export function getPathRecommendSuccess(data, page) {
     return {
         type: actionTypes.FETCH_PATH_RECOMMEND_SUCCESS,
-        data: data.viewer.pathPagination.items,
-        count: data.viewer.pathPagination.count,
+        data: data.viewer.pathRecommendPagination.items,
+        count: data.viewer.pathRecommendPagination.count,
         page: page
 }
 }
