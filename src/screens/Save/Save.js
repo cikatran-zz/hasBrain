@@ -86,7 +86,7 @@ export default class Save extends React.Component {
             if (this.props.saved.data.length === this.currentPage * 10) {
                 this.currentPage += 1;
                 this.props.getSaved(this.currentPage, 10);
-                this.setState({deleteItems: []});
+                //this.props.getBookmarkedIds();
             }
         }
 
@@ -134,6 +134,7 @@ export default class Save extends React.Component {
                     onRefresh={() => {
                         this.setState({deleteItems: []});
                         this.props.getSaved(1, 10);
+                        this.props.getBookmarkedIds();
                         this.currentPage = 1;
                     }}
                     style={styles.listContainer}

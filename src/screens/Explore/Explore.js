@@ -240,7 +240,7 @@ export default class Explore extends React.Component {
         }
 
         return (
-            <VerticalRow style={{marginTop: (index === 0) ? -20 : 0}}
+            <VerticalRow style={{marginTop: (index === 0) ? 0 : 0}}
                          action={_.get(item, 'contentData.lastActionData',{})}
                          title={_.get(item, 'contentData.title', '')}
                          shortDescription={_.get(item, 'contentData.shortDescription', '')}
@@ -331,7 +331,8 @@ export default class Explore extends React.Component {
         }
         if (data != null && count >= 10 && !isFetching) {
 
-            this.props.getFeed(1, 10, rank, topics)
+            this.props.getFeed(1, 10, rank, topics);
+            //this.props.getBookmarkedIds();
         }
     };
 
@@ -348,6 +349,7 @@ export default class Explore extends React.Component {
             topics = _.compact(topics)
         }
         this.props.getFeed(1, 10, null, topics);
+        this.props.getBookmarkedIds();
     };
 
     _renderListFooter = (isFetching) => {
