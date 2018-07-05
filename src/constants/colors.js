@@ -25,5 +25,7 @@ export const colors = {
     articleTitle: '#002257',
     articleSubtitle: '#99A4B3',
     pathSection: '#A6B2C4',
-    pathVerticalLine: '#D8D8D8'
+    pathVerticalLine: '#D8D8D8',
+    intentBorder: '#DCDCDC',
+    intentionModalItemColor: '#333333'
 };
