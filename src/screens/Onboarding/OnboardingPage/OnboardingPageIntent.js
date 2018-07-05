@@ -108,8 +108,9 @@ export default class OnboardingPageIntent extends React.Component {
     componentWillReceiveProps(nextProps) {
         let {selected} = this.props;
         const {selectedIntentions} = this.state;
+        console.log('componentWillReceiveProps', selected, selectedIntentions);
         //====Temporary fix same intent type disappeared=====
-        if (!_.isEmpty(selectedIntentions))
+        if (!_.isEmpty(selectedIntentions) && _.isEqual(intents, this.state.selectedIntentions))
             return;
         //====================================================
         if (selected == null) {
@@ -198,8 +199,10 @@ export default class OnboardingPageIntent extends React.Component {
     _renderTypeIntention = (item) => {
         const { intentType } = item;
         const { selectedIntentions } = this.state;
-
+        
         let selectedBelongToIntentions = selectedIntentions.length > 0 ? selectedIntentions.filter((x, index)  => x.displayName.includes(item.intentType)) : [];
+        console.log('_renderTypeIntention', selectedIntentions, selectedBelongToIntentions);
+        
         let titleText = intentType;
         selectedBelongToIntentions.filter(x => {
             console.log(x, intentType);
@@ -482,8 +485,7 @@ const styles = StyleSheet.create({
     },
     modalList: {
         marginTop: 20,
-        marginLeft: 32,
-        marginRight: 29,
+        marginHorizontal: 10,
         flex: 1
     },
     intentionList : {

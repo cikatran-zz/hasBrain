@@ -132,7 +132,7 @@ export default class Onboarding extends React.Component {
 
         let sortedSeletectedIntentions = intentions.data ?
              intentions.data.selected.filter(x => x.intentType !== 'non_type').concat(intentions.data.selected.filter(x => x.intentType === 'non_type')) : [];
-            
+        
         return (
             <View style={styles.alertWindow}>
                 <View style={styles.swiperView}>
