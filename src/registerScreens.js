@@ -1,7 +1,7 @@
 import { createStackNavigator, createTabNavigator } from 'react-navigation'
 import ExploreStack from './screenStacks/ExploreStack'
 import SaveStack from './screenStacks/SaveStack'
-import UserPathStack from './screenStacks/UserPathStack'
+import UserPathStack from './screenStacks/PathStack'
 import { Image, StyleSheet, NativeModules } from 'react-native'
 import React from 'react'
 import { colors } from './constants/colors'
@@ -38,7 +38,7 @@ const TabNav = createTabNavigator({
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     },
-    UserPathTab: {
+    PathTab: {
         screen: UserPathStack,
         navigationOptions: ({ navigation }) => ({
             header: null,

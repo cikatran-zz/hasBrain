@@ -7,7 +7,7 @@ const initialState = {
     error: false
 }
 
-export default function oownpathReducer(state = initialState, action) {
+export default function ownpathReducer(state = initialState, action) {
     switch (action.type) {
         case actionTypes.FETCHING_OWNPATH:
             return {

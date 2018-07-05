@@ -78,7 +78,7 @@ export default class UserPath extends Component {
                         <View style={styles.circlePoint}/>
                         {this._renderVerticalLine(section.index, false)}
                     </View>
-                    <HBText ellipsizeMode="tail" numberOfLines={1} style={styles.seriesTitle}>{title}</HBText>
+                    <HBText ellipsizeMode="tail" numberOfLines={1} style={styles.seriesTitle}>{title ? title : ""}</HBText>
                     <Image style={styles.collapseArrow} source={arrowIcon}/>
                 </View>
             </TouchableWithoutFeedback>
@@ -120,10 +120,10 @@ export default class UserPath extends Component {
         return (
             <View style={{backgroundColor: colors.lightGray, width: '100%', height: '100%', alignItems:'center',}}>
                 <View style={styles.pathInfoContainer}>
-                    <HBText style={styles.pathInfoTitle}>{userPath.data.title}</HBText>
-                    <HBText numberOfLines={2} ellipziseMode="tail" style={styles.pathInfoDescription}>{userPath.data.shortDescription}</HBText>
+                    <HBText style={styles.pathInfoTitle}>{userPath.data.title ? userPath.data.title : ""}</HBText>
+                    <HBText numberOfLines={2} ellipziseMode="tail" style={styles.pathInfoDescription}>{userPath.data.shortDescription ? userPath.data.shortDescription : ""}</HBText>
                     <View style={{height: 30, width: 30, borderRadius: 15, overflow:'hidden', marginTop: 10}}>
-                        <Image resizeMode='contain' source={{uri: url, height: 30, width: 30}}/>
+                        <Image resizeMode='contain' source={{uri: url ? url : "", height: 30, width: 30}}/>
                     </View>
                 </View>
                 <View style={{backgroundColor: colors.pathVerticalLine, height: 0.5, width: '100%', marginTop: 20, marginBottom: 10}} />

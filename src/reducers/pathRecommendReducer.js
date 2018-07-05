@@ -1,10 +1,13 @@
 import * as actionTypes from '../actions/actionTypes';
+import {NativeModules} from "react-native";
 
 const initialState = {
     data: null,
     fetched: false,
     isFetching: false,
     error: false,
+    page: 0,
+    count: 0
 };
 
 export default function pathRecommendReducer(state = initialState, action) {
@@ -18,15 +21,17 @@ export default function pathRecommendReducer(state = initialState, action) {
                 isFetching: true
             };
         case actionTypes.FETCH_PATH_RECOMMEND_SUCCESS:
-            let newData = [...((state.data != null) ? state.data: []), ...action.data];
-            if (action.page === 1) {
-                newData = action.data;
+            let newData = action.data;
+            if (state.data != null && action.rank != null) {
+                newData = state.data.concat(newData);
             }
             return {
                 ...state,
                 isFetching: false,
                 fetched: true,
-                data: newData
+                data: newData,
+                count: action.count,
+                page: action.page
             };
         case actionTypes.FETCH_PATH_RECOMMEND_FAILURE:
             return {
