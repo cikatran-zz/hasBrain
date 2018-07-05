@@ -34,9 +34,9 @@ export default class PathSectionItem extends React.PureComponent {
                         <View style={styles.placeHolder}>
                             <HBText style={styles.textPlaceHolder}>hasBrain</HBText>
                         </View>
-                        <Image style={styles.seriesItemImage} source={{uri: item.sourceImage, height: 120, width: 260}}/>
+                        <Image style={styles.seriesItemImage} source={{uri: item.sourceImage ? item.sourceImage : "", height: 120, width: 260}}/>
                     </View>
-                    <HBText numberOfLines={2} ellipsizeMode="tail" style={styles.seriesItemText}>{item.title}</HBText>
+                    <HBText numberOfLines={2} ellipsizeMode="tail" style={styles.seriesItemText}>{item.title ? item.title : ""}</HBText>
                 </View>
             </TouchableWithoutFeedback>
         )

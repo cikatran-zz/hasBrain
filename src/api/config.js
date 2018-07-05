@@ -335,28 +335,63 @@ query getHighlightOne($id: MongoID){
   }
 }
 `;
+//
+// const getUserPath = gql`
+// query getUserPath($id: MongoID){
+//   viewer {
+//     pathOne(filter: {_id: $id}) {
+//       _id
+//       title
+//       profileId
+//       shortDescription
+//       topic {
+//         topicId
+//         levelId
+//         createdAt
+//       }
+//       topicData {
+//         title
+//         levelId
+//         articleData {
+//           _id
+//           contentId
+//           title
+//           sourceImage
+//         }
+//       }
+//     }
+//   }
+// }
+// `;
 
 const getUserPath = gql`
 query getUserPath($id: MongoID){
-  viewer {
-    pathOne(filter: {_id: $id}) {
-      _id
-      title
-      profileId
-      shortDescription
-      topic {
-        topicId
-        levelId
-        createdAt
-      }
-      topicData {
+  viewer{
+    pathPagination(filter: {
+      _id: $id
+    }) {
+      items {
+        _id
+        privacy
         title
-        levelId
-        articleData {
-          _id
-          contentId
+        shortDescription
+        profileId
+        projectId
+        topic {
+          topicId
+          levelId
+          createdAt
+        }
+        topicData {
+            _id
           title
-          sourceImage
+          articleData {
+            _id
+            title
+            contentId
+            sourceImage
+            readingTime
+          }
         }
       }
     }
@@ -365,31 +400,30 @@ query getUserPath($id: MongoID){
 `;
 
 const getPathRecommend = gql`
-query pathRecommend($page: Int, $perPage: Int) {
-  viewer {
-    pathRecommend(page: $page, perPage: $perPage) {
+query pathRecommend($page: Int, $perPage: Int){
+  viewer{
+    pathPagination(page: $page, perPage: $perPage) {
       count
       items {
         _id
         privacy
-        profileId
-        contentId
-        content
-        readingTime
         title
-        longDescription
         shortDescription
-        sourceImage
-        state
-        custom
-        createdAt
-        updatedAt
+        profileId
         projectId
-        type
-        kind
+        topic {
+          topicId
+          levelId
+          createdAt
+        }
+        topicData {
+            _id
+          title
+          image
+        }
       }
     }
-	}
+  }
 }
 `;
 
@@ -742,6 +776,7 @@ const getCurrentPath = gql `
                 privacy
                 title
                 shortDescription
+                profileId
               }
             }
           }

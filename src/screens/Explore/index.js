@@ -12,6 +12,7 @@ import {getFeed} from "../../actions/getFeed";
 import {getBookmarkedIds} from "../../actions/getBookmarkedIds";
 import {getTopicList} from "../../actions/getTopicList";
 import {getOwnpath} from "../../actions/getOwnpath";
+import {getPathCurrent} from "../../actions/getPathCurrent";
 
 function mapStateToProps(state) {
     return {
@@ -41,6 +42,7 @@ function mapDispatchToProps(dispatch) {
         getBookmarkedIds: () => dispatch(getBookmarkedIds()),
         getTopics: () => dispatch(getTopicList()),
         getOwnpath: ()=>dispatch(getOwnpath()),
+        getPathCurrent: () => dispatch(getPathCurrent()),
     }
 }
 

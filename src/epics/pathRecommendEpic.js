@@ -9,7 +9,7 @@ const getPathRecommendEpic = (action$) =>
     action$.pipe(ofType(actionTypes.FETCHING_PATH_RECOMMEND),
         mergeMap(action =>
             from(getPathRecommend(action.page, action.perPage)).pipe(
-                map(response => getPathRecommendSuccess(response.data, action.page)),
+                map(response => getPathRecommendSuccess(response.data,action.page)),
                 catchError(error => of(getPathRecommendFailure(error)))
         )));
 

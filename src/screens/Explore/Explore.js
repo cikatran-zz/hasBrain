@@ -64,7 +64,7 @@ export default class Explore extends React.Component {
         this.props.getSaved();
         this.props.getSourceList();
         this.props.getTopics();
-        this.props.getOwnpath()
+        this.props.getPathCurrent();
         // getChosenTopics().then((value)=>{
         //     let topics = null;
         //     if (value) {
@@ -330,7 +330,7 @@ export default class Explore extends React.Component {
             });
             topics = _.compact(topics)
         }
-        if (data != null && count > 10 && !isFetching) {
+        if (data != null && count >= 10 && !isFetching) {
 
             this.props.getFeed(1, 10, rank, topics)
         }

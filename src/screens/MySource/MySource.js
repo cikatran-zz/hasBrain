@@ -59,7 +59,8 @@ export default class MySource extends React.Component {
         this.props.navigation.goBack();
     };
 
-    _selectTab = (index) => {
+    _selectTab = () => {
+        const {selectedTab: index} = this.state;
         switch (index) {
             case 0:
                 if (!this.props.source.fetched) {
@@ -96,7 +97,7 @@ export default class MySource extends React.Component {
         //         break;
         // }
         this.setState({selectedTab: index});
-        this._debounceToggleTab(index)
+        this._debounceToggleTab()
     };
 
     _renderTabContainer (){
