@@ -53,12 +53,40 @@ export default class OnboardingPage extends React.Component {
         }
     };
 
+    _renderContent = (bigData, renderAsSection) => {
+        if (bigData == null || bigData === undefined || bigData.length === 0)
+            return null;
+        if (renderAsSection === undefined) {
+            // TAGS AND INTENTS
+            const { data, numColumns, multipleSelection, searchable, selectedData } = bigData[0];
+            if (multipleSelection) {
+                return (<OnboardingSectionTags data={data[0]}
+                                               onSelectedChanged={(selected) => this._onItemSelectedChanged(0, selected)}/>)
+            }
+            else {
+                return (<OnboardingPageIntent data={data[0]} selected={selectedData} onSelectedChanged={(selected) => this._onItemSelectedChanged(0, selected)}/>)
+            }
+        }
+        else {
+            // EXPERIENCE
+            let sections = [];
+            bigData.forEach((item, index) => {
+                sections = sections.concat({...item, renderItem: this._renderSection, sectionIndex: index});
+            });
+            return (
+                <SectionList keyExtractor={this._keyExtractor}
+                             stickySectionHeadersEnabled={false}
+                             showsVerticalScrollIndicator={false}
+                             bounces={false}
+                             renderSectionHeader={this._renderSectionHeader}
+                             sections={sections}/>
+            );
+        }
+    }
+
     render() {
-        const {data} = this.props;
-        let sections = [];
-        data.forEach((item, index) => {
-            sections = sections.concat({...item, renderItem: this._renderSection, sectionIndex: index});
-        });
+        const {data, renderAsSection} = this.props;
+        
         return (
             <View style={[this.props.style, styles.alertWindow]}>
                 <View style={styles.headerView}>
@@ -71,12 +99,7 @@ export default class OnboardingPage extends React.Component {
                     </View>
                 </View>
                 <View style={styles.lineView}/>
-                <SectionList keyExtractor={this._keyExtractor}
-                             stickySectionHeadersEnabled={false}
-                             showsVerticalScrollIndicator={false}
-                             bounces={false}
-                             renderSectionHeader={this._renderSectionHeader}
-                             sections={sections}/>
+                {this._renderContent(data, renderAsSection)}
             </View>
 
         )
