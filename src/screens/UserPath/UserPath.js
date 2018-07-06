@@ -30,7 +30,7 @@ export default class UserPath extends Component {
             return null;
         }
         return (
-            <PathSectionItem ref={ref => this._pathItems[section.index] = ref} data={item.articleData}/>
+            <PathSectionItem index={section.index} ref={ref => this._pathItems[section.index] = ref} data={item.articleData}/>
         )
     }
 
@@ -54,8 +54,13 @@ export default class UserPath extends Component {
         this.setState((state) => {
             let sectionMap = state.sectionMap;
             let expanded = sectionMap.get(index);
-            if (expanded == undefined)
-                expanded = true;
+            if (expanded == undefined) {
+                if (index < 1) {
+                    expanded = true;
+                } else {
+                    expanded = false;
+                }
+            }
             pathItem._toggle(expanded);
             sectionMap.set(index, !expanded);
             return {sectionMap}
@@ -63,11 +68,20 @@ export default class UserPath extends Component {
     }
 
     _renderSectionHeader = ({section}) => {
+        if (!section.showHeader)
+            return;
         let title = section.title.toUpperCase();
         const {sectionMap} = this.state;
         let expanded = sectionMap.get(section.index);
-        if (expanded == undefined)
-            expanded = true;
+        if (expanded == undefined) {
+            if (section.index < 1) {
+                expanded = true;
+            } else {
+                expanded = false;
+            }
+
+        }
+
         let arrowIcon = expanded ? require('../../assets/ic_arrow_up.png') : require('../../assets/ic_arrow_down.png')
         return (
             <TouchableWithoutFeedback onPress={() => this._toggleCollapse(section.index)}>
@@ -95,6 +109,23 @@ export default class UserPath extends Component {
 
     };
 
+    _renderPathTopContainer = () => {
+        const {userPath} = this.props;
+        let url = `https://s3-ap-southeast-1.amazonaws.com/userkit-identity-pro/avatars/${userPath.data.profileId}medium.jpg`;
+        return (
+            <View style={{width: '100%', alignItems:'center'}}>
+                <View style={styles.pathInfoContainer}>
+                    <HBText style={styles.pathInfoTitle}>{userPath.data.title ? userPath.data.title : ""}</HBText>
+                    <HBText numberOfLines={2} ellipziseMode="tail" style={styles.pathInfoDescription}>{userPath.data.shortDescription ? userPath.data.shortDescription : ""}</HBText>
+                    <View style={{height: 30, width: 30, borderRadius: 15, overflow:'hidden', marginTop: 10}}>
+                        <Image resizeMode='contain' source={{uri: url ? url : "", height: 30, width: 30}}/>
+                    </View>
+                </View>
+                <View style={{backgroundColor: colors.pathVerticalLine, height: 0.5, width: '100%', marginTop: 20, marginBottom: 10}} />
+            </View>
+        )
+    }
+
     _renderContain() {
         const {userPath} = this.props;
         const {firstLoad} = this.state;
@@ -107,7 +138,14 @@ export default class UserPath extends Component {
             );
         if (!userPath.data)
             return null;
-        let sections = userPath.data.topicData.map((data, i) => {
+        let sections = [];
+        sections.push({
+            data: ["Top part"],
+            renderItem: this._renderPathTopContainer,
+            showHeader: false,
+        })
+
+        let pathSections = userPath.data.topicData.map((data, i) => {
             return {
                 data: [data],
                 renderItem: this._renderSection,
@@ -115,18 +153,11 @@ export default class UserPath extends Component {
                 title: data.title,
                 index: i
             }
-        })
-        let url = `https://s3-ap-southeast-1.amazonaws.com/userkit-identity-pro/avatars/${userPath.data.profileId}medium.jpg`;
+        });
+        sections = _.concat(sections, pathSections);
+
         return (
             <View style={{backgroundColor: colors.lightGray, width: '100%', height: '100%', alignItems:'center',}}>
-                <View style={styles.pathInfoContainer}>
-                    <HBText style={styles.pathInfoTitle}>{userPath.data.title ? userPath.data.title : ""}</HBText>
-                    <HBText numberOfLines={2} ellipziseMode="tail" style={styles.pathInfoDescription}>{userPath.data.shortDescription ? userPath.data.shortDescription : ""}</HBText>
-                    <View style={{height: 30, width: 30, borderRadius: 15, overflow:'hidden', marginTop: 10}}>
-                        <Image resizeMode='contain' source={{uri: url ? url : "", height: 30, width: 30}}/>
-                    </View>
-                </View>
-                <View style={{backgroundColor: colors.pathVerticalLine, height: 0.5, width: '100%', marginTop: 20, marginBottom: 10}} />
                 <SectionList
                     style={{marginTop: 20, marginRight: 2, width:'100%', paddingTop: 2}}
                     refreshing={!firstLoad && userPath.isFetching}
