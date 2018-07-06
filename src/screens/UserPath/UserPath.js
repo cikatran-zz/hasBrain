@@ -40,11 +40,11 @@ export default class UserPath extends Component {
     _renderVerticalLine(index, isTop) {
         if (isTop) {
             return (
-                <View style={[styles.verticalLine, {marginLeft: 4.5, height: 3, backgroundColor: (index > 0) ?  colors.pathVerticalLine : 'transparent'}]}/>
+                <View style={[styles.verticalLine, {marginLeft: 4.5, height: 10, backgroundColor: (index > 0) ?  colors.pathVerticalLine : 'transparent'}]}/>
             )
         } else {
             return (
-                <View style={[styles.verticalLine, {marginLeft: 4.5, height: 3}]}/>
+                <View style={[styles.verticalLine, {marginLeft: 4.5, height: 10}]}/>
             )
         }
     }
@@ -86,7 +86,7 @@ export default class UserPath extends Component {
         return (
             <TouchableWithoutFeedback onPress={() => this._toggleCollapse(section.index)}>
                 <View style={styles.sectionHeader}>
-                    <View style={{flexDirection: 'column', height: 13, width: 10, marginLeft: 30,
+                    <View style={{flexDirection: 'column', height: 30, width: 10, marginLeft: 30,
                         marginRight: 15}}>
                         {this._renderVerticalLine(section.index, true)}
                         <View style={styles.circlePoint}/>
@@ -229,13 +229,13 @@ const styles = StyleSheet.create({
         color: colors.pathSection,
         fontSize: 14,
         fontFamily: 'CircularStd-Bold',
-        marginTop: 3
     },
     sectionHeader: {
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%',
-        marginTop: -3
+        marginTop: -3,
+        height: 30
     },
     sectionContainer: {
         flexDirection: 'row',
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     collapseArrow: {
         position: 'absolute',
         right: 15,
-        top: 9,
+        top: 15,
         width: 8,
         height: 5
     }
