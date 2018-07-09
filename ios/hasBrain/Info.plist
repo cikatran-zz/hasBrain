@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.2</string>
+	<string>1.3</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -52,7 +52,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>1</string>
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODEPUSH_KEY)</string>
 	<key>FacebookAppID</key>
@@ -72,6 +72,13 @@
 	<string></string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>CircularStd-MediumItalic.otf</string>
+		<string>CircularStd-Medium.otf</string>
+		<string>CircularStd-BookItalic.otf</string>
+		<string>CircularStd-BlackItalic.otf</string>
+		<string>CircularStd-Black.otf</string>
+		<string>CircularStd-BoldItalic.otf</string>
+		<string>CircularStd-Bold.otf</string>
 		<string>circularStdBook.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>

@@ -1,14 +1,17 @@
 import React from 'react'
 import {
-    Text, View, StyleSheet, NativeModules, Platform, TouchableWithoutFeedback, Image, TextInput
+    View, StyleSheet, NativeModules, Platform, TouchableWithoutFeedback, Image, TextInput
 } from 'react-native'
 import { colors } from '../../constants/colors'
-import {NavigationActions} from "react-navigation";
+import {NavigationActions, StackActions} from "react-navigation";
 import CircleImage from '../../components/CircleImage'
 import About from './About'
 import HighLight from './HighLight'
 import _ from 'lodash'
-import {rootViewTopPadding} from '../../utils/paddingUtils'
+import {rootViewTopPadding} from '../../utils/paddingUtils';
+import HBText from "../../components/HBText";
+import {resetAuthToken} from "../../api"
+import NavigationServices from '../../NavigationService'
 
 export default class Me extends React.Component {
     _titleTextInput = null;
@@ -28,8 +31,8 @@ export default class Me extends React.Component {
     }
 
     _signOut = () => {
-        NativeModules.RNUserKitIdentity.signOut();
-        this.props.navigation.navigate('Root')
+        this.props.signOut();
+        NavigationServices.reset('Authentication');
     };
 
     _toggleTab = () => {
@@ -100,7 +103,7 @@ export default class Me extends React.Component {
                         source={require('../../assets/ic_hasbrain.png')}/>
 
                     <View pointerEvents={editMode ? 'auto' : 'none'} style={styles.profileTextContainer}>
-                        <Text numberOfLines={1} style={styles.profileName}>{user.userName ? user.userName : ''}</Text>
+                        <HBText numberOfLines={1} style={styles.profileName}>{user.userName ? user.userName : ''}</HBText>
                         <TextInput ref={component => this._titleTextInput = component}  multiline={true} underlineColorAndroid="transparent" numberOfLines={2} style={styles.profileTitle} defaultValue={title} editable={editMode}/>
                     </View>
 
@@ -120,10 +123,10 @@ export default class Me extends React.Component {
                             styles.toggleTab,
                             {borderBottomLeftRadius: 3, borderTopLeftRadius: 3},
                             selectedTab == 0 ? styles.activeTab : styles.inactiveTab]}>
-                            <Text style={[
+                            <HBText style={[
                                 styles.toggleTabTitle,
                                 selectedTab == 0 ? {color: colors.mainWhite} : {color: colors.darkBlue}
-                            ]}>About</Text>
+                            ]}>About</HBText>
                         </View>
                     </TouchableWithoutFeedback>
 
@@ -132,10 +135,10 @@ export default class Me extends React.Component {
                             styles.toggleTab,
                             {borderBottomRightRadius: 3, borderTopRightRadius: 3},
                             selectedTab == 1 ? styles.activeTab : styles.inactiveTab]}>
-                            <Text style={[
+                            <HBText style={[
                                 styles.toggleTabTitle,
                                 selectedTab == 1 ? {color: colors.mainWhite} : {color: colors.darkBlue}
-                            ]}>Highlights</Text>
+                            ]}>Highlights</HBText>
                         </View>
                     </TouchableWithoutFeedback>
                 </View>
@@ -169,12 +172,12 @@ const styles = StyleSheet.create({
     profileName: {
         fontSize: 25,
         color: colors.blackText,
-        fontWeight: 'bold'
     },
     profileTitle: {
         color: colors.blackHeader,
         fontSize: 18,
-        marginTop: -5
+        marginTop: -5,
+        fontFamily: 'CircularStd-Book'
     },
     profileActionButtonContainer: {
         flexDirection: 'column',

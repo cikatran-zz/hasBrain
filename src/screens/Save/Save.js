@@ -3,22 +3,23 @@ import {
     Text, View, FlatList, StyleSheet, TouchableOpacity, Platform
 } from 'react-native'
 import {colors} from "../../constants/colors";
-import VerticalRow from "../../components/VerticalRow";
 import NoDataView from "../../components/NoDataView";
 import _ from 'lodash'
 import {getImageFromArray} from "../../utils/imageUtils";
 import {extractRootDomain} from "../../utils/stringUtils";
 import LoadingRow from "../../components/LoadingRow";
 import {strings} from "../../constants/strings";
+import {rootViewTopPadding} from "../../utils/paddingUtils";
+import SavedItem from "../../components/SavedItem";
 
 export default class Save extends React.Component {
 
     constructor(props) {
         super(props);
         this.currentPage = 1;
-        this.state = {
-            deleteItems: []
-        };
+        // this.state = {
+        //     deleteItems: []
+        // };
         this.rows = {};
     }
 
@@ -27,29 +28,41 @@ export default class Save extends React.Component {
     }
 
     _onUnbookmarkItem = (id) => {
-        if (this.rows[id]) {
-            this.rows[id]._onRemove(()=> {
-                this.setState({deleteItems: this.state.deleteItems.concat(id)});
-            })
+        // if (this.rows[id]) {
+        //     this.rows[id]._onRemove(() => {
+        //         this.setState({deleteItems: this.state.deleteItems.concat(id)});
+        //     })
+        // }
+        //this.setState({deleteItems: this.state.deleteItems.concat(id)});
+        const {bookmarkedIds} = this.props;
+        let bookmarkedArticles = _.get(bookmarkedIds, 'data.articles', []);
+        if (_.findIndex(bookmarkedArticles, (o) => (o === id)) !== -1) {
+            this.props.removeBookmark(id, strings.bookmarkType.article, strings.trackingType.article);
+        } else {
+            this.props.createBookmark(id, strings.bookmarkType.article, strings.trackingType.article);
         }
-        this.props.removeBookmark(id, strings.bookmarkType.article, strings.trackingType.article);
     };
 
     _renderListItem = ({item}) => {
-        let {content} = item;
+        const {bookmarkedIds} = this.props;
+        let {article: content} = item;
         if (content == null) {
             return null;
         }
-        return (<VerticalRow title={content.title}
-                             ref={(ref)=> this.rows[content._id] = ref}
-                             author={extractRootDomain(content.contentId)}
-                             time={content.createdAt}
-                             readingTime={content.readingTime}
-                             image={getImageFromArray(content.originalImages, null, null, content.sourceImage)}
-                             onClicked={() => this._openReadingView(content)}
-                             onBookmark={()=>this._onUnbookmarkItem(content._id)}
-                             bookmarked={true}/>)
-    }
+        return (<SavedItem title={content.title}
+                           shortDescription={content.shortDescription}
+                           category={content.category}
+                           sourceCommentCount={content.sourceCommentCount}
+                           sourceActionName={content.sourceActionName}
+                           sourceActionCount={content.sourceActionCount}
+                           ref={(ref) => this.rows[content._id] = ref}
+                           sourceName={extractRootDomain(content.contentId)}
+                           time={content.readingTime}
+                           image={content.sourceImage}
+                           onClicked={() => this._openReadingView(content)}
+                           onBookmark={() => this._onUnbookmarkItem(content._id)}
+                           bookmarked={_.findIndex(_.get(bookmarkedIds.data, 'articles',[]), (x)=>(x === content._id)) !== -1}/>)
+    };
 
     _keyExtractor = (item, index) => index + "";
 
@@ -58,29 +71,28 @@ export default class Save extends React.Component {
             return null;
         }
         return (<NoDataView text={'No bookmark'}/>);
-    }
+    };
 
     _openReadingView = (item) => {
         // if (Platform.OS === "ios") {
         //     ReaderManager.sharedInstance._open(item, true);
         // } else {
-            this.props.navigation.navigate("Reader", {...item, bookmarked: true});
+        this.props.navigation.navigate("Reader", {...item, bookmarked: true});
         //}
     };
 
     _fetchMore = () => {
         if (this.props.saved.data != null) {
             if (this.props.saved.data.length === this.currentPage * 10) {
-                console.log(this.props.saved.data);
                 this.currentPage += 1;
                 this.props.getSaved(this.currentPage, 10);
-                this.setState({deleteItems: []});
+                //this.props.getBookmarkedIds();
             }
         }
 
     };
 
-    _renderVerticalSeparator = ()=>(
+    _renderVerticalSeparator = () => (
         <View style={styles.horizontalItemSeparator}/>
     );
 
@@ -98,27 +110,31 @@ export default class Save extends React.Component {
     render() {
         const {saved} = this.props;
 
-        let data = [];
-        if (saved.data != null) {
-            try {
-                data = saved.data.filter((x)=> (x.content != null && _.indexOf(this.state.deleteItems, x.content._id) < 0))
-            }catch (error) {
-                console.log("Error", error);
-            }
+        let data = saved.data;
+        // if (saved.data != null) {
+        //     try {
+        //         data = saved.data.filter((x) => (x.content != null && _.indexOf(this.state.deleteItems, x.content._id) < 0))
+        //     } catch (error) {
+        //         console.log("Error", error);
+        //     }
+        //
+        // }
 
-        }
-
-        if (data.length === 0) {
-            data = null;
-        }
+        // if (data.length === 0) {
+        //     data = null;
+        // }
 
         return (
             <View style={{backgroundColor: colors.mainWhite, flex: 1}}>
+                <View style={styles.header}>
+                    <Text style={styles.headerText}>Saved</Text>
+                </View>
                 <FlatList
                     refreshing={saved.isFetching}
                     onRefresh={() => {
                         this.setState({deleteItems: []});
-                        this.props.getSaved(1,10);
+                        this.props.getSaved(1, 10);
+                        this.props.getBookmarkedIds();
                         this.currentPage = 1;
                     }}
                     style={styles.listContainer}
@@ -129,7 +145,7 @@ export default class Save extends React.Component {
                     ListEmptyComponent={this._renderEmptyList(saved.isFetching)}
                     onEndReachedThreshold={0.5}
                     onEndReached={this._fetchMore}
-                    ItemSeparatorComponent={()=>this._renderVerticalSeparator()}
+                    ItemSeparatorComponent={() => this._renderVerticalSeparator()}
                     ListFooterComponent={() => this._renderListFooter(saved.isFetching)}
                     data={data}
                 />
@@ -144,10 +160,23 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: '#ffffff'
     },
+    header: {
+        marginTop: rootViewTopPadding()+10,
+        justifyContent: 'center',
+        flexDirection: 'column',
+        alignItems: 'center',
+        paddingBottom: 0,
+        backgroundColor: colors.mainWhite
+    },
+    headerText: {
+        fontSize: 18,
+        color: colors.darkBlue
+    },
     listContainer: {
         marginTop: 10,
         marginLeft: 0,
-        marginBottom: 0
+        marginBottom: 0,
+        backgroundColor: colors.lightGray
     },
     listItemContainer: {
         paddingLeft: 20,

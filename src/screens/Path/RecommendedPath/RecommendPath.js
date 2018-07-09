@@ -1,14 +1,9 @@
 import React from 'react'
 import {
-    ActivityIndicator,
     FlatList,
     SectionList,
-    Text,
-    TouchableOpacity,
     View,
     StyleSheet,
-    Dimensions,
-    Share, NativeModules, Platform
 } from 'react-native'
 import {colors} from '../../../constants/colors'
 import _ from 'lodash'
@@ -18,7 +13,7 @@ import NoDataView from "../../../components/NoDataView";
 import {strings} from "../../../constants/strings";
 
 
-export default class PathRecommend extends React.Component {
+export default class RecommendPath extends React.Component {
 
     constructor(props) {
         super(props);
@@ -28,37 +23,19 @@ export default class PathRecommend extends React.Component {
         }
     }
 
-    componentDidMount() {
-        this.props.getPathRecommend(1,20)
-    }
-
     _keyExtractor = (item, index) => index + '';
 
     _openPathDetail = (item) => {
         this.props.navigation.navigate("UserPath", item);
     };
 
-    _onBookmarkItem = (id) => {
-        if (_.findIndex(this.state.bookmarked, (o) => (o === id)) !== -1) {
-            this.setState({bookmarked: _.filter(this.state.bookmarked, (o) => (o !== id))});
-            this.props.removeBookmark(id, strings.bookmarkType.path, strings.trackingType.path);
-        } else {
-            this.setState({bookmarked: this.state.bookmarked.concat(id)});
-            this.props.createBookmark(id, strings.bookmarkType.path, strings.trackingType.path);
-        }
-    };
-
     _renderVerticalItem = ({item}) => {
 
-        return (<PathItem data={item}
-                          onBookmark={() => this._onBookmarkItem(item._id)}
-                          onClicked={() => this._openPathDetail(item)}
-                          bookmarked={_.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1}/>)
+        return (<PathItem title={item.title}
+                          shortDescription={item.shortDescription}
+                          contributors={[item.profileId]}
+                          onClicked={() => this._openPathDetail(item)}/>)
     };
-
-    _renderVerticalSeparator = () => (
-        <View style={styles.horizontalItemSeparator}/>
-    );
 
     _renderVerticalSection = ({item}) => (
         <FlatList
@@ -66,17 +43,15 @@ export default class PathRecommend extends React.Component {
             horizontal={false}
             showsVerticalScrollIndicator={false}
             data={item}
-            ItemSeparatorComponent={() => this._renderVerticalSeparator()}
+            //ItemSeparatorComponent={() => this._renderVerticalSeparator()}
             keyExtractor={this._keyExtractor}
             renderItem={this._renderVerticalItem}/>
     );
 
     _fetchMore = () => {
-        if (this.props.pathRecommend.data != null) {
-            if (this.props.pathRecommend.data.length === this.currentPage * 20) {
-                this.currentPage += 1;
-                this.props.getPathRecommend(this.currentPage, 20);
-            }
+        const {pathRecommend: {count, page, isFetching}} = this.props;
+        if (count > page*10 && !isFetching) {
+            this.props.getPathRecommend(page+1, 10)
         }
     };
 
@@ -103,19 +78,20 @@ export default class PathRecommend extends React.Component {
         return (
             <View style={[{
                 flex: 1,
-                flexDirection: 'column'
+                flexDirection: 'column',
+                backgroundColor: colors.lightGray
             },this.props.style]}>
                 <SectionList
                     refreshing={pathRecommend.isFetching}
                     onRefresh={() => {
                         this.props.getPathRecommend(1,10);
-                        this.currentPage = 1;
                     }}
                     style={styles.alertWindow}
                     keyExtractor={this._keyExtractor}
                     stickySectionHeadersEnabled={false}
                     showsVerticalScrollIndicator={false}
                     bounces={true}
+                    onEndReached={this._fetchMore}
                     ListFooterComponent={() => this._renderListFooter(pathRecommend.isFetching)}
                     ListEmptyComponent={this._renderEmptyList(pathRecommend.isFetching)}
                     onEndReachedThreshold={0.5}
@@ -134,7 +110,8 @@ export default class PathRecommend extends React.Component {
 
 const styles = StyleSheet.create({
     alertWindow: {
-        backgroundColor: colors.mainWhite,
+        marginTop: 20,
+        backgroundColor: colors.lightGray,
         position: 'relative',
         flex: 1
     },

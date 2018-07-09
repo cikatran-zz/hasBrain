@@ -10,6 +10,9 @@ import {createBookmark} from "../../actions/createBookmark";
 import {removeBookmark} from "../../actions/removeBookmark";
 import {getFeed} from "../../actions/getFeed";
 import {getBookmarkedIds} from "../../actions/getBookmarkedIds";
+import {getTopicList} from "../../actions/getTopicList";
+import {getOwnpath} from "../../actions/getOwnpath";
+import {getPathCurrent} from "../../actions/getPathCurrent";
 
 function mapStateToProps(state) {
     return {
@@ -18,7 +21,10 @@ function mapStateToProps(state) {
         saved: state.savedReducer,
         source: state.sourcelistReducer,
         feed: state.feedReducer,
-        bookmarkedIds: state.bookmarkedIdsReducer
+        bookmarkedIds: state.bookmarkedIdsReducer,
+        topics: state.topicListReducer,
+        userFollowedTopic: state.updateUserTopicReducer,
+        userFollowedContributor: state.updateUserContributorFollowReducer
     }
 }
 
@@ -32,8 +38,11 @@ function mapDispatchToProps(dispatch) {
         updateSourceList: (sources) => dispatch(updateSourceList(sources)),
         createBookmark: (id, type, trackingType) => dispatch(createBookmark(id, type, trackingType)),
         removeBookmark: (id, type, trackingType) => (dispatch(removeBookmark(id, type, trackingType))),
-        getFeed: (page, perPage)=>(dispatch(getFeed(page, perPage))),
-        getBookmarkedIds: () => dispatch(getBookmarkedIds())
+        getFeed: (page, perPage, rank, topics)=>(dispatch(getFeed(page, perPage, rank, topics))),
+        getBookmarkedIds: () => dispatch(getBookmarkedIds()),
+        getTopics: () => dispatch(getTopicList()),
+        getOwnpath: ()=>dispatch(getOwnpath()),
+        getPathCurrent: () => dispatch(getPathCurrent()),
     }
 }
 

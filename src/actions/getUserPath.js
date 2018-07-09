@@ -1,4 +1,5 @@
 import * as actionTypes from './actionTypes'
+import _ from 'lodash';
 
 export function getUserPath(id) {
     return {
@@ -8,9 +9,15 @@ export function getUserPath(id) {
 }
 
 export function getUserPathSuccess(data) {
+    let response = _.get(data, 'viewer.pathPagination.items',[]);
+    if (_.isEmpty(response)) {
+        response = null
+    } else {
+        response = response[0]
+    }
     return {
         type: actionTypes.FETCH_USER_PATH_SUCCESS,
-        data: data.viewer.pathOne,
+        data: response,
     }
 }
 

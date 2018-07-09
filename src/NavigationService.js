@@ -1,4 +1,4 @@
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 let _navigator;
 
@@ -15,9 +15,27 @@ function navigate(routeName, params) {
     );
 }
 
+function reset(routeName) {
+    const resetAction = StackActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({ routeName: routeName })],
+        key: null
+    });
+
+    _navigator.dispatch(resetAction)
+}
+
+function navigateToTop() {
+    _navigator.dispatch(
+        StackActions.popToTop()
+    )
+}
+
 // add other navigation functions that you need and export them
 
 export default {
     navigate,
+    navigateToTop,
+    reset,
     setTopLevelNavigator,
 };

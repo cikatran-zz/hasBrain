@@ -1,17 +1,17 @@
 import { createStackNavigator, createTabNavigator } from 'react-navigation'
 import ExploreStack from './screenStacks/ExploreStack'
 import SaveStack from './screenStacks/SaveStack'
-import UserPathStack from './screenStacks/UserPathStack'
+import UserPathStack from './screenStacks/PathStack'
 import { Image, StyleSheet, NativeModules } from 'react-native'
 import React from 'react'
 import { colors } from './constants/colors'
 import { strings } from './constants/strings'
 import { defaultHeaderStyle } from './constants/theme'
 import AuthenticationEmail from './screens/Authentication/AuthenticationEmail'
-import Authentication from './screens/Authentication/Authentication'
+import Authentication from './screens/Authentication'
 import MeStack from './screenStacks/MeStack'
 import BackNavigationButton from "./components/BackNavigationButton";
-import Launch from "./screens/Launch/Launch";
+import Launch from "./screens/Launch";
 import Onboarding from "./screens/Onboarding";
 import Reader from "./screens/Reader";
 import MySource from "./screens/MySource";
@@ -21,6 +21,7 @@ const TabNav = createTabNavigator({
         screen: ExploreStack,
         navigationOptions: ({ navigation }) => ({
             tabBarLabel: strings.exploreHeader,
+            labelStyles: {fontFamily: ''},
             header: null,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_explore.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
@@ -29,19 +30,19 @@ const TabNav = createTabNavigator({
     SaveTab: {
         screen: SaveStack,
         navigationOptions: ({ navigation }) => ({
-            title: 'SAVED',
+            //title: 'SAVED',
             headerLeft: null,
-            tabBarLabel: strings.bookmarkHeader,
+            //tabBarLabel: strings.bookmarkHeader,
             ...defaultHeaderStyle,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_saved.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     },
-    UserPathTab: {
+    PathTab: {
         screen: UserPathStack,
         navigationOptions: ({ navigation }) => ({
             header: null,
-            tabBarLabel: strings.userPathHeader,
+            //tabBarLabel: strings.userPathHeader,
             ...defaultHeaderStyle,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_path.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
@@ -51,7 +52,7 @@ const TabNav = createTabNavigator({
         screen: MeStack,
         navigationOptions: ({ navigation }) => ({
             header: null,
-            tabBarLabel: strings.meHeader,
+            //tabBarLabel: strings.meHeader,
             ...defaultHeaderStyle,
             tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_menu_me.png')}
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
@@ -67,12 +68,13 @@ const TabNav = createTabNavigator({
         },
         labelStyle: {
             fontSize: 8,
-            fontWeight: 'bold'
+            fontFamily: 'CircularStd-Book'
         },
+        showLabel: false,
         showIcon: true,
         upperCaseLabel: true,
         activeTintColor: colors.blueText,
-        inactiveTintColor: colors.blackHeader,
+        inactiveTintColor: colors.tabinactive,
         indicatorStyle: {
             backgroundColor: 'transparent',
         },
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
         width: 20,
         height: 20,
         resizeMode: 'contain'
-    }
+    },
 });
 
 export const ScreenStack = createStackNavigator({
@@ -135,7 +137,8 @@ export const ScreenStack = createStackNavigator({
             headerTitleStyle: {
                 color: colors.blackHeader,
                 fontSize: 25,
-                fontWeight: "bold"
+                fontWeight: "bold",
+                fontFamily: 'CircularStd-Book'
             },
             headerLeft: <BackNavigationButton goBack={()=>navigation.goBack()}/>,
             gesturesEnabled: true

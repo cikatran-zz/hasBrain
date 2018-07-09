@@ -1,15 +1,16 @@
 import React from 'react'
 import {
-    Text, View, StyleSheet, Image, Platform, TextInput, TouchableOpacity, NativeModules,
+    View, StyleSheet, Image, Platform, TextInput, TouchableOpacity, NativeModules,
     ActivityIndicator, Animated, ScrollView, FlatList
 } from 'react-native'
-import {colors} from "../../constants/colors";
-import IndicatorModal from "../../components/IndicatorModal";
+import {colors} from "../../../constants/colors";
+import IndicatorModal from "../../../components/IndicatorModal";
 import Toast from 'react-native-root-toast';
-import {postCreateUser} from "../../api";
+import {postCreateUser} from "../../../api/index";
 import _ from 'lodash'
-import {strings} from "../../constants/strings";
-import {rootViewBottomPadding, rootViewTopPadding} from "../../utils/paddingUtils";
+import {strings} from "../../../constants/strings";
+import {rootViewBottomPadding, rootViewTopPadding} from "../../../utils/paddingUtils";
+import HBText from '../../../components/HBText'
 
 export default class Explore extends React.PureComponent {
 
@@ -49,13 +50,13 @@ export default class Explore extends React.PureComponent {
             return;
         }
         this.indicatorModal.setState({isShow: true});
-        NativeModules.RNUserKitIdentity.signUpWithEmail(this.email, this.password, {_name: this.name}, (error, results) => {
+        NativeModules.RNUserKitIdentity.signUpWithEmail(this.email, this.password, {_name: this.name, name: this.name }, (error, results) => {
             console.log();
             if (error != null) {
                 this.callbackMessage = JSON.parse(error).message;
                 this.indicatorModal.setState({isShow: false});
             } else {
-                this._createUser(_.get(JSON.parse(results[0]), 'profiles[0]', {}));
+                this.props.createUser();
                 this.indicatorModal.setState({isShow: false});
                 this._nextScreen()
             }
@@ -74,18 +75,11 @@ export default class Explore extends React.PureComponent {
                 this.callbackMessage = JSON.parse(error).message;
                 this.indicatorModal.setState({isShow: false});
             } else {
+                this.props.createUser();
                 this.indicatorModal.setState({isShow: false});
                 this._nextScreen();
             }
         })
-    };
-
-    _createUser = (profile) => {
-        postCreateUser(_.get(profile, 'id', ''), _.get(profile, '_name', '')).then((value) => {
-            //console.log(value);
-        }).catch((error) => {
-            //console.log(error);
-        });
     };
 
     _nextScreen = () => {
@@ -177,12 +171,12 @@ export default class Explore extends React.PureComponent {
                 <TouchableOpacity
                     style={[styles.colorButton]}
                     onPress={() => this._signIn()}>
-                    <Image source={require('../../assets/ic_signin.png')}
+                    <Image source={require('../../../assets/ic_signin.png')}
                            style={{height: '100%', width: 64, resizeMode: 'contain'}}/>
-                    <Text style={styles.buttonText}>Sign in</Text>
+                    <HBText style={styles.buttonText}>Sign in</HBText>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.forgotPasswordContainer} onPress={() => this._showSignUp()}>
-                    <Text style={styles.forgotPasswordText}>Create new account?</Text>
+                    <HBText style={styles.forgotPasswordText}>Create new account?</HBText>
                 </TouchableOpacity>
             </View>
         </Animated.View>);
@@ -227,12 +221,12 @@ export default class Explore extends React.PureComponent {
                 <TouchableOpacity
                     style={[styles.colorButton]}
                     onPress={() => this._signUp()}>
-                    <Image source={require('../../assets/ic_signup.png')}
+                    <Image source={require('../../../assets/ic_signup.png')}
                            style={{height: '100%', width: 64, resizeMode: 'contain'}}/>
-                    <Text style={styles.buttonText}>Sign up</Text>
+                    <HBText style={styles.buttonText}>Sign up</HBText>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.forgotPasswordContainer} onPress={() => this._showSignIn()}>
-                    <Text style={styles.forgotPasswordText}>Already have account?</Text>
+                    <HBText style={styles.forgotPasswordText}>Already have account?</HBText>
                 </TouchableOpacity>
             </View>
         </Animated.View>);
@@ -246,10 +240,10 @@ export default class Explore extends React.PureComponent {
                     this.indicatorModal = modal
                 }} onDismiss={this.onDismissIndicatorModal.bind(this)}/>
                 <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                    <Image style={styles.backImage} source={require('../../assets/ic_back_button.png')}/>
+                    <Image style={styles.backImage} source={require('../../../assets/ic_back_button.png')}/>
                 </TouchableOpacity>
-                <Image style={styles.image} source={require('../../assets/ic_hasbrain.png')}/>
-                <Text style={styles.text}>hasBrain</Text>
+                <Image style={styles.image} source={require('../../../assets/ic_hasbrain.png')}/>
+                <HBText style={styles.text}>hasBrain</HBText>
                 {this.state.signUp ? this._signUpForm() : this._signInForm()}
 
             </View>
@@ -319,7 +313,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: (Platform.OS === 'ios') ? 3 : 6,
         marginTop: 15,
-        alignSelf: 'center'
+        alignSelf: 'center',
+        fontFamily: 'CircularStd-Book'
     },
     colorButton: {
         borderRadius: 3,

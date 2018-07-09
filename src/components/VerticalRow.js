@@ -1,9 +1,14 @@
 import React from "react";
 import {Image, Text, TouchableOpacity, View, StyleSheet, Animated} from "react-native";
-import {blackTextStyle, graySmallTextStyle, grayTextStyle, titleCardStyle} from "../constants/theme";
+import {
+    blackTextStyle, commentTextStyle, graySmallTextStyle, grayTextStyle, hightlightTextStyle, peopleNameCardStyle,
+    titleCardStyle
+} from "../constants/theme";
 import {getPublishDateDescription, getReadingTimeDescription} from "../utils/dateUtils";
 import {colors} from "../constants/colors";
 import ArticleButton from "./ArticleButton";
+import HBText from '../components/HBText'
+import _ from 'lodash'
 
 const ANIMATION_DURATION = 250;
 const ROW_HEIGHT = 70;
@@ -42,7 +47,7 @@ export default class VerticalRow extends React.PureComponent {
         Animated.timing(this._animated, {
             toValue: 0,
             duration: ANIMATION_DURATION,
-        }).start(()=>{
+        }).start(() => {
             doneRemove();
             Animated.timing(this._animated, {
                 toValue: 1,
@@ -54,11 +59,73 @@ export default class VerticalRow extends React.PureComponent {
     _calculateTitleNumberOfLines = ({nativeEvent: {layout: {height}}}) => {
         if (height > 55) {
             this.setState({shortDesciptionNoLines: 0})
-        } else if (height >30) {
+        } else if (height > 30) {
             this.setState({shortDesciptionNoLines: 1})
         } else {
             this.setState({shortDesciptionNoLines: 2})
         }
+    };
+
+    _isCommentExisted = () => {
+        let comment = _.get(this.props.action, "commentData.comment", "");
+        return (comment && comment !== "")
+    };
+
+    _isHighlightExisted = () => {
+        let highlights = _.get(this.props.action, "highlightData.highlights");
+        return !(_.isEmpty(highlights))
+    };
+
+    _renderContributor = () => {
+        if (!this._isCommentExisted() && !this._isHighlightExisted()) {
+            return null;
+        }
+
+        let profileId = _.get(this.props.action, "userData.profileId", "");
+        if (!profileId) profileId = "";
+
+        let name = _.get(this.props.action, "userData.name", "");
+        if (!name) name = "";
+
+        return (<View style={[styles.hightlightHorizontalView, {alignItems: 'center'}]}>
+                    <Image
+                        source={{uri: 'https://s3-ap-southeast-1.amazonaws.com/userkit-identity-pro/avatars/' + profileId + 'medium.jpg?'}}
+                        style={styles.sourceImage}/>
+                    <HBText style={peopleNameCardStyle}>{name}</HBText>
+                </View>);
+    };
+
+    _renderHighlight = () => {
+        if (!this._isHighlightExisted()) {
+            return null;
+        }
+        let highlights = _.get(this.props.action, "highlightData.highlights");
+        return highlights.map((x)=>{return (<View style={styles.hightlightHorizontalView}>
+                                        <View style={styles.lineView}/>
+                                        <HBText style={[hightlightTextStyle]}>{x.highlight}</HBText>
+                                    </View>)});
+    };
+
+    _renderComment = () => {
+        if (!this._isCommentExisted()) {
+            return null;
+        }
+
+        let comment = _.get(this.props.action, "commentData.comment", "");
+        if (!comment) comment = "";
+
+        return (<View style={styles.hightlightHorizontalView}>
+                    <HBText style={commentTextStyle}>{comment}</HBText>
+                </View>)
+    };
+
+    _renderCategory = () => {
+        const {category} = this.props;
+        if (category == null || category === "") {
+            return null;
+        }
+        return (<HBText
+            style={styles.categoryText}>{this.props.category ? this.props.category.toUpperCase() : ""}</HBText>);
     };
 
     render() {
@@ -66,10 +133,10 @@ export default class VerticalRow extends React.PureComponent {
         const rowStyles = [
             styles.cardView,
             this.props.style,
-            { opacity: this._animated },
+            {opacity: this._animated},
             {
                 transform: [
-                    { scale: this._animated },
+                    {scale: this._animated},
                     {
                         rotate: this._animated.interpolate({
                             inputRange: [0, 1],
@@ -90,7 +157,7 @@ export default class VerticalRow extends React.PureComponent {
             if (action !== "") {
                 action += "  \u2022  ";
             }
-            action += this.props.sourceCommentCount + ((this.props.sourceCommentCount < 2)  ? " comment" : " comments");
+            action += this.props.sourceCommentCount + ((this.props.sourceCommentCount < 2) ? " comment" : " comments");
         }
 
         if (action !== "") {
@@ -102,11 +169,19 @@ export default class VerticalRow extends React.PureComponent {
         return (
             <TouchableOpacity onPress={this.props.onClicked}>
                 <Animated.View style={[rowStyles, this.props.style]}>
-                    <Text style={styles.categoryText}>{this.props.category ? this.props.category.toUpperCase() : ""}</Text>
+                    {this._renderCategory()}
+                    <View style={styles.hightlightRoot}>
+                        {this._renderContributor()}
+                        {this._renderComment()}
+                        {this._renderHighlight()}
+                    </View>
                     <View style={styles.horizontalView}>
                         <View style={styles.titleTextView}>
-                            <Text onLayout={this._calculateTitleNumberOfLines} numberOfLines={3} style={titleCardStyle}>{(this.props.title == null) ? "" : this.props.title}</Text>
-                            {this.state.shortDesciptionNoLines > 0 && <Text numberOfLines={this.state.shortDesciptionNoLines} style={[grayTextStyle, {marginTop: 15}]}>{(this.props.shortDescription == null) ? "" : this.props.shortDescription}</Text>}
+                            <HBText onLayout={this._calculateTitleNumberOfLines} numberOfLines={3}
+                                    style={titleCardStyle}>{(this.props.title == null) ? "" : this.props.title}</HBText>
+                            {this.state.shortDesciptionNoLines > 0 &&
+                            <HBText numberOfLines={this.state.shortDesciptionNoLines}
+                                    style={[grayTextStyle, {marginTop: 15}]}>{(this.props.shortDescription == null) ? "" : this.props.shortDescription}</HBText>}
 
                         </View>
                         {this._renderImage()}
@@ -114,15 +189,19 @@ export default class VerticalRow extends React.PureComponent {
                     <View style={[styles.horizontalView, {marginTop: 15}]}>
                         <View style={styles.subTextView}>
                             <View style={styles.sourceView}>
-                                <Image style={styles.sourceImage} source={{uri: this.props.sourceImage ? this.props.sourceImage : ""}}/>
-                                <Text
-                                    style={[graySmallTextStyle]}>{(this.props.sourceName == null) ? "" : this.props.sourceName}</Text>
+                                {
+                                    this.props.sourceImage &&
+                                    <Image style={styles.sourceImage} source={{uri: this.props.sourceImage}}/>
+                                }
+                                <HBText
+                                    style={[graySmallTextStyle]}>{(this.props.sourceName == null) ? "" : this.props.sourceName}</HBText>
                             </View>
 
-                            <Text style={grayTextStyle}>{action}</Text>
+                            <HBText style={grayTextStyle}>{action}</HBText>
                         </View>
                         <ArticleButton style={styles.articleButtonView}
                                        onMore={this.props.onMore}
+                                       show3Dots={true}
                                        onBookmark={this.props.onBookmark}
                                        bookmarked={this.props.bookmarked}/>
                     </View>
@@ -134,10 +213,9 @@ export default class VerticalRow extends React.PureComponent {
 
 const styles = StyleSheet.create({
     categoryText: {
-        fontFamily: 'CircularStd-Book',
         color: colors.articleCategory,
         fontSize: 12,
-        fontWeight: 'bold',
+        fontFamily: 'CircularStd-Bold',
         marginBottom: 13,
         marginTop: 13
     },
@@ -188,4 +266,17 @@ const styles = StyleSheet.create({
         marginRight: 0,
         marginLeft: 'auto'
     },
+    hightlightRoot: {
+        flexDirection: 'column',
+    },
+    hightlightHorizontalView: {
+        flexDirection: 'row',
+        marginBottom: 20
+    },
+    lineView: {
+        width: 1,
+        backgroundColor: colors.articleCategory,
+        height: '100%',
+        marginRight: 10
+    }
 });

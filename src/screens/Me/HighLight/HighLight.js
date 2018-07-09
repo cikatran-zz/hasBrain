@@ -1,8 +1,9 @@
 import React, {PureComponent} from 'react'
 import {
-    Text, View, StyleSheet, NativeModules, Platform, FlatList, ActivityIndicator
+    View, StyleSheet, NativeModules, Platform, FlatList, ActivityIndicator
 } from 'react-native'
 import { colors } from '../../../constants/colors';
+import HBText from "../../../components/HBText";
 
 export default class HighLight extends PureComponent {
     _currentPage = 1;
@@ -23,14 +24,18 @@ export default class HighLight extends PureComponent {
 
     _keyExtractor = (item, index) => index.toString();
 
+    _renderHighlight
+
     _renderListItem = ({item}) => {
         return (
             <View style={{flexDirection:'column'}}>
-                <Text style={{fontSize: 18, color: colors.blackHeader, marginTop: 10}}><Text style={{fontSize: 20, color: colors.blackHeader, fontWeight:'bold'}}> &ldquo; </Text>{item.highlight}<Text style={{fontSize: 20, color: colors.blackHeader, fontWeight:'bold'}}> &rdquo; </Text></Text>
-                <Text style={{fontSize: 13, color: colors.blackText, marginVertical: 5}}>{item.article.title}</Text>
+                {
+                    item.highlights && item.highlights.map((x)=> <HBText style={{fontSize: 18, color: colors.blackHeader, marginTop: 10}}><HBText style={{fontSize: 20, color: colors.blackHeader, fontWeight:'bold'}}> &ldquo; </HBText>{x.highlight}<HBText style={{fontSize: 20, color: colors.blackHeader, fontWeight:'bold'}}> &rdquo; </HBText></HBText>)
+                }
+                <HBText style={{fontSize: 13, color: colors.blackText, marginVertical: 5}}>{item.article.title}</HBText>
             </View>
         )
-    }
+    };
 
     __renderListFooter = () => {
         const {highLight} = this.props;

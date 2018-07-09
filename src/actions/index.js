@@ -15,6 +15,11 @@ import * as getWatchingHistory from './getWatchingHistory'
 import * as getCategory from './getCategory'
 import * as getFeed from './getFeed'
 import * as getBookmarkedIds from './getBookmarkedIds'
+import * as createHighlight from './createHightlight'
+import * as createUser from './createUser'
+import * as updateFollowPersona from './updateFollowPersona'
+import * as getOwnpath from './getOwnpath'
+import * as signOut from './signOut'
 
 export default actions = {
     getSaved,
@@ -33,5 +38,10 @@ export default actions = {
     getWatchingHistory,
     getCategory,
     getFeed,
-    getBookmarkedIds
+    getBookmarkedIds,
+    createHighlight,
+    createUser,
+    updateFollowPersona,
+    getOwnpath,
+    signOut
 }

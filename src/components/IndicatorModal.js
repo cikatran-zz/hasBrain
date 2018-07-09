@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet, View, Modal, Animated, Image, Dimensions, Easing, TouchableOpacity, Text} from "react-native";
+import {StyleSheet, View, Modal} from "react-native";
 import {DotsLoader} from 'react-native-indicator';
 import {colors} from "../constants/colors";
 

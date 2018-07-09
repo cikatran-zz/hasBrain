@@ -59,6 +59,13 @@
 		6960115F20B26A9000F0889D /* CustomWebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6960115D20B26A9000F0889D /* CustomWebViewViewController.swift */; };
 		6960118D20B26B2E00F0889D /* ReaderView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6960118C20B26B2E00F0889D /* ReaderView.storyboard */; };
 		696011A120B27D9A00F0889D /* layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 696011A020B27D9A00F0889D /* layout.swift */; };
+		698937B320E9E4C0008A04FF /* CircularStd-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6989377F20E9E4C0008A04FF /* CircularStd-Bold.otf */; };
+		698937BA20E9E775008A04FF /* CircularStd-BlackItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 698937B420E9E773008A04FF /* CircularStd-BlackItalic.otf */; };
+		698937BB20E9E775008A04FF /* CircularStd-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 698937B520E9E774008A04FF /* CircularStd-BoldItalic.otf */; };
+		698937BC20E9E775008A04FF /* CircularStd-BookItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 698937B620E9E774008A04FF /* CircularStd-BookItalic.otf */; };
+		698937BD20E9E775008A04FF /* CircularStd-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 698937B720E9E774008A04FF /* CircularStd-Medium.otf */; };
+		698937BE20E9E775008A04FF /* CircularStd-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 698937B820E9E774008A04FF /* CircularStd-Black.otf */; };
+		698937BF20E9E775008A04FF /* CircularStd-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 698937B920E9E774008A04FF /* CircularStd-MediumItalic.otf */; };
 		69C4DAF620AAA3DC000E4B4F /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69C4DAF320AAA3C2000E4B4F /* libBVLinearGradient.a */; };
 		69C4DAFD20AADC97000E4B4F /* libRCTWKWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69C4DAFC20AADC8C000E4B4F /* libRCTWKWebView.a */; };
 		69CA44EF20D8F59100BF4409 /* SwiftURLCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CA44EE20D8F59100BF4409 /* SwiftURLCache.swift */; };
@@ -518,6 +525,13 @@
 		6960115D20B26A9000F0889D /* CustomWebViewViewController.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = CustomWebViewViewController.swift; sourceTree = "<group>"; tabWidth = 4; };
 		6960118C20B26B2E00F0889D /* ReaderView.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ReaderView.storyboard; sourceTree = "<group>"; };
 		696011A020B27D9A00F0889D /* layout.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = layout.swift; sourceTree = "<group>"; tabWidth = 4; };
+		6989377F20E9E4C0008A04FF /* CircularStd-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "CircularStd-Bold.otf"; path = "../src/assets/fonts/CircularStd-Bold.otf"; sourceTree = "<group>"; };
+		698937B420E9E773008A04FF /* CircularStd-BlackItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "CircularStd-BlackItalic.otf"; path = "../src/assets/fonts/CircularStd-BlackItalic.otf"; sourceTree = "<group>"; };
+		698937B520E9E774008A04FF /* CircularStd-BoldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "CircularStd-BoldItalic.otf"; path = "../src/assets/fonts/CircularStd-BoldItalic.otf"; sourceTree = "<group>"; };
+		698937B620E9E774008A04FF /* CircularStd-BookItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "CircularStd-BookItalic.otf"; path = "../src/assets/fonts/CircularStd-BookItalic.otf"; sourceTree = "<group>"; };
+		698937B720E9E774008A04FF /* CircularStd-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "CircularStd-Medium.otf"; path = "../src/assets/fonts/CircularStd-Medium.otf"; sourceTree = "<group>"; };
+		698937B820E9E774008A04FF /* CircularStd-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "CircularStd-Black.otf"; path = "../src/assets/fonts/CircularStd-Black.otf"; sourceTree = "<group>"; };
+		698937B920E9E774008A04FF /* CircularStd-MediumItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "CircularStd-MediumItalic.otf"; path = "../src/assets/fonts/CircularStd-MediumItalic.otf"; sourceTree = "<group>"; };
 		69C4DAED20AAA3C2000E4B4F /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		69C4DAF720AADC8C000E4B4F /* RCTWKWebView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWKWebView.xcodeproj; path = "../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView.xcodeproj"; sourceTree = "<group>"; };
 		69CA44EE20D8F59100BF4409 /* SwiftURLCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftURLCache.swift; sourceTree = "<group>"; };
@@ -690,6 +704,13 @@
 		13B07FAE1A68108700A75B9A /* hasBrain */ = {
 			isa = PBXGroup;
 			children = (
+				698937B820E9E774008A04FF /* CircularStd-Black.otf */,
+				698937B420E9E773008A04FF /* CircularStd-BlackItalic.otf */,
+				698937B520E9E774008A04FF /* CircularStd-BoldItalic.otf */,
+				698937B620E9E774008A04FF /* CircularStd-BookItalic.otf */,
+				698937B720E9E774008A04FF /* CircularStd-Medium.otf */,
+				698937B920E9E774008A04FF /* CircularStd-MediumItalic.otf */,
+				6989377F20E9E4C0008A04FF /* CircularStd-Bold.otf */,
 				69F78D2420E22BF80013F14C /* circularStdBook.ttf */,
 				69F4CCA220BFB8DB004AE650 /* GoogleService-Info.plist */,
 				6927DEDF209C654900FFA275 /* Utilities */,
@@ -1647,10 +1668,17 @@
 			files = (
 				6960118D20B26B2E00F0889D /* ReaderView.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				698937BA20E9E775008A04FF /* CircularStd-BlackItalic.otf in Resources */,
 				69F78D5820E22BF80013F14C /* circularStdBook.ttf in Resources */,
 				69F4CCD220BFB8DB004AE650 /* GoogleService-Info.plist in Resources */,
+				698937BC20E9E775008A04FF /* CircularStd-BookItalic.otf in Resources */,
+				698937BE20E9E775008A04FF /* CircularStd-Black.otf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				78BED8079EEA42CAB8F4C9A8 /* AppCenter-Config.plist in Resources */,
+				698937BF20E9E775008A04FF /* CircularStd-MediumItalic.otf in Resources */,
+				698937BB20E9E775008A04FF /* CircularStd-BoldItalic.otf in Resources */,
+				698937B320E9E4C0008A04FF /* CircularStd-Bold.otf in Resources */,
+				698937BD20E9E775008A04FF /* CircularStd-Medium.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

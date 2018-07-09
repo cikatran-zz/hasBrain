@@ -27,6 +27,13 @@ export const strings = {
     contentUnbookmarked: {
         event: "_content_unbookmarked"
     },
+    contentHighlighted: {
+        event: "_content_highlighted",
+        highlight: "highlight",
+        comment: "comment",
+        position: "position",
+        note: "note"
+    },
     trackingType: {
         article: "article",
         path: "path"
@@ -36,7 +43,9 @@ export const strings = {
         path: "pathtype"
     },
     mekey: '_me',
+    avatarKey: 'avatar',
     experienceKey: 'experience',
     name: '_name',
-    articleFilter: 'articleFilter'
+    articleFilter: 'articleFilter',
+    chosenTopicsKey: 'chosen_topics'
 };

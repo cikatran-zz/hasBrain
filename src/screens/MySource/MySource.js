@@ -3,136 +3,151 @@ import {
     ActivityIndicator,
     FlatList,
     SectionList,
-    Text,
     TouchableOpacity,
     View,
     StyleSheet,
     Dimensions,
     Share, NativeModules, Platform, Image,
-    Alert
+    TouchableWithoutFeedback
 } from 'react-native'
 import {colors} from '../../constants/colors'
 import _ from 'lodash'
 import {strings} from "../../constants/strings";
 import {rootViewTopPadding} from "../../utils/paddingUtils";
 import {navigationTitleStyle} from "../../constants/theme";
-import CheckComponent from '../../components/CheckComponent'
+import CheckComponent from '../../components/CheckComponent';
+import HBText from '../../components/HBText'
+import Sources from './Sources'
+import Topic from './Topic'
+import People from './People'
 
 export default class MySource extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            checkedState: (new Map(): Map<string, boolean>)
-        }
+            selectedTab: 0,
+        };
+
+        this._debounceToggleTab = _.debounce(this._selectTab, 500);
     }
 
     componentDidMount() {
-        this.props.getSourceList();
-    }
-
-    componentWillUnmount() {
-    }
-
-    _onPressItem = (id) => {
-        const {source} = this.props;
-        const {chosenSources} = source;
-
-        this.setState((state) => {
-            let checkedState = state.checkedState;
-            if (checkedState.size < 1) {
-                let sources = source.data.map(item => {
-                    return item.sourceId
-                });
-                for (let key of sources) {
-                    checkedState.set(key, chosenSources.includes(key));
-                }
-            }
-            let checkedSourcesValues = Array.from(checkedState.values());
-            // checkedSourcesValues = _.filter(checkedSourcesValues, (item) => {
-            //     return item == true;
-            // })
-            // if (checkedSourcesValues.length < 2) {
-            //     if (checkedState.get(id)) {
-            //         Alert.alert('Oops!', 'You must have at least 1 source', [
-            //             {text: 'Got it!'},
-            //         ])
-            //     } else {
-            //         let checked = !checkedState.get(id);
-            //         checkedState.set(id, checked);
-            //
-            //     }
-            // } else {
-            let checked = !checkedState.get(id);
-            checkedState.set(id, checked);
-            // }
-            return {checkedState}
-        });
-    }
-
-    _keyExtractor = (item, index) => index.toString();
-    _renderListItem = ({item}) => {
-        const {checkedState} = this.state;
-        const {source} = this.props;
-        const {chosenSources} = source;
-        let checkedItem = false;
-        if (checkedState.size < 1) {
-            checkedItem = chosenSources.includes(item.sourceId);
-
-        } else {
-            checkedItem = checkedState.get(item.sourceId);
+        if (!this.props.source.fetched) {
+            this.props.getSourceList();
         }
-
-        return (
-            <View style={styles.listRow}>
-                <Image resizeMode='contain' sytle={styles.iconImage} source={{uri: item.sourceImage, width: 60, height: 60}}/>
-                <Text style={styles.sourceText}>{item.title}</Text>
-                <CheckComponent id={item.sourceId} checkedItem={checkedItem} onPressItem={this._onPressItem}/>
-            </View>
-        )
     }
+
+
 
     _onBackPress = () => {
-        const {checkedState} = this.state;
-        const {source} = this.props;
-        let newSources = source.data.map((item) => {
-            if (checkedState.get(item.sourceId)) {
-                return item.sourceId;
-            }
-        });
-        newSources = _.compact(newSources);
-        if (!_.isEmpty(newSources))
-            this.props.updateSourceList(newSources);
-        this.props.getFeed(1, 10);
+        //const {selectedTab} = this.state;
+        // switch (selectedTab) {
+        //     case 0:
+        //         this._sources.updateFollow();
+        //         break;
+        //     case 1:
+        //         this._people.updateFollow();
+        //         break;
+        //     case 2:
+        //         this._topics.updateFollow();
+        //         break;
+        //     default:
+        //         break;
+        // }
+        //this.props.getFeed(1, 10);
         this.props.navigation.goBack();
+    };
+
+    _selectTab = () => {
+        const {selectedTab: index} = this.state;
+        switch (index) {
+            case 0:
+                if (!this.props.source.fetched) {
+                    this.props.getSourceList();
+                }
+                break;
+            case 1:
+                if (!this.props.contributor.fetched) {
+                    this.props.getContributorList();
+                }
+                break;
+            case 2:
+                if (!this.props.topic.fetched) {
+                    this.props.getTopicList();
+                }
+                break;
+            default:
+                break;
+        }
+    };
+
+    _toggleTab = (index) => {
+        // switch (selectedTab) {
+        //     case 0:
+        //         this._sources.updateFollow();
+        //         break;
+        //     case 1:
+        //         this._people.updateFollow();
+        //         break;
+        //     case 2:
+        //         this._topics.updateFollow();
+        //         break;
+        //     default:
+        //         break;
+        // }
+        this.setState({selectedTab: index});
+        this._debounceToggleTab()
+    };
+
+    _renderTabContainer (){
+        const  {selectedTab} = this.state;
+        switch (selectedTab) {
+            case 0:
+                return <Sources onRef={component => this._sources = component}/>
+            case 1:
+                return <People onRef={component => this._people = component}/>;
+            case 2:
+                return <Topic onRef={component => this._topics = component}/>
+            default:
+                return null;
+        }
     }
 
     render() {
-        const {source} = this.props;
-        if (!source.data)
-            return null;
+        const {selectedTab} = this.state;
         return (
             <View style={styles.rootView}>
                 <View style={styles.headerView}>
                     <TouchableOpacity style={styles.backButton} onPress={() => this._onBackPress()}>
                         <Image style={styles.backIcon} source={require('../../assets/ic_arrow_left.png')}/>
                     </TouchableOpacity>
-                    <View style={styles.searchBar}>
-                        <Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>
-                        <Text style={styles.searchText}>Search for sources, people and topics</Text>
-                    </View>
+                    <HBText style={styles.headerTitle}>Edit interest</HBText>
                 </View>
                 <View style={{backgroundColor: colors.lightGray}}>
-                    <FlatList
-                        refreshing={source.isFetching}
-                        onRefresh={() => this.props.getSourceList()}
-                        style={{marginHorizontal:10}}
-                        extraData={this.state}
-                        keyExtractor={this._keyExtractor}
-                        horizontal={false}
-                        data={source.data}
-                        renderItem={this._renderListItem}
-                        showsVerticalScrollIndicator={false}/>
+                    <View style={styles.tabContainer}>
+                        <TouchableWithoutFeedback style={{height: 17, width: 73}} onPress={() => this._toggleTab(0)}>
+                            <HBText style={[
+                                styles.tabTitle,
+                                selectedTab == 0 ? {color: colors.blueText} : {color: colors.tagGrayText}
+                            ]}>Source</HBText>
+                        </TouchableWithoutFeedback>
+
+                        <TouchableWithoutFeedback onPress={() => this._toggleTab(1)}>
+                            <HBText style={[
+                                styles.tabTitle,
+                                selectedTab == 1 ? {color: colors.blueText} : {color: colors.tagGrayText}
+                            ]}>People</HBText>
+                        </TouchableWithoutFeedback>
+
+                        <TouchableWithoutFeedback onPress={() => this._toggleTab(2)}>
+                            <HBText style={[
+                                styles.tabTitle,
+                                selectedTab == 2 ? {color: colors.blueText} : {color: colors.tagGrayText}
+                            ]}>Topic</HBText>
+                        </TouchableWithoutFeedback>
+                    </View>
+                    {this._renderTabContainer()}
                 </View>
             </View>
         )
@@ -151,7 +166,28 @@ const styles = StyleSheet.create({
         marginTop: rootViewTopPadding() + 10,
         alignItems: 'center',
         backgroundColor: colors.mainWhite,
-        paddingBottom: 10
+        paddingBottom: 10,
+    },
+    tabContainer: {
+        flexDirection: 'row',
+        marginVertical: 10,
+        marginHorizontal: 20
+    },
+    tabTitle: {
+        height: 17,
+        width: 73,
+        fontSize: 13
+    },
+    headerTitle: {
+        color: colors.darkBlue,
+        fontSize: 18,
+        left: 0,
+        right: 0,
+        height: '100%',
+        alignItems:'center',
+        position: 'absolute',
+        textAlign: 'center',
+        zIndex: -1
     },
     backIcon: {
         width: 16,
@@ -161,11 +197,6 @@ const styles = StyleSheet.create({
     backButton: {
         padding: 10,
         marginRight: 5
-    },
-    searchText: {
-        marginLeft: 15,
-        fontSize: 20,
-        color: colors.grayTextSearch
     },
     listRow: {
         flexDirection: 'row',
