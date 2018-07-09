@@ -60,7 +60,6 @@ export default function sourcelistReducer(state = initialState, action) {
                 }
             }
             tags = _.concat("ALL", tags);
-            console.log("Tag map", tagMap, tags, count);
             return {
                 ...state,
                 isFetching: false,
@@ -86,7 +85,6 @@ export default function sourcelistReducer(state = initialState, action) {
             }
         case actionTypes.UPDATING_USER_TOPIC:
 
-            console.log("topics",newTags, state.tagMap.keys());
             let newTagMap = new Map();
             let countTag = 0;
             let newTags = action.topics;
@@ -103,7 +101,6 @@ export default function sourcelistReducer(state = initialState, action) {
                 }
             }
             newTags = _.concat("ALL", newTags);
-            console.log(countTag, newTagMap);
             return {
                 ...state,
                 tags: newTags,

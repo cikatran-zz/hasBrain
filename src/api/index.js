@@ -375,6 +375,13 @@ export const getUserFollow = (kind) => {
     })
 }
 
+export const updateSourceList = (sources) => {
+    return gqlPost({
+        mutation: config.mutation.updateUserFollow,
+        variables: {kind:"sourcetype", sourceIds: sources}
+    })
+}
+
 export const updateUserFollow = (kind, sourceIds) => {
     return gqlPost({
         mutation: config.mutation.updateUserFollow,
@@ -497,6 +504,74 @@ export const getChosenTopics = () => {
     });
 };
 
+const getContinueReadingIds = () => {
+    return new Promise((resolve, reject)=>{
+        RNUserKit.getProperty(strings.readingHistoryKey, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                let readingHistory = _.get(result[0], strings.readingHistoryKey);
+                if (readingHistory) {
+                    readingHistory = readingHistory.map((x)=>x.id);
+                }
+                resolve(readingHistory);
+            }
+        });
+    });
+};
+
+const getArticlesDetail = (ids)=>{
+    return gqlQuery({
+        query: config.queries.articlesMany,
+        variables: {ids: ids}
+    });
+};
+
+export const getLastReadingHistory = (maximumNumber) => {
+    return new Promise((resolve, reject) => {
+        getContinueReadingIds().then((ids) => {
+            if (ids == null) {
+                resolve(ids);
+            }
+            let limitedIds = _.take(ids, maximumNumber);
+            getArticlesDetail(limitedIds).then(response => {
+                let articles = _.get(response, 'data.viewer.articleMany');
+                if (_.isEmpty(articles)) {
+                    resolve(articles);
+                    return;
+                }
+                let sortedArticles = limitedIds.map((id)=> {
+                    return articles.find((x)=>x._id===id);
+                });
+                sortedArticles = _.compact(sortedArticles);
+                resolve(sortedArticles);
+            }).catch(err=>reject(err));
+
+        }).catch(reason => reject(reason))
+    });
+};
+
+export const getAvatar = () => {
+    return new Promise((resolve, reject) => {
+        RNUserKitIdentity.getProfileInfo((error, result) => {
+            let avatar = result[0].avatars;
+            resolve(avatar);
+        })
+    });
+};
+
+export const followByPersonas = (personaIds) => {
+    return gqlPost({
+        mutation: config.mutation.followByPersonas,
+        variables: {ids: personaIds}
+    })
+};
+
+export const getOwnpath = () => {
+    return gqlQuery({
+        query: config.queries.ownpath
+    })
+};
 
 //Axios
 
@@ -538,26 +613,3 @@ export const getUserKitProfile = (accountRole = 'contributor', offset = 0, limit
         }
     );
 };
-
-export const getAvatar = () => {
-    return new Promise((resolve, reject) => {
-        RNUserKitIdentity.getProfileInfo((error, result) => {
-            let avatar = result[0].avatars;
-            resolve(avatar);
-        })
-    });
-};
-
-export const followByPersonas = (personaIds) => {
-    return gqlPost({
-        mutation: config.mutation.followByPersonas,
-        variables: {ids: personaIds}
-    })
-};
-
-export const getOwnpath = () => {
-    return gqlQuery({
-        query: config.queries.ownpath
-    })
-};
-

@@ -781,7 +781,27 @@ const getCurrentPath = gql `
           }
         }
       }
-`
+`;
+
+const getListArticleDetail = gql`
+query getArticlesInfo($ids: [MongoID]) {
+  viewer {
+    articleMany(filter: {
+      _operators: {
+        _id: {
+          in: $ids
+        }
+      }
+    }) {
+      _id
+      title
+      readingTime
+      contentId
+      sourceImage
+    }
+  }
+}
+`;
 
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
@@ -806,7 +826,8 @@ export default {
         userFollow: getUserFollow,
         topicList: getTopic,
         ownpath: getOwnpath,
-        getCurrentPath: getCurrentPath
+        getCurrentPath: getCurrentPath,
+        articlesMany: getListArticleDetail
     },
     mutation: {
         bookmark: postBookmark,

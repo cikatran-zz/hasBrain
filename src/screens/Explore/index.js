@@ -13,6 +13,7 @@ import {getBookmarkedIds} from "../../actions/getBookmarkedIds";
 import {getTopicList} from "../../actions/getTopicList";
 import {getOwnpath} from "../../actions/getOwnpath";
 import {getPathCurrent} from "../../actions/getPathCurrent";
+import {getContinueReading} from "../../actions/getContinueReading";
 
 function mapStateToProps(state) {
     return {
@@ -24,7 +25,8 @@ function mapStateToProps(state) {
         bookmarkedIds: state.bookmarkedIdsReducer,
         topics: state.topicListReducer,
         userFollowedTopic: state.updateUserTopicReducer,
-        userFollowedContributor: state.updateUserContributorFollowReducer
+        userFollowedContributor: state.updateUserContributorFollowReducer,
+        continueReading: state.continueReadingReducer
     }
 }
 
@@ -43,6 +45,7 @@ function mapDispatchToProps(dispatch) {
         getTopics: () => dispatch(getTopicList()),
         getOwnpath: ()=>dispatch(getOwnpath()),
         getPathCurrent: () => dispatch(getPathCurrent()),
+        getContinueReading: ()=>dispatch(getContinueReading())
     }
 }
 

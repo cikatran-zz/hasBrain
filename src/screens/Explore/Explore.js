@@ -27,14 +27,17 @@ import {DotsLoader} from 'react-native-indicator';
 import ActionSheet from "react-native-actionsheet";
 import ToggleTagComponent from "../../components/ToggleTagComponent";
 import {getChosenTopics} from "../../api";
+import LoadingSquareItem from "../../components/LoadingSquareItem";
 
-const horizontalMargin = 5;
+const horizontalMargin = 6;
 
 const sliderWidth = Dimensions.get('window').width;
-const itemViewWidth = Dimensions.get('window').width * 0.8;
+const itemViewWidth = 150;
 const itemWidth = itemViewWidth + horizontalMargin * 2;
 
 const {RNUserKit} = NativeModules;
+
+const maxHeight = 195;
 
 export default class Explore extends React.Component {
 
@@ -51,13 +54,15 @@ export default class Explore extends React.Component {
         this.haveMore = true;
         this.state = {
             bookmarked: [],
-            _animated: new Animated.Value(1)
+            _animated: new Animated.Value(1),
+            continueReadingCollapse: true
         };
         this.offset = 0;
         this._currentPositionVal = 1;
         this._scrollView = null;
         this.rank = null;
         this._debounceReloadAndSave = _.debounce(this._reloadAndSaveTag, 500);
+        this._collapseAnimated = new Animated.Value(maxHeight);
     }
 
     componentDidMount() {
@@ -65,22 +70,14 @@ export default class Explore extends React.Component {
         this.props.getSourceList();
         this.props.getTopics();
         this.props.getPathCurrent();
-        // getChosenTopics().then((value)=>{
-        //     let topics = null;
-        //     if (value) {
-        //         topics = value.filter(x=>x !== "ALL");
-        //     }
-        //     this.props.getFeed(1, 10, null, topics);
-        // });
+        this.props.getContinueReading();
 
         this.props.getBookmarkedIds();
         this._navListener = this.props.navigation.addListener('didFocus', () => {
-            this._setUpReadingTime();
             StatusBar.setBarStyle('dark-content');
             (Platform.OS !== 'ios') && StatusBar.setBackgroundColor('transparent');
-            //this._onRefresh();
         });
-        this._setUpReadingTime();
+        //this._setUpReadingTime();
     }
 
     componentWillUnmount() {
@@ -99,12 +96,12 @@ export default class Explore extends React.Component {
         });
     };
 
-    _compareArr = (array1, array2)=>{
+    _compareArr = (array1, array2) => {
         if (array1 == null || array2 == null) {
             return true;
         }
         if (array1.length !== array2.length) return false;
-        for (let i = 0; i < array1.length; i++){
+        for (let i = 0; i < array1.length; i++) {
             if (array2.indexOf(array1[i]) < 0) return false;
         }
         return true;
@@ -161,30 +158,6 @@ export default class Explore extends React.Component {
         this.props.getFeed(1, 10, null, topics);
     };
 
-    _setUpReadingTime = () => {
-
-        NativeModules.RNUserKit.getProperty(strings.dailyReadingTimeKey, (error, result) => {
-            if (!error && result != null) {
-                // Get current date
-                let dailyReadingTime = _.get(result[0], strings.dailyReadingTimeKey);
-
-                let dateID = getIDOfCurrentDate();
-                if (dailyReadingTime == null) {
-                    return;
-                }
-
-                if (dailyReadingTime[dateID] != null) {
-
-                    this.props.navigation.setParams({
-                        title: moment.utc(dailyReadingTime[dateID] * 1000).format('HH:mm:ss')
-                    });
-                }
-            } else {
-                console.log(error);
-            }
-        });
-    };
-
     _onMoreButtonClicked = (item) => {
         this.ActionSheet.show();
         this.currentInteractionItem = item;
@@ -229,7 +202,7 @@ export default class Explore extends React.Component {
         const {bookmarkedIds, source} = this.props;
         let bookmarkedArticles = _.get(bookmarkedIds, 'data.articles', []);
 
-        let category = _.get(item,'topicData.title','');
+        let category = _.get(item, 'topicData.title', '');
         if (source.tagMap.get('ALL')) {
             category = item.reason;
         }
@@ -241,7 +214,7 @@ export default class Explore extends React.Component {
 
         return (
             <VerticalRow style={{marginTop: (index === 0) ? 0 : 0}}
-                         action={_.get(item, 'contentData.lastActionData',{})}
+                         action={_.get(item, 'contentData.lastActionData', {})}
                          title={_.get(item, 'contentData.title', '')}
                          shortDescription={_.get(item, 'contentData.shortDescription', '')}
                          sourceName={author}
@@ -280,39 +253,82 @@ export default class Explore extends React.Component {
             return null
         }
         return (
-            <HorizontalCell style={{alignSelf: 'center', width: itemViewWidth}}
+            <HorizontalCell style={{alignSelf: 'center', width: itemViewWidth, height: 170}}
                             title={item.title}
-                            author={extractRootDomain(item.contentId)}
-                            time={item.createdAt}
-                            readingTime={item.readingTime}
                             onClicked={() => this._openReadingView(item)}
-                            onShare={() => this._onMoreButtonClicked(item)}
-                            onBookmark={() => this._onBookmarkItem(item._id)}
-                            bookmarked={_.findIndex(this.state.bookmarked, (o) => (o === item._id)) !== -1}
-                            image={getImageFromArray(item.originalImages, null, null, item.sourceImage)}/>)
+                            image={item.sourceImage}/>)
+    };
+
+    _toggleCollapse = () => {
+        this.setState((state) => {
+            let continueReadingCollapse = state.continueReadingCollapse;
+            let expanded = continueReadingCollapse;
+            continueReadingCollapse = !continueReadingCollapse;
+            let initialValue = expanded ? maxHeight : 0;
+            let finalValue = expanded ? 0 : maxHeight;
+            this._collapseAnimated.setValue(initialValue);
+            if (this.state.continueReadingCollapse) {
+                Animated.timing(
+                    this._collapseAnimated,
+                    {
+                        toValue: finalValue,
+                    }
+                ).start();
+            } else {
+                Animated.spring(
+                    this._collapseAnimated,
+                    {
+                        toValue: finalValue,
+                        fiction: 1.0
+                    }
+                ).start();
+            }
+            return {continueReadingCollapse}
+        });
+
     };
 
     _renderHorizontalSection = ({item, section}) => {
-        console.log("HORIZONTAL", section.title);
-        if (item == null) {
+        if (section.loading) {
+            return (
+                <View>
+                    <HBText style={styles.sectionTitle}>{section.title.toUpperCase()}</HBText>
+                    <View style={{flexDirection: 'row'}}>
+                        <LoadingSquareItem style={{width: 150}}/>
+                    </View>
+                </View>)
+        }
+        if (_.isEmpty(item)) {
             return null;
         }
+        let arrowIcon = this.state.continueReadingCollapse ? require('../../assets/ic_arrow_up.png') : require('../../assets/ic_arrow_down.png')
+
         return (
             <View>
-                <HBText style={styles.sectionTitle}>{section.title.toUpperCase()}</HBText>
-                <Carousel
-                    data={item}
-                    keyExtractor={this._keyExtractor}
-                    sliderWidth={sliderWidth}
-                    itemWidth={itemWidth}
-                    layout={'default'}
-                    shouldOptimizeUpdates={false}
-                    inactiveSlideOpacity={1}
-                    inactiveSlideScale={1}
-                    layoutCardOffset={10}
-                    superPaddingHorizontal={5}
-                    renderItem={this._renderHorizontalItem}
-                    containerCustomStyle={styles.horizontalCarousel}/>
+                <TouchableWithoutFeedback onPress={() => this._toggleCollapse()}>
+                    <View style={styles.sectionHeader}>
+                        <HBText style={styles.sectionTitle}>{section.title.toUpperCase()}</HBText>
+                        <Image style={styles.collapseArrow} source={arrowIcon}/>
+                    </View>
+                </TouchableWithoutFeedback>
+                <Animated.View style={{height: this._collapseAnimated, overflow: 'hidden'}}>
+                    <View style={{height: 195, marginTop: 10}}>
+                        <Carousel
+                            data={item}
+                            keyExtractor={this._keyExtractor}
+                            sliderWidth={sliderWidth}
+                            itemWidth={itemWidth}
+                            layout={'default'}
+                            shouldOptimizeUpdates={false}
+                            inactiveSlideOpacity={1}
+                            inactiveSlideScale={1}
+                            layoutCardOffset={5}
+                            superPaddingHorizontal={19}
+                            renderItem={this._renderHorizontalItem}
+                            containerCustomStyle={styles.horizontalCarousel}/>
+                    </View>
+                </Animated.View>
+                <View style={[styles.horizontalItemSeparator, {marginHorizontal: 0, marginTop: 20}]}/>
             </View>)
     };
 
@@ -373,7 +389,7 @@ export default class Explore extends React.Component {
         let title = "";
         try {
             title = topics.tagTitle.get(item);
-        }catch (err) {
+        } catch (err) {
             console.log(err);
         }
 
@@ -381,7 +397,8 @@ export default class Explore extends React.Component {
             title = item;
         }
         return (
-            <ToggleTagComponent id={title} onPressItem={(id)=>this._onTagItemPress(item)} isOn={source.tagMap.get(item)}/>
+            <ToggleTagComponent id={title} onPressItem={(id) => this._onTagItemPress(item)}
+                                isOn={source.tagMap.get(item)}/>
         )
     };
 
@@ -437,7 +454,8 @@ export default class Explore extends React.Component {
 
     _reloadAndSaveTag = (topics) => {
         this.props.getFeed(1, 10, null, topics)
-        RNUserKit.storeProperty({[strings.chosenTopicsKey]: topics}, (e,r)=> {})
+        RNUserKit.storeProperty({[strings.chosenTopicsKey]: topics}, (e, r) => {
+        })
     };
 
     _onScroll = (event) => {
@@ -532,7 +550,7 @@ export default class Explore extends React.Component {
         </View>);
 
     render() {
-        const {feed, saved, source} = this.props;
+        const {feed, saved, source, continueReading} = this.props;
         return (
             <View style={styles.rootView}>
                 <StatusBar
@@ -566,6 +584,12 @@ export default class Explore extends React.Component {
                         onEndReachedThreshold={0.5}
                         sections={[
                             {
+                                data: [continueReading.data],
+                                title: "CONTINUE",
+                                loading: continueReading.isFetching,
+                                renderItem: this._renderHorizontalSection
+                            },
+                            {
                                 data: [feed.data],
                                 renderItem: this._renderVerticalSection
                             }
@@ -573,11 +597,11 @@ export default class Explore extends React.Component {
                     />
                     <Animated.View style={this._animatedStyle()}>
                         {/*<TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('MySource')}>*/}
-                            {/*<View style={styles.searchBar}>*/}
-                                {/*<Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>*/}
-                                {/*<HBText style={styles.searchText}>For you</HBText>*/}
+                        {/*<View style={styles.searchBar}>*/}
+                        {/*<Image style={styles.searchIcon} source={require('../../assets/ic_search.png')}/>*/}
+                        {/*<HBText style={styles.searchText}>For you</HBText>*/}
 
-                            {/*</View>*/}
+                        {/*</View>*/}
                         {/*</TouchableWithoutFeedback>*/}
                         <FlatList
                             style={{marginLeft: 25, marginBottom: 0, marginTop: 10, height: 50}}
@@ -638,9 +662,7 @@ const styles = StyleSheet.create({
     alertWindow: {
         backgroundColor: colors.mainWhite,
     },
-    horizontalCarousel: {
-        backgroundColor: colors.carouselBackground,
-    },
+    horizontalCarousel: {},
     horizontalItemSeparator: {
         backgroundColor: colors.grayLine,
         flex: 1,
@@ -648,11 +670,10 @@ const styles = StyleSheet.create({
         height: 1
     },
     sectionTitle: {
-        backgroundColor: colors.carouselBackground,
-        textAlign: 'center',
-        color: colors.blackText,
-        fontSize: 20,
+        color: colors.articleCategory,
+        fontSize: 12,
         paddingVertical: 10,
+        marginLeft: 25
     },
     searchBar: {
         flexDirection: 'row',
@@ -680,4 +701,17 @@ const styles = StyleSheet.create({
         color: colors.grayTextSearch,
         opacity: 0.5
     },
+    sectionHeader: {
+        flexDirection: 'row',
+        width: '100%',
+        height: 30,
+        alignItems: 'center'
+    },
+    collapseArrow: {
+        position: 'absolute',
+        right: 25,
+        top: 15,
+        width: 8,
+        height: 5
+    }
 });
