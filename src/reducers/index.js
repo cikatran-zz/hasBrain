@@ -29,6 +29,7 @@ import updateUserTopicReducer from "./updateUserTopicReducer";
 import updateUserContributorFollowReducer from "./updateUserContributorFollowReducer";
 import {SIGN_OUT} from "../actions/actionTypes";
 import signOutReducer from "./signOutReducer";
+import continueReadingReducer from "./continueReadingReducer";
 
 const myAccountReducer = combineReducers({
     articlesReducer,
@@ -59,7 +60,8 @@ const myAccountReducer = combineReducers({
     pathCurrentReducer,
     updateUserTopicReducer,
     updateUserContributorFollowReducer,
-    signOutReducer
+    signOutReducer,
+    continueReadingReducer
 });
 
 
