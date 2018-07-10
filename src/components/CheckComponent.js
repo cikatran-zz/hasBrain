@@ -27,8 +27,7 @@ export default class CheckComponent extends PureComponent<Props> {
             checkImage = require('../assets/ic_add_rectangle.png');
         }
         return (
-            <View style={{width: 70, height: 50, padding: 10, backgroundColor: 'red03052013wp5s3b#' +
-                ''}}>
+            <View style={{width: 70, height: 50, padding: 10}}>
                 <View>
                     <Image source={checkImage} />
                 </View>

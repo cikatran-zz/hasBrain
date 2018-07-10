@@ -12,6 +12,7 @@ import NavigationActions from 'react-navigation/src/NavigationActions'
 import IndicatorModal from "../../components/IndicatorModal";
 import Toast from "react-native-root-toast";
 import HBText from '../../components/HBText'
+import NavigationService from '../../NavigationService'
 
 export default class Authentication extends React.PureComponent {
 
@@ -37,7 +38,7 @@ export default class Authentication extends React.PureComponent {
                 if (experience == null) {
                     this._goToOnBoarding();
                 } else {
-                    this.props.navigation.navigate("Home");
+                    NavigationService.reset("Home");
                 }
             } else {
                 this._goToOnBoarding();
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
     text: {
         color: colors.mainDarkGray,
         fontSize: 20,
-        fontWeight: 'bold',
+        fontFamily: 'CircularStd-Bold',
         marginBottom: 15
     },
     colorButton: {
