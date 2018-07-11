@@ -1,7 +1,7 @@
 import React from 'react'
 import {
     StyleSheet, WebView, Linking, AppState, NativeModules, Platform, View, ProgressBarAndroid, ProgressViewIOS,
-    AlertIOS, Button, TouchableOpacity, Image, Text, Share, NativeEventEmitter, Animated
+    AlertIOS, Button, TouchableOpacity, Image, Text, Share, NativeEventEmitter, Animated, Dimensions
 } from 'react-native'
 import {colors} from "../../constants/colors";
 import CustomWebview from "../../components/CustomWebview"
@@ -16,7 +16,7 @@ import {getUrlInfo, postArticleCreateIfNotExist, postHighlightText, postRemoveBo
 import ContinueReadingModal from "../../components/ContinueReadingModal";
 import HBText from "../../components/HBText";
 
-
+const screenHeight = Dimensions.get('window').height;
 export default class Reader extends React.Component {
 
     _showMessage = (message) => {
@@ -52,9 +52,9 @@ export default class Reader extends React.Component {
             canGoForward: false,
             isBookmarked: false,
             initPosition: {},
-            topBarHeight: 46
+            _animated: new Animated.Value(1)
         };
-        this._last_reading = {};
+        this._currentPositionVal = 1;
         this._scrollOffset = {x: 0, y: 0};
         this._timer = null;
         this._appState = AppState.currentState;
@@ -182,28 +182,28 @@ export default class Reader extends React.Component {
         // Update position and order of reading items
         // Should called when app go to background or componentDidMount
         console.log("UPDATE READING HISTORY");
-        let currentId = _.get(this.state.currentItem, '_id', '');
-        RNUserKit.getProperty(strings.readingHistoryKey, (error, result) => {
-            if (error == null && result != null) {
-                let readingHistory = _.get(result[0], strings.readingHistoryKey, []);
-                console.log("Reading History", readingHistory);
-                if (readingHistory == null) {
-                    readingHistory = []
-                }
-
-                // Remove current item
-
-                _.remove(readingHistory, (x) => x.id === currentId);
-                readingHistory = readingHistory.slice(0, 29);
-
-                // Insert item at 0
-                readingHistory = [{id: currentId, ...this._scrollOffset}].concat(readingHistory)
-
-                // Store back to UK
-                RNUserKit.storeProperty({[strings.readingHistoryKey]: readingHistory}, (e, r) => {
-                })
-            }
-        });
+        // let currentId = _.get(this.state.currentItem, '_id', '');
+        // RNUserKit.getProperty(strings.readingHistoryKey, (error, result) => {
+        //     if (error == null && result != null) {
+        //         let readingHistory = _.get(result[0], strings.readingHistoryKey, []);
+        //         console.log("Reading History", readingHistory);
+        //         if (readingHistory == null) {
+        //             readingHistory = []
+        //         }
+        //
+        //         // Remove current item
+        //
+        //         _.remove(readingHistory, (x) => x.id === currentId);
+        //         readingHistory = readingHistory.slice(0, 29);
+        //
+        //         // Insert item at 0
+        //         readingHistory = [{id: currentId, ...this._scrollOffset}].concat(readingHistory)
+        //
+        //         // Store back to UK
+        //         RNUserKit.storeProperty({[strings.readingHistoryKey]: readingHistory}, (e, r) => {
+        //         })
+        //     }
+        // });
     };
 
     _updateDailyReadingTime = () => {
@@ -288,7 +288,13 @@ export default class Reader extends React.Component {
         }
 
         return (
-            <Animated.View style={styles.topBarView}>
+            <Animated.View style={[styles.topBarView, {transform: [{
+                    translateY: this.state._animated.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [-67,0],
+                        extrapolate: 'clamp',
+                    }),
+                }]}]}>
                 <View style={styles.topBarContentView}>
                     <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.backButton}>
                         <Image source={require('../../assets/ic_reader_back.png')} style={styles.backImage}/>
@@ -306,12 +312,20 @@ export default class Reader extends React.Component {
         const {bookmarkedIds} = this.props;
         const {_id} = this.props.navigation.state.params;
         let bookmarked = false;
-        if (!_.get(bookmarkedIds, "data.articles")) {
+        if (_.get(bookmarkedIds, "data.articles")) {
             bookmarked = !!bookmarkedIds.data.articles.find((x) => x === _id);
         }
         return (
-            <View style={styles.bottomBar}>
-                <View style={styles.bottomBarLine}/>
+            <Animated.View style={[styles.bottomBar, {
+                transform: [{
+                    translateY: this.state._animated.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [screenHeight,screenHeight-(rootViewBottomPadding()+45)],
+                        extrapolate: 'clamp',
+                    }),
+                }]
+            }]}>
+                {/*<View style={styles.bottomBarLine}/>*/}
                 <View style={styles.bottomBarButtons}>
                     <TouchableOpacity style={styles.bottomBarButton} onPress={() => RNCustomWebview.goBack()}>
                         <Image style={styles.bottomBarImage}
@@ -336,7 +350,51 @@ export default class Reader extends React.Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </View>)
+            </Animated.View>)
+    };
+
+    _showHideTopbar = () => {
+        Animated.spring(this.state._animated, {
+            toValue: 1-this._currentPositionVal,
+            friction: 7,
+            tension: 40,
+        }).start();
+    };
+
+    _onScroll = (event) => {
+        const {y: currentOffset, layoutHeight, contentHeight} = event.nativeEvent;
+        const dif = currentOffset - (this.offset || 0);
+        let endOffset = layoutHeight + currentOffset;
+        const height = 66 + rootViewTopPadding();
+        if (this.state.progress !== 0 || contentHeight === 0 || currentOffset < 0) {
+            this._currentPositionVal = 0;
+            // Show
+            this._showHideTopbar();
+            return
+        }
+        if ((dif < 0 || currentOffset <= 0) && (endOffset < contentHeight)) {
+            // Show
+            this._currentPositionVal = Math.max(this._currentPositionVal - Math.abs(dif) / height, 0);
+            this._showHideTopbar();
+        } else {
+
+            // Hide
+            this._currentPositionVal = Math.min(Math.abs(dif) / height + this._currentPositionVal, 1);
+            this._showHideTopbar();
+        }
+        this.offset = currentOffset;
+    };
+
+    _animatedScrollEnd = () => {
+        if (this._currentPositionVal < 0.5) {
+            // Show
+            this._currentPositionVal = 0;
+            this._showHideTopbar();
+        } else {
+            // Hide
+            this._currentPositionVal = 1;
+            this._showHideTopbar();
+        }
     };
 
     render() {
@@ -355,10 +413,16 @@ export default class Reader extends React.Component {
                                onLoadingChanged={(event) => this._updateProgress(event.nativeEvent)}
                                onNavigationChanged={(event) => this._updateNavigation(event.nativeEvent)}
                                onHighlight={(event) => this._highlight(event.nativeEvent)}
-                               onScrollEnd={(event) => this._scrollPositionChanged(event.nativeEvent)}
+                               onScrollEnd={(event) => {
+                                   this._scrollPositionChanged(event.nativeEvent);
+                                   this._animatedScrollEnd();
+                               }}
+                               onScrollEndDragging={(event)=>{this._animatedScrollEnd()}}
+                               onScroll={this._onScroll}
                                onUrlChanged={(event) => this._urlChange(event.nativeEvent)}/>
                 {this._renderBottomBar()}
                 {this._renderTopbar()}
+                <View style={styles.rootTopView}/>
             </View>
 
         )
@@ -381,8 +445,10 @@ const styles = StyleSheet.create({
         height: 3
     },
     bottomBar: {
-        width: '100%',
-        alignSelf: 'flex-end',
+        left: 0,
+        right: 0,
+        height: 45 + rootViewBottomPadding(),
+        position: 'absolute',
         paddingBottom: rootViewBottomPadding(),
         flexDirection: 'column',
         backgroundColor: colors.mainWhite
@@ -412,6 +478,13 @@ const styles = StyleSheet.create({
         height: 66 + rootViewTopPadding(),
         left: 0,
         right: 0
+    },
+    rootTopView: {
+        height: rootViewTopPadding(),
+        left: 0,
+        right: 0,
+        backgroundColor: colors.mainWhite,
+        position: 'absolute'
     },
     topBarContentView: {
         flexDirection: 'row',

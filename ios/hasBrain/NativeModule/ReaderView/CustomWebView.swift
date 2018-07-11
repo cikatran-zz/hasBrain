@@ -64,6 +64,7 @@ class CustomWebView: WKWebView {
     public var onNavigationChanged: RCTDirectEventBlock = {event in }
     public var onScrollEnd: RCTDirectEventBlock = { event in }
     public var onScroll: RCTDirectEventBlock = { event in }
+    public var onScrollEndDragging: RCTDirectEventBlock = { event in }
     
     // MARK: - Override props
     
@@ -225,6 +226,12 @@ extension CustomWebView: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let x = Double(scrollView.contentOffset.x)
         let y = Double(scrollView.contentOffset.y)
-        onScroll(["x":x, "y": y])
+        onScroll(["x":x, "y": y, "layoutHeight": Double(self.frame.height), "contentHeight": Double(scrollView.contentSize.height)])
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let x = Double(scrollView.contentOffset.x)
+        let y = Double(scrollView.contentOffset.y)
+        onScrollEndDragging(["x": x, "y": y, "scale": Double(self.contentScaleFactor)])
     }
 }
