@@ -74,7 +74,7 @@ export default function bookmarkedReducer(state = initialState, action) {
             if (_.isEmpty(oldData)) {
                 oldData = [];
             }
-            const _ = _.remove(oldData, function(n) {
+            _.remove(oldData, function(n) {
                 return n === action.contentId;
             });
             return {

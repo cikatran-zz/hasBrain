@@ -36,6 +36,7 @@ import updateFollowPersonaEpic from "./updateFollowPersonaEpic";
 import ownpathRequestEpic from "./ownpathRequestEpic";
 import getPathCurrentEpic from './currentPathEpicRequest'
 import continueReadingRequestEpic from "./continueReadingRequestEpic";
+import articleDetailEpic from "./articleDetailRequestEpic";
 
 const rootEpic = combineEpics(
     getSavedEpic,
@@ -71,7 +72,8 @@ const rootEpic = combineEpics(
     updateFollowPersonaEpic,
     ownpathRequestEpic,
     getPathCurrentEpic,
-    continueReadingRequestEpic
+    continueReadingRequestEpic,
+    articleDetailEpic
 );
 
 export default rootEpic;

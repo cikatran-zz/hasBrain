@@ -21,6 +21,7 @@ import * as updateFollowPersona from './updateFollowPersona'
 import * as getOwnpath from './getOwnpath'
 import * as signOut from './signOut'
 import * as getContinueReading from './getContinueReading'
+import * as getArticleDetail from './getArticleDetail'
 
 export default actions = {
     getSaved,
@@ -45,5 +46,6 @@ export default actions = {
     updateFollowPersona,
     getOwnpath,
     signOut,
-    getContinueReading
+    getContinueReading,
+    getArticleDetail
 }

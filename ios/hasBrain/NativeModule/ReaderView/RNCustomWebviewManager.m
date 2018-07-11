@@ -17,11 +17,13 @@ RCT_EXPORT_MODULE()
 }
 
 RCT_EXPORT_VIEW_PROPERTY(source, NSString)
+RCT_EXPORT_VIEW_PROPERTY(topInset, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(initPosition, NSDictionary)
 RCT_EXPORT_VIEW_PROPERTY(onHighlight, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onUrlChanged, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onLoadingChanged, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onNavigationChanged, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onScrollEnd, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onScroll, RCTDirectEventBlock)
 
 @end
