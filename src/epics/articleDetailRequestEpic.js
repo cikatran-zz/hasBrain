@@ -9,7 +9,9 @@ const articleDetailEpic = (action$) =>
     action$.pipe(ofType(actionTypes.FETCHING_ARTICLE_DETAIL),
         mergeMap(action =>
             from(getArticleDetail(action.id)).pipe(
-                map(response => getArticleDetailSuccess(response.data)),
+                map(response => {
+                    return getArticleDetailSuccess(response.data)
+                }),
                 catchError(error => of(getArticleDetailFailure(error)))
             )
         ));

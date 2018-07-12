@@ -18,6 +18,7 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_VIEW_PROPERTY(source, NSString)
 RCT_EXPORT_VIEW_PROPERTY(topInset, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(highlights, NSArray)
 RCT_EXPORT_VIEW_PROPERTY(initPosition, NSDictionary)
 RCT_EXPORT_VIEW_PROPERTY(onHighlight, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onUrlChanged, RCTDirectEventBlock)

@@ -603,8 +603,6 @@ export default class Carousel extends Component {
             interpolators.push(animatedValue);
         });
 
-        console.log("Carousel",this._positions);
-
         this.setState({ interpolators });
     }
 

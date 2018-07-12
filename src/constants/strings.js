@@ -24,6 +24,9 @@ export const strings = {
     contentDislike: {
         event: "_content_dislike"
     },
+    contentShared: {
+        event: "_content_shared"
+    },
     contentUnbookmarked: {
         event: "_content_unbookmarked"
     },
