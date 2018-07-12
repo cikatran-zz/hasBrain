@@ -4,24 +4,25 @@ const initialState = {
     data: null,
     fetched: false,
     isFetching: false,
-    error: false
+    errorMessage: null
 };
 
-export default function bookmarkedIdsReducer(state = initialState, action) {
+export default function continueReadingReducer(state = initialState, action) {
     switch (action.type) {
-        case actionTypes.FETCHING_BOOKMARKEDIDS:
+        case actionTypes.FETCHING_CONTINUE_READING:
             return {
                 ...state,
                 isFetching: true
             };
-        case actionTypes.FETCH_BOOKMARKEDIDS_SUCCESS:
+        case actionTypes.FETCH_CONTINUE_READING_SUCCESS:
+
             return {
                 ...state,
                 isFetching: false,
                 fetched: true,
                 data: action.data
             };
-        case actionTypes.FETCH_BOOKMARKEDIDS_FAILURE:
+        case actionTypes.FETCH_CONTINUE_READING_FAILURE:
             return {
                 ...state,
                 isFetching: false,

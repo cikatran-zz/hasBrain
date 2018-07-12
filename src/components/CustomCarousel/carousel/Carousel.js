@@ -561,14 +561,14 @@ export default class Carousel extends Component {
             let animatedValue;
             let startPadding = 0;
             let endPadding = 0;
-            if (index != 0 ) {
-                startPadding = centerPadding - superPaddingHorizontal;
+            if (index !== 0 ) {
+                startPadding = centerPadding;
             }
-            if (index == (customData.length - 1)) {
-                startPadding = startPadding * 2;
+            if (index === 0 ) {
+                startPadding = superPaddingHorizontal;
             }
-            if (index == (customData.length - 2)) {
-                endPadding = centerPadding;
+            if (index === (customData.length - 1)) {
+                startPadding = 2*startPadding - superPaddingHorizontal;
             }
             this._positions[index] = {
                 start: index * sizeRef - startPadding,

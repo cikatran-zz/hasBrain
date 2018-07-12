@@ -1,11 +1,10 @@
 import React from "react";
 import {
     Image,
-    TouchableOpacity,
     View,
     StyleSheet,
     ImageBackground,
-    Dimensions
+    Dimensions, TouchableWithoutFeedback
 } from 'react-native'
 import {blackTextStyle, graySmallTextStyle, grayTextStyle, titleCardStyle} from "../constants/theme";
 import {getPublishDateDescription, getReadingTimeDescription} from "../utils/dateUtils";
@@ -21,38 +20,24 @@ export default class HorizontalCell extends React.PureComponent {
 
     render() {
         return (
-            <TouchableOpacity onPress={this.props.onClicked}>
+            <TouchableWithoutFeedback onPress={this.props.onClicked}>
                 <View style={[styles.cardView, this.props.style]} >
                     <Image style={styles.image} source={this._getImage()}/>
                     <View style={styles.textView}>
-                        <HBText numberOfLines={2} style={[titleCardStyle, {height: 60, flexWrap: "wrap", width: '100%', flex: 1}]}>{(this.props.title == null) ? "" : this.props.title}</HBText>
-                        <View style={[styles.horizontalView, {marginTop: 15}]}>
-                            <View style={styles.subTextView}>
-                                <HBText style={[graySmallTextStyle, {marginBottom: 5}]}>{(this.props.author == null) ? "" : this.props.author}</HBText>
-                                <HBText style={grayTextStyle}>{getPublishDateDescription(this.props.time) + '   *   ' + getReadingTimeDescription(this.props.readingTime)}</HBText>
-                            </View>
-                            <ArticleButton style={styles.articleButtonView}
-                                           onShare={this.props.onShare}
-                                           onBookmark={this.props.onBookmark}
-                                           bookmarked={this.props.bookmarked}/>
-                        </View>
+                        <HBText numberOfLines={3} style={styles.titleText}>{(this.props.title == null) ? "" : this.props.title}</HBText>
                     </View>
                 </View>
-            </TouchableOpacity>
+            </TouchableWithoutFeedback>
         )
     }
 }
 
 const styles = StyleSheet.create({
     cardView: {
-        shadowOffset: {width: 2, height: 2},
-        shadowColor: colors.mainDarkGray,
-        shadowOpacity: 0.5,
         flexDirection: 'column',
         backgroundColor: colors.mainWhite,
         borderRadius: 5,
         marginVertical: 10,
-        elevation: 5
     },
     image: {
         position: 'absolute',
@@ -64,11 +49,21 @@ const styles = StyleSheet.create({
         bottom: 5,
         resizeMode: 'cover'
     },
-    textView: {
-        marginTop: 100,
+    titleText: {
+        height: 60,
+        flexWrap: "wrap",
         width: '100%',
+        flex: 1,
+        color: colors.articleTitle,
+        fontSize: 14
+    },
+    textView: {
+        marginTop: 94,
+        width: '100%',
+        height: '100%',
         flexDirection: 'column',
-        padding: 15,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
         backgroundColor: colors.mainWhite,
         marginBottom: 5
     },

@@ -264,29 +264,14 @@ mutation checkAndCreateArticle($record: CreateOnearticletypeInput!) {
       record {
         _id
         title
-        longDescription
-        shortDescription
-        url
-        state
-        custom
-        sourceId
-        sourceName
-        sourceImage
-        author
-        sourceCreatedAt
-        createdAt
-        updatedAt
-        projectId
-        content
-        contentId
-        originalImages {
-          height
-          width
-          url
-          name
-          fileName
-        }
         readingTime
+        contentId
+        sourceCreatedAt
+        category
+        sourceData {
+          title
+          sourceImage
+        }
       }
     }
   }
@@ -781,7 +766,62 @@ const getCurrentPath = gql `
           }
         }
       }
-`
+`;
+
+const getListArticleDetail = gql`
+query getArticlesInfo($ids: [MongoID]) {
+  viewer {
+    articleMany(filter: {
+      _operators: {
+        _id: {
+          in: $ids
+        }
+      }
+    }) {
+      _id
+      title
+      readingTime
+      contentId
+      sourceImage
+    }
+  }
+}
+`;
+
+const articleInfo = gql`
+query getArticleInfo($id: MongoID) {
+  viewer {
+    articleOne(filter: {
+      _id: $id
+    }) {
+      _id
+      title
+      readingTime
+      contentId
+      sourceCreatedAt
+      category
+      sourceData {
+        title
+        sourceImage
+      }
+    }
+  }
+}
+`;
+
+const highlightByArticle = gql`
+query getHighlightByArticle($id: MongoID) {
+  viewer {
+    userhighlightOne(filter:{
+      articleId: $id
+    }) {
+      highlights {
+        highlight
+      }
+    }
+  }
+}
+`;
 
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
@@ -806,7 +846,10 @@ export default {
         userFollow: getUserFollow,
         topicList: getTopic,
         ownpath: getOwnpath,
-        getCurrentPath: getCurrentPath
+        getCurrentPath: getCurrentPath,
+        articlesMany: getListArticleDetail,
+        articleDetail: articleInfo,
+        highlightByArticle: highlightByArticle
     },
     mutation: {
         bookmark: postBookmark,

@@ -20,6 +20,11 @@ import * as createUser from './createUser'
 import * as updateFollowPersona from './updateFollowPersona'
 import * as getOwnpath from './getOwnpath'
 import * as signOut from './signOut'
+import * as getContinueReading from './getContinueReading'
+import * as getArticleDetail from './getArticleDetail'
+import * as trackUserkitEvent from './userkitTracking'
+import * as updateReadingHistory from './updateReadingHistory';
+import * as getHighlightByArticle from './getHighlightByArticle'
 
 export default actions = {
     getSaved,
@@ -43,5 +48,10 @@ export default actions = {
     createUser,
     updateFollowPersona,
     getOwnpath,
-    signOut
+    signOut,
+    getContinueReading,
+    getArticleDetail,
+    trackUserkitEvent,
+    updateReadingHistory,
+    getHighlightByArticle
 }

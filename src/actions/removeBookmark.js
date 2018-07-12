@@ -1,32 +1,21 @@
 import * as actionTypes from './actionTypes';
-import {strings} from "../constants/strings";
-import {NativeModules} from "react-native";
-const {RNUserKit} = NativeModules;
 
-export function removeBookmark(contentId, bookmarkType, trackingType) {
+export function removeBookmark(contentId, bookmarkType, trackingType, dispatch) {
     return {
         type: actionTypes.REMOVING_BOOKMARK,
         contentId: contentId,
         contentType: bookmarkType,
-        trackingType: trackingType
+        trackingType: trackingType,
+        dispatcher: dispatch
     }
 }
 
-export function removeBookmarkSuccess(contentId, trackingType) {
-    let props = {
-        [strings.contentEvent.contentId]: contentId,
-        [strings.contentEvent.mediaType]: trackingType
-    };
-    RNUserKit.track(strings.contentUnbookmarked.event, props);
+export function removeBookmarkSuccess(contentId) {
 
     return {
-        type: actionTypes.FETCHING_BOOKMARKEDIDS
+        type: actionTypes.REMOVE_BOOKMARK_SUCCESS,
+        contentId: contentId
     }
-
-    // return {
-    //     type: actionTypes.REMOVE_BOOKMARK_SUCCESS,
-    //     contentId: contentId
-    // }
 }
 
 

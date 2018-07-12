@@ -10,6 +10,7 @@ import _ from 'lodash'
 import {postUserInterest} from '../../api'
 import {strings} from "../../constants/strings";
 import HBText from '../../components/HBText'
+import NavigationService from '../../NavigationService'
 
 export default class Onboarding extends React.Component {
 
@@ -62,10 +63,10 @@ export default class Onboarding extends React.Component {
                     ukExperience = ukExperience.concat({title: persona.title, level: level.title});
                 });
                 NativeModules.RNUserKit.storeProperty({[strings.mekey+ "."+strings.experienceKey]: ukExperience}, (error, result)=>{});
-                this.props.navigation.navigate('Home');
+                NavigationService.reset('Home');
             }).catch((err)=>{
                 console.log("ERR",err);
-                this.props.navigation.navigate('Home');
+                NavigationService.reset('Home');
             });
         }
     };

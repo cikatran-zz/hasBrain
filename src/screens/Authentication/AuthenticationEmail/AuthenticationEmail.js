@@ -11,6 +11,7 @@ import _ from 'lodash'
 import {strings} from "../../../constants/strings";
 import {rootViewBottomPadding, rootViewTopPadding} from "../../../utils/paddingUtils";
 import HBText from '../../../components/HBText'
+import NavigationService from '../../../NavigationService'
 
 export default class Explore extends React.PureComponent {
 
@@ -89,7 +90,7 @@ export default class Explore extends React.PureComponent {
                 if (experience == null) {
                     this.props.navigation.navigate('Onboarding');
                 } else {
-                    this.props.navigation.navigate("Home");
+                    NavigationService.reset("Home");
                 }
             } else {
                 this.props.navigation.navigate('Onboarding');
@@ -158,11 +159,14 @@ export default class Explore extends React.PureComponent {
             <View style={styles.inputView}>
                 <TextInput style={styles.inputText}
                            placeholder={'Email'}
+                           returnKeyType="next"
                            secureTextEntry={false}
+                           onSubmitEditing={() => { this._passwordInput.focus(); }}
                            underlineColorAndroid='rgba(0,0,0,0)'
                            onChangeText={(text) => this.email = text}/>
                 <TextInput style={styles.inputText}
                            placeholder={'Password'}
+                           ref={input => { this._passwordInput = input; }}
                            secureTextEntry={true}
                            underlineColorAndroid='rgba(0,0,0,0)'
                            onChangeText={(text) => this.password = text}/>
@@ -186,25 +190,35 @@ export default class Explore extends React.PureComponent {
             return (<TextInput style={styles.inputText}
                                placeholder={'Name'}
                                secureTextEntry={false}
+                               returnKeyType="next"
+                               onSubmitEditing={() => { this._emailInput.focus(); }}
                                underlineColorAndroid='rgba(0,0,0,0)'
                                onChangeText={(text) => this.name = text}/>);
         } else if (item === "email") {
             return (<TextInput style={styles.inputText}
                                placeholder={'Email'}
                                secureTextEntry={false}
+                               returnKeyType="next"
+                               ref={input => { this._emailInput = input; }}
+                               onSubmitEditing={() => { this._passwordInput.focus(); }}
                                underlineColorAndroid='rgba(0,0,0,0)'
                                onChangeText={(text) => this.email = text}/>);
         } else if (item === "password") {
             return (<TextInput style={styles.inputText}
                                placeholder={'Password'}
                                secureTextEntry={true}
+                               returnKeyType="next"
+                               ref={input => { this._passwordInput = input; }}
+                               onSubmitEditing={() => { this._confirmPasswordInput.focus(); }}
                                underlineColorAndroid='rgba(0,0,0,0)'
                                onChangeText={(text) => this.password = text}/>);
         } else {
             return (<TextInput style={styles.inputText}
                                placeholder={'Confirm password'}
+                               returnKeyType="done"
                                secureTextEntry={true}
                                underlineColorAndroid='rgba(0,0,0,0)'
+                               ref={input => { this._confirmPasswordInput = input; }}
                                onChangeText={(text) => this.confirmPassword = text}/>)
         }
     };
@@ -302,8 +316,8 @@ const styles = StyleSheet.create({
     text: {
         color: colors.mainDarkGray,
         fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 15
+        marginBottom: 15,
+        fontFamily: 'CircularStd-Bold'
     },
     inputText: {
         width: '85%',

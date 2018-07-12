@@ -2,7 +2,9 @@ package com.mstage.hasbrain;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
@@ -17,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,7 +73,6 @@ public class ReactWebviewManager extends SimpleViewManager<CustomWebview> {
                     URL temp = new URL(url);
                     String baseUrl = temp.getProtocol() + "://" + temp.getHost();
                     view.loadDataWithBaseURL(baseUrl, webpage, "text/html", "utf-8", null);
-//                        view.loadDataWithBaseURL(baseUrl, webpage, "text/html", "utf-8", null);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -83,9 +85,26 @@ public class ReactWebviewManager extends SimpleViewManager<CustomWebview> {
 
     }
 
+    @ReactProp(name = "topInset")
+    public void setTopInset(CustomWebview view, Integer topInsect) {
+        view.setTopInset(topInsect);
+    }
+
     @ReactProp(name = "initPosition")
     public void setInitPosition(CustomWebview view, ReadableMap initPosition) {
         view.scrollToPosition(initPosition.toHashMap());
+    }
+
+    @ReactProp(name = "highlights")
+    public void setHighlights(CustomWebview view, ReadableArray highlights) {
+        if (highlights != null) {
+            ArrayList stringParsedList = new ArrayList();
+            for (int i = 0; i < highlights.size(); i++) {
+                stringParsedList.add(highlights.getString(i));
+            }
+            view.setHighlights(stringParsedList);
+        }
+        else view.setHighlights(null);
     }
 
     @Override
@@ -96,6 +115,8 @@ public class ReactWebviewManager extends SimpleViewManager<CustomWebview> {
         map.put("loadingChanged", MapBuilder.of("registrationName", "onLoadingChanged"));
         map.put("navigationChanged", MapBuilder.of("registrationName", "onNavigationChanged"));
         map.put("scrollEnd", MapBuilder.of("registrationName", "onScrollEnd"));
+        map.put("onScroll", MapBuilder.of("registrationName", "onScroll"));
+        map.put("onScrollEndDragging", MapBuilder.of("registrationName", "onScrollEndDragging"));
         return map;
     }
 }

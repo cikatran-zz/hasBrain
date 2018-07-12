@@ -14,6 +14,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -42,6 +43,7 @@ public class ResumeWebviewClient extends WebViewClient {
     private State state;
     private Point resume = new Point(0, 0);
     private float scaleResume = 1f;
+    private int topInset = 0;
 
     private enum State {LOADING, LOADED, FINISHED}
 
@@ -56,7 +58,6 @@ public class ResumeWebviewClient extends WebViewClient {
         this.webView = webView;
         state = State.LOADING;
         webView.changeState(state.ordinal());
-        //webView.evaluateJavascript("document.getElementsByTagName('body')[0].style.paddingTop='50px'", value -> {});
         webView.setPictureListener((view, picture) -> {
             if (webView != view) {
                 return;
@@ -147,6 +148,10 @@ public class ResumeWebviewClient extends WebViewClient {
         webView.changeState(state.ordinal());
         webView.sendOnNavigationChanged();
         webView.sendOnUrlChanged();
+        view.evaluateJavascript(" { document.getElementsByTagName(\"body\")[0].style.paddingTop = \'" + topInset + "}px\'; document.getElementsByTagName(\"header\")[0].style.marginTop = \'" + topInset + "px\'; }", value -> {
+        });
+        if (webView.getHighlights() != null)
+            webView.showHightlight(webView.getHighlights());
     }
 
     public void loadContinueReading(Point current, float scale) {
@@ -177,6 +182,10 @@ public class ResumeWebviewClient extends WebViewClient {
 //        Float ratio = (float) scrollPositionY / (scale * height);
 //        Log.d(TAG, "scroll ratio of view " + webView + " is " + ratio);
         return new Point(webView.getScrollX(), webView.getScrollY());
+    }
+
+    public void setTopInset(int topInset) {
+        this.topInset = topInset;
     }
 }
 

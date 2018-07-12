@@ -12,12 +12,10 @@ import pathRecommendReducer from "./pathRecommendReducer";
 import pathBookmarkedReducer from "./pathBookmarkedReducer";
 import updateRecommendSourceReducer from "./updateRecommendSourceReducer";
 import allIntentionsReducer from "./allIntentionsReducer";
-import createBookmarkReducer from "./createBookmarkReducer";
-import removeBookmarkReducer from "./removeBookmarkReducer";
 import watchingHistoryReducer from "./watchingHistoryReducer";
 import categoryReducer from "./categoryReducer";
 import feedReducer from "./feedReducer";
-import bookmarkedIdsReducer from "./bookmarkedIdsReducer";
+import bookmarkedReducer from "./bookmarkedReducer";
 import topicListReducer from './topicListReducer';
 import contributorListReducer from './contributorListReducer';
 import createHighlightReducer from "./createHighlightReducer";
@@ -29,6 +27,9 @@ import updateUserTopicReducer from "./updateUserTopicReducer";
 import updateUserContributorFollowReducer from "./updateUserContributorFollowReducer";
 import {SIGN_OUT} from "../actions/actionTypes";
 import signOutReducer from "./signOutReducer";
+import continueReadingReducer from "./continueReadingReducer";
+import articleDetailReducer from "./articleDetailReducer";
+import highlightByArticleReducer from "./highlightByArticleReducer"
 
 const myAccountReducer = combineReducers({
     articlesReducer,
@@ -44,12 +45,10 @@ const myAccountReducer = combineReducers({
     pathRecommendReducer,
     pathBookmarkedReducer,
     updateRecommendSourceReducer,
-    createBookmarkReducer,
-    removeBookmarkReducer,
     watchingHistoryReducer,
     categoryReducer,
     feedReducer,
-    bookmarkedIdsReducer,
+    bookmarkedReducer,
     topicListReducer,
     contributorListReducer,
     createHighlightReducer,
@@ -59,7 +58,10 @@ const myAccountReducer = combineReducers({
     pathCurrentReducer,
     updateUserTopicReducer,
     updateUserContributorFollowReducer,
-    signOutReducer
+    signOutReducer,
+    continueReadingReducer,
+    articleDetailReducer,
+    highlightByArticleReducer
 });
 
 

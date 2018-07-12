@@ -13,6 +13,7 @@ import {getBookmarkedIds} from "../../actions/getBookmarkedIds";
 import {getTopicList} from "../../actions/getTopicList";
 import {getOwnpath} from "../../actions/getOwnpath";
 import {getPathCurrent} from "../../actions/getPathCurrent";
+import {getContinueReading} from "../../actions/getContinueReading";
 
 function mapStateToProps(state) {
     return {
@@ -21,10 +22,11 @@ function mapStateToProps(state) {
         saved: state.savedReducer,
         source: state.sourcelistReducer,
         feed: state.feedReducer,
-        bookmarkedIds: state.bookmarkedIdsReducer,
+        bookmarkedIds: state.bookmarkedReducer,
         topics: state.topicListReducer,
         userFollowedTopic: state.updateUserTopicReducer,
-        userFollowedContributor: state.updateUserContributorFollowReducer
+        userFollowedContributor: state.updateUserContributorFollowReducer,
+        continueReading: state.continueReadingReducer
     }
 }
 
@@ -36,13 +38,14 @@ function mapDispatchToProps(dispatch) {
         getSourceList: () => dispatch(getSourceList()),
         updateUserSourceTag: (tagMap) => dispatch(updateUserSourceTag(tagMap)),
         updateSourceList: (sources) => dispatch(updateSourceList(sources)),
-        createBookmark: (id, type, trackingType) => dispatch(createBookmark(id, type, trackingType)),
-        removeBookmark: (id, type, trackingType) => (dispatch(removeBookmark(id, type, trackingType))),
+        createBookmark: (id, type, trackingType) => dispatch(createBookmark(id, type, trackingType, dispatch)),
+        removeBookmark: (id, type, trackingType) => (dispatch(removeBookmark(id, type, trackingType, dispatch))),
         getFeed: (page, perPage, rank, topics)=>(dispatch(getFeed(page, perPage, rank, topics))),
         getBookmarkedIds: () => dispatch(getBookmarkedIds()),
         getTopics: () => dispatch(getTopicList()),
         getOwnpath: ()=>dispatch(getOwnpath()),
         getPathCurrent: () => dispatch(getPathCurrent()),
+        getContinueReading: ()=>dispatch(getContinueReading())
     }
 }
 

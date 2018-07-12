@@ -1,5 +1,8 @@
 
 export function getPublishDateDescription(time) {
+    if (!time) {
+        return '';
+    }
     return new Date(time).toRelativeTime(5000);
 }
 

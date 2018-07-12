@@ -72,6 +72,8 @@
 		69CA44F220D904BA00BF4409 /* RNURLCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 69CA44F120D904BA00BF4409 /* RNURLCache.m */; };
 		69D7747620C52BB2001C60EB /* CustomWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D7747520C52BB2001C60EB /* CustomWebView.swift */; };
 		69D774C220C542CB001C60EB /* RNCustomWebviewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 69D774C120C542CB001C60EB /* RNCustomWebviewManager.m */; };
+		69EF674820F5EE3400074910 /* libReactNativeKeyboardManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69EF674420F5EE1700074910 /* libReactNativeKeyboardManager.a */; };
+		69EF679520F5F0DF00074910 /* IQKeyboardManager.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 69EF676020F5F0DF00074910 /* IQKeyboardManager.bundle */; };
 		69F4CCD220BFB8DB004AE650 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 69F4CCA220BFB8DB004AE650 /* GoogleService-Info.plist */; };
 		69F4CD3F20BFBB8B004AE650 /* GoogleNetworkingUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F4CD3920BFBB8B004AE650 /* GoogleNetworkingUtilities.framework */; };
 		69F4CD4020BFBB8B004AE650 /* GoogleAuthUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F4CD3A20BFBB8B004AE650 /* GoogleAuthUtilities.framework */; };
@@ -421,6 +423,13 @@
 			remoteGlobalIDString = 0974579A1D2A440A000D9368;
 			remoteInfo = RCTWKWebView;
 		};
+		69EF674320F5EE1700074910 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 69EF670F20F5EE1700074910 /* ReactNativeKeyboardManager.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A51183591EFAC02F0077C68F;
+			remoteInfo = ReactNativeKeyboardManager;
+		};
 		69F4CD2B20BFBA1D004AE650 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5FFFBC9C3EEE4BA5B92AC58E /* RNGoogleSignin.xcodeproj */;
@@ -540,6 +549,8 @@
 		69D7747520C52BB2001C60EB /* CustomWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWebView.swift; sourceTree = "<group>"; };
 		69D774C020C542CB001C60EB /* RNCustomWebviewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNCustomWebviewManager.h; sourceTree = "<group>"; };
 		69D774C120C542CB001C60EB /* RNCustomWebviewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNCustomWebviewManager.m; sourceTree = "<group>"; };
+		69EF670F20F5EE1700074910 /* ReactNativeKeyboardManager.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeKeyboardManager.xcodeproj; path = "../node_modules/react-native-keyboard-manager/ios/ReactNativeKeyboardManager.xcodeproj"; sourceTree = "<group>"; };
+		69EF676020F5F0DF00074910 /* IQKeyboardManager.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = IQKeyboardManager.bundle; path = "../node_modules/react-native-keyboard-manager/ios/IQKeyboardManager/Resources/IQKeyboardManager.bundle"; sourceTree = "<group>"; };
 		69F4CCA220BFB8DB004AE650 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		69F4CD3920BFBB8B004AE650 /* GoogleNetworkingUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleNetworkingUtilities.framework; path = "../node_modules/react-native-google-signin/ios/GoogleSdk/GoogleNetworkingUtilities.framework"; sourceTree = "<group>"; };
 		69F4CD3A20BFBB8B004AE650 /* GoogleAuthUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleAuthUtilities.framework; path = "../node_modules/react-native-google-signin/ios/GoogleSdk/GoogleAuthUtilities.framework"; sourceTree = "<group>"; };
@@ -582,6 +593,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				69EF674820F5EE3400074910 /* libReactNativeKeyboardManager.a in Frameworks */,
 				690DAFD820C146B60097CA9A /* libRNSVG.a in Frameworks */,
 				69F4CE4B20BFEA43004AE650 /* libRCTFBSDK.a in Frameworks */,
 				690A953120B5286F00079862 /* libCodePush.a in Frameworks */,
@@ -704,6 +716,7 @@
 		13B07FAE1A68108700A75B9A /* hasBrain */ = {
 			isa = PBXGroup;
 			children = (
+				69EF676020F5F0DF00074910 /* IQKeyboardManager.bundle */,
 				698937B820E9E774008A04FF /* CircularStd-Black.otf */,
 				698937B420E9E773008A04FF /* CircularStd-BlackItalic.otf */,
 				698937B520E9E774008A04FF /* CircularStd-BoldItalic.otf */,
@@ -998,6 +1011,14 @@
 			path = RNURLCache;
 			sourceTree = "<group>";
 		};
+		69EF671020F5EE1700074910 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				69EF674420F5EE1700074910 /* libReactNativeKeyboardManager.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		69F4CD2820BFBA1D004AE650 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1040,6 +1061,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				69EF670F20F5EE1700074910 /* ReactNativeKeyboardManager.xcodeproj */,
 				690DAF9E20C1468C0097CA9A /* RNSVG.xcodeproj */,
 				690A94FB20B5286300079862 /* CodePush.xcodeproj */,
 				69C4DAF720AADC8C000E4B4F /* RCTWKWebView.xcodeproj */,
@@ -1276,6 +1298,10 @@
 				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+				},
+				{
+					ProductGroup = 69EF671020F5EE1700074910 /* Products */;
+					ProjectRef = 69EF670F20F5EE1700074910 /* ReactNativeKeyboardManager.xcodeproj */;
 				},
 				{
 					ProductGroup = 69F4CD2820BFBA1D004AE650 /* Products */;
@@ -1617,6 +1643,13 @@
 			remoteRef = 69C4DAFB20AADC8C000E4B4F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		69EF674420F5EE1700074910 /* libReactNativeKeyboardManager.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReactNativeKeyboardManager.a;
+			remoteRef = 69EF674320F5EE1700074910 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		69F4CD2C20BFBA1D004AE650 /* libRNGoogleSignin.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1670,6 +1703,7 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				698937BA20E9E775008A04FF /* CircularStd-BlackItalic.otf in Resources */,
 				69F78D5820E22BF80013F14C /* circularStdBook.ttf in Resources */,
+				69EF679520F5F0DF00074910 /* IQKeyboardManager.bundle in Resources */,
 				69F4CCD220BFB8DB004AE650 /* GoogleService-Info.plist in Resources */,
 				698937BC20E9E775008A04FF /* CircularStd-BookItalic.otf in Resources */,
 				698937BE20E9E775008A04FF /* CircularStd-Black.otf in Resources */,

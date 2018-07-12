@@ -13,18 +13,10 @@ export default class PathSectionItem extends React.PureComponent {
             minHeight: 0,
             maxHeight: 0,
         }
-        this._animated = new Animated.Value(maxHeight);
+        this._animated = new Animated.Value(props.index == 0 ? maxHeight : 0 );
     }
 
 
-
-
-    _setMaxHeight = ({nativeEvent}) => {
-        console.log("Height: ", nativeEvent.layout.height);
-        this.setState({
-            maxHeight: nativeEvent.layout.height
-        });
-    }
 
     _renderSeriesItem = ({item}) => {
         return (
