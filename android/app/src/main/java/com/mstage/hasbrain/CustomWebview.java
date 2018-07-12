@@ -14,10 +14,13 @@ import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
@@ -27,7 +30,10 @@ import com.mstage.hasbrain.notification.NotificationCenter;
 import com.mstage.hasbrain.notification.NotificationObserver;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * Created by henry on 6/1/18.
@@ -35,6 +41,12 @@ import java.util.Map;
 public class CustomWebview extends WebView implements NotificationObserver {
     public ResumeWebviewClient webViewClient;
     Point resume = new Point();
+    private int topInset = 0;
+    private boolean isScrolling = false;
+    private Handler scrollStateHandler = new Handler();
+    private int layoutHeight = 0;
+    private ArrayList highlights;
+
 
     ReactContext reactContext;
     private ActionMode.Callback mActionActionModeCallback;
@@ -51,6 +63,13 @@ public class CustomWebview extends WebView implements NotificationObserver {
             "        range.insertNode(span);\n" +
             "        return result;\n" +
             "    })()";
+
+    Runnable setStateNotScrolling = new Runnable() {
+        @Override
+        public void run() {
+            isScrolling = false;
+        }
+    };
 
     public CustomWebview(ReactContext context) {
         super(context);
@@ -144,6 +163,19 @@ public class CustomWebview extends WebView implements NotificationObserver {
 
     public void initSetting() {
 
+        ViewTreeObserver vto = this.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+                layoutHeight = getMeasuredHeight();
+            }
+        });
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
@@ -159,6 +191,7 @@ public class CustomWebview extends WebView implements NotificationObserver {
         });
         if (webViewClient == null) {
             webViewClient = new ResumeWebviewClient(this, getContext());
+            webViewClient.setTopInset(topInset);
             setWebViewClient(webViewClient);
         }
 
@@ -200,7 +233,30 @@ public class CustomWebview extends WebView implements NotificationObserver {
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        if (e.getAction() == MotionEvent.ACTION_UP && isScrolling) {
+            WritableMap event = Arguments.createMap();
+            event.putDouble("x", this.getScrollX());
+            event.putDouble("y", this.getScrollY());
+            ReactContext reactContext = (ReactContext) getContext();
+            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+                    getId(),
+                    "onScrollEndDragging",
+                    event);
+        }
+
+        return super.onTouchEvent(e);
+    }
+
+    @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        if (!isScrolling) {
+            isScrolling = true;
+            scrollStateHandler.removeCallbacks(setStateNotScrolling);
+        }
+        else {
+            scrollStateHandler.postDelayed(setStateNotScrolling, 200);
+        }
         try {
             WritableMap event = Arguments.createMap();
             event.putDouble("x", this.getScrollX());
@@ -211,6 +267,17 @@ public class CustomWebview extends WebView implements NotificationObserver {
                     getId(),
                     "scrollEnd",
                     event);
+
+            WritableMap eventOnScroll = Arguments.createMap();
+            eventOnScroll.putDouble("x", this.getScrollX());
+            eventOnScroll.putDouble("y", this.getScrollY());
+            eventOnScroll.putInt("layoutHeight", this.layoutHeight);
+            eventOnScroll.putInt("contentHeight", this.computeVerticalScrollRange());
+            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+                    getId(),
+                    "onScroll",
+                    eventOnScroll
+            );
         } catch (Exception e) {
             Log.d("WEBVIEW", e.getMessage());
         }
@@ -350,6 +417,30 @@ public class CustomWebview extends WebView implements NotificationObserver {
         });
     }
 
+    public void showHightlight(ArrayList highlightedTexts) {
+        StringBuilder string = new StringBuilder("javascript: (function showHighlights(texts) {\n" +
+                "        var innerHTML = document.body.innerHTML;\n" +
+                "        for (var i = 0; i < texts.length; i++){\n" +
+                "            var index = innerHTML.indexOf(texts[i]);\n" +
+                "            if (index >= 0) {\n" +
+                "                innerHTML = innerHTML.substring(0,index) + '<span style=\"background-color:yellow\">' + innerHTML.substring(index,index+texts[i].length) + \"</span>\" + innerHTML.substring(index + texts[i].length);\n" +
+                "\n" +
+                "            }\n" +
+                "        }\n" +
+                "        document.body.innerHTML = innerHTML;\n" +
+                "    }) ([");
+        for (int i = 0; i < highlightedTexts.size(); i++) {
+            string.append("\"").append(highlightedTexts.get(i).toString()).append("\"");
+            if (i != highlightedTexts.size() - 1)
+                string.append(",");
+        }
+
+        string.append("]);");
+        evaluateJavascript(string.toString(), value ->  {
+            Log.v("showHightlight", string.toString());
+        });
+    }
+
     public static MenuItem findByTitle(Menu menu, String regex) {
         for (int i = 0; i < menu.size(); ++i) {
             String title = menu.getItem(i).getTitle().toString();
@@ -357,5 +448,17 @@ public class CustomWebview extends WebView implements NotificationObserver {
                 return menu.getItem(i);
         }
         return null;
+    }
+
+    public void setTopInset(int topInset) {
+        this.topInset = topInset;
+    }
+
+    public void setHighlights(ArrayList highlights) {
+        this.highlights = (ArrayList) highlights.clone();
+    }
+
+    public ArrayList getHighlights() {
+        return highlights;
     }
 }
