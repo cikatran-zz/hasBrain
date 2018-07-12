@@ -20,6 +20,9 @@ target 'hasBrain' do
 
 #pod 'react-native-wkwebview', :path => '../node_modules/react-native-wkwebview-reborn'
 
+
+#pod 'ReactNativeKeyboardManager', :path => '../node_modules/react-native-keyboard-manager'
+
   target 'hasBrainTests' do
     inherit! :search_paths
     # Pods for testing

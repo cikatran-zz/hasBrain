@@ -803,6 +803,26 @@ query getArticlesInfo($ids: [MongoID]) {
 }
 `;
 
+const articleInfo = gql`
+query getArticleInfo($id: MongoID) {
+  viewer {
+    articleOne(filter: {
+      _id: $id
+    }) {
+      _id
+      title
+      readingTime
+      contentId
+      sourceCreatedAt
+      sourceData {
+        title
+        sourceImage
+      }
+    }
+  }
+}
+`;
+
 export default {
     serverURL: 'https://contentkit-api.mstage.io/graphql',
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
@@ -827,7 +847,8 @@ export default {
         topicList: getTopic,
         ownpath: getOwnpath,
         getCurrentPath: getCurrentPath,
-        articlesMany: getListArticleDetail
+        articlesMany: getListArticleDetail,
+        articleDetail: articleInfo
     },
     mutation: {
         bookmark: postBookmark,

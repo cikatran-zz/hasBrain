@@ -573,6 +573,13 @@ export const getOwnpath = () => {
     })
 };
 
+export const getArticleDetail = (id) => {
+    return gqlQuery({
+        query: config.queries.articleDetail,
+        variables: {id: id}
+    })
+};
+
 //Axios
 
 const instance = axios.create({

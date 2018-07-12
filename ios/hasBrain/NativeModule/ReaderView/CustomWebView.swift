@@ -55,7 +55,7 @@ class CustomWebView: WKWebView {
     }
     public var topInset: NSNumber = 112 {
         didSet {
-            self.scrollView.contentInset = UIEdgeInsetsMake(112, 0, 0, 0)
+            self.scrollView.contentInset = UIEdgeInsetsMake(CGFloat(topInset.floatValue), 0, 0, 0)
         }
     }
     public var onHighlight: RCTDirectEventBlock = { event in }
@@ -63,6 +63,8 @@ class CustomWebView: WKWebView {
     public var onLoadingChanged: RCTDirectEventBlock = { event in }
     public var onNavigationChanged: RCTDirectEventBlock = {event in }
     public var onScrollEnd: RCTDirectEventBlock = { event in }
+    public var onScroll: RCTDirectEventBlock = { event in }
+    public var onScrollEndDragging: RCTDirectEventBlock = { event in }
     
     // MARK: - Override props
     
@@ -97,7 +99,7 @@ class CustomWebView: WKWebView {
         self.scrollView.delegate = self
 //        self.scrollView.showsHorizontalScrollIndicator = false
 //        self.scrollView.showsVerticalScrollIndicator = false
-//        self.scrollView.contentInset = UIEdgeInsetsMake(112, 0, 0, 0)
+        //self.scrollView.contentInset = UIEdgeInsetsMake(112, 0, 0, 0)
         self.addObserver(self, forKeyPath: "canGoBack", options: .new, context: &webViewContext)
         self.addObserver(self, forKeyPath: "canGoForward", options: .new, context: &webViewContext)
         self.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: &webViewContext)
@@ -219,5 +221,17 @@ extension CustomWebView: UIScrollViewDelegate {
         let x = Double(scrollView.contentOffset.x)
         let y = Double(scrollView.contentOffset.y)
         onScrollEnd(["x": x, "y": y, "scale": Double(self.contentScaleFactor)])
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let x = Double(scrollView.contentOffset.x)
+        let y = Double(scrollView.contentOffset.y)
+        onScroll(["x":x, "y": y, "layoutHeight": Double(self.frame.height), "contentHeight": Double(scrollView.contentSize.height)])
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let x = Double(scrollView.contentOffset.x)
+        let y = Double(scrollView.contentOffset.y)
+        onScrollEndDragging(["x": x, "y": y, "scale": Double(self.contentScaleFactor)])
     }
 }

@@ -130,17 +130,18 @@ export const ScreenStack = createStackNavigator({
     Reader: {
         screen: Reader,
         navigationOptions: ({navigation}) => ({
-            title: Math.ceil(Math.max(navigation.state.params.readingTime,1)) + " Min Read",
-            headerStyle: {
-                backgroundColor: colors.mainWhite
-            },
-            headerTitleStyle: {
-                color: colors.blackHeader,
-                fontSize: 25,
-                fontWeight: "bold",
-                fontFamily: 'CircularStd-Book'
-            },
-            headerLeft: <BackNavigationButton goBack={()=>navigation.goBack()}/>,
+            header: null,
+            // title: Math.ceil(Math.max(navigation.state.params.readingTime,1)) + " Min Read",
+            // headerStyle: {
+            //     backgroundColor: colors.mainWhite
+            // },
+            // headerTitleStyle: {
+            //     color: colors.blackHeader,
+            //     fontSize: 25,
+            //     fontWeight: "bold",
+            //     fontFamily: 'CircularStd-Book'
+            // },
+            // headerLeft: <BackNavigationButton goBack={()=>navigation.goBack()}/>,
             gesturesEnabled: true
         })
     }

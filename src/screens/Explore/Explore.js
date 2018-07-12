@@ -479,8 +479,7 @@ export default class Explore extends React.Component {
             }).start();
             return
         }
-        if (Math.abs(dif) < 0) {
-        } else if ((dif < 0 || currentOffset <= 0) && (endOffset < event.nativeEvent.contentSize.height)) {
+        if ((dif < 0 || currentOffset <= 0) && (endOffset < event.nativeEvent.contentSize.height)) {
             // Show
             this._currentPositionVal = Math.max(this._currentPositionVal - Math.abs(dif) / 67, 0);
             Animated.spring(this.state._animated, {

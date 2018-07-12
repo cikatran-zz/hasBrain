@@ -8,7 +8,7 @@ import {getBookmarkedIds} from "../../actions/getBookmarkedIds";
 function mapStateToProps(state) {
     return {
         saved: state.savedReducer,
-        bookmarkedIds: state.bookmarkedIdsReducer
+        bookmarkedIds: state.bookmarkedReducer
     }
 }
 
