@@ -7,6 +7,7 @@ let customWebview = {
         source: PropTypes.string,
         topInset: PropTypes.number,
         initPosition: PropTypes.object,
+        highlights: PropTypes.array,
         onHighlight: PropTypes.func,
         onUrlChanged: PropTypes.func,
         onLoadingChanged: PropTypes.func,
