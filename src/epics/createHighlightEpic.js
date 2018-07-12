@@ -4,12 +4,18 @@ import {postHighlightText} from '../api';
 import { mergeMap, catchError, map} from 'rxjs/operators';
 import { from, of } from 'rxjs';
 import { ofType } from 'redux-observable';
+import {trackHighlight} from "../actions/userkitTracking";
+import {getUserHighLight} from "../actions/getUserHighLight";
 
 const createHighlightEpic = (action$) =>
     action$.pipe(ofType(actionTypes.CREATING_USER_HIGHLIGHT),
         mergeMap(action =>
             from(postHighlightText(action.articleId, action.highlight, action.position, action.comment, action.note)).pipe(
-                map(response => createHighlightSuccess(action.articleId, action.highlight, action.position, action.comment, action.note)),
+                map(response => {
+                    action.dispatcher(trackHighlight(action.articleId, action.highlight, action.position, action.comment, action.note));
+                    action.dispatcher(getUserHighLight(1,10));
+                    return createHighlightSuccess();
+                }),
                 catchError(error => of(createHighlightFailure(error)))
             )));
 

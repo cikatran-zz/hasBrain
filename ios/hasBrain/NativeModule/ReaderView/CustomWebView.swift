@@ -26,13 +26,26 @@ class CustomWebView: WKWebView {
         return result;
     }
     """
+    fileprivate let showHighlightsJs: String = """
+    function showHighlights(texts) {
+        var innerHTML = document.body.innerHTML;
+        for (var i = 0; i < texts.length; i++){
+            var index = innerHTML.indexOf(texts[i]);
+            if (index >= 0) {
+                innerHTML = innerHTML.substring(0,index) + '<span style="background-color:yellow">' + innerHTML.substring(index,index+texts[i].length) + "</span>" + innerHTML.substring(index + texts[i].length);
+
+            }
+        }
+        document.body.innerHTML = innerHTML;
+    }
+    """;
     fileprivate var isRedirect = false
     
     // MARK: - Public props
     
     public var source: String = "" {
         didSet {
-            if let _url = URL(string: source) {
+            if let _url = URL(string: source), source != oldValue {
                 
                 let request = URLRequest(url: _url, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad)
                 let cachedUrl = URLCache.shared.cachedResponse(for: request)
@@ -53,9 +66,14 @@ class CustomWebView: WKWebView {
             scrollToLastPosition()
         }
     }
-    public var topInset: NSNumber = 112 {
+    public var topInset: NSNumber = 0 {
         didSet {
             self.scrollView.contentInset = UIEdgeInsetsMake(CGFloat(topInset.floatValue), 0, 0, 0)
+        }
+    }
+    public var highlights: [String] = [] {
+        didSet {
+            showHighlights()
         }
     }
     public var onHighlight: RCTDirectEventBlock = { event in }
@@ -116,6 +134,13 @@ class CustomWebView: WKWebView {
                 self.onHighlight(["text":highlightedText])
             }
         }
+    }
+    
+    func showHighlights() {
+        var highlightsDes = ""
+        highlights.forEach{highlightsDes += "\"\($0)\""}
+        print(highlightsDes)
+        self.evaluateJavaScript("showHighlights([\(highlightsDes)])", completionHandler: nil)
     }
     
     func reloadWebview() {
@@ -200,9 +225,12 @@ extension CustomWebView: WKNavigationDelegate {
     
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         webView.evaluateJavaScript(highlightedJs, completionHandler: nil)
+        webView.evaluateJavaScript(showHighlightsJs, completionHandler: nil)
+        showHighlights()
         if isRedirect == false {
-            if let _ = webView.url {
-                self.onUrlChanged(["url": webView.url!.absoluteString])
+            if let _url = webView.url {
+                self.onUrlChanged(["url": _url.absoluteString])
+                self.onNavigationChanged(["canGoBack": self.canGoBack, "canGoForward": self.canGoForward])
             }
         }
         isRedirect = false

@@ -580,6 +580,62 @@ export const getArticleDetail = (id) => {
     })
 };
 
+export const getArticleDetailByUrl = (url) => {
+    return new Promise((resolve, reject) => {
+        getUrlInfo(url).then((info)=>{
+            postArticleCreateIfNotExist({
+                url: url,
+                title: _.get(info, 'title', ''),
+                readingTime: _.get(info, 'read', 1),
+                sourceImage: _.get(info, 'img', ''),
+                tags: _.get(info, 'tags', [])
+            }).then((data)=>{
+                resolve(data);
+            }).catch((err)=>{
+                reject(err);
+            });
+        }).catch((err)=>reject(err));
+    });
+};
+
+export const getHighlightByArticle = (id) => {
+    return gqlQuery({
+        query: config.queries.highlightByArticle,
+        variables: {id: id}
+    })
+};
+
+// Update UserKit Props
+export const updateReadingHistory = (articleId, scrollOffset) => {
+    return new Promise((resolve, reject) => {
+        RNUserKit.getProperty(strings.readingHistoryKey, (error, result) => {
+            if (error == null && result != null) {
+                let readingHistory = _.get(result[0], strings.readingHistoryKey, []);
+                if (readingHistory == null) {
+                    readingHistory = []
+                }
+                // Remove current item
+                _.remove(readingHistory, (x) => x.id === articleId);
+                readingHistory = readingHistory.slice(0, 29);
+
+                // Insert item at 0
+                readingHistory = [{id: articleId, ...scrollOffset}].concat(readingHistory)
+
+                // Store back to UK
+                RNUserKit.storeProperty({[strings.readingHistoryKey]: readingHistory}, (e, r) => {
+                    if (e == null) {
+                        resolve(r);
+                    }else {
+                        reject(e);
+                    }
+                })
+            } else {
+                reject(error);
+            }
+        });
+    });
+};
+
 //Axios
 
 const instance = axios.create({

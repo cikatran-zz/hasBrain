@@ -15,8 +15,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         getSaved: (page, perPage) => dispatch(getSaved(page, perPage)),
-        removeBookmark: (id, type, trackingType) => (dispatch(removeBookmark(id, type, trackingType))),
-        createBookmark: (id, type, trackingType) => dispatch(createBookmark(id, type, trackingType)),
+        removeBookmark: (id, type, trackingType) => (dispatch(removeBookmark(id, type, trackingType, dispatch))),
+        createBookmark: (id, type, trackingType) => dispatch(createBookmark(id, type, trackingType, dispatch)),
         getBookmarkedIds: () => dispatch(getBookmarkedIds()),
     }
 }

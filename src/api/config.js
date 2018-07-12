@@ -264,29 +264,14 @@ mutation checkAndCreateArticle($record: CreateOnearticletypeInput!) {
       record {
         _id
         title
-        longDescription
-        shortDescription
-        url
-        state
-        custom
-        sourceId
-        sourceName
-        sourceImage
-        author
-        sourceCreatedAt
-        createdAt
-        updatedAt
-        projectId
-        content
-        contentId
-        originalImages {
-          height
-          width
-          url
-          name
-          fileName
-        }
         readingTime
+        contentId
+        sourceCreatedAt
+        category
+        sourceData {
+          title
+          sourceImage
+        }
       }
     }
   }
@@ -814,9 +799,24 @@ query getArticleInfo($id: MongoID) {
       readingTime
       contentId
       sourceCreatedAt
+      category
       sourceData {
         title
         sourceImage
+      }
+    }
+  }
+}
+`;
+
+const highlightByArticle = gql`
+query getHighlightByArticle($id: MongoID) {
+  viewer {
+    userhighlightOne(filter:{
+      articleId: $id
+    }) {
+      highlights {
+        highlight
       }
     }
   }
@@ -848,7 +848,8 @@ export default {
         ownpath: getOwnpath,
         getCurrentPath: getCurrentPath,
         articlesMany: getListArticleDetail,
-        articleDetail: articleInfo
+        articleDetail: articleInfo,
+        highlightByArticle: highlightByArticle
     },
     mutation: {
         bookmark: postBookmark,

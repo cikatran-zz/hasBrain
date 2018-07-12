@@ -37,6 +37,9 @@ import ownpathRequestEpic from "./ownpathRequestEpic";
 import getPathCurrentEpic from './currentPathEpicRequest'
 import continueReadingRequestEpic from "./continueReadingRequestEpic";
 import articleDetailEpic from "./articleDetailRequestEpic";
+import updateReadingHistoryEpic from "./updateReadingHistoryEpic";
+import articleDetailByUrlEpic from "./articleDetailByUrlRequestEpic";
+import highlightByArticleEpic from "./highlightByArticleRequestEpic";
 
 const rootEpic = combineEpics(
     getSavedEpic,
@@ -73,7 +76,10 @@ const rootEpic = combineEpics(
     ownpathRequestEpic,
     getPathCurrentEpic,
     continueReadingRequestEpic,
-    articleDetailEpic
+    articleDetailEpic,
+    updateReadingHistoryEpic,
+    articleDetailByUrlEpic,
+    highlightByArticleEpic
 );
 
 export default rootEpic;

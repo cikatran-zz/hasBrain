@@ -9,23 +9,31 @@ const initialState = {
     error: false
 };
 
-export default function articleDetailReducer(state = initialState, action) {
+export default function highlightByArticleReducer(state = initialState, action) {
 
     switch (action.type) {
-        case actionTypes.FETCHING_ARTICLE_DETAIL_BY_URL:
-        case actionTypes.FETCHING_ARTICLE_DETAIL:
+        case actionTypes.FETCHING_HIGHLIGHT_ARTICLE:
             return {
                 ...state,
                 isFetching: true
             };
-        case actionTypes.FETCH_ARTICLE_DETAIL_SUCCESS:
+        case actionTypes.FETCH_HIGHLIGHT_ARTICLE_SUCCESS:
+            let newData = [];
+            if (action.data) {
+                if (!_.isEmpty(action.data.highlights)) {
+                    newData = action.data.highlights.map(x=>(x.highlight));
+                    newData = _.compact(newData);
+                }
+
+            }
+
             return {
                 ...state,
                 isFetching: false,
                 fetched: true,
-                data: action.data
+                data: newData
             };
-        case actionTypes.FETCH_ARTICLE_DETAIL_FAILURE:
+        case actionTypes.FETCH_HIGHLIGHT_ARTICLE_FAILURE:
             return {
                 ...state,
                 isFetching: false,

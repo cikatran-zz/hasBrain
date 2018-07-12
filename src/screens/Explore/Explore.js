@@ -28,6 +28,7 @@ import ActionSheet from "react-native-actionsheet";
 import ToggleTagComponent from "../../components/ToggleTagComponent";
 import {getChosenTopics} from "../../api";
 import LoadingSquareItem from "../../components/LoadingSquareItem";
+import {trackDislike, trackSharing} from "../../actions/userkitTracking";
 
 const horizontalMargin = 6;
 
@@ -177,15 +178,15 @@ export default class Explore extends React.Component {
             title: _.get(this.currentInteractionItem, 'title', ''),
             url: _.get(this.currentInteractionItem, 'contentId', 'http://www.hasbrain.com/')
         };
-        Share.share(content, {subject: 'HasBrain - ' + _.get(this.currentInteractionItem, 'title', '')})
+        Share.share(content, {subject: 'HasBrain - ' + _.get(this.currentInteractionItem, 'title', '')}).then(({action}) => {
+            if(action !== Share.dismissedAction) {
+                trackSharing(_.get(this.currentInteractionItem, '_id', ''), strings.trackingType.article)
+            }
+        });
     };
 
     _onDislikeItem = () => {
-        let props = {
-            [strings.contentEvent.contentId]: _.get(this.currentInteractionItem, '_id', ''),
-            [strings.contentEvent.mediaType]: strings.trackingType.article
-        };
-        RNUserKit.track(strings.contentDislike.event, props);
+        trackDislike(_.get(this.currentInteractionItem, '_id', ''), strings.trackingType.article);
     };
 
     _onBookmarkItem = (id) => {
@@ -366,6 +367,7 @@ export default class Explore extends React.Component {
         }
         this.props.getFeed(1, 10, null, topics);
         this.props.getBookmarkedIds();
+        this.props.getContinueReading();
     };
 
     _renderListFooter = (isFetching) => {
