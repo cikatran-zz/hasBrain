@@ -17,12 +17,7 @@ class CustomWebView: WKWebView {
     // MARK: - Private props
     fileprivate let highlightedJs: String = """
     function selectedText() {
-        var range = window.getSelection().getRangeAt(0);
         var result = window.getSelection().toString();
-        span = document.createElement('span');
-        span.style.backgroundColor = "yellow";
-        span.appendChild(range.extractContents());
-        range.insertNode(span);
         return result;
     }
     """
@@ -33,7 +28,6 @@ class CustomWebView: WKWebView {
             var index = innerHTML.indexOf(texts[i]);
             if (index >= 0) {
                 innerHTML = innerHTML.substring(0,index) + '<span style="background-color:yellow">' + innerHTML.substring(index,index+texts[i].length) + "</span>" + innerHTML.substring(index + texts[i].length);
-
             }
         }
         document.body.innerHTML = innerHTML;
@@ -131,16 +125,26 @@ class CustomWebView: WKWebView {
     func highlight() {
         self.evaluateJavaScript("selectedText()") { (result, error) in
             if let highlightedText = result as? String {
-                self.onHighlight(["text":highlightedText])
+                let newText = highlightedText.trimmingCharacters(in: .whitespacesAndNewlines)
+                if (newText.range(of: "\n") != nil) {
+                    self.onHighlight(["error": "Highlighted text should be in one paragraph"])
+                    return
+                }
+                self.evaluateJavaScript(self.showHighlightsJs+"showHighlights([\"\(newText)\"]);"){ (result, error) in
+                    print(error)
+                }
+                self.onHighlight(["text":newText])
             }
         }
     }
     
     func showHighlights() {
-        var highlightsDes = ""
-        highlights.forEach{highlightsDes += "\"\($0)\""}
-        print(highlightsDes)
-        self.evaluateJavaScript("showHighlights([\(highlightsDes)])", completionHandler: nil)
+        highlights.forEach{
+            let highlightsDes = "\"\($0.trimmingCharacters(in: .whitespacesAndNewlines))\"".replacingOccurrences(of: "\n", with: "\\n", options: .literal, range: nil)
+            self.evaluateJavaScript(showHighlightsJs+"showHighlights([\(highlightsDes)]);"){ (result, error) in
+                print(error)
+            }
+        }
     }
     
     func reloadWebview() {
@@ -225,7 +229,6 @@ extension CustomWebView: WKNavigationDelegate {
     
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         webView.evaluateJavaScript(highlightedJs, completionHandler: nil)
-        webView.evaluateJavaScript(showHighlightsJs, completionHandler: nil)
         showHighlights()
         if isRedirect == false {
             if let _url = webView.url {

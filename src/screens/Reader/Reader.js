@@ -154,6 +154,10 @@ export default class Reader extends React.Component {
 
     _highlight = (highlightObj) => {
         let highlightedText = highlightObj.text;
+        if (!highlightedText && highlightObj.error) {
+            this._showMessage(highlightObj.error);
+            return;
+        }
         const {articleDetail} = this.props;
         let id = _.get(articleDetail, 'data._id');
         id && this.props.createHighlight(id, highlightedText, "", "", "")
