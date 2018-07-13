@@ -605,6 +605,13 @@ export const getHighlightByArticle = (id) => {
     })
 };
 
+export const postRemoveHighlightByArticle = (article, highlight) => {
+    return gqlPost({
+        mutation: config.mutation.removeHighlight,
+        variables: {articleId: article, highlightId: highlight}
+    })
+};
+
 // Update UserKit Props
 export const updateReadingHistory = (articleId, scrollOffset) => {
     return new Promise((resolve, reject) => {

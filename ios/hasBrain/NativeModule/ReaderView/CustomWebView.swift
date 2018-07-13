@@ -16,31 +16,35 @@ class CustomWebView: WKWebView {
     
     // MARK: - Private props
     fileprivate let highlightedJs: String = """
-    function selectedText() {
+    function selectedText(id) {
         var range = window.getSelection().getRangeAt(0);
         var result = window.getSelection().toString();
         if (result.length >= 10 && result.length <= 500 && result.indexOf('\\n') === -1) {
             span = document.createElement('span');
             span.style.backgroundColor = "yellow";
+            span.id = id;
             span.appendChild(range.extractContents());
+            span.addEventListener("click", function(e) {
+                window.alert(id);
+            }, false);
             range.insertNode(span);
             return result;
         }
         return "_error"
     }
     """
-    fileprivate let showHighlightsJs: String = """
-    function showHighlights(texts) {
+    
+    func renderHighlights(text: String, id: String)->String{
+        return """
+        var text = "\(text)"
         var innerHTML = document.body.innerHTML;
-        for (var i = 0; i < texts.length; i++){
-            var index = innerHTML.indexOf(texts[i]);
-            if (index >= 0) {
-                innerHTML = innerHTML.substring(0,index) + '<span style="background-color:yellow">' + innerHTML.substring(index,index+texts[i].length) + "</span>" + innerHTML.substring(index + texts[i].length);
-            }
+        var index = innerHTML.indexOf(text);
+        if (index >= 0) {
+            innerHTML = innerHTML.substring(0,index) + '<span style="background-color:yellow" id="\(id)" onclick="window.alert(\\'\(id)\\')">' + innerHTML.substring(index,index+text.length) + "</span>" + innerHTML.substring(index + text.length);
         }
         document.body.innerHTML = innerHTML;
+        """
     }
-    """;
     fileprivate var isRedirect = false
     
     // MARK: - Public props
@@ -85,6 +89,9 @@ class CustomWebView: WKWebView {
     public var onScrollEnd: RCTDirectEventBlock = { event in }
     public var onScroll: RCTDirectEventBlock = { event in }
     public var onScrollEndDragging: RCTDirectEventBlock = { event in }
+    public var onHighlightRemove: RCTDirectEventBlock = {event in }
+    
+    var highlightedText2Id = [String: String]()
     
     // MARK: - Override props
     
@@ -117,9 +124,7 @@ class CustomWebView: WKWebView {
         self.allowsBackForwardNavigationGestures = false
         self.navigationDelegate = self
         self.scrollView.delegate = self
-//        self.scrollView.showsHorizontalScrollIndicator = false
-//        self.scrollView.showsVerticalScrollIndicator = false
-        //self.scrollView.contentInset = UIEdgeInsetsMake(112, 0, 0, 0)
+        
         self.addObserver(self, forKeyPath: "canGoBack", options: .new, context: &webViewContext)
         self.addObserver(self, forKeyPath: "canGoForward", options: .new, context: &webViewContext)
         self.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: &webViewContext)
@@ -128,16 +133,34 @@ class CustomWebView: WKWebView {
         NotificationCenter.default.addObserver(self, selector: #selector(reloadWebview), name: NSNotification.Name("com.hasbrain.customwebview.reload"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(goBackWebview), name: NSNotification.Name("com.hasbrain.customwebview.goback"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(goForwardWebview), name: NSNotification.Name("com.hasbrain.customwebview.goforward"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(removeHighlight(_:)), name: NSNotification.Name("com.hasbrain.customwebview.removeHighlight"), object: nil)
+        
+        // Add message handler
+        self.configuration.userContentController.addUserScript(WKUserScript(
+            source: "window.alert = function(message){window.webkit.messageHandlers.messageBox.postMessage({message:message});};",
+            injectionTime: WKUserScriptInjectionTime.atDocumentStart,
+            forMainFrameOnly: true))
+//        self.configuration.userContentController.addUserScript(WKUserScript(
+//            source: renderHighlights(),
+//            injectionTime: WKUserScriptInjectionTime.atDocumentStart,
+//            forMainFrameOnly: true))
+        self.configuration.userContentController.addUserScript(WKUserScript(
+            source: highlightedJs,
+            injectionTime: WKUserScriptInjectionTime.atDocumentStart,
+            forMainFrameOnly: true))
+        self.configuration.userContentController.add(self, name: "messageBox")
     }
     
     func highlight() {
-        self.evaluateJavaScript("selectedText()") { (result, error) in
+        let id = "highlight_" + UUID().uuidString.replacingOccurrences(of: "-", with: "_")
+        self.evaluateJavaScript("selectedText(\"\(id)\")") { (result, error) in
             if let highlightedText = result as? String {
                 let newText = highlightedText.trimmingCharacters(in: .whitespacesAndNewlines)
                 if (newText == "_error") {
                     self.onHighlight(["error": NSNumber(value: 301) ])
                     return
                 }
+                self.highlightedText2Id[id] = newText
                 self.onHighlight(["text":newText])
             }else {
                 print("Error", error)
@@ -146,10 +169,25 @@ class CustomWebView: WKWebView {
     }
     
     func showHighlights() {
+        
         highlights.forEach{
-            let highlightsDes = "\"\($0.trimmingCharacters(in: .whitespacesAndNewlines))\"".replacingOccurrences(of: "\n", with: "\\n", options: .literal, range: nil)
-            self.evaluateJavaScript(showHighlightsJs+"showHighlights([\(highlightsDes)]);"){ (result, error) in
+            let text = $0.trimmingCharacters(in: .whitespacesAndNewlines)
+            //let highlightsDes = "\"\(text)\""
+            let id = "highlight_" + UUID().uuidString.replacingOccurrences(of: "-", with: "_")
+            highlightedText2Id[id] = text
+            self.evaluateJavaScript(renderHighlights(text: text, id: id)){ (result, error) in
                 print(error)
+            }
+        }
+    }
+    
+    func removeHighlight(_ notification: NSNotification) {
+        if let id = notification.userInfo?["id"] as? String {
+            let js = "document.getElementById(\"\(id)\").style = null"
+            DispatchQueue.main.async {
+                self.evaluateJavaScript(js){ (result, error) in
+                    print(error)
+                }
             }
         }
     }
@@ -159,6 +197,7 @@ class CustomWebView: WKWebView {
             self.reload()
         }
     }
+    
     
     func goBackWebview() {
         DispatchQueue.main.async {
@@ -187,6 +226,18 @@ class CustomWebView: WKWebView {
         }
     }
     
+}
+
+extension CustomWebView: WKScriptMessageHandler {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        if message.name == "messageBox" {
+            let sentData = message.body as! Dictionary<String, String>
+            
+            if let textId = sentData["message"] as? String, let highlightText = highlightedText2Id[textId] as? String {
+                onHighlightRemove(["text": highlightText, "id": textId])
+            }
+        }
+    }
 }
 
 extension CustomWebView {
@@ -235,7 +286,6 @@ extension CustomWebView {
 extension CustomWebView: WKNavigationDelegate {
     
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        webView.evaluateJavaScript(highlightedJs, completionHandler: nil)
         showHighlights()
         if isRedirect == false {
             if let _url = webView.url {

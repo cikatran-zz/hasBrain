@@ -27,5 +27,6 @@ RCT_EXPORT_VIEW_PROPERTY(onNavigationChanged, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onScrollEnd, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onScroll, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onScrollEndDragging, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onHighlightRemove, RCTDirectEventBlock)
 
 @end

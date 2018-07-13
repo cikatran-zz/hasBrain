@@ -31,4 +31,8 @@ RCT_EXPORT_METHOD(goForward) {
     [NSNotificationCenter.defaultCenter postNotificationName:@"com.hasbrain.customwebview.goforward" object:NULL];
 }
 
+RCT_EXPORT_METHOD(removeHighlight: (NSString *)textId) {
+    [NSNotificationCenter.defaultCenter postNotificationName:@"com.hasbrain.customwebview.removeHighlight" object:NULL userInfo:@{@"id": textId}];
+}
+
 @end
