@@ -1,7 +1,7 @@
 import React from 'react'
 import {
     StyleSheet, WebView, Linking, AppState, NativeModules, Platform, View, ProgressBarAndroid, ProgressViewIOS,
-    AlertIOS, Button, TouchableOpacity, Image, Text, Share, NativeEventEmitter, Animated, Dimensions
+    AlertIOS, Button, TouchableOpacity, Image, Text, Share, NativeEventEmitter, Animated, Dimensions, Alert
 } from 'react-native'
 import {colors} from "../../constants/colors";
 import CustomWebview from "../../components/CustomWebview"
@@ -156,6 +156,11 @@ export default class Reader extends React.Component {
         let highlightedText = highlightObj.text;
         if (!highlightedText && highlightObj.error) {
             this._showMessage(highlightObj.error);
+            if (highlightObj.error === 301) {
+                Alert.alert('Oops!', 'Your highlight should have 10-500 characters and be in one paragraph ', [
+                    {text: 'Got it!'},
+                ])
+            }
             return;
         }
         const {articleDetail} = this.props;

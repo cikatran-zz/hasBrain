@@ -17,8 +17,16 @@ class CustomWebView: WKWebView {
     // MARK: - Private props
     fileprivate let highlightedJs: String = """
     function selectedText() {
+        var range = window.getSelection().getRangeAt(0);
         var result = window.getSelection().toString();
-        return result;
+        if (result.length >= 10 && result.length <= 500 && result.indexOf('\\n') === -1) {
+            span = document.createElement('span');
+            span.style.backgroundColor = "yellow";
+            span.appendChild(range.extractContents());
+            range.insertNode(span);
+            return result;
+        }
+        return "_error"
     }
     """
     fileprivate let showHighlightsJs: String = """
@@ -126,14 +134,13 @@ class CustomWebView: WKWebView {
         self.evaluateJavaScript("selectedText()") { (result, error) in
             if let highlightedText = result as? String {
                 let newText = highlightedText.trimmingCharacters(in: .whitespacesAndNewlines)
-                if (newText.range(of: "\n") != nil) {
-                    self.onHighlight(["error": "Highlighted text should be in one paragraph"])
+                if (newText == "_error") {
+                    self.onHighlight(["error": NSNumber(value: 301) ])
                     return
                 }
-                self.evaluateJavaScript(self.showHighlightsJs+"showHighlights([\"\(newText)\"]);"){ (result, error) in
-                    print(error)
-                }
                 self.onHighlight(["text":newText])
+            }else {
+                print("Error", error)
             }
         }
     }
