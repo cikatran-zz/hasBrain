@@ -77,9 +77,9 @@ export default class Reader extends React.Component {
     }
 
     componentWillUnmount() {
-        this._updateReadingHistory();
-        this._content_consumed_event();
-        this._updateDailyReadingTime();
+        //this._updateReadingHistory();
+        //this._content_consumed_event();
+        //this._updateDailyReadingTime();
         clearInterval(this._timer);
     }
 
@@ -141,12 +141,19 @@ export default class Reader extends React.Component {
         });
     };
 
+    _trackEndEvent = () => {
+        this._updateReadingHistory();
+        this._content_consumed_event();
+        this._updateDailyReadingTime();
+    };
+
     _urlChange = (urlChangeObj) => {
         const {articleDetail} = this.props;
         let url = _.get(articleDetail, 'data.contentId');
         if (url === urlChangeObj.url) {
             return;
         }
+        this._updateReadingHistory();
         this._content_consumed_event();
         this._updateDailyReadingTime();
         this.props.getArticleDetailByUrl(urlChangeObj.url);
@@ -285,6 +292,7 @@ export default class Reader extends React.Component {
                 }]}]}>
                 <View style={styles.topBarContentView}>
                     <TouchableOpacity onPress={() => {
+                        this._trackEndEvent();
                         this.props.removeArticleDetail();
                         this.props.navigation.goBack();
                     }} style={styles.backButton}>
@@ -381,6 +389,26 @@ export default class Reader extends React.Component {
         }
     };
 
+    _callRemoveHighlight = (id, text) => {
+        const {articleDetail, hightlights: {dataMap}} = this.props;
+        const highlightId = dataMap.get(text);
+        this.props.removeHighlight(_.get(articleDetail, 'data._id'), highlightId);
+        RNCustomWebview.removeHighlight(id);
+    };
+
+    _onRemoveHighlight = (event)=>{
+        const {text, id} = event;
+        Alert.alert(
+            'Remove this highlight?',
+            text,
+            [
+                {text: 'No', style: 'cancel'},
+                {text: 'Yes', onPress: () => this._callRemoveHighlight(id, text)},
+            ],
+            { cancelable: false }
+        )
+    };
+
     render() {
         const {watchingHistory, articleDetail, hightlights} = this.props;
         const {contentId} = this.props.navigation.state.params;
@@ -405,7 +433,8 @@ export default class Reader extends React.Component {
                                }}
                                onScrollEndDragging={(event)=>{this._animatedScrollEnd()}}
                                onScroll={this._onScroll}
-                               onUrlChanged={(event) => this._urlChange(event.nativeEvent)}/>
+                               onUrlChanged={(event) => this._urlChange(event.nativeEvent)}
+                               onHighlightRemove={(event)=>this._onRemoveHighlight(event.nativeEvent)}/>
                 {this._renderBottomBar()}
                 {this._renderTopbar()}
                 <View style={styles.rootTopView}/>

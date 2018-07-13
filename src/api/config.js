@@ -775,6 +775,9 @@ query getArticlesInfo($ids: [MongoID]) {
       _operators: {
         _id: {
           in: $ids
+        },
+        state: {
+          in: [unpublished, published]
         }
       }
     }) {
@@ -792,7 +795,12 @@ const articleInfo = gql`
 query getArticleInfo($id: MongoID) {
   viewer {
     articleOne(filter: {
-      _id: $id
+      _id: $id,
+      _operators: {
+        state: {
+          in: [unpublished, published]
+        }
+      }
     }) {
       _id
       title
@@ -816,9 +824,23 @@ query getHighlightByArticle($id: MongoID) {
       articleId: $id
     }) {
       highlights {
+        _id
         highlight
       }
     }
+  }
+}
+`;
+
+const removeHighlight = gql`
+mutation removeHighlight($articleId: ID!, $highlightId: ID!) {
+  user {
+   userHighlightRemoveOne(filter: {
+    articleId: $articleId
+    highlightId: $highlightId
+  }) {
+     recordId
+   }
   }
 }
 `;
@@ -862,7 +884,8 @@ export default {
         createBookmark: createBookmark,
         removeBookmark: removeBookmark,
         updateUserFollow: updateUserFollow,
-        followByPersonas: postFollowingPersonas
+        followByPersonas: postFollowingPersonas,
+        removeHighlight: removeHighlight
     },
     USERKIT_PROFILE_SEARCH: 'profiles/search'
 };

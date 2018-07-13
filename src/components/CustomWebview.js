@@ -15,6 +15,7 @@ let customWebview = {
         onScrollEnd: PropTypes.func,
         onScroll: PropTypes.func,
         onScrollEndDragging: PropTypes.func,
+        onHighlightRemove: PropTypes.func,
         ...ViewPropTypes, // include the default view properties
     },
 };
