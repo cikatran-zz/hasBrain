@@ -1,5 +1,7 @@
 package com.mstage.hasbrain.notification;
 
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.mstage.hasbrain.CustomWebview;
 
 import java.util.ArrayList;
@@ -41,6 +43,16 @@ public class NotificationCenter {
         }
         for(int i = 0; i< observersOfName.size(); i++) {
             observersOfName.get(i).receiveNotification(name);
+        }
+    }
+
+    public void postNotification(String name, WritableNativeMap userInfo) {
+        List<NotificationObserver> observersOfName = observers.get(name);
+        if (observersOfName == null) {
+            return;
+        }
+        for(int i = 0; i< observersOfName.size(); i++) {
+            observersOfName.get(i).receiveNotification(name, userInfo);
         }
     }
 }

@@ -160,6 +160,8 @@ export default class Reader extends React.Component {
     };
 
     _highlight = (highlightObj) => {
+        const {_id} = this.props.navigation.state.params;
+
         let highlightedText = highlightObj.text;
         if (!highlightedText && highlightObj.error) {
             this._showMessage(highlightObj.error);
@@ -173,6 +175,7 @@ export default class Reader extends React.Component {
         const {articleDetail} = this.props;
         let id = _.get(articleDetail, 'data._id');
         id && this.props.createHighlight(id, highlightedText, "", "", "")
+        this.props.getHighlights(_id);
     };
 
     _isBookmarked = () => {

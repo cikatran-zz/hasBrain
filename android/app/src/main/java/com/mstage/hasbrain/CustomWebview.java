@@ -1,6 +1,7 @@
 package com.mstage.hasbrain;
 
 import android.annotation.TargetApi;
+import android.app.Notification;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -25,13 +27,16 @@ import android.widget.Toast;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.mstage.hasbrain.notification.NotificationCenter;
 import com.mstage.hasbrain.notification.NotificationObserver;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -46,7 +51,7 @@ public class CustomWebview extends WebView implements NotificationObserver {
     private Handler scrollStateHandler = new Handler();
     private int layoutHeight = 0;
     private ArrayList highlights;
-
+    private Map<String, String> highlightedToId = new HashMap<>();
 
     ReactContext reactContext;
     private ActionMode.Callback mActionActionModeCallback;
@@ -54,15 +59,47 @@ public class CustomWebview extends WebView implements NotificationObserver {
     boolean isLoading = false;
     double currentProgress = 0.0;
 
-    String highlightJS = "javascript: (function selectedText() {\n" +
+    private class JavascriptInterface {
+
+        @android.webkit.JavascriptInterface
+        public void callback(String id) {
+            if (!TextUtils.isEmpty(id) && highlightedToId.containsKey(id))
+                sendRemoveHighlight(highlightedToId.get(id), id);
+        }
+    }
+
+    String highlightJS = "javascript: (function selectedText(id) {\n" +
             "        var range = window.getSelection().getRangeAt(0);\n" +
             "        var result = window.getSelection().toString();\n" +
-            "        span = document.createElement('span');\n" +
-            "        span.style.backgroundColor = \"yellow\";\n" +
-            "        span.appendChild(range.extractContents());\n" +
-            "        range.insertNode(span);\n" +
-            "        return result;\n" +
-            "    })()";
+            "        if (result.length >= 10 && result.length <= 500 && result.indexOf('\\\\n') === -1) {\n" +
+            "            span = document.createElement('span');\n" +
+            "            span.style.backgroundColor = \"yellow\";\n" +
+            "            span.appendChild(range.extractContents());\n" +
+            "            span.setAttribute('id', id);\n" +
+            "            span.onclick = function(event) { interface.callback(event.target.id) }\n" +
+            "            range.insertNode(span);\n" +
+            "            return result;\n" +
+            "        }\n" +
+            "        return \"_error\";\n" +
+            "    })('";
+
+    String showHighlightJS = "javascript: (function showHighlights(texts) {\n" +
+            "        var innerHTML = document.body.innerHTML;\n" +
+            "        for (var i = 0; i < texts.length; i++){\n" +
+            "            var index = innerHTML.indexOf(texts[i]);\n" +
+            "            if (index >= 0) {\n" +
+            "                innerHTML = innerHTML.substring(0,index) + '<span style=\"background-color:yellow\" onclick=\"interface.callback(index)\">' + innerHTML.substring(index,index+texts[i].length) + \"</span>\" + innerHTML.substring(index + texts[i].length);\n" +
+            "            }\n" +
+            "        }\n" +
+            "        document.body.innerHTML = innerHTML;\n" +
+            "    }) ([";
+
+    String removeHighlighJS = "javascript: (function removeHighlight(id) {\n" +
+            "       document.getElementById(id.toString()).style=null; \n" +
+            "    }) ('";
+
+    String paddingContentJs = "document.getElementsByTagName(\"body\")[0].style.paddingTop = \'" + topInset + "}px\';";
+    String marginHeaderJs = "document.getElementsByTagName(\"header\")[0].style.marginTop = \'" + topInset + "px\';";
 
     Runnable setStateNotScrolling = new Runnable() {
         @Override
@@ -75,11 +112,13 @@ public class CustomWebview extends WebView implements NotificationObserver {
         super(context);
         reactContext = context;
         initSetting();
+        this.addJavascriptInterface(new JavascriptInterface(), "interface");
     }
 
     public CustomWebview(Context context, AttributeSet attrs) {
         super(context, attrs);
         initSetting();
+        this.addJavascriptInterface(new JavascriptInterface(), "interface");
     }
 
 
@@ -161,6 +200,17 @@ public class CustomWebview extends WebView implements NotificationObserver {
                 event);
     }
 
+    public void sendRemoveHighlight(String highlightText, String textId) {
+        WritableMap event = Arguments.createMap();
+        event.putString("text", highlightText);
+        event.putString("id", textId);
+        ReactContext reactContext = (ReactContext) getContext();
+        reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+                getId(),
+                "removeHighlight",
+                event);
+    }
+
     public void initSetting() {
 
         ViewTreeObserver vto = this.getViewTreeObserver();
@@ -198,6 +248,7 @@ public class CustomWebview extends WebView implements NotificationObserver {
         NotificationCenter.shared.addObserver(this, getResources().getString(R.string.webview_reload));
         NotificationCenter.shared.addObserver(this, getResources().getString(R.string.webview_goBack));
         NotificationCenter.shared.addObserver(this, getResources().getString(R.string.webview_goForward));
+        NotificationCenter.shared.addObserver(this, getResources().getString(R.string.webview_removeHighlight));
         WebSettings settings = this.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setBuiltInZoomControls(true);
@@ -253,8 +304,7 @@ public class CustomWebview extends WebView implements NotificationObserver {
         if (!isScrolling) {
             isScrolling = true;
             scrollStateHandler.removeCallbacks(setStateNotScrolling);
-        }
-        else {
+        } else {
             scrollStateHandler.postDelayed(setStateNotScrolling, 200);
         }
         try {
@@ -316,6 +366,18 @@ public class CustomWebview extends WebView implements NotificationObserver {
                 @Override
                 public void run() {
                     goForward();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void receiveNotification(String name, WritableNativeMap userInfo) {
+        if (name.equals(getResources().getString(R.string.webview_removeHighlight))) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    executeRemoveHighlight(userInfo.getString("id"));
                 }
             });
         }
@@ -409,35 +471,52 @@ public class CustomWebview extends WebView implements NotificationObserver {
     }
 
     public void executeHighlight() {
-        evaluateJavascript(highlightJS, value -> {
+        String id = UUID.randomUUID().toString();
+        evaluateJavascript(highlightJS + id + "')", value -> {
+            Log.v("executeHighlight", highlightJS + id + ") " + value);
             if (value != null) {
-                String text = value.substring(1, value.length() - 1);
-                sendOnHighlight(text);
+                String text = value.substring(1, value.length() - 1).trim();
+                if (isValidHighlight(text)) {
+                    String newText = text.trim();
+                    sendOnHighlight(text);
+                    highlightedToId.put(id, newText);
+                } else {
+                    WritableMap event = Arguments.createMap();
+                    event.putInt("error", 301);
+                    ReactContext reactContext = (ReactContext) getContext();
+                    reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+                            getId(),
+                            "highlight",
+                            event);
+                }
             }
         });
     }
 
     public void showHightlight(ArrayList highlightedTexts) {
-        StringBuilder string = new StringBuilder("javascript: (function showHighlights(texts) {\n" +
-                "        var innerHTML = document.body.innerHTML;\n" +
-                "        for (var i = 0; i < texts.length; i++){\n" +
-                "            var index = innerHTML.indexOf(texts[i]);\n" +
-                "            if (index >= 0) {\n" +
-                "                innerHTML = innerHTML.substring(0,index) + '<span style=\"background-color:yellow\">' + innerHTML.substring(index,index+texts[i].length) + \"</span>\" + innerHTML.substring(index + texts[i].length);\n" +
-                "\n" +
-                "            }\n" +
-                "        }\n" +
-                "        document.body.innerHTML = innerHTML;\n" +
-                "    }) ([");
+        for (int i = 0; i < highlightedTexts.size(); i++) {
+            String id = UUID.randomUUID().toString();
+            String text = highlightedTexts.get(i).toString().trim();
+            highlightedToId.put(id, text);
+        }
+
+        StringBuilder string = new StringBuilder("");
         for (int i = 0; i < highlightedTexts.size(); i++) {
             string.append("\"").append(highlightedTexts.get(i).toString()).append("\"");
             if (i != highlightedTexts.size() - 1)
                 string.append(",");
         }
 
-        string.append("]);");
-        evaluateJavascript(string.toString(), value ->  {
-            Log.v("showHightlight", string.toString());
+        StringBuilder idsString = new StringBuilder("");
+        for (int i = 0; i < highlightedTexts.size(); i++) {
+            idsString.append("\"").append(getKey(highlightedTexts.get(i).toString())).append("\"");
+            if (i != highlightedTexts.size() - 1)
+                idsString.append(",");
+        }
+
+        String rendered = renderHighlight(string.toString(), idsString.toString());
+        evaluateJavascript(rendered, value -> {
+            Log.v("showHightlight", value + ' ' + idsString);
         });
     }
 
@@ -458,7 +537,55 @@ public class CustomWebview extends WebView implements NotificationObserver {
         this.highlights = (ArrayList) highlights.clone();
     }
 
+    public void executePaddingContent() {
+        evaluateJavascript(" { " + paddingContentJs + marginHeaderJs + "  }", value -> {
+        });
+    }
+
     public ArrayList getHighlights() {
         return highlights;
+    }
+
+    public boolean isValidHighlight(String text) {
+        return !text.equals("_error");
+    }
+
+    public void executeRemoveHighlight(String id) {
+        highlightedToId.remove(id);
+        evaluateJavascript(removeHighlighJS + id + "');", value -> {
+            Log.v("executeRemoveHighlight", removeHighlighJS + id + "); " + value);
+        });
+    }
+
+    public String renderHighlight(String list, String ids) {
+        return  "javascript: (function showHighlights(texts, ids) {\n" +
+                "        var innerHTML = document.body.innerHTML;\n" +
+                "        for (var i = 0; i< texts.length; i++){" +
+                "           var index = innerHTML.indexOf(texts[i]);\n" +
+                "        if (document.getElementById(ids[i]) != null) {\n" +
+                "           var old = document.getElementById(ids[i]);\n" +
+                "           var newOne = document.createElement('span');\n" +
+                "           newOne.innerHTML = texts[i];\n" +
+                "           newOne.setAttribute('id', ids[i]);\n" +
+                "           newOne.setAttribute('style', \"background-color:yellow\");\n" +
+                "           newOne.onclick = function(event) { interface.callback(event.target.id) }\n" +
+                "           old.parentNode.replaceChild(newOne, old);\n" +
+                "            }" +
+                "         else if (index >= 0) {\n" +
+                "               innerHTML = innerHTML.substring(0,index) + '<span id=' + ids[i] + ' onclick=\"interface.callback(\\\'' + ids[i].toString() + '\\\')\" style=\"background-color:yellow\">' + innerHTML.substring(index,index + texts[i].length) + \"</span>\" + innerHTML.substring(index + texts[i].length);\n" +
+                "           }\n" +
+                "           document.body.innerHTML = innerHTML;\n" +
+                "        }" +
+                "        return true;" +
+                "    }) ([" + list + "], [" + ids + "])";
+    }
+
+    private String getKey(String value){
+        for(String key : highlightedToId.keySet()){
+            if (highlightedToId.get(key).equals(value.trim())){
+                return key; //return the first found
+            }
+        }
+        return null;
     }
 }

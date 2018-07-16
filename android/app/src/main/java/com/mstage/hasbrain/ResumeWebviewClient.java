@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
@@ -138,7 +139,6 @@ public class ResumeWebviewClient extends WebViewClient {
         return super.shouldInterceptRequest(view, request);
     }
 
-
     @Override
     public void onPageFinished(android.webkit.WebView view, String url) {
         if (url.equals("about:blank")) {
@@ -148,8 +148,7 @@ public class ResumeWebviewClient extends WebViewClient {
         webView.changeState(state.ordinal());
         webView.sendOnNavigationChanged();
         webView.sendOnUrlChanged();
-        view.evaluateJavascript(" { document.getElementsByTagName(\"body\")[0].style.paddingTop = \'" + topInset + "}px\'; document.getElementsByTagName(\"header\")[0].style.marginTop = \'" + topInset + "px\'; }", value -> {
-        });
+        webView.executePaddingContent();
         if (webView.getHighlights() != null)
             webView.showHightlight(webView.getHighlights());
     }

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
@@ -107,6 +108,8 @@ public class ReactWebviewManager extends SimpleViewManager<CustomWebview> {
         else view.setHighlights(null);
     }
 
+
+
     @Override
     public Map getExportedCustomDirectEventTypeConstants() {
         HashMap<String, Map> map = new HashMap<>();
@@ -117,6 +120,9 @@ public class ReactWebviewManager extends SimpleViewManager<CustomWebview> {
         map.put("scrollEnd", MapBuilder.of("registrationName", "onScrollEnd"));
         map.put("onScroll", MapBuilder.of("registrationName", "onScroll"));
         map.put("onScrollEndDragging", MapBuilder.of("registrationName", "onScrollEndDragging"));
+        map.put("removeHighlight", MapBuilder.of("registrationName", "onHighlightRemove"));
         return map;
     }
+
+
 }
