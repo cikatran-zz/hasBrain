@@ -51,7 +51,7 @@ class CustomWebView: WKWebView {
     
     public var source: String = "" {
         didSet {
-            if let _url = URL(string: source), source != oldValue {
+            if let _url = URL(string: source), _url != self.url {
                 
                 let request = URLRequest(url: _url, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad)
                 let cachedUrl = URLCache.shared.cachedResponse(for: request)

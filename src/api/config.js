@@ -846,6 +846,7 @@ mutation removeHighlight($articleId: ID!, $highlightId: ID!) {
 `;
 
 export default {
+    stagingServer: 'http://13.251.114.186:3000/graphql',
     serverURL: 'https://contentkit-api.mstage.io/graphql',
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
     userkitURL: 'https://userkit-identity.mstage.io/v2/client/',

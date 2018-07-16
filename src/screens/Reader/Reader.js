@@ -339,7 +339,7 @@ export default class Reader extends React.Component {
                         <TouchableOpacity style={[styles.bottomBarButton, {marginRight: 10}]}
                                           onPress={this._bookmarkPress}>
                             <Image style={styles.bottomBarImage}
-                                   source={this._isBookmarked() ? require('../../assets/ic_bookmark_active.png') : require('../../assets/ic_bookmark_inactive.png')}/>
+                                   source={this._isBookmarked() ? require('../../assets/ic_saved.png') : require('../../assets/ic_save.png')}/>
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.bottomBarButton, {marginRight: 10}]} onPress={this._share}>
                             <Image style={styles.bottomBarImage} source={require('../../assets/ic_share.png')}/>
