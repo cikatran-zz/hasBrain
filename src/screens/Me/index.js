@@ -1,6 +1,9 @@
 import Me from './Me'
 import { connect } from 'react-redux'
-import {getUserProfile, getUserAnalyst, updateUserProfile, getUserName} from '../../actions/userProfileAction'
+import {
+    getUserProfile, getUserAnalyst, updateUserProfile, getUserName,
+    getAvatar
+} from '../../actions/userProfileAction'
 import {signOut} from "../../actions/signOut";
 
 function mapStateToProps(state) {
@@ -14,6 +17,7 @@ function mapDispatchToProps(dispatch) {
         getUserProfile: () => dispatch(getUserProfile()),
         getUserName: () => dispatch(getUserName()),
         getUserAnalyst: () => dispatch(getUserAnalyst()),
+        getAvatar: ()=>dispatch(getAvatar()),
         updateUserProfile: (role, summary) => dispatch(updateUserProfile(role, summary)),
         signOut: ()=>dispatch(signOut())
     }

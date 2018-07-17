@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
         fontFamily: 'CircularStd-Book'
     },
     partHeader: {
-        fontSize: 25,
+        fontSize: 20,
         color: colors.blackHeader,
         marginTop: 10,
     },
