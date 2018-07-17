@@ -551,15 +551,6 @@ export const getLastReadingHistory = (maximumNumber) => {
     });
 };
 
-export const getAvatar = () => {
-    return new Promise((resolve, reject) => {
-        RNUserKitIdentity.getProfileInfo((error, result) => {
-            let avatar = result[0].avatars;
-            resolve(avatar);
-        })
-    });
-};
-
 export const followByPersonas = (personaIds) => {
     return gqlPost({
         mutation: config.mutation.followByPersonas,
@@ -641,6 +632,27 @@ export const updateReadingHistory = (articleId, scrollOffset) => {
             }
         });
     });
+};
+
+const getUserkitProperty = (key) => {
+    return new Promise((resolve, reject) => {
+        RNUserKit.getProperty(key, (e,r)=>{
+            if (r != null && e == null) {
+                resolve(r[0]);
+            } else {
+                reject(e);
+            }
+        });
+    });
+};
+
+export const getAvatar = () => {
+    return new Promise((resolve, reject)=> {
+        Promise.all([getUserkitProperty("avatar"), getUserkitProperty("_avatar")]).then(value => {
+            resolve(value);
+
+        }).catch(error=>reject(error));
+    })
 };
 
 //Axios

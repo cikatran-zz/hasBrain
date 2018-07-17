@@ -42,6 +42,27 @@ export function getUserNameFailure(error) {
     }
 }
 
+export function getAvatar() {
+    return {
+        type: actionTypes.FETCHING_AVATAR,
+    }
+}
+
+export function getAvatarSuccess(data) {
+    return {
+        type: actionTypes.FETCH_AVATAR_SUCCESS,
+        data: data,
+
+    }
+}
+
+export function getAvatarFailure(error) {
+    return {
+        type: actionTypes.FETCH_AVATAR_FAILURE,
+        errorMessage: error
+    }
+}
+
 
 export function updateUserProfile(role, summary) {
     return {

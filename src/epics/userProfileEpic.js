@@ -2,7 +2,7 @@ import * as actionTypes from '../actions/actionTypes'
 import { mergeMap, catchError, map} from 'rxjs/operators';
 import { from, of } from 'rxjs';
 import { ofType } from 'redux-observable';
-import { getUserProfile, getUserAnalyst, updateUserProfile, getUserName } from '../api'
+import { getUserProfile, getUserAnalyst, updateUserProfile, getUserName, getAvatar } from '../api'
 import {
     getUserAnalystSuccess,
     getUserProfileSuccess,
@@ -11,7 +11,9 @@ import {
     getUserProfileFailure,
     updateUserProfileFailure,
     getUserNameSuccess,
-    getUserNameFailure
+    getUserNameFailure,
+    getAvatarSuccess,
+    getAvatarFailure
 } from '../actions/userProfileAction'
 
 export const getUserProfileEpic = (action$) =>
@@ -32,6 +34,16 @@ export const getUserNameEpic = (action$) =>
                     return getUserNameSuccess(response)
                 }),
                 catchError(error => of(getUserNameFailure(error)))
+            )));
+
+export const getAvatarEpic = (action$) =>
+    action$.pipe(ofType(actionTypes.FETCHING_AVATAR),
+        mergeMap(action =>
+            from(getAvatar()).pipe(
+                map(response => {
+                    return getAvatarSuccess(response)
+                }),
+                catchError(error => of(getAvatarFailure(error)))
             )));
 
 export const updateUserProfileEpic = (action$) =>

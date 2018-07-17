@@ -845,6 +845,10 @@ mutation removeHighlight($articleId: ID!, $highlightId: ID!) {
 }
 `;
 
+// const gitlabTopics = gql`
+//
+// `;
+
 export default {
     stagingServer: 'http://13.251.114.186:3000/graphql',
     serverURL: 'https://contentkit-api.mstage.io/graphql',

@@ -15,7 +15,7 @@ import HBText from '../components/HBText'
 export default class HorizontalCell extends React.PureComponent {
 
     _getImage = () => {
-        return (this.props.image != null) ? {uri: this.props.image} : require('../assets/ic_hasbrain.png');
+        return (this.props.image != null) ? {uri: this.props.image} : require('../assets/ic_placeholder.png');
     };
 
     render() {
@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 5,
-        resizeMode: 'cover'
+        resizeMode: 'cover',
+        backgroundColor: colors.mainWhite
     },
     titleText: {
         height: 60,
