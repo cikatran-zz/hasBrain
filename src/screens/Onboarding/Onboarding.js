@@ -19,7 +19,8 @@ export default class Onboarding extends React.Component {
         this.state = {
             experience: [],
             isNextEnable: false,
-            nextText: 'Next'
+            nextText: 'Next',
+            previousAble: false
         };
         this.swiper = null;
         this.experience = [];
@@ -38,6 +39,7 @@ export default class Onboarding extends React.Component {
             let personaIds = this.experience.map((ex)=>ex.personaId);
             this.props.updateRecommendSource(personaIds);
             this.props.updateFollowPersona(personaIds)
+            this.setState({previousAble: true})
         }
         if (this.currentIndex === 1) {
             this.setState({nextText: 'Done'})
@@ -70,6 +72,16 @@ export default class Onboarding extends React.Component {
             });
         }
     };
+
+    _onPreviousPage = () => {
+        this.swiper.scrollBy(-1);
+        if (this.currentIndex === 2) {
+            this.setState({nextText: 'Next'})
+        }
+        this.currentIndex -= 1;
+        if (this.currentIndex < 1)
+            this.setState({previousAble: false});
+    }
 
     _onChangePersona = (selectedPersona) => {
         const {onboarding} = this.props;
@@ -120,6 +132,16 @@ export default class Onboarding extends React.Component {
             return (<HBText style={[styles.nextButtonText,{backgroundColor: colors.grayLine}]}>{this.state.nextText}</HBText>)
         }
     };
+
+    _renderPreviousButton = () => {
+        if (!this.state.previousAble)
+            return null;
+        return (
+            <TouchableOpacity style={styles.previousButton} onPress={this._onPreviousPage}>
+                <HBText style={[styles.nextButtonText,{backgroundColor: colors.blueText}]}>Previous</HBText>
+            </TouchableOpacity>
+        )
+    }
 
     render() {
         const {onboarding, intentions} = this.props;
@@ -186,6 +208,7 @@ export default class Onboarding extends React.Component {
                 <TouchableOpacity style={styles.nextButton} onPress={this._onNextPage} disabled={!this.state.isNextEnable}>
                     {this._renderNextButton()}
                 </TouchableOpacity>
+                {this._renderPreviousButton()}
             </View>
 
         )
@@ -210,6 +233,11 @@ const styles = StyleSheet.create({
     nextButton: {
         position: 'absolute',
         right: 20,
+        bottom: rootViewBottomPadding() + 20
+    },
+    previousButton: {
+        position: 'absolute',
+        left: 20,
         bottom: rootViewBottomPadding() + 20
     },
     nextButtonText: {
