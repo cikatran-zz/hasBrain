@@ -38,7 +38,8 @@ const itemWidth = itemViewWidth + horizontalMargin * 2;
 
 const {RNUserKit} = NativeModules;
 
-const maxHeight = 195;
+const CONTINUE_SECTION_HEIGHT = 195;
+const TOPBAR_HEIGHT = 67;
 
 export default class Explore extends React.Component {
 
@@ -63,7 +64,7 @@ export default class Explore extends React.Component {
         this._scrollView = null;
         this.rank = null;
         this._debounceReloadAndSave = _.debounce(this._reloadAndSaveTag, 500);
-        this._collapseAnimated = new Animated.Value(maxHeight);
+        this._collapseAnimated = new Animated.Value(CONTINUE_SECTION_HEIGHT);
     }
 
     componentDidMount() {
@@ -265,8 +266,8 @@ export default class Explore extends React.Component {
             let continueReadingCollapse = state.continueReadingCollapse;
             let expanded = continueReadingCollapse;
             continueReadingCollapse = !continueReadingCollapse;
-            let initialValue = expanded ? maxHeight : 0;
-            let finalValue = expanded ? 0 : maxHeight;
+            let initialValue = expanded ? CONTINUE_SECTION_HEIGHT : 0;
+            let finalValue = expanded ? 0 : CONTINUE_SECTION_HEIGHT;
             this._collapseAnimated.setValue(initialValue);
             if (this.state.continueReadingCollapse) {
                 Animated.timing(
@@ -313,7 +314,7 @@ export default class Explore extends React.Component {
                     </View>
                 </TouchableWithoutFeedback>
                 <Animated.View style={{height: this._collapseAnimated, overflow: 'hidden'}}>
-                    <View style={{height: 195, marginTop: 10}}>
+                    <View style={{height: CONTINUE_SECTION_HEIGHT, marginTop: 10, marginBottom: 20}}>
                         <Carousel
                             data={item}
                             keyExtractor={this._keyExtractor}
@@ -329,7 +330,7 @@ export default class Explore extends React.Component {
                             containerCustomStyle={styles.horizontalCarousel}/>
                     </View>
                 </Animated.View>
-                <View style={[styles.horizontalItemSeparator, {marginHorizontal: 0, marginTop: 20}]}/>
+                <View style={[styles.horizontalItemSeparator, {marginHorizontal: 0, marginTop: 0}]}/>
             </View>)
     };
 
@@ -483,9 +484,9 @@ export default class Explore extends React.Component {
         }
         if ((dif < 0 || currentOffset <= 0) && (endOffset < event.nativeEvent.contentSize.height)) {
             // Show
-            this._currentPositionVal = Math.max(this._currentPositionVal - Math.abs(dif) / 67, 0);
+            this._currentPositionVal = Math.max(this._currentPositionVal - Math.abs(dif) / TOPBAR_HEIGHT, 0);
             Animated.spring(this.state._animated, {
-                toValue: this._currentPositionVal * 67,
+                toValue: this._currentPositionVal * TOPBAR_HEIGHT,
                 friction: 7,
                 tension: 40,
                 //useNativeDriver: true,
@@ -493,9 +494,9 @@ export default class Explore extends React.Component {
         } else {
 
             // Hide
-            this._currentPositionVal = Math.min(Math.abs(dif) / 67 + this._currentPositionVal, 1);
+            this._currentPositionVal = Math.min(Math.abs(dif) / TOPBAR_HEIGHT + this._currentPositionVal, 1);
             Animated.spring(this.state._animated, {
-                toValue: this._currentPositionVal * 67,
+                toValue: this._currentPositionVal * TOPBAR_HEIGHT,
                 friction: 7,
                 tension: 40,
                 //useNativeDriver: true,
@@ -520,7 +521,7 @@ export default class Explore extends React.Component {
             // Hide
             this._currentPositionVal = 1;
             Animated.spring(this.state._animated, {
-                toValue: 67,
+                toValue: TOPBAR_HEIGHT,
                 friction: 7,
                 tension: 40,
             }).start();
@@ -531,14 +532,14 @@ export default class Explore extends React.Component {
         styles.topView,
         {
             opacity: this.state._animated.interpolate({
-                inputRange: [0, 50, 67],
+                inputRange: [0, 50, TOPBAR_HEIGHT],
                 outputRange: [1, 0.9, 0],
                 extrapolate: 'clamp',
             }),
             transform: [{
                 translateY: this.state._animated.interpolate({
-                    inputRange: [0, 67],
-                    outputRange: [0, -67],
+                    inputRange: [0, TOPBAR_HEIGHT],
+                    outputRange: [0, -TOPBAR_HEIGHT],
                     extrapolate: 'clamp',
                 }),
             }],
@@ -568,7 +569,7 @@ export default class Explore extends React.Component {
                 <View style={styles.contentView}>
                     <SectionList
                         ref={(ref) => this._scrollView = ref}
-                        contentContainerStyle={{marginTop: 67, marginBottom: 0}}
+                        contentContainerStyle={{marginTop: TOPBAR_HEIGHT, marginBottom: 0}}
                         refreshing={false}
                         onRefresh={this._onRefresh}
                         onScrollEndDrag={this._onScrollEnd}
@@ -652,7 +653,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         position: 'absolute',
         backgroundColor: colors.mainWhite,
-        height: 67,
+        height: TOPBAR_HEIGHT,
         left: 0,
         right: 0
     },
@@ -673,7 +674,7 @@ const styles = StyleSheet.create({
     sectionTitle: {
         color: colors.articleCategory,
         fontSize: 12,
-        paddingVertical: 10,
+        paddingVertical: 5,
         marginLeft: 25
     },
     searchBar: {
@@ -706,7 +707,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '100%',
         height: 30,
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: -10,
+        marginBottom: 10
     },
     collapseArrow: {
         position: 'absolute',
