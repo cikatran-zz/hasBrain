@@ -859,9 +859,47 @@ mutation removeHighlight($articleId: ID!, $highlightId: ID!) {
 }
 `;
 
-// const gitlabTopics = gql`
-//
-// `;
+const updateVisitFrequency = gql`
+mutation updateFreq($id: MongoID, $currentDate: Date, $visitFreq: Float) {
+  user {
+    update(record: {
+      profileId: $id,
+      visitFreq: $visitFreq,
+      lastVisitedAt: $currentDate
+    }) {
+      recordId
+      record {
+        lastVisitedAt
+      }
+    }
+  }
+}
+`;
+
+const getMyInfo = gql`
+query {
+  viewer {
+    me {
+      profileId
+      email
+      name
+      metadata
+      state
+      createdAt
+      updatedAt
+      projectId
+      lastVisitedAt
+      visitFreq
+      gitlabUserId
+      gitlabUserName
+      gitlabAccessToken
+      gitlabTopicNamespaceId
+      gitlabPathNamespaceId
+      kind
+    }
+  }
+}
+`;
 
 export default {
     stagingServer: 'https://contentkit-api-staging.mstage.io/graphql',
@@ -891,7 +929,8 @@ export default {
         getCurrentPath: getCurrentPath,
         articlesMany: getListArticleDetail,
         articleDetail: articleInfo,
-        highlightByArticle: highlightByArticle
+        highlightByArticle: highlightByArticle,
+        myInfo: getMyInfo
     },
     mutation: {
         bookmark: postBookmark,
@@ -905,7 +944,8 @@ export default {
         removeBookmark: removeBookmark,
         updateUserFollow: updateUserFollow,
         followByPersonas: postFollowingPersonas,
-        removeHighlight: removeHighlight
+        removeHighlight: removeHighlight,
+        visitFrequency: updateVisitFrequency
     },
     USERKIT_PROFILE_SEARCH: 'profiles/search'
 };

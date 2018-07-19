@@ -26,6 +26,7 @@ import * as trackUserkitEvent from './userkitTracking'
 import * as updateReadingHistory from './updateReadingHistory';
 import * as getHighlightByArticle from './getHighlightByArticle'
 import * as removeHighlight from './removeHighlight'
+import * as updateVisitFreq from './updateVisitFreq'
 
 export default actions = {
     getSaved,
@@ -55,5 +56,6 @@ export default actions = {
     trackUserkitEvent,
     updateReadingHistory,
     getHighlightByArticle,
-    removeHighlight
+    removeHighlight,
+    updateVisitFreq
 }
