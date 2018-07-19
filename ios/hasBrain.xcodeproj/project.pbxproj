@@ -2196,7 +2196,7 @@
 				);
 				PODS_CONFIGURATION_BUILD_DIR = "${PODS_BUILD_DIR}/Release$(EFFECTIVE_PLATFORM_NAME)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hasBrain.hasBrainAppStaging;
-				PRODUCT_MODULE_NAME = "hasBrain-Staging";
+				PRODUCT_MODULE_NAME = hasBrainStaging;
 				PRODUCT_NAME = "hasBrain-Staging";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "hasBrain-Bridging-Header.h";
