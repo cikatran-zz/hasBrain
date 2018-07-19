@@ -656,6 +656,19 @@ export const getAvatar = () => {
     })
 };
 
+export const getMyInfo = () => {
+    return gqlQuery({
+        query: config.queries.myInfo
+    })
+};
+
+export const updateVisitFreq = (profileId, currentTime, visitFreq) => {
+    return gqlPost({
+        mutation: config.mutation.visitFrequency,
+        variables: {id: profileId, currentDate: currentTime, visitFreq: visitFreq}
+    });
+};
+
 //Axios
 
 const instance = axios.create({

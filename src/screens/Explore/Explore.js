@@ -399,6 +399,9 @@ export default class Explore extends React.Component {
         if (item === "ALL" || item === "_filter") {
             title = item;
         }
+        if (_.isEmpty(title)) {
+            return null;
+        }
         return (
             <ToggleTagComponent id={title} onPressItem={(id) => this._onTagItemPress(item)}
                                 isOn={source.tagMap.get(item)}/>
