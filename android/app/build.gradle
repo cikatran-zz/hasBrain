@@ -109,7 +109,7 @@ android {
         targetSdkVersion 27
         multiDexEnabled true
         versionCode 3
-        versionName "1.5"
+        versionName "1.6"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -145,7 +145,7 @@ android {
     buildTypes {
         release {
             manifestPlaceholders = [
-                    appNameSuffix: "",
+                    appNameSuffix: "Staging",
                     app_name     : "hasBrain",
                     appIcon      : "@mipmap/ic_launcher",
                     appIconRound : "@mipmap/ic_launcher_round"
@@ -153,7 +153,9 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
-            buildConfigField "String", "CODEPUSH_KEY", '"yc3GJIYkRPbjqevomEvxg1J9DOne46f1de64-eb3a-4a54-97d5-827a4c0e31f9"'
+            // buildConfigField "String", "CODEPUSH_KEY", '"yc3GJIYkRPbjqevomEvxg1J9DOne46f1de64-eb3a-4a54-97d5-827a4c0e31f9"'
+            // Staging
+            buildConfigField "String", "CODEPUSH_KEY", '"qS1MigVh02Tcwe4CTuS6_5xEa8O-46f1de64-eb3a-4a54-97d5-827a4c0e31f9"'
         }
 
         debug {

@@ -38,16 +38,16 @@ const TabNav = createTabNavigator({
                                                    style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
         })
     },
-    PathTab: {
-        screen: UserPathStack,
-        navigationOptions: ({ navigation }) => ({
-            header: null,
-            //tabBarLabel: strings.userPathHeader,
-            ...defaultHeaderStyle,
-            tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_path.png')}
-                                                   style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
-        })
-    },
+    // PathTab: {
+    //     screen: UserPathStack,
+    //     navigationOptions: ({ navigation }) => ({
+    //         header: null,
+    //         //tabBarLabel: strings.userPathHeader,
+    //         ...defaultHeaderStyle,
+    //         tabBarIcon: ({ tintColor }) => (<Image source={require('./assets/ic_path.png')}
+    //                                                style={[{ tintColor: tintColor }, styles.tabBarIcon]}/>)
+    //     })
+    // },
     MeTab: {
         screen: MeStack,
         navigationOptions: ({ navigation }) => ({

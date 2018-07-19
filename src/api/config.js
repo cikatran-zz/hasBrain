@@ -666,9 +666,6 @@ query getUserFollow($kind: EnumuserfollowtypeKind){
         updatedAt
         profileId
         projectId
-        topicData {
-          title
-        }
       }
     }
   }
@@ -717,6 +714,23 @@ query{
         profileId
       }
     } 
+  }
+}
+`;
+
+const getTopicStaging = gql`
+query{
+  viewer{
+    topicSearch {
+      count
+      hits {
+        _id
+        _source {
+          title
+          gitlabUserName
+        }
+      }
+    }
   }
 }
 `;
@@ -845,8 +859,13 @@ mutation removeHighlight($articleId: ID!, $highlightId: ID!) {
 }
 `;
 
+// const gitlabTopics = gql`
+//
+// `;
+
 export default {
-    serverURL: 'https://contentkit-api.mstage.io/graphql',
+    stagingServer: 'https://contentkit-api-staging.mstage.io/graphql',
+    productionServer: 'https://contentkit-api.mstage.io/graphql',
     authenKeyContentKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiI1YWRmNzRjNzdmZjQ0ZTAwMWViODI1MzkiLCJpYXQiOjE1MjQ1OTM4NjN9.Yx-17tVN1hupJeVa1sknrUKmxawuG5rx3cr8xZc7EyY',
     userkitURL: 'https://userkit-identity.mstage.io/v2/client/',
     authenKeyUserKit: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0X2lkIjoiNWFkODU4MjRiM2NlYzM0MTUzMDRhZWI2IiwiaWF0IjoxNTI0MTI5MTI2fQ.4HywQhdO-7LEEYcwrAsybLqBArgzHbD0sy2yScU2Rjk',
@@ -867,6 +886,7 @@ export default {
         bookmaredIds: getBookmarkedIds,
         userFollow: getUserFollow,
         topicList: getTopic,
+        topicListStaging: getTopicStaging,
         ownpath: getOwnpath,
         getCurrentPath: getCurrentPath,
         articlesMany: getListArticleDetail,

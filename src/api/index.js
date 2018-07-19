@@ -8,6 +8,7 @@ import {strings} from "../constants/strings";
 import _ from 'lodash';
 import {forkJoin} from 'rxjs';
 import axios from 'axios'
+import {STAGING} from "../constants/environment";
 
 const {RNCustomWebview, RNUserKit, RNUserKitIdentity} = NativeModules;
 
@@ -42,7 +43,7 @@ const getApolloClient = () => {
             console.log("Auth", authToken);
             globalAuthToken = authToken;
             const httpLinkContentkit = new HttpLink({
-                uri: config.serverURL,
+                uri: STAGING ? config.stagingServer : config.productionServer,
                 headers: {
                     authorization: config.authenKeyContentKit,
                     usertoken: authToken,
@@ -61,7 +62,7 @@ const postApolloClient = (body) => {
     return new Promise((resolve, reject) => {
         getAuthToken().then((authToken) => {
             const httpLinkContentkit = new HttpLink({
-                uri: config.serverURL,
+                uri: config.productionServer,
                 headers: {
                     authorization: config.authenKeyContentKit,
                     usertoken: authToken
@@ -364,9 +365,9 @@ export const getCurrentPath = () => {
 
 export const getTopicList = () => {
     return gqlQuery({
-        query: config.queries.topicList
+        query: STAGING ? config.queries.topicListStaging : config.queries.topicList
     });
-}
+};
 
 export const getUserFollow = (kind) => {
     return gqlQuery({
@@ -551,15 +552,6 @@ export const getLastReadingHistory = (maximumNumber) => {
     });
 };
 
-export const getAvatar = () => {
-    return new Promise((resolve, reject) => {
-        RNUserKitIdentity.getProfileInfo((error, result) => {
-            let avatar = result[0].avatars;
-            resolve(avatar);
-        })
-    });
-};
-
 export const followByPersonas = (personaIds) => {
     return gqlPost({
         mutation: config.mutation.followByPersonas,
@@ -641,6 +633,27 @@ export const updateReadingHistory = (articleId, scrollOffset) => {
             }
         });
     });
+};
+
+const getUserkitProperty = (key) => {
+    return new Promise((resolve, reject) => {
+        RNUserKit.getProperty(key, (e,r)=>{
+            if (r != null && e == null) {
+                resolve(r[0]);
+            } else {
+                reject(e);
+            }
+        });
+    });
+};
+
+export const getAvatar = () => {
+    return new Promise((resolve, reject)=> {
+        Promise.all([getUserkitProperty("avatar"), getUserkitProperty("_avatar")]).then(value => {
+            resolve(value);
+
+        }).catch(error=>reject(error));
+    })
 };
 
 //Axios

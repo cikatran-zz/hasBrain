@@ -15,6 +15,7 @@ import _ from 'lodash'
 import {rootViewTopPadding} from "../../../utils/paddingUtils";
 import CheckComponent from '../../../components/CheckComponent';
 import HBText from '../../../components/HBText'
+import {STAGING} from "../../../constants/environment";
 
 export default class Topic extends React.Component {
 
@@ -73,6 +74,8 @@ export default class Topic extends React.Component {
             checkedItem = checkedState.get(item._id);
         }
 
+        let title = STAGING ? _.get(item, '_source.gitlabUserName', '') + '/' + _.get(item, '_source.title', '') : item.title;
+
         return (
             <TouchableWithoutFeedback onPress={() => this._onPressItem(item._id)}>
                 <View style={styles.listRow}>
@@ -87,13 +90,13 @@ export default class Topic extends React.Component {
                         <HBText style={{
                             fontSize: 25,
                             color: colors.mainWhite
-                        }}>{item.title.toUpperCase().charAt(0)}</HBText>
+                        }}>{title.toUpperCase().charAt(0)}</HBText>
                     </View>
                     <View style={styles.detailsContainer}>
-                        <HBText style={styles.titleText}>{item.title}</HBText>
+                        <HBText style={styles.titleText}>{title}</HBText>
                         {/*<HBText style={styles.descText}>{item.shortDescription ? item.shortDescription : ""}</HBText>*/}
                     </View>
-                    <CheckComponent id={item.title} checkedItem={checkedItem}
+                    <CheckComponent id={title} checkedItem={checkedItem}
                                     onPressItem={(title) => {}}/>
                 </View>
             </TouchableWithoutFeedback>

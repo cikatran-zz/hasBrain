@@ -17,7 +17,11 @@ const initialState = {
     userName: null,
     userNameFetching: false,
     userNameFetched: false,
-    fetchUserNameError: null
+    fetchUserNameError: null,
+    avatar: null,
+    avatarFetching: false,
+    avatarFetched: false,
+    fetchAvatarError: null
 }
 
 export default function userProfileReducer(state = initialState, action) {
@@ -32,6 +36,11 @@ export default function userProfileReducer(state = initialState, action) {
                 ...state,
                 userNameFetching: true
             }
+        case actionTypes.FETCHING_AVATAR:
+            return {
+                ...state,
+                avatarFetching: true
+            }
         case actionTypes.FETCHING_USER_ANALYST:
             return {
                 ...state,
@@ -39,6 +48,7 @@ export default function userProfileReducer(state = initialState, action) {
             }
         case actionTypes.UPDATING_USER_PROFILE:
             let newUserProfileData = {
+                ...state.userProfileData,
                 role: action.role,
                 about: action.summary
             }
@@ -60,6 +70,32 @@ export default function userProfileReducer(state = initialState, action) {
                 userNameFetching: false,
                 userNameFetched: true,
                 userName: action.data,
+            }
+        case actionTypes.FETCH_AVATAR_SUCCESS:
+            let value = action.data;
+            let avatar = value[0].avatar;
+            let _avatar = value[1]._avatar;
+            let image = null;
+            if (_.isEmpty(avatar)) {
+                // Use _avatar
+                if (typeof _avatar === "string") {
+                    image = _avatar
+                } else {
+                    image = _.get(_avatar,'[0].url');
+                }
+            } else {
+                // Use avatar
+                if (typeof avatar === "string") {
+                    image = avatar;
+                } else {
+                    image = _.get(avatar,'[0].url');
+                }
+            }
+            return {
+                ...state,
+                avatarFetching: false,
+                avatarFetched: true,
+                avatar: image
             }
         case actionTypes.FETCH_USER_ANALYST_SUCCESS:
             let userAnalystData = [];
@@ -106,6 +142,13 @@ export default function userProfileReducer(state = initialState, action) {
                 userNameFetching: false,
                 userNameFetched: true,
                 fetchUserNameError: action.errorMessage
+            }
+        case actionTypes.FETCH_AVATAR_FAILURE:
+            return {
+                ...state,
+                avatarFetching: false,
+                avatarFetched: true,
+                fetchAvatarError: action.errorMessage
             }
         case actionTypes.FETCH_USER_ANALYST_FAILURE:
             return {

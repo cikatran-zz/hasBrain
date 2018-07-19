@@ -28,6 +28,7 @@ export default class Me extends React.Component {
     componentDidMount() {
         this.props.getUserProfile();
         this.props.getUserAnalyst();
+        this.props.getAvatar()
     }
 
     _signOut = () => {
@@ -55,11 +56,11 @@ export default class Me extends React.Component {
         const {editMode} = this.state;
         if (editMode) {
             return (
-                <Image source={require('../../assets/btn_edit_on.png')}/>
+                <Image style={{width: 20, height: 20, margin: 7}} source={require('../../assets/btn_edit_on.png')}/>
             )
         } else {
             return (
-                <Image source={require('../../assets/btn_edit.png')}/>
+                <Image style={{width: 20, height: 20, margin: 7}} source={require('../../assets/btn_edit.png')}/>
             )
         }
     }
@@ -95,12 +96,16 @@ export default class Me extends React.Component {
         if (_.isEmpty(title)) {
             title = "Enter your title here"
         }
+        let avatar = require('../../assets/ic_circle_placeholder.png');
+        if (user.avatar) {
+            avatar = {uri: user.avatar}
+        }
         return (
             <View style={styles.container}>
                 <View style={styles.profileContainer}>
                     <CircleImage
                         size={75}
-                        source={require('../../assets/ic_hasbrain.png')}/>
+                        source={avatar}/>
 
                     <View pointerEvents={editMode ? 'auto' : 'none'} style={styles.profileTextContainer}>
                         <HBText numberOfLines={1} style={styles.profileName}>{user.userName ? user.userName : ''}</HBText>
@@ -111,8 +116,8 @@ export default class Me extends React.Component {
                         <TouchableWithoutFeedback onPress={this._toggleEdit}>
                             {this._renderEditButton()}
                         </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback onPress={this._signOut}>
-                            <Image style={{marginTop: 15, tintColor: colors.grayText}}source={require('../../assets/ic_signout.png')}/>
+                        <TouchableWithoutFeedback style={{marginTop: 10}} onPress={this._signOut}>
+                            <Image style={{width: 25, height: 25, marginLeft: 5, marginRight: 0, tintColor: colors.grayText}}source={require('../../assets/ic_signout.png')}/>
                         </TouchableWithoutFeedback>
                     </View>
                 </View>
@@ -155,22 +160,22 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: colors.mainWhite,
         alignItems:'center',
-        paddingTop: 50 + rootViewTopPadding()
+        paddingTop: 25 + rootViewTopPadding()
     },
     profileContainer: {
         flexDirection: 'row',
         width: '85%',
-        height:'20%',
+        marginBottom: 20,
         justifyContent: 'space-between',
     },
     profileTextContainer: {
         flexDirection: 'column',
         width: '60%',
-        height: 75,
-        marginTop: -5
+        marginTop: -5,
+        alignSelf: 'center'
     },
     profileName: {
-        fontSize: 25,
+        fontSize: 20,
         color: colors.blackText,
     },
     profileTitle: {

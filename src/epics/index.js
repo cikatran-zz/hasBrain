@@ -10,7 +10,8 @@ import {
     getUserProfileEpic,
     updateUserProfileEpic,
     getUserAnalystEpic,
-    getUserNameEpic
+    getUserNameEpic,
+    getAvatarEpic
 } from './userProfileEpic'
 import getLastReadingPositionEpic from "./lastReadingPositionRequestEpic";
 import getIntentsEpic from "./intentRequestEpic";
@@ -81,7 +82,8 @@ const rootEpic = combineEpics(
     updateReadingHistoryEpic,
     articleDetailByUrlEpic,
     highlightByArticleEpic,
-    removeHighlightEpic
+    removeHighlightEpic,
+    getAvatarEpic
 );
 
 export default rootEpic;
