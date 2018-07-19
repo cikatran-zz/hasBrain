@@ -8,6 +8,7 @@ import {strings} from "../constants/strings";
 import _ from 'lodash';
 import {forkJoin} from 'rxjs';
 import axios from 'axios'
+import {STAGING} from "../constants/environment";
 
 const {RNCustomWebview, RNUserKit, RNUserKitIdentity} = NativeModules;
 
@@ -42,7 +43,7 @@ const getApolloClient = () => {
             console.log("Auth", authToken);
             globalAuthToken = authToken;
             const httpLinkContentkit = new HttpLink({
-                uri: config.serverURL,
+                uri: STAGING ? config.stagingServer : config.productionServer,
                 headers: {
                     authorization: config.authenKeyContentKit,
                     usertoken: authToken,
@@ -61,7 +62,7 @@ const postApolloClient = (body) => {
     return new Promise((resolve, reject) => {
         getAuthToken().then((authToken) => {
             const httpLinkContentkit = new HttpLink({
-                uri: config.serverURL,
+                uri: config.productionServer,
                 headers: {
                     authorization: config.authenKeyContentKit,
                     usertoken: authToken
@@ -364,9 +365,9 @@ export const getCurrentPath = () => {
 
 export const getTopicList = () => {
     return gqlQuery({
-        query: config.queries.topicList
+        query: STAGING ? config.queries.topicListStaging : config.queries.topicList
     });
-}
+};
 
 export const getUserFollow = (kind) => {
     return gqlQuery({
