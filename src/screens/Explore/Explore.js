@@ -8,7 +8,7 @@ import {
     Dimensions,
     Share, NativeModules, Platform, Image,
     Animated,
-    StatusBar, Alert
+    StatusBar, Alert, AppState
 } from 'react-native'
 import {colors} from '../../constants/colors'
 import VerticalRow from '../../components/VerticalRow'
@@ -79,12 +79,19 @@ export default class Explore extends React.Component {
             StatusBar.setBarStyle('dark-content');
             (Platform.OS !== 'ios') && StatusBar.setBackgroundColor('transparent');
         });
-        //this._setUpReadingTime();
+        AppState.addEventListener('change', this._handleAppStateChange);
+        this.props.updateVisitFreq();
     }
 
     componentWillUnmount() {
         this._navListener.remove();
     }
+
+    _handleAppStateChange = (nextAppState) => {
+        if (nextAppState === 'active') {
+            this.props.updateVisitFreq();
+        }
+    };
 
     _keyExtractor = (item, index) => index + '';
 

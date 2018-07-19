@@ -1,1 +1,1 @@
-export const STAGING = true;
+export const STAGING = false;

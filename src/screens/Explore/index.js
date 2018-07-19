@@ -14,6 +14,7 @@ import {getTopicList} from "../../actions/getTopicList";
 import {getOwnpath} from "../../actions/getOwnpath";
 import {getPathCurrent} from "../../actions/getPathCurrent";
 import {getContinueReading} from "../../actions/getContinueReading";
+import {updateVisitFreq} from "../../actions/updateVisitFreq";
 
 function mapStateToProps(state) {
     return {
@@ -45,7 +46,8 @@ function mapDispatchToProps(dispatch) {
         getTopics: () => dispatch(getTopicList()),
         getOwnpath: ()=>dispatch(getOwnpath()),
         getPathCurrent: () => dispatch(getPathCurrent()),
-        getContinueReading: ()=>dispatch(getContinueReading())
+        getContinueReading: ()=>dispatch(getContinueReading()),
+        updateVisitFreq: () =>dispatch(updateVisitFreq(dispatch))
     }
 }
 
