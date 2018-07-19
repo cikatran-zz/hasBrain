@@ -66,6 +66,7 @@
 		698937BD20E9E775008A04FF /* CircularStd-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 698937B720E9E774008A04FF /* CircularStd-Medium.otf */; };
 		698937BE20E9E775008A04FF /* CircularStd-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 698937B820E9E774008A04FF /* CircularStd-Black.otf */; };
 		698937BF20E9E775008A04FF /* CircularStd-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 698937B920E9E774008A04FF /* CircularStd-MediumItalic.otf */; };
+		69BBD6B420FEFB1D008830AD /* Info-Staging.plist in Resources */ = {isa = PBXBuildFile; fileRef = 69BBD6B320FEFB1D008830AD /* Info-Staging.plist */; };
 		69C4DAF620AAA3DC000E4B4F /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69C4DAF320AAA3C2000E4B4F /* libBVLinearGradient.a */; };
 		69C4DAFD20AADC97000E4B4F /* libRCTWKWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69C4DAFC20AADC8C000E4B4F /* libRCTWKWebView.a */; };
 		69CA44EF20D8F59100BF4409 /* SwiftURLCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CA44EE20D8F59100BF4409 /* SwiftURLCache.swift */; };
@@ -541,6 +542,7 @@
 		698937B720E9E774008A04FF /* CircularStd-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "CircularStd-Medium.otf"; path = "../src/assets/fonts/CircularStd-Medium.otf"; sourceTree = "<group>"; };
 		698937B820E9E774008A04FF /* CircularStd-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "CircularStd-Black.otf"; path = "../src/assets/fonts/CircularStd-Black.otf"; sourceTree = "<group>"; };
 		698937B920E9E774008A04FF /* CircularStd-MediumItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "CircularStd-MediumItalic.otf"; path = "../src/assets/fonts/CircularStd-MediumItalic.otf"; sourceTree = "<group>"; };
+		69BBD6B320FEFB1D008830AD /* Info-Staging.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-Staging.plist"; path = "hasBrain/Info-Staging.plist"; sourceTree = "<group>"; };
 		69C4DAED20AAA3C2000E4B4F /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		69C4DAF720AADC8C000E4B4F /* RCTWKWebView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWKWebView.xcodeproj; path = "../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView.xcodeproj"; sourceTree = "<group>"; };
 		69CA44EE20D8F59100BF4409 /* SwiftURLCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftURLCache.swift; sourceTree = "<group>"; };
@@ -561,9 +563,11 @@
 		69F78D2420E22BF80013F14C /* circularStdBook.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = circularStdBook.ttf; path = ../src/assets/fonts/circularStdBook.ttf; sourceTree = "<group>"; };
 		69FE6A3720AEB11200F8FED1 /* RNCustomWebview.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNCustomWebview.h; sourceTree = "<group>"; };
 		69FE6A3820AEB11200F8FED1 /* RNCustomWebview.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = RNCustomWebview.m; sourceTree = "<group>"; tabWidth = 4; };
+		6BCB8E0D453C7574382C5B93 /* Pods-hasBrain.debug staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hasBrain.debug staging.xcconfig"; path = "Pods/Target Support Files/Pods-hasBrain/Pods-hasBrain.debug staging.xcconfig"; sourceTree = "<group>"; };
 		73F1EC9EDE3946F1A89AF472 /* libAppCenterReactNativeCrashes.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAppCenterReactNativeCrashes.a; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		7A6FF6C95F48E21AFA92BC02 /* Pods-hasBrainTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hasBrainTests.staging.xcconfig"; path = "Pods/Target Support Files/Pods-hasBrainTests/Pods-hasBrainTests.staging.xcconfig"; sourceTree = "<group>"; };
+		7BFA6568A689974417813934 /* Pods-hasBrainTests.debug staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hasBrainTests.debug staging.xcconfig"; path = "Pods/Target Support Files/Pods-hasBrainTests/Pods-hasBrainTests.debug staging.xcconfig"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		8ABE82CC763D4698E642131D /* Pods-hasBrainTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hasBrainTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-hasBrainTests/Pods-hasBrainTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8D2B4A87433FF7DB5D2912C0 /* Pods-hasBrain.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hasBrain.debug.xcconfig"; path = "Pods/Target Support Files/Pods-hasBrain/Pods-hasBrain.debug.xcconfig"; sourceTree = "<group>"; };
@@ -736,6 +740,7 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
+				69BBD6B320FEFB1D008830AD /* Info-Staging.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -1143,6 +1148,8 @@
 				23F69FE4637A123D7C59BD1C /* Pods-hasBrainTests.release.xcconfig */,
 				C0FBC8220E121F627AED903C /* Pods-hasBrain.staging.xcconfig */,
 				7A6FF6C95F48E21AFA92BC02 /* Pods-hasBrainTests.staging.xcconfig */,
+				6BCB8E0D453C7574382C5B93 /* Pods-hasBrain.debug staging.xcconfig */,
+				7BFA6568A689974417813934 /* Pods-hasBrainTests.debug staging.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1705,6 +1712,7 @@
 			files = (
 				6960118D20B26B2E00F0889D /* ReaderView.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				69BBD6B420FEFB1D008830AD /* Info-Staging.plist in Resources */,
 				698937BA20E9E775008A04FF /* CircularStd-BlackItalic.otf in Resources */,
 				69F78D5820E22BF80013F14C /* circularStdBook.ttf in Resources */,
 				69EF679520F5F0DF00074910 /* IQKeyboardManager.bundle in Resources */,
@@ -2054,6 +2062,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.hasBrain.hasBrainApp;
 				PRODUCT_NAME = hasBrain;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "hasBrain-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -2141,6 +2150,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = STAGING;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Staging;
@@ -2151,7 +2161,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODEPUSH_KEY = "qS1MigVh02Tcwe4CTuS6_5xEa8O-46f1de64-eb3a-4a54-97d5-827a4c0e31f9";
+				CODEPUSH_KEY = "ZPt0ZQdlQq2qkxtBU-pdjdfLqVZc46f1de64-eb3a-4a54-97d5-827a4c0e31f9";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8TP5543C2X;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2176,7 +2186,7 @@
 					"$(SRCROOT)/../node_modules/react-native-google-signin/ios/RNGoogleSignin/**",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 				);
-				INFOPLIST_FILE = hasBrain/Info.plist;
+				INFOPLIST_FILE = "hasBrain/Info-Staging.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -2185,10 +2195,12 @@
 					"-lc++",
 				);
 				PODS_CONFIGURATION_BUILD_DIR = "${PODS_BUILD_DIR}/Release$(EFFECTIVE_PLATFORM_NAME)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.hasBrain.hasBrainApp;
-				PRODUCT_MODULE_NAME = hasBrain;
-				PRODUCT_NAME = hasBrain;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hasBrain.hasBrainAppStaging;
+				PRODUCT_MODULE_NAME = "hasBrain-Staging";
+				PRODUCT_NAME = "hasBrain-Staging";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "hasBrain-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "hasBrain-Swift.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

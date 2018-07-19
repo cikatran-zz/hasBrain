@@ -1,5 +1,6 @@
 import * as actionTypes from '../actions/actionTypes'
 import _ from 'lodash'
+import {STAGING} from "../constants/environment";
 
 const initialState = {
     data: null,
@@ -23,16 +24,33 @@ export default function topicListReducer(state = initialState, action) {
                 isFetching: true
             }
         case actionTypes.FETCH_TOPIC_LIST_SUCCESS:
-            let topicListData = action.data[0].data.viewer.topicPagination.items;
+            let topicListData = [];
+            if (STAGING) {
+                topicListData = action.data[0].data.viewer.topicSearch.hits
+            } else {
+                topicListData = action.data[0].data.viewer.topicPagination.items;
+            }
             let followTopicData = action.data[1].data.viewer.userFollowPagination.items;
             let chosenTopics = followTopicData.map(item => {
                 return item.sourceId
             });
-            let groupTopics = _.groupBy(topicListData, 'group');
+            let groupTopics = {};
+            if (!STAGING) {
+                groupTopics = _.groupBy(topicListData, 'group');
+            } else {
+                groupTopics = {'': topicListData};
+            }
             let tagTitle = new Map();
-            topicListData.forEach((x)=>{
-                tagTitle.set(x._id, x.title);
-            });
+            if (!STAGING) {
+                topicListData.forEach((x)=>{
+                    tagTitle.set(x._id, x.title);
+                });
+            } else {
+                topicListData.forEach((x)=>{
+                    tagTitle.set(x._id, _.get(x,'_source.gitlabUserName', '') + '/' + _.get(x, '_source.title'))
+                });
+            }
+
 
             return {
                 ...state,
