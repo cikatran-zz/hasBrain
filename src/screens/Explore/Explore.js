@@ -314,7 +314,7 @@ export default class Explore extends React.Component {
                     </View>
                 </TouchableWithoutFeedback>
                 <Animated.View style={{height: this._collapseAnimated, overflow: 'hidden'}}>
-                    <View style={{height: CONTINUE_SECTION_HEIGHT, marginTop: 10, marginBottom: 20}}>
+                    <View style={{height: CONTINUE_SECTION_HEIGHT, marginTop: 0, marginBottom: 20}}>
                         <Carousel
                             data={item}
                             keyExtractor={this._keyExtractor}
@@ -330,7 +330,7 @@ export default class Explore extends React.Component {
                             containerCustomStyle={styles.horizontalCarousel}/>
                     </View>
                 </Animated.View>
-                <View style={[styles.horizontalItemSeparator, {marginHorizontal: 0, marginTop: 0}]}/>
+                <View style={[styles.horizontalItemSeparator, {marginHorizontal: 0, marginTop: 5}]}/>
             </View>)
     };
 
@@ -711,8 +711,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 30,
         alignItems: 'center',
-        marginTop: -10,
-        marginBottom: 10
+        marginTop: -10
     },
     collapseArrow: {
         position: 'absolute',

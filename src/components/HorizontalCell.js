@@ -59,14 +59,15 @@ const styles = StyleSheet.create({
         fontSize: 14
     },
     textView: {
-        marginTop: 94,
-        width: '100%',
-        height: '100%',
+        top: 94,
+        position: 'absolute',
+        bottom: 5,
+        left: 0,
+        right: 0,
+        backgroundColor: colors.mainWhite,
         flexDirection: 'column',
         paddingHorizontal: 12,
         paddingVertical: 8,
-        backgroundColor: colors.mainWhite,
-        marginBottom: 5
     },
     horizontalView: {
         flexDirection: 'row',
