@@ -553,6 +553,60 @@ query getFeed($page: Int, $perPage: Int, $currentRank: Float, $topics: [String])
 
 `;
 
+
+const getFeedStaging = gql`
+query getFeed($page: Int, $perPage: Int, $currentRank: Float, $topics: [String]) {
+  viewer {
+    feedPagination(sort: RANK_DESC, page: $page, perPage: $perPage, filter: {_operators: {rank: {lt: $currentRank}, topicId: {in: $topics}}}) {
+      count
+      items {
+        contentId
+        reason
+        rank
+        topicId
+        topicData {
+          title
+        }
+        actionType
+        actionId
+        contentData {
+          _id
+          sourceName
+          kind
+          title
+          contentId
+          sourceImage
+          sourceData {
+            title
+            sourceImage
+          }
+          shortDescription
+          sourceActionName
+          sourceActionCount
+          sourceCommentCount
+          readingTime
+          sourceCreatedAt
+          commentData {
+            comment
+          }
+          highlightData {
+            highlights {
+              highlight
+            }
+          }
+          userData {
+            profileId
+            name
+          }
+        }
+      }
+    }
+  }
+}
+`;
+
+
+
 // const getFeedFilter = gql`
 //
 // `;
@@ -859,9 +913,47 @@ mutation removeHighlight($articleId: ID!, $highlightId: ID!) {
 }
 `;
 
-// const gitlabTopics = gql`
-//
-// `;
+const updateVisitFrequency = gql`
+mutation updateFreq($id: MongoID, $currentDate: Date, $visitFreq: Float) {
+  user {
+    update(record: {
+      profileId: $id,
+      visitFreq: $visitFreq,
+      lastVisitedAt: $currentDate
+    }) {
+      recordId
+      record {
+        lastVisitedAt
+      }
+    }
+  }
+}
+`;
+
+const getMyInfo = gql`
+query {
+  viewer {
+    me {
+      profileId
+      email
+      name
+      metadata
+      state
+      createdAt
+      updatedAt
+      projectId
+      lastVisitedAt
+      visitFreq
+      gitlabUserId
+      gitlabUserName
+      gitlabAccessToken
+      gitlabTopicNamespaceId
+      gitlabPathNamespaceId
+      kind
+    }
+  }
+}
+`;
 
 export default {
     stagingServer: 'https://contentkit-api-staging.mstage.io/graphql',
@@ -883,6 +975,7 @@ export default {
         sourceRecommend: getRecommendSource,
         category: getCategory,
         feed: getFeed,
+        feedStaging: getFeedStaging,
         bookmaredIds: getBookmarkedIds,
         userFollow: getUserFollow,
         topicList: getTopic,
@@ -891,7 +984,8 @@ export default {
         getCurrentPath: getCurrentPath,
         articlesMany: getListArticleDetail,
         articleDetail: articleInfo,
-        highlightByArticle: highlightByArticle
+        highlightByArticle: highlightByArticle,
+        myInfo: getMyInfo
     },
     mutation: {
         bookmark: postBookmark,
@@ -905,7 +999,8 @@ export default {
         removeBookmark: removeBookmark,
         updateUserFollow: updateUserFollow,
         followByPersonas: postFollowingPersonas,
-        removeHighlight: removeHighlight
+        removeHighlight: removeHighlight,
+        visitFrequency: updateVisitFrequency
     },
     USERKIT_PROFILE_SEARCH: 'profiles/search'
 };

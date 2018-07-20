@@ -32,8 +32,17 @@ export default function topicListReducer(state = initialState, action) {
             }
             let followTopicData = action.data[1].data.viewer.userFollowPagination.items;
             let chosenTopics = followTopicData.map(item => {
-                return item.sourceId
+                let isExisted = topicListData.find((x)=>{
+                    return x._id === item.sourceId
+                });
+                if (isExisted) {
+                    return item.sourceId;
+                } else {
+                    return null;
+                }
+
             });
+            chosenTopics = _.compact(chosenTopics);
             let groupTopics = {};
             if (!STAGING) {
                 groupTopics = _.groupBy(topicListData, 'group');

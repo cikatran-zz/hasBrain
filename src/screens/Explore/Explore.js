@@ -8,7 +8,7 @@ import {
     Dimensions,
     Share, NativeModules, Platform, Image,
     Animated,
-    StatusBar, Alert
+    StatusBar, Alert, AppState
 } from 'react-native'
 import {colors} from '../../constants/colors'
 import VerticalRow from '../../components/VerticalRow'
@@ -29,6 +29,7 @@ import ToggleTagComponent from "../../components/ToggleTagComponent";
 import {getChosenTopics} from "../../api";
 import LoadingSquareItem from "../../components/LoadingSquareItem";
 import {trackDislike, trackSharing} from "../../actions/userkitTracking";
+import {STAGING} from "../../constants/environment";
 
 const horizontalMargin = 6;
 
@@ -79,12 +80,19 @@ export default class Explore extends React.Component {
             StatusBar.setBarStyle('dark-content');
             (Platform.OS !== 'ios') && StatusBar.setBackgroundColor('transparent');
         });
-        //this._setUpReadingTime();
+        AppState.addEventListener('change', this._handleAppStateChange);
+        this.props.updateVisitFreq();
     }
 
     componentWillUnmount() {
         this._navListener.remove();
     }
+
+    _handleAppStateChange = (nextAppState) => {
+        if (nextAppState === 'active') {
+            this.props.updateVisitFreq();
+        }
+    };
 
     _keyExtractor = (item, index) => index + '';
 
@@ -216,7 +224,7 @@ export default class Explore extends React.Component {
 
         return (
             <VerticalRow style={{marginTop: (index === 0) ? 0 : 0}}
-                         action={_.get(item, 'contentData.lastActionData', {})}
+                         action={STAGING ? _.get(item, 'contentData', {}) :_.get(item, 'contentData.lastActionData', {})}
                          title={_.get(item, 'contentData.title', '')}
                          shortDescription={_.get(item, 'contentData.shortDescription', '')}
                          sourceName={author}
@@ -314,7 +322,7 @@ export default class Explore extends React.Component {
                     </View>
                 </TouchableWithoutFeedback>
                 <Animated.View style={{height: this._collapseAnimated, overflow: 'hidden'}}>
-                    <View style={{height: CONTINUE_SECTION_HEIGHT, marginTop: 10, marginBottom: 20}}>
+                    <View style={{height: CONTINUE_SECTION_HEIGHT, marginTop: 0, marginBottom: 20}}>
                         <Carousel
                             data={item}
                             keyExtractor={this._keyExtractor}
@@ -330,7 +338,7 @@ export default class Explore extends React.Component {
                             containerCustomStyle={styles.horizontalCarousel}/>
                     </View>
                 </Animated.View>
-                <View style={[styles.horizontalItemSeparator, {marginHorizontal: 0, marginTop: 0}]}/>
+                <View style={[styles.horizontalItemSeparator, {marginHorizontal: 0, marginTop: 5}]}/>
             </View>)
     };
 
@@ -398,6 +406,9 @@ export default class Explore extends React.Component {
 
         if (item === "ALL" || item === "_filter") {
             title = item;
+        }
+        if (_.isEmpty(title)) {
+            return null;
         }
         return (
             <ToggleTagComponent id={title} onPressItem={(id) => this._onTagItemPress(item)}
@@ -708,8 +719,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 30,
         alignItems: 'center',
-        marginTop: -10,
-        marginBottom: 10
+        marginTop: -10
     },
     collapseArrow: {
         position: 'absolute',

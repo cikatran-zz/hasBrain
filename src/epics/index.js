@@ -42,6 +42,7 @@ import updateReadingHistoryEpic from "./updateReadingHistoryEpic";
 import articleDetailByUrlEpic from "./articleDetailByUrlRequestEpic";
 import highlightByArticleEpic from "./highlightByArticleRequestEpic";
 import removeHighlightEpic from "./removeHighlightEpic";
+import {getLastVisitEpic, updateLastVisitEpic} from "./updateVisitFreq";
 
 const rootEpic = combineEpics(
     getSavedEpic,
@@ -83,7 +84,9 @@ const rootEpic = combineEpics(
     articleDetailByUrlEpic,
     highlightByArticleEpic,
     removeHighlightEpic,
-    getAvatarEpic
+    getAvatarEpic,
+    getLastVisitEpic,
+    updateLastVisitEpic
 );
 
 export default rootEpic;

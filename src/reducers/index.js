@@ -30,6 +30,7 @@ import signOutReducer from "./signOutReducer";
 import continueReadingReducer from "./continueReadingReducer";
 import articleDetailReducer from "./articleDetailReducer";
 import highlightByArticleReducer from "./highlightByArticleReducer"
+import lastVisitReducer from "./updateVisitFreqReducer"
 
 const myAccountReducer = combineReducers({
     articlesReducer,
@@ -61,7 +62,8 @@ const myAccountReducer = combineReducers({
     signOutReducer,
     continueReadingReducer,
     articleDetailReducer,
-    highlightByArticleReducer
+    highlightByArticleReducer,
+    lastVisitReducer
 });
 
 

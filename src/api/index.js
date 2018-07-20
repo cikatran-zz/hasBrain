@@ -480,7 +480,7 @@ export const getFeed = (page, perPage, rank, topics) => {
         variables["topics"] = topics;
     }
     return gqlQuery({
-        query: config.queries.feed,
+        query: STAGING ? config.queries.feedStaging : config.queries.feed,
         variables: variables
     })
 };
@@ -654,6 +654,19 @@ export const getAvatar = () => {
 
         }).catch(error=>reject(error));
     })
+};
+
+export const getMyInfo = () => {
+    return gqlQuery({
+        query: config.queries.myInfo
+    })
+};
+
+export const updateVisitFreq = (profileId, currentTime, visitFreq) => {
+    return gqlPost({
+        mutation: config.mutation.visitFrequency,
+        variables: {id: profileId, currentDate: currentTime, visitFreq: visitFreq}
+    });
 };
 
 //Axios
