@@ -30,6 +30,7 @@ import {getChosenTopics} from "../../api";
 import LoadingSquareItem from "../../components/LoadingSquareItem";
 import {trackDislike, trackSharing} from "../../actions/userkitTracking";
 import NoDataView from "../../components/NoDataView";
+import {STAGING} from "../../constants/environment";
 
 const horizontalMargin = 6;
 
@@ -224,7 +225,7 @@ export default class Explore extends React.Component {
 
         return (
             <VerticalRow style={{marginTop: (index === 0) ? 0 : 0}}
-                         action={_.get(item, 'contentData.lastActionData', {})}
+                         action={STAGING ? _.get(item, 'contentData', {}) :_.get(item, 'contentData.lastActionData', {})}
                          title={_.get(item, 'contentData.title', '')}
                          shortDescription={_.get(item, 'contentData.shortDescription', '')}
                          sourceName={author}

@@ -480,7 +480,7 @@ export const getFeed = (page, perPage, rank, topics) => {
         variables["topics"] = topics;
     }
     return gqlQuery({
-        query: config.queries.feed,
+        query: STAGING ? config.queries.feedStaging : config.queries.feed,
         variables: variables
     })
 };

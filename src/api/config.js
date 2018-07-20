@@ -553,6 +553,60 @@ query getFeed($page: Int, $perPage: Int, $currentRank: Float, $topics: [String])
 
 `;
 
+
+const getFeedStaging = gql`
+query getFeed($page: Int, $perPage: Int, $currentRank: Float, $topics: [String]) {
+  viewer {
+    feedPagination(sort: RANK_DESC, page: $page, perPage: $perPage, filter: {_operators: {rank: {lt: $currentRank}, topicId: {in: $topics}}}) {
+      count
+      items {
+        contentId
+        reason
+        rank
+        topicId
+        topicData {
+          title
+        }
+        actionType
+        actionId
+        contentData {
+          _id
+          sourceName
+          kind
+          title
+          contentId
+          sourceImage
+          sourceData {
+            title
+            sourceImage
+          }
+          shortDescription
+          sourceActionName
+          sourceActionCount
+          sourceCommentCount
+          readingTime
+          sourceCreatedAt
+          commentData {
+            comment
+          }
+          highlightData {
+            highlights {
+              highlight
+            }
+          }
+          userData {
+            profileId
+            name
+          }
+        }
+      }
+    }
+  }
+}
+`;
+
+
+
 // const getFeedFilter = gql`
 //
 // `;
@@ -921,6 +975,7 @@ export default {
         sourceRecommend: getRecommendSource,
         category: getCategory,
         feed: getFeed,
+        feedStaging: getFeedStaging,
         bookmaredIds: getBookmarkedIds,
         userFollow: getUserFollow,
         topicList: getTopic,
