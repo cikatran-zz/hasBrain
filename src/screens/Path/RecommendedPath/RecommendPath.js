@@ -66,7 +66,7 @@ export default class RecommendPath extends React.Component {
 
     };
 
-    _renderEmptyList = (isFetching) => {
+     _renderEmptyList = (isFetching) => {
         if (isFetching) {
             return null;
         }

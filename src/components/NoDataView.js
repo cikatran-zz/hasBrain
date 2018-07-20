@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     },
     message: {
         color: colors.mainDarkGray,
-        fontSize: 20,
+        fontSize: 15,
+        textAlign:'center'
     }
 });

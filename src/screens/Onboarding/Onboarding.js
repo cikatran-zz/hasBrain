@@ -138,7 +138,7 @@ export default class Onboarding extends React.Component {
             return null;
         return (
             <TouchableOpacity style={styles.previousButton} onPress={this._onPreviousPage}>
-                <HBText style={[styles.nextButtonText,{backgroundColor: colors.blueText}]}>Previous</HBText>
+                <HBText style={styles.prevButtonText}>Previous</HBText>
             </TouchableOpacity>
         )
     }
@@ -246,5 +246,15 @@ const styles = StyleSheet.create({
         color: colors.mainWhite,
         borderRadius: 5,
         overflow: 'hidden'
+    },
+    prevButtonText: {
+        padding: 10,
+        fontSize: 15,
+        color: colors.pathSection,
+        borderRadius: 5,
+        overflow: 'hidden',
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: colors.pathSection
     }
 });

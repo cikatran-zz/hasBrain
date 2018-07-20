@@ -29,6 +29,7 @@ import ToggleTagComponent from "../../components/ToggleTagComponent";
 import {getChosenTopics} from "../../api";
 import LoadingSquareItem from "../../components/LoadingSquareItem";
 import {trackDislike, trackSharing} from "../../actions/userkitTracking";
+import NoDataView from "../../components/NoDataView";
 
 const horizontalMargin = 6;
 
@@ -246,12 +247,24 @@ export default class Explore extends React.Component {
         <View style={styles.horizontalItemSeparator}/>
     );
 
+    _renderEmptyList = () => {
+        const {feed} = this.props;
+        if (feed.isFetching || !feed.fetched)
+            return null;
+        return (
+            <View style={{justifyContent: 'center', alignItems: 'center', padding: 20, height: '100%'}}>
+                <NoDataView text={'Oops! Nothing to show.\nPlease change your following sources'}/>
+            </View>
+        );
+    };
+
     _renderVerticalSection = ({item}) => (
         <FlatList
             style={{flex: 1}}
             horizontal={false}
             showsVerticalScrollIndicator={false}
             data={item}
+            ListEmptyComponent={this._renderEmptyList}
             ItemSeparatorComponent={() => this._renderVerticalSeparator()}
             keyExtractor={this._keyExtractor}
             renderItem={this._renderVerticalItem}/>
