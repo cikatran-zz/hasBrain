@@ -47,15 +47,16 @@ export default class Authentication extends React.PureComponent {
     }
 
     _goToOnBoarding = () => {
-        const resetAction = NavigationActions.reset({
-            index: 0,
-            actions: [
-                NavigationActions.navigate({
-                    routeName: "Onboarding"
-                })
-            ]
-        });
-        this.props.navigation.dispatch(resetAction);
+        // const resetAction = NavigationActions.reset({
+        //     index: 0,
+        //     actions: [
+        //         NavigationActions.navigate({
+        //             routeName: "Onboarding"
+        //         })
+        //     ]
+        // });
+        // this.props.navigation.dispatch(resetAction);
+        NavigationService.reset("Onboarding");
     };
 
     _loginWithFacebook = () => {
