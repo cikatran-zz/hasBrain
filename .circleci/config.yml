@@ -60,8 +60,8 @@ jobs:
           command: curl https://slack.com/api/files.upload -F token="xoxb-284035994838-fnEFcTAsofZx8JqbDyDSXQFp" -F channels="appkit-android-ci" -F title="hasbrain apk release" -F filename="${apk_name}" -F file=@app/build/outputs/apk/release/app-release.apk
 
       - run:
-          name: Upload apk release to slack product-ideas
-          command: curl https://slack.com/api/files.upload -F token="xoxb-284035994838-fnEFcTAsofZx8JqbDyDSXQFp" -F channels="product_ideas" -F title="hasbrain apk release" -F filename="${apk_name}" -F file=@app/build/outputs/apk/release/app-release.apk
+          name: Upload apk release to slack builds channel
+          command: curl https://slack.com/api/files.upload -F token="xoxb-284035994838-fnEFcTAsofZx8JqbDyDSXQFp" -F channels="builds" -F title="hasbrain apk release" -F filename="${apk_name}" -F file=@app/build/outputs/apk/release/app-release.apk
 
 workflows:
   version: 2
