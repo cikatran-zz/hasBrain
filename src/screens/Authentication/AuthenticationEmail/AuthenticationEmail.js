@@ -12,6 +12,7 @@ import {strings} from "../../../constants/strings";
 import {rootViewBottomPadding, rootViewTopPadding} from "../../../utils/paddingUtils";
 import HBText from '../../../components/HBText'
 import NavigationService from '../../../NavigationService'
+import {DotsLoader} from "react-native-indicator";
 
 export default class Explore extends React.PureComponent {
 
@@ -21,8 +22,6 @@ export default class Explore extends React.PureComponent {
         this.password = "";
         this.name = "";
         this.confirmPassword = "";
-        this.indicatorModal = null;
-        this.callbackMessage = "";
         this.state = {
             signUp: false
         };
@@ -50,19 +49,19 @@ export default class Explore extends React.PureComponent {
             this._showMessage("Name should not be empty");
             return;
         }
-        this.indicatorModal.setState({isShow: true});
-        NativeModules.RNUserKitIdentity.signUpWithEmail(this.email, this.password, {_name: this.name, name: this.name }, (error, results) => {
-            console.log();
-            if (error != null) {
-                this.callbackMessage = JSON.parse(error).message;
-                this.indicatorModal.setState({isShow: false});
-            } else {
-                this.props.createUser();
-                this.indicatorModal.setState({isShow: false});
-                this._nextScreen()
-            }
-
-        })
+        this.props.signUp(this.email, this.password, {_name: this.name, name: this.name });
+        // NativeModules.RNUserKitIdentity.signUpWithEmail(this.email, this.password, {_name: this.name, name: this.name }, (error, results) => {
+        //     console.log();
+        //     if (error != null) {
+        //         this.callbackMessage = JSON.parse(error).message;
+        //         this.indicatorModal.setState({isShow: false});
+        //     } else {
+        //         this.props.createUser();
+        //         this.indicatorModal.setState({isShow: false});
+        //         this._nextScreen()
+        //     }
+        //
+        // })
     };
 
     _signIn = () => {
@@ -70,32 +69,47 @@ export default class Explore extends React.PureComponent {
             this._showMessage("Invalid email");
             return;
         }
-        this.indicatorModal.setState({isShow: true});
-        NativeModules.RNUserKitIdentity.signInWithEmail(this.email, this.password, (error, results) => {
-            if (error != null) {
-                this.callbackMessage = JSON.parse(error).message;
-                this.indicatorModal.setState({isShow: false});
-            } else {
-                this.props.createUser();
-                this.indicatorModal.setState({isShow: false});
-                this._nextScreen();
-            }
-        })
+        this.props.signIn(this.email, this.password);
+        // NativeModules.RNUserKitIdentity.signInWithEmail(this.email, this.password, (error, results) => {
+        //     if (error != null) {
+        //         this.callbackMessage = JSON.parse(error).message;
+        //         this.indicatorModal.setState({isShow: false});
+        //     } else {
+        //         this.props.createUser();
+        //         this.indicatorModal.setState({isShow: false});
+        //         this._nextScreen();
+        //     }
+        // })
     };
 
-    _nextScreen = () => {
-        NativeModules.RNUserKit.getProperty(strings.mekey + '.' + strings.experienceKey, (error, result) => {
-            if (error == null && result != null) {
-                let experience = _.get(result[0], strings.mekey + '.' + strings.experienceKey);
-                if (experience == null) {
-                    this.props.navigation.navigate('Onboarding');
-                } else {
-                    NavigationService.reset("Home");
-                }
-            } else {
-                this.props.navigation.navigate('Onboarding');
+    componentWillReceiveProps(nextProps) {
+        const {authentication} = nextProps;
+
+        if (authentication.signedIn) {
+            this.props.createUser();
+            // Request onboarded after signed in
+            if (!authentication.checkedOnboarded && !authentication.isCheckingOnboarded) {
+                this.props.checkOnboarded();
+                return;
+            } else if (authentication.checkedOnboarded && !authentication.isCheckingOnboarded) {
+                // Go to next screen after check onboarded
+                this._nextScreen(authentication);
+                return
             }
-        });
+        }
+
+        // Show error
+        if (authentication.error) {
+            this._showMessage(authentication.error);
+        }
+    }
+
+    _nextScreen = (authentication) => {
+        if (authentication.onboarded){
+            NavigationService.reset("Home");
+        } else {
+            NavigationService.navigate("Onboarding");
+        }
     };
 
     _showMessage = (message) => {
@@ -113,7 +127,6 @@ export default class Explore extends React.PureComponent {
 
             },
             onShown: () => {
-                this.callbackMessage = "";
             },
             onHide: () => {
 
@@ -123,10 +136,6 @@ export default class Explore extends React.PureComponent {
             }
         });
     };
-
-    onDismissIndicatorModal() {
-        this._showMessage(this.callbackMessage)
-    }
 
     _showSignIn = () => {
         Animated.timing(this._signUpShown, {
@@ -246,13 +255,16 @@ export default class Explore extends React.PureComponent {
         </Animated.View>);
 
     render() {
-        const {navigation} = this.props;
-
+        const {navigation, authentication} = this.props;
+        if (authentication.isSigningIn || authentication.isSigningUp || authentication.isCheckingOnboarded) {
+            return (<View style={styles.container}>
+                <View style={styles.dots}>
+                    <DotsLoader color={colors.mainDarkGray} size={20} betweenSpace={10}/>
+                </View>
+            </View>)
+        }
         return (
             <View style={styles.container}>
-                <IndicatorModal ref={(modal) => {
-                    this.indicatorModal = modal
-                }} onDismiss={this.onDismissIndicatorModal.bind(this)}/>
                 <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                     <Image style={styles.backImage} source={require('../../../assets/ic_back_button.png')}/>
                 </TouchableOpacity>

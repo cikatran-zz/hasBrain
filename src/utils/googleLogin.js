@@ -20,7 +20,6 @@ export function googleLogin () {
                         })
                     })
                     .catch((err) => {
-                        console.log('Google sign in error', err);
                         reject({message: err});
                     })
                     .done();

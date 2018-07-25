@@ -720,6 +720,10 @@ query getUserFollow($kind: EnumuserfollowtypeKind){
         updatedAt
         profileId
         projectId
+        topicData {
+          gitlabUserName
+          title
+        }
       }
     }
   }
@@ -1002,5 +1006,6 @@ export default {
         removeHighlight: removeHighlight,
         visitFrequency: updateVisitFrequency
     },
-    USERKIT_PROFILE_SEARCH: 'profiles/search'
+    USERKIT_PROFILE_SEARCH: 'profiles/search',
+    googleAuthClientId: "994897015659-riuo55c2catoa6822c7bi713upqvlqdt.apps.googleusercontent.com"
 };

@@ -20,7 +20,7 @@ export default class Launch extends React.Component {
     componentWillReceiveProps(nextProps) {
         const {authentication} = nextProps;
         if (authentication.checkedSignIn && authentication.checkedOnboarded) {
-            if (!authentication.signIn) {
+            if (!authentication.signedIn) {
                 NavigationService.reset('Authentication');
             } else {
                 this.props.createUser();

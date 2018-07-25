@@ -6,86 +6,51 @@ import {
 import {colors} from "../../constants/colors";
 import _ from 'lodash'
 import {strings} from "../../constants/strings";
-import { facebookLogin } from '../../utils/facebookLogin'
-import { googleLogin } from '../../utils/googleLogin'
+import {facebookLogin} from '../../utils/facebookLogin'
+import {googleLogin} from '../../utils/googleLogin'
 import NavigationActions from 'react-navigation/src/NavigationActions'
 import IndicatorModal from "../../components/IndicatorModal";
 import Toast from "react-native-root-toast";
 import HBText from '../../components/HBText'
 import NavigationService from '../../NavigationService'
+import {DotsLoader} from "react-native-indicator";
 
 export default class Authentication extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        this.indicatorModal = null;
-        this.callbackMessage = "";
     }
 
     componentDidMount() {
-        NativeModules.RNUserKitIdentity.checkSignIn((err, events) => {
-            let result = JSON.parse(events[0]);
-            if (result["is_sign_in"] === true) {
-                this._goToNextScreen();
-            }
-        })
     }
 
-    _goToNextScreen() {
-        NativeModules.RNUserKit.getProperty(strings.mekey+'.'+strings.experienceKey, (error, result)=> {
-            if (error == null && result != null) {
-                let experience = _.get(result[0], strings.mekey+'.'+strings.experienceKey);
-                if (experience == null) {
-                    this._goToOnBoarding();
-                } else {
-                    NavigationService.reset("Home");
-                }
-            } else {
-                this._goToOnBoarding();
+    componentWillReceiveProps(nextProps) {
+        const {authentication} = nextProps;
+
+        if (authentication.signedIn) {
+            this.props.createUser();
+            // Request onboarded after signed in
+            if (!authentication.checkedOnboarded && !authentication.isCheckingOnboarded) {
+                this.props.checkOnboarded();
+                return;
+            } else if (authentication.checkedOnboarded && !authentication.isCheckingOnboarded) {
+                // Go to next screen after check onboarded
+                this._nextScreen(authentication);
+                return
             }
-        });
+        }
+
+        // Show error
+        if (authentication.error) {
+            this._showMessage(authentication.error);
+        }
     }
-
-    _goToOnBoarding = () => {
-        // const resetAction = NavigationActions.reset({
-        //     index: 0,
-        //     actions: [
-        //         NavigationActions.navigate({
-        //             routeName: "Onboarding"
-        //         })
-        //     ]
-        // });
-        // this.props.navigation.dispatch(resetAction);
-        NavigationService.reset("Onboarding");
-    };
-
-    _loginWithFacebook = () => {
-        this.indicatorModal.setState({isShow: true});
-        facebookLogin().then((value) => {
-            this.indicatorModal.setState({isShow: false});
-            if (value.new) {
-                this.props.createUser();
-            }
-            this._goToNextScreen();
-        }).catch((error) => {
-            this.callbackMessage = error;
-            this.indicatorModal.setState({isShow: false});
-        })
-    };
-
-    _loginWithGooglePlus = () => {
-        this.indicatorModal.setState({isShow: true});
-        googleLogin().then((value) => {
-            this.indicatorModal.setState({isShow: false});
-            if (value.new) {
-                this.props.createUser();
-            }
-            this._goToNextScreen();
-        })
-        .catch((err) => {
-            this.callbackMessage = err;
-            this.indicatorModal.setState({isShow: false});
-        })
+    _nextScreen = (authentication) => {
+        if (authentication.onboarded){
+            NavigationService.reset("Home");
+        } else {
+            NavigationService.navigate("Onboarding");
+        }
     };
 
     _showMessage = (message) => {
@@ -103,7 +68,6 @@ export default class Authentication extends React.PureComponent {
 
             },
             onShown: () => {
-                this.callbackMessage = "";
             },
             onHide: () => {
 
@@ -114,36 +78,39 @@ export default class Authentication extends React.PureComponent {
         });
     };
 
-    onDismissIndicatorModal() {
-        this._showMessage(this.callbackMessage)
-    }
-
     render() {
-        const {navigation} = this.props;
+        const {authentication} = this.props;
+        if (authentication.affiliateLoggingIn) {
+            return (<View style={styles.container}>
+                <View style={styles.dots}>
+                    <DotsLoader color={colors.mainDarkGray} size={20} betweenSpace={10}/>
+                </View>
+            </View>);
+        }
 
         return (
             <View style={styles.container}>
-                <IndicatorModal ref={(modal) => {
-                    this.indicatorModal = modal
-                }} onDismiss={this.onDismissIndicatorModal.bind(this)}/>
                 <Image style={styles.image} source={require('../../assets/ic_hasbrain.png')}/>
                 <HBText style={styles.text}>hasBrain</HBText>
                 <TouchableOpacity
                     style={[styles.colorButton, {marginTop: 44.5}]}
-                    onPress={() => this._loginWithGooglePlus()}>
-                    <Image source={require('../../assets/ic_gg_plus_icon.png')} style={{height: '100%', resizeMode: 'contain'}}/>
+                    onPress={() => this.props.logInWithGoogle()}>
+                    <Image source={require('../../assets/ic_gg_plus_icon.png')}
+                           style={{height: '100%', resizeMode: 'contain'}}/>
                     <HBText style={styles.buttonText}>Continue with Google</HBText>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.colorButton, {marginTop: 15}]}
-                    onPress={() => this._loginWithFacebook()}>
-                    <Image source={require('../../assets/ic_fb_logo.png')} style={{height: '100%', resizeMode: 'contain'}}/>
+                    onPress={() => this.props.logInWithFacebook()}>
+                    <Image source={require('../../assets/ic_fb_logo.png')}
+                           style={{height: '100%', resizeMode: 'contain'}}/>
                     <HBText style={styles.buttonText}>Continue with Facebook</HBText>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[styles.colorButton, {marginTop: 15}]}
-                    onPress={() => navigation.navigate('AuthenticationEmail')}>
-                    <Image source={require('../../assets/ic_mail.png')} style={{height: '100%', resizeMode: 'contain'}}/>
+                    onPress={() => NavigationService.navigate('AuthenticationEmail')}>
+                    <Image source={require('../../assets/ic_mail.png')}
+                           style={{height: '100%', resizeMode: 'contain'}}/>
                     <HBText style={styles.buttonText}>Continue with email</HBText>
                 </TouchableOpacity>
             </View>

@@ -10,6 +10,8 @@ import {forkJoin} from 'rxjs';
 import axios from 'axios'
 import {STAGING} from "../constants/environment";
 import NavigationService from "../NavigationService";
+import {GoogleSignin} from "react-native-google-signin";
+import {AccessToken, LoginManager} from "react-native-fbsdk";
 
 const {RNCustomWebview, RNUserKit, RNUserKitIdentity} = NativeModules;
 
@@ -39,10 +41,8 @@ const getApolloClient = () => {
             resolve(globalAppoloClient);
             return;
         }
-        console.log("Create new Token");
         getAuthToken().then((authToken) => {
             console.log("Auth", authToken);
-            globalAuthToken = authToken;
             const httpLinkContentkit = new HttpLink({
                 uri: STAGING ? config.stagingServer : config.productionServer,
                 headers: {
@@ -669,6 +669,86 @@ export const checkSignIn = () => {
         })
     });
 };
+
+export const signInWithEmail = (email, password) => {
+    return new Promise((resolve, reject) => {
+        RNUserKitIdentity.signInWithEmail(email, password, (error, results) => {
+            if (error != null) {
+                reject(JSON.parse(error).message)
+            } else {
+                resolve(results[0])
+            }
+        })
+    });
+};
+
+export const signUpWithEmail = (email, password, properties) => {
+    return new Promise((resolve, reject) => {
+        RNUserKitIdentity.signUpWithEmail(email, password, properties, (error, results) => {
+            if (error != null) {
+                reject(JSON.parse(error).message)
+            } else {
+                resolve(results[0])
+            }
+
+        })
+    })
+};
+
+export const logInWithGoogle = () => {
+    return new Promise((resolve, reject) => {
+        GoogleSignin.configure({
+            iosClientId: config.googleAuthClientId
+        })
+            .then(() => {
+                GoogleSignin.signIn()
+                    .then((user) => {
+                        RNUserKitIdentity.signInWithGooglePlusAccount(user.accessToken, (err, events) => {
+                            if (err) {
+                                reject({message: err});
+                            }
+                            else {
+                                resolve(JSON.parse(events[0]));
+                            }
+                        })
+                    })
+                    .catch((err) => {
+                        reject({message: err});
+                    })
+                    .done();
+            })
+    })
+};
+
+export const logInWithFacebook = () => {
+    return new Promise((resolve, reject)=> {
+        LoginManager.logInWithReadPermissions(['public_profile', 'email']).then(
+            function(result) {
+                if (result.isCancelled) {
+                    reject({message: "Cancelled"});
+                } else {
+                    AccessToken.getCurrentAccessToken().then(value => {
+                        NativeModules.RNUserKitIdentity.signInWithFacebookAccount(value.accessToken, (error, events)=> {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                let result = JSON.parse(events[0]);
+                                resolve(result);
+                            }
+                        });
+                    }).catch((error)=>{
+                        reject(error);
+                    });
+                }
+            },
+            function(error) {
+                reject(error);
+            }
+        );
+    });
+};
+
+
 
 export const checkExperienceField = () => {
     return new Promise((resolve, reject) => {

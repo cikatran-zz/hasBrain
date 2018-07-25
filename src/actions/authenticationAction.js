@@ -1,4 +1,5 @@
 import * as actionTypes from './actionTypes';
+import _ from 'lodash';
 
 
 // CHECK SIGN IN
@@ -99,17 +100,17 @@ export function logInGoogle(token) {
     }
 }
 
-export function logInGoogleSuccess(isNewAccount) {
+export function logInGoogleSuccess(response) {
     return {
         type: actionTypes.LOG_IN_GOOGLE_SUCCESS,
-        newAccount: isNewAccount
+        newAccount: _.get(response,"is_sign_in")
     }
 }
 
 export function logInGoogleFailure(error) {
     return {
         type: actionTypes.LOG_IN_GOOGLE_FAILURE,
-        errorMessage: error
+        errorMessage: error.message
     }
 }
 
@@ -121,16 +122,16 @@ export function logInFacebook(token) {
     }
 }
 
-export function logInFacebookSuccess(isNewAccount) {
+export function logInFacebookSuccess(response) {
     return {
         type: actionTypes.LOG_IN_FACEBOOK_SUCCESS,
-        newAccount: isNewAccount
+        newAccount: _.get(response,"is_sign_in")
     }
 }
 
 export function logInFacebookFailure(error) {
     return {
         type: actionTypes.LOG_IN_FACEBOOK_FAILURE,
-        errorMessage: error
+        errorMessage: error.message
     }
 }
