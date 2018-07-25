@@ -9,6 +9,7 @@ import _ from 'lodash';
 import {forkJoin} from 'rxjs';
 import axios from 'axios'
 import {STAGING} from "../constants/environment";
+import NavigationService from "../NavigationService";
 
 const {RNCustomWebview, RNUserKit, RNUserKitIdentity} = NativeModules;
 
@@ -62,7 +63,7 @@ const postApolloClient = (body) => {
     return new Promise((resolve, reject) => {
         getAuthToken().then((authToken) => {
             const httpLinkContentkit = new HttpLink({
-                uri: config.productionServer,
+                uri: STAGING ? config.stagingServer : config.productionServer,
                 headers: {
                     authorization: config.authenKeyContentKit,
                     usertoken: authToken
@@ -656,6 +657,32 @@ export const getAvatar = () => {
     })
 };
 
+export const checkSignIn = () => {
+    return new Promise((resolve, reject)=> {
+        RNUserKitIdentity.checkSignIn((err, events) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            let result = JSON.parse(events[0]);
+            resolve(result["is_sign_in"]);
+        })
+    });
+};
+
+export const checkExperienceField = () => {
+    return new Promise((resolve, reject) => {
+        NativeModules.RNUserKit.getProperty(strings.mekey+'.'+strings.experienceKey, (error, result)=> {
+            if (error == null && result != null) {
+                let experience = _.get(result[0], strings.mekey+'.'+strings.experienceKey);
+                resolve(!_.isNull(experience));
+            } else {
+                reject(error);
+            }
+        });
+    });
+};
+
 export const getMyInfo = () => {
     return gqlQuery({
         query: config.queries.myInfo
@@ -709,3 +736,4 @@ export const getUserKitProfile = (accountRole = 'contributor', offset = 0, limit
         }
     );
 };
+

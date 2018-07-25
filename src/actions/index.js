@@ -27,6 +27,7 @@ import * as updateReadingHistory from './updateReadingHistory';
 import * as getHighlightByArticle from './getHighlightByArticle'
 import * as removeHighlight from './removeHighlight'
 import * as updateVisitFreq from './updateVisitFreq'
+import * as authenticationActions from './authenticationAction'
 
 export default actions = {
     getSaved,
@@ -57,5 +58,6 @@ export default actions = {
     updateReadingHistory,
     getHighlightByArticle,
     removeHighlight,
-    updateVisitFreq
+    updateVisitFreq,
+    authenticationActions
 }

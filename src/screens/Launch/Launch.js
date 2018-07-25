@@ -1,48 +1,42 @@
 import React from 'react'
 import {
-    View, NativeModules,
+    View,
     ActivityIndicator
 } from 'react-native'
-import {strings} from "../../constants/strings";
-import _ from 'lodash'
-import {postCreateUser} from "../../api";
+import NavigationService from "../../NavigationService";
+import _ from "lodash";
 
-export default class Launch extends React.PureComponent {
+export default class Launch extends React.Component {
 
     constructor(props) {
         super(props);
     }
 
     componentDidMount() {
-        NativeModules.RNUserKitIdentity.checkSignIn((error, results) => {
-            let result = JSON.parse(results[0]);
-            if (result.is_sign_in) {
-               this.props.createUser();
-                NativeModules.RNUserKit.getProperty(strings.mekey+'.'+strings.experienceKey, (error, result)=> {
-                    if (error == null && result != null) {
-                        let experience = _.get(result[0], strings.mekey+'.'+strings.experienceKey);
-                        if (experience == null) {
-                            this.props.navigation.replace('Onboarding');
-                        } else {
-                            this.props.navigation.replace("Home");
-                        }
-                    } else {
-                        NativeModules.RNUserKitIdentity.signOut();
-                        this.props.navigation.replace('Authentication');
-                    }
-                });
-            } else {
-                this.props.navigation.replace('Authentication');
-            }
-        });
+        this.props.checkSignIn();
+        this.props.checkOnboarded();
     }
 
-    render() {
-        return (
-            <View style={{justifyContent:'center', alignItems:'center', flex: 1}}>
-                <ActivityIndicator size="large"/>
-            </View>
-        );
+    componentWillReceiveProps(nextProps) {
+        const {authentication} = nextProps;
+        if (authentication.checkedSignIn && authentication.checkedOnboarded) {
+            if (!authentication.signIn) {
+                NavigationService.reset('Authentication');
+            } else {
+                this.props.createUser();
+                if (authentication.onboarded){
+                    NavigationService.reset("Home");
+                } else {
+                    NavigationService.reset("Onboarding")
+                }
+            }
+        }
     }
+
+    render= ()=>(
+        <View style={{justifyContent:'center', alignItems:'center', flex: 1}}>
+            <ActivityIndicator size="large"/>
+        </View>
+    );
 
 }

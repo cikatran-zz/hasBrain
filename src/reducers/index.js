@@ -31,6 +31,7 @@ import continueReadingReducer from "./continueReadingReducer";
 import articleDetailReducer from "./articleDetailReducer";
 import highlightByArticleReducer from "./highlightByArticleReducer"
 import lastVisitReducer from "./updateVisitFreqReducer"
+import authenticationReducer from "./authenticationReducer";
 
 const myAccountReducer = combineReducers({
     articlesReducer,
@@ -63,7 +64,8 @@ const myAccountReducer = combineReducers({
     continueReadingReducer,
     articleDetailReducer,
     highlightByArticleReducer,
-    lastVisitReducer
+    lastVisitReducer,
+    authenticationReducer
 });
 
 
