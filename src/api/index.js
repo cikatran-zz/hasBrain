@@ -185,10 +185,10 @@ export const postArticleCreateIfNotExist = (article) => {
     })
 };
 
-export const postHighlightText = (articleId, text, position, comment, note) => {
+export const postHighlightText = (data) => {
     return gqlPost({
-        mutation: config.mutation.highlightText,
-        variables: {articleId: articleId, highlightedText: text, comment: comment, note: note, position: position}
+        mutation: config.mutation.createHighlight,
+        variables: data
     })
 };
 

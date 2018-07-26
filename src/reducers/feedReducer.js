@@ -26,6 +26,7 @@ export default function feedReducer(state = initialState, action) {
                 newData = state.data.concat(newData);//_.union(state.data, newData);
             }
             let listUrl = (newData ? newData : []).map(item => _.get(item,'contentData.contentId'));
+            listUrl = _.compact(listUrl);
             NativeModules.RNURLCache.cacheUrls(listUrl);
             //(Platform.OS !== "ios") &&
             let rank = null;

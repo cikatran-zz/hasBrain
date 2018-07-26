@@ -110,7 +110,7 @@ export function logInGoogleSuccess(response) {
 export function logInGoogleFailure(error) {
     return {
         type: actionTypes.LOG_IN_GOOGLE_FAILURE,
-        errorMessage: error.message
+        errorMessage: "Login failure"
     }
 }
 

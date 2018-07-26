@@ -6,8 +6,6 @@ import {
 import {colors} from "../../constants/colors";
 import _ from 'lodash'
 import {strings} from "../../constants/strings";
-import {facebookLogin} from '../../utils/facebookLogin'
-import {googleLogin} from '../../utils/googleLogin'
 import NavigationActions from 'react-navigation/src/NavigationActions'
 import IndicatorModal from "../../components/IndicatorModal";
 import Toast from "react-native-root-toast";

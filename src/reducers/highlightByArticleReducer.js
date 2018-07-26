@@ -19,25 +19,24 @@ export default function highlightByArticleReducer(state = initialState, action) 
                 isFetching: true
             };
         case actionTypes.FETCH_HIGHLIGHT_ARTICLE_SUCCESS:
-            let newData = [];
-            let dataMap = new Map();
-            if (action.data) {
-                if (!_.isEmpty(action.data.highlights)) {
-                    newData = action.data.highlights.map(x=>(x.highlight));
-                    newData = _.compact(newData);
-                    action.data.highlights.forEach((x)=>{
-                        dataMap.set(x.highlight.trim(),x._id)
-                    });
-                }
-
-            }
+            // let newData = [];
+            // let dataMap = new Map();
+            // if (action.data) {
+            //     if (!_.isEmpty(action.data.highlights)) {
+            //         newData = action.data.highlights.map(x=>(x.highlight));
+            //         newData = _.compact(newData);
+            //         action.data.highlights.forEach((x)=>{
+            //             dataMap.set(x.highlight.trim(),x._id)
+            //         });
+            //     }
+            //
+            // }
 
             return {
                 ...state,
                 isFetching: false,
                 fetched: true,
-                data: newData,
-                dataMap: dataMap
+                data: action.data,
             };
         case actionTypes.FETCH_HIGHLIGHT_ARTICLE_FAILURE:
             return {

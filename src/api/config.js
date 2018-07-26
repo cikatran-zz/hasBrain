@@ -904,6 +904,29 @@ query getHighlightByArticle($id: MongoID) {
 }
 `;
 
+const userActionByArticle = gql`
+query userActionByArticle($id: ID){
+  viewer {
+    articleUserAction(filter: {_id: $id}) {
+      userHighlightData {
+        highlights {
+          comment
+          highlight
+          note
+          position
+          prev
+          next
+          core
+          color
+          serialized
+          _id
+        }
+      }
+    }
+  }
+}
+`;
+
 const removeHighlight = gql`
 mutation removeHighlight($articleId: ID!, $highlightId: ID!) {
   user {
@@ -959,6 +982,23 @@ query {
 }
 `;
 
+const createHighlight = gql`
+mutation createHighlight($id: ID!, $core: String, $prev: String, $serialized: String, $next: String) {
+  user {
+    userhighlightAddOrUpdateOne(record: {
+    	core: $core,
+      prev: $prev,
+      serialized: $serialized,
+      next: $next
+    }, filter: {
+      articleId: $id
+    }){
+      recordId
+    }
+  }
+}
+`;
+
 export default {
     stagingServer: 'https://contentkit-api-staging.mstage.io/graphql',
     productionServer: 'https://contentkit-api.mstage.io/graphql',
@@ -988,7 +1028,7 @@ export default {
         getCurrentPath: getCurrentPath,
         articlesMany: getListArticleDetail,
         articleDetail: articleInfo,
-        highlightByArticle: highlightByArticle,
+        highlightByArticle: userActionByArticle,
         myInfo: getMyInfo
     },
     mutation: {
@@ -998,6 +1038,7 @@ export default {
         userInterest: postUserInterest,
         articleCreateIfNotExist: articleCreateIfNotExist,
         highlightText: postHighlightedText,
+        createHighlight: createHighlight,
         createIntent: intentCreate,
         createBookmark: createBookmark,
         removeBookmark: removeBookmark,
