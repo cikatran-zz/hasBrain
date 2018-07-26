@@ -29,6 +29,7 @@
 		5DEE55838ADC4511A663D631 /* libRNGoogleSignin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8250EF119474D258376EE7B /* libRNGoogleSignin.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		63F3DEAB0103471F9A8FF453 /* libAppCenterReactNativeCrashes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F1EC9EDE3946F1A89AF472 /* libAppCenterReactNativeCrashes.a */; };
+		6907BB6621098A2200A86FA4 /* HighlightHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = 6907BB3121098A2100A86FA4 /* HighlightHelper.js */; };
 		690A953120B5286F00079862 /* libCodePush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 690A950820B5286300079862 /* libCodePush.a */; };
 		690DAFD820C146B60097CA9A /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 690DAFD520C1468C0097CA9A /* libRNSVG.a */; };
 		6927DEC9209C64F100FFA275 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6927DEA4209C64F100FFA275 /* Constants.swift */; };
@@ -498,6 +499,7 @@
 		52C26252503F41969C1966DC /* AppCenterReactNative.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AppCenterReactNative.xcodeproj; path = ../node_modules/appcenter/ios/AppCenterReactNative.xcodeproj; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		5FFFBC9C3EEE4BA5B92AC58E /* RNGoogleSignin.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNGoogleSignin.xcodeproj; path = "../node_modules/react-native-google-signin/ios/RNGoogleSignin.xcodeproj"; sourceTree = "<group>"; };
+		6907BB3121098A2100A86FA4 /* HighlightHelper.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = HighlightHelper.js; path = hasBrain/HighlightHelper.js; sourceTree = "<group>"; };
 		690A94FB20B5286300079862 /* CodePush.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CodePush.xcodeproj; path = "../node_modules/react-native-code-push/ios/CodePush.xcodeproj"; sourceTree = "<group>"; };
 		690DAF9E20C1468C0097CA9A /* RNSVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
 		6927DE6E209C627800FFA275 /* hasBrain-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "hasBrain-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -722,6 +724,7 @@
 		13B07FAE1A68108700A75B9A /* hasBrain */ = {
 			isa = PBXGroup;
 			children = (
+				6907BB3121098A2100A86FA4 /* HighlightHelper.js */,
 				69EF676020F5F0DF00074910 /* IQKeyboardManager.bundle */,
 				698937B820E9E774008A04FF /* CircularStd-Black.otf */,
 				698937B420E9E773008A04FF /* CircularStd-BlackItalic.otf */,
@@ -1715,6 +1718,7 @@
 				69BBD6B420FEFB1D008830AD /* Info-Staging.plist in Resources */,
 				698937BA20E9E775008A04FF /* CircularStd-BlackItalic.otf in Resources */,
 				69F78D5820E22BF80013F14C /* circularStdBook.ttf in Resources */,
+				6907BB6621098A2200A86FA4 /* HighlightHelper.js in Resources */,
 				69EF679520F5F0DF00074910 /* IQKeyboardManager.bundle in Resources */,
 				69F4CCD220BFB8DB004AE650 /* GoogleService-Info.plist in Resources */,
 				698937BC20E9E775008A04FF /* CircularStd-BookItalic.otf in Resources */,
@@ -2159,7 +2163,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C0FBC8220E121F627AED903C /* Pods-hasBrain.staging.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Staging";
 				CLANG_ENABLE_MODULES = YES;
 				CODEPUSH_KEY = "ZPt0ZQdlQq2qkxtBU-pdjdfLqVZc46f1de64-eb3a-4a54-97d5-827a4c0e31f9";
 				CURRENT_PROJECT_VERSION = 1;

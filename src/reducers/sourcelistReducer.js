@@ -30,7 +30,7 @@ export default function sourcelistReducer(state = initialState, action) {
             let chosenSources = followSourceData.map(item => {
                 return item.sourceId
             });
-
+            //
             let tags = followTopicData.map((x)=>x.sourceId);
             let tagTitle = new Map();
             followTopicData.forEach((x)=>{
@@ -60,7 +60,7 @@ export default function sourcelistReducer(state = initialState, action) {
                 }
             }
             tags = _.concat("ALL", tags);
-            return {
+            let result = {
                 ...state,
                 isFetching: false,
                 fetched: true,
@@ -70,6 +70,9 @@ export default function sourcelistReducer(state = initialState, action) {
                 tags: tags,
                 tagTitle: tagTitle
             }
+            console.log(result);
+            return result;
+            // return state;
         case actionTypes.UPDATE_USER_SOURCE_TAG:
             return {
                 ...state,

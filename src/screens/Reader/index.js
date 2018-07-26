@@ -25,7 +25,7 @@ function mapDispatchToProps(dispatch) {
         createBookmark: (id, type, trackingType) => dispatch(createBookmark(id, type, trackingType, dispatch)),
         removeBookmark: (id, type, trackingType) => dispatch(removeBookmark(id, type, trackingType, dispatch)),
         getWatchingHistory: (contentId) => dispatch(getWatchingHistory(contentId)),
-        createHighlight: (id, highlight, position, comment, note) => dispatch(createHighlight(id, highlight, position, comment, note, dispatch)),
+        createHighlight: (data) => dispatch(createHighlight(data, dispatch)),
         getArticleDetail: (id)=>dispatch(getArticleDetail(id)),
         getArticleDetailByUrl: (url)=>dispatch(getArticleDetailByUrl(url)),
         updateReadingHistory: (articleId, scrollOffset) => dispatch(updateReadingHistory(articleId, scrollOffset, dispatch)),

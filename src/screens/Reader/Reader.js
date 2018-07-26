@@ -161,20 +161,9 @@ export default class Reader extends React.Component {
 
     _highlight = (highlightObj) => {
         const {_id} = this.props.navigation.state.params;
-
-        let highlightedText = highlightObj.text;
-        if (!highlightedText && highlightObj.error) {
-            this._showMessage(highlightObj.error);
-            if (highlightObj.error === 301) {
-                Alert.alert('Oops!', 'Your highlight should have 10-500 characters and be in one paragraph ', [
-                    {text: 'Got it!'},
-                ])
-            }
-            return;
-        }
         const {articleDetail} = this.props;
         let id = _.get(articleDetail, 'data._id');
-        id && this.props.createHighlight(id, highlightedText, "", "", "")
+        id && this.props.createHighlight({id: id, ...highlightObj})
         this.props.getHighlights(_id);
     };
 
@@ -423,7 +412,7 @@ export default class Reader extends React.Component {
         return (
             <View style={styles.alertWindow}>
                 <CustomWebview source={this.initUrl ? this.initUrl : ""}
-                               highlights={hightlights.data ? hightlights.data : []}
+                               highlightData={JSON.stringify(hightlights.data ? hightlights.data : {highlights:[]})}
                                topInset={66 + rootViewTopPadding()}
                                initPosition={watchingHistory.data ? watchingHistory.data : {}}
                                style={styles.webView}

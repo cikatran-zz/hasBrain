@@ -10,9 +10,9 @@ import {getUserHighLight} from "../actions/getUserHighLight";
 const createHighlightEpic = (action$) =>
     action$.pipe(ofType(actionTypes.CREATING_USER_HIGHLIGHT),
         mergeMap(action =>
-            from(postHighlightText(action.articleId, action.highlight, action.position, action.comment, action.note)).pipe(
+            from(postHighlightText(action.data)).pipe(
                 map(response => {
-                    action.dispatcher(trackHighlight(action.articleId, action.highlight, action.position, action.comment, action.note));
+                    action.dispatcher(trackHighlight(action.data));
                     action.dispatcher(getUserHighLight(1,10));
                     return createHighlightSuccess();
                 }),

@@ -1,4 +1,5 @@
 import * as actionTypes from './actionTypes';
+import _ from 'lodash';
 
 export function getHighlightByArticle(id) {
     return {
@@ -10,7 +11,7 @@ export function getHighlightByArticle(id) {
 export function getHighlightByArticleSuccess(data) {
     return {
         type: actionTypes.FETCH_HIGHLIGHT_ARTICLE_SUCCESS,
-        data: data.viewer.userhighlightOne
+        data: _.get(data, 'viewer.articleUserAction.userHighlightData')
     }
 }
 

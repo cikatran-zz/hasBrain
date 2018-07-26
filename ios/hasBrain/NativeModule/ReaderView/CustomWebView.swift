@@ -15,7 +15,7 @@ var webViewContext = 0
 class CustomWebView: WKWebView {
     
     // MARK: - Private props
-    fileprivate let highlightedJs: String = """
+    fileprivate let _highlightedJs: String = """
     function selectedText(id) {
         var range = window.getSelection().getRangeAt(0);
         var result = window.getSelection().toString();
@@ -34,17 +34,73 @@ class CustomWebView: WKWebView {
     }
     """
     
-    func renderHighlights(text: String, id: String)->String{
-        return """
-        var text = "\(text)"
-        var innerHTML = document.body.innerHTML;
-        var index = innerHTML.indexOf(text);
-        if (index >= 0) {
-            innerHTML = innerHTML.substring(0,index) + '<span style="background-color:yellow" id="\(id)" onclick="window.alert(\\'\(id)\\')">' + innerHTML.substring(index,index+text.length) + "</span>" + innerHTML.substring(index + text.length);
+    fileprivate let createHighlight = """
+    function getHighlighter() {
+      if (!window.minhhienHighlighter) {
+        window.minhhienHighlighter = new window.HighlightHelper();
+      }
+      return window.minhhienHighlighter
+    }
+
+    function createHighlight() {
+      const highlightHelper = getHighlighter();
+
+      selection = document.getSelection()
+      isBackwards = highlightHelper.rangeUtil.isSelectionBackwards(selection)
+      focusRect = highlightHelper.rangeUtil.selectionFocusRect(selection)
+      if (!focusRect) {
+        return
+      }
+      if (!selection.rangeCount || selection.getRangeAt(0).collapsed) {
+        highlightHelper.selectedRanges = []
+      } else {
+        highlightHelper.selectedRanges = [selection.getRangeAt(0)];
+      }
+      highlightHelper.createHighlight().then(result => {
+        if (result.length) {
+          const anchor = result[0];
+          if (anchor && anchor.target && anchor.target.selector) {
+            const textQuoteSelector = anchor.target.selector.find(({ type }) => type === "TextQuoteSelector");
+            if (textQuoteSelector) {
+                window.alert({
+                    core: textQuoteSelector.exact,
+                    prev: textQuoteSelector.prefix,
+                    next: textQuoteSelector.suffix,
+                    serialized: JSON.stringify(anchor.target.selector)
+                })
+            }
+          }
         }
-        document.body.innerHTML = innerHTML;
+      });
+      
+    }
+    createHighlight()
+    """
+    
+    func renderHighlights(data: String) -> String {
+        return """
+        function getHighlighter() {
+            if (!window.minhhienHighlighter) {
+                window.minhhienHighlighter = new window.HighlightHelper();
+            }
+            return window.minhhienHighlighter
+        }
+        function showHighlights() {
+            var highlightData = \(data)
+            highlightData = highlightData.highlights
+            const targets = highlightData.map(({ core, prev, next, serialized }) => ({
+                source: "\(self.source)",
+                selector: JSON.parse(serialized)
+            }));
+            if (targets.length) {
+                const highlightHelper = getHighlighter();
+                highlightHelper.restoreHighlightFromTargets(targets);
+            }
+        }
+        showHighlights();
         """
     }
+    
     fileprivate var isRedirect = false
     
     // MARK: - Public props
@@ -77,7 +133,7 @@ class CustomWebView: WKWebView {
             self.scrollView.contentInset = UIEdgeInsetsMake(CGFloat(topInset.floatValue), 0, 0, 0)
         }
     }
-    public var highlights: [String] = [] {
+    public var highlightData: String = "" {
         didSet {
             showHighlights()
         }
@@ -140,42 +196,44 @@ class CustomWebView: WKWebView {
             source: "window.alert = function(message){window.webkit.messageHandlers.messageBox.postMessage({message:message});};",
             injectionTime: WKUserScriptInjectionTime.atDocumentStart,
             forMainFrameOnly: true))
-//        self.configuration.userContentController.addUserScript(WKUserScript(
-//            source: renderHighlights(),
-//            injectionTime: WKUserScriptInjectionTime.atDocumentStart,
-//            forMainFrameOnly: true))
-        self.configuration.userContentController.addUserScript(WKUserScript(
-            source: highlightedJs,
-            injectionTime: WKUserScriptInjectionTime.atDocumentStart,
-            forMainFrameOnly: true))
+        if let path = Bundle.main.path(forResource: "HighlightHelper", ofType: "js") {
+            self.configuration.userContentController.addUserScript(WKUserScript(source: (try? String(contentsOfFile: path)) ?? "", injectionTime: .atDocumentEnd, forMainFrameOnly: true))
+        }
         self.configuration.userContentController.add(self, name: "messageBox")
     }
     
     func highlight() {
-        let id = "highlight_" + UUID().uuidString.replacingOccurrences(of: "-", with: "_")
-        self.evaluateJavaScript("selectedText(\"\(id)\")") { (result, error) in
-            if let highlightedText = result as? String {
-                let newText = highlightedText.trimmingCharacters(in: .whitespacesAndNewlines)
-                if (newText == "_error") {
-                    self.onHighlight(["error": NSNumber(value: 301) ])
-                    return
-                }
-                self.highlightedText2Id[id] = newText
-                self.onHighlight(["text":newText])
-            }else {
-                print("Error", error)
+        self.evaluateJavaScript(createHighlight) { (result, error) in
+            if (error != nil) {
+                print(error)
             }
         }
+        
+//        let id = "highlight_" + UUID().uuidString.replacingOccurrences(of: "-", with: "_")
+//        self.evaluateJavaScript("selectedText(\"\(id)\")") { (result, error) in
+//            if let highlightedText = result as? String {
+//                let newText = highlightedText.trimmingCharacters(in: .whitespacesAndNewlines)
+//                if (newText == "_error") {
+//                    self.onHighlight(["error": NSNumber(value: 301) ])
+//                    return
+//                }
+//                self.highlightedText2Id[id] = newText
+//                self.onHighlight(["text":newText])
+//            }else {
+//                print("Error", error)
+//            }
+//        }
+    }
+    
+    func insertCSSString(into webView: WKWebView) {
+        let cssString = "highlight-hasbrain { background-color: yellow;}"
+        let jsString = "var style = document.createElement('style'); style.innerHTML = '\(cssString)'; document.head.appendChild(style);"
+        webView.evaluateJavaScript(jsString, completionHandler: nil)
     }
     
     func showHighlights() {
-        
-        highlights.forEach{
-            let text = $0.trimmingCharacters(in: .whitespacesAndNewlines)
-            //let highlightsDes = "\"\(text)\""
-            let id = "highlight_" + UUID().uuidString.replacingOccurrences(of: "-", with: "_")
-            highlightedText2Id[id] = text
-            self.evaluateJavaScript(renderHighlights(text: text, id: id)){ (result, error) in
+        self.evaluateJavaScript(self.renderHighlights(data: self.highlightData)) { (result, error) in
+            if ((error) != nil) {
                 print(error)
             }
         }
@@ -231,10 +289,15 @@ class CustomWebView: WKWebView {
 extension CustomWebView: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "messageBox" {
-            let sentData = message.body as! Dictionary<String, String>
-            
-            if let textId = sentData["message"] as? String, let highlightText = highlightedText2Id[textId] as? String {
-                onHighlightRemove(["text": highlightText, "id": textId])
+            if let sentData = message.body as? Dictionary<String, String> {
+                
+                if let textId = sentData["message"] as? String, let highlightText = highlightedText2Id[textId] as? String {
+                    onHighlightRemove(["text": highlightText, "id": textId])
+                }
+            } else if let sentData = message.body as? Dictionary<String, Any> {
+                if let highlightData = sentData["message"] as? [String:String] {
+                    onHighlight(highlightData)
+                }
             }
         }
     }
@@ -287,6 +350,7 @@ extension CustomWebView: WKNavigationDelegate {
     
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         showHighlights()
+        insertCSSString(into: webView)
         if isRedirect == false {
             if let _url = webView.url {
                 self.onUrlChanged(["url": _url.absoluteString])

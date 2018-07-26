@@ -1,13 +1,9 @@
 import * as actionTypes from './actionTypes';
 
-export function createHighlight(articleId, highlightedText, position, comment, note, dispatch) {
+export function createHighlight(data, dispatch) {
     return {
         type: actionTypes.CREATING_USER_HIGHLIGHT,
-        articleId: articleId,
-        highlight: highlightedText,
-        position: position,
-        comment: comment,
-        note: note,
+        data: data,
         dispatcher: dispatch
     }
 }

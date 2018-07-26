@@ -43,6 +43,14 @@ import articleDetailByUrlEpic from "./articleDetailByUrlRequestEpic";
 import highlightByArticleEpic from "./highlightByArticleRequestEpic";
 import removeHighlightEpic from "./removeHighlightEpic";
 import {getLastVisitEpic, updateLastVisitEpic} from "./updateVisitFreq";
+import {
+    checkOnboardedEpic,
+    checkSignInEpic,
+    logInFacebookEpic,
+    logInGoogleEpic,
+    signInEmailEpic,
+    signUpEmailEpic
+} from "./authenticationEpic";
 
 const rootEpic = combineEpics(
     getSavedEpic,
@@ -86,7 +94,13 @@ const rootEpic = combineEpics(
     removeHighlightEpic,
     getAvatarEpic,
     getLastVisitEpic,
-    updateLastVisitEpic
+    updateLastVisitEpic,
+    checkSignInEpic,
+    checkOnboardedEpic,
+    signInEmailEpic,
+    signUpEmailEpic,
+    logInGoogleEpic,
+    logInFacebookEpic
 );
 
 export default rootEpic;

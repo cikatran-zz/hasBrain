@@ -165,7 +165,6 @@ export default class VerticalRow extends React.PureComponent {
         }
 
         action += getPublishDateDescription(this.props.time);
-
         return (
             <TouchableOpacity onPress={this.props.onClicked}>
                 <Animated.View style={[rowStyles, this.props.style]}>

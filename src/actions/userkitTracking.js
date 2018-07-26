@@ -2,6 +2,7 @@ import * as actionTypes from './actionTypes';
 import {strings} from "../constants/strings";
 import {NativeModules} from 'react-native'
 const {RNUserKit} = NativeModules;
+import _ from 'lodash';
 
 const initAction = {
     type: actionTypes.TRACK_USERKIT_EVENT
@@ -55,14 +56,11 @@ export function trackBookmark(contentId, type){
     };
 }
 
-export function trackHighlight(contentId, text, position, comment, note) {
+export function trackHighlight(data) {
     let props = {
-        [strings.contentEvent.contentId]: contentId,
+        [strings.contentEvent.contentId]: _.get(data, 'id', ''),
         [strings.contentEvent.mediaType]: strings.trackingType.article,
-        [strings.contentHighlighted.highlight]: text,
-        [strings.contentHighlighted.position]: position,
-        [strings.contentHighlighted.comment]: comment,
-        [strings.contentHighlighted.note]: note
+        [strings.contentHighlighted.highlight]: _.get(data, 'core', ''),
     };
     RNUserKit.track(strings.contentHighlighted.event, props);
 
