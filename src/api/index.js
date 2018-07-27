@@ -195,9 +195,15 @@ export const postHighlightText = (data) => {
 _getProfileId = () => {
     return new Promise((resolve, reject) => {
         NativeModules.RNUserKitIdentity.getProfileInfo((error, result) => {
-            console.log("Profile", result);
-            let profileId = result[0].id;
-            resolve(profileId);
+            console.log("Profile", result, error);
+            try {
+                let profileId = result[0].id;
+                resolve(profileId);
+            }
+            catch(e) {
+                console.log(e);
+                reject(e);
+            }
         })
     });
 };

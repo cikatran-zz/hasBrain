@@ -73,7 +73,7 @@ export default class Explore extends React.Component {
         this.props.getSaved();
         this.props.getSourceList();
         this.props.getTopics();
-        this.props.getPathCurrent();
+        // this.props.getPathCurrent();
         this.props.getContinueReading();
 
         this.props.getBookmarkedIds();
