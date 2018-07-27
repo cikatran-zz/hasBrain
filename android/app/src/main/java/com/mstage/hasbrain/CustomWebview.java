@@ -26,13 +26,24 @@ import android.widget.Toast;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.mstage.hasbrain.notification.NotificationCenter;
 import com.mstage.hasbrain.notification.NotificationObserver;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +61,7 @@ public class CustomWebview extends WebView implements NotificationObserver {
     private boolean isScrolling = false;
     private Handler scrollStateHandler = new Handler();
     private int layoutHeight = 0;
-    private ArrayList highlights;
+    private String highlightStr;
     private Map<String, String> highlightedToId = new HashMap<>();
 
     ReactContext reactContext;
@@ -62,41 +73,111 @@ public class CustomWebview extends WebView implements NotificationObserver {
     private class JavascriptInterface {
 
         @android.webkit.JavascriptInterface
-        public void callback(String id) {
-            if (!TextUtils.isEmpty(id) && highlightedToId.containsKey(id))
-                sendRemoveHighlight(highlightedToId.get(id), id);
+        public void callback(String obj) {
+            sendOnHighlight(obj);
         }
     }
 
-    String highlightJS = "javascript: (function selectedText(id) {\n" +
-            "        var range = window.getSelection().getRangeAt(0);\n" +
-            "        var result = window.getSelection().toString();\n" +
-            "        if (result.length >= 10 && result.length <= 500 && result.indexOf('\\\\n') === -1) {\n" +
-            "            span = document.createElement('span');\n" +
-            "            span.style.backgroundColor = \"yellow\";\n" +
-            "            span.appendChild(range.extractContents());\n" +
-            "            span.setAttribute('id', id);\n" +
-            "            span.onclick = function(event) { interface.callback(event.target.id) }\n" +
-            "            range.insertNode(span);\n" +
-            "            return result;\n" +
-            "        }\n" +
-            "        return \"_error\";\n" +
-            "    })('";
+//    String highlightJS = "javascript: (function selectedText(id) {\n" +
+//            "        var range = window.getSelection().getRangeAt(0);\n" +
+//            "        var result = window.getSelection().toString();\n" +
+//            "        if (result.length >= 10 && result.length <= 500 && result.indexOf('\\\\n') === -1) {\n" +
+//            "            span = document.createElement('span');\n" +
+//            "            span.style.backgroundColor = \"yellow\";\n" +
+//            "            span.appendChild(range.extractContents());\n" +
+//            "            span.setAttribute('id', id);\n" +
+//            "            span.onclick = function(event) { interface.callback(event.target.id) }\n" +
+//            "            range.insertNode(span);\n" +
+//            "            return result;\n" +
+//            "        }\n" +
+//            "        return \"_error\";\n" +
+//            "    })('";
 
-    String showHighlightJS = "javascript: (function showHighlights(texts) {\n" +
-            "        var innerHTML = document.body.innerHTML;\n" +
-            "        for (var i = 0; i < texts.length; i++){\n" +
-            "            var index = innerHTML.indexOf(texts[i]);\n" +
-            "            if (index >= 0) {\n" +
-            "                innerHTML = innerHTML.substring(0,index) + '<span style=\"background-color:yellow\" onclick=\"interface.callback(index)\">' + innerHTML.substring(index,index+texts[i].length) + \"</span>\" + innerHTML.substring(index + texts[i].length);\n" +
+    String createHighlights = "javascript: ( function create() {" +
+            "   function getHighlighter() {\n" +
+            "      if (!window.minhhienHighlighter) {\n" +
+            "        window.minhhienHighlighter = new window.HighlightHelper();\n" +
+            "      }\n" +
+            "      return window.minhhienHighlighter\n" +
+            "    }\n" +
+            "\n" +
+            "    function createHighlight() {\n" +
+            "      const highlightHelper = getHighlighter();\n" +
+            "\n" +
+            "      selection = document.getSelection()\n" +
+            "      isBackwards = highlightHelper.rangeUtil.isSelectionBackwards(selection)\n" +
+            "      focusRect = highlightHelper.rangeUtil.selectionFocusRect(selection)\n" +
+            "      if (!focusRect) {\n" +
+            "        return\n" +
+            "      }\n" +
+            "      if (!selection.rangeCount || selection.getRangeAt(0).collapsed) {\n" +
+            "        highlightHelper.selectedRanges = []\n" +
+            "      } else {\n" +
+            "        highlightHelper.selectedRanges = [selection.getRangeAt(0)];\n" +
+            "      }\n" +
+            "      highlightHelper.createHighlight().then(result => {\n" +
+            "        if (result.length) {\n" +
+            "          const anchor = result[0];\n" +
+            "          if (anchor && anchor.target && anchor.target.selector) {\n" +
+            "            const textQuoteSelector = anchor.target.selector.find(({ type }) => type === \"TextQuoteSelector\");\n" +
+            "            if (textQuoteSelector) {\n" +
+            "                window.alert(JSON.stringify({\n" +
+            "                    core: textQuoteSelector.exact,\n" +
+            "                    prev: textQuoteSelector.prefix,\n" +
+            "                    next: textQuoteSelector.suffix,\n" +
+            "                    serialized: JSON.stringify(anchor.target.selector)\n" +
+            "                }))\n" +
+            "            }\n" +
+            "          }\n" +
+            "        }\n" +
+            "      });\n" +
+            "      \n" +
+            "    }\n" +
+            "    createHighlight();" +
+            "})()";
+
+    String cssString = "highlight-hasbrain { background-color: yellow;}";
+    String jsString = "window.alert = function postMsg(message) { interface.callback(message) }; var style = document.createElement('style'); style.innerHTML = '"+ cssString +"'; document.head.appendChild(style);";
+
+    String renderHighlightsJS_first = "javascript: ( function runHighlights() {" +
+            "        function getHighlighter() {\n" +
+            "            if (!window.minhhienHighlighter) {\n" +
+            "                window.minhhienHighlighter = new window.HighlightHelper();\n" +
+            "            }\n" +
+            "            return window.minhhienHighlighter\n" +
+            "        }\n" +
+            "        function showHighlights() {\n" +
+            "            var highlightData = (";
+    String renderHighlightsJS_second = ")\n" +
+            "            highlightData = highlightData.highlights\n" +
+            "            const targets = highlightData.map(({ core, prev, next, serialized }) => ({\n" +
+            "                source: \"\\(self.source)\",\n" +
+            "                selector: JSON.parse(serialized)\n" +
+            "            }));\n" +
+            "            if (targets.length) {\n" +
+            "                const highlightHelper = getHighlighter();\n" +
+            "                highlightHelper.restoreHighlightFromTargets(targets);\n" +
             "            }\n" +
             "        }\n" +
-            "        document.body.innerHTML = innerHTML;\n" +
-            "    }) ([";
+            "        showHighlights();" + jsString +
+            "})()";
 
-    String removeHighlighJS = "javascript: (function removeHighlight(id) {\n" +
-            "       document.getElementById(id.toString()).style=null; \n" +
-            "    }) ('";
+//    String showHighlightJS = "javascript: (function showHighlights(texts) {\n" +
+//            "        var innerHTML = document.body.innerHTML;\n" +
+//            "        for (var i = 0; i < texts.length; i++){\n" +
+//            "            var index = innerHTML.indexOf(texts[i]);\n" +
+//            "            if (index >= 0) {\n" +
+//            "                innerHTML = innerHTML.substring(0,index) + '<span style=\"background-color:yellow\" onclick=\"interface.callback(index)\">' + innerHTML.substring(index,index+texts[i].length) + \"</span>\" + innerHTML.substring(index + texts[i].length);\n" +
+//            "            }\n" +
+//            "        }\n" +
+//            "        document.body.innerHTML = innerHTML;\n" +
+//            "    }) ([";
+
+
+
+//    String removeHighlighJS = "javascript: (function removeHighlight(id) {\n" +
+//            "       document.getElementById(id.toString()).style=null; \n" +
+//            "    }) ('";
 
     String paddingContentJs = "document.getElementsByTagName(\"body\")[0].style.paddingTop = \'" + topInset + "}px\';";
     String marginHeaderJs = "document.getElementsByTagName(\"header\")[0].style.marginTop = \'" + topInset + "px\';";
@@ -190,9 +271,16 @@ public class CustomWebview extends WebView implements NotificationObserver {
         }
     }
 
-    public void sendOnHighlight(String text) {
+    public void sendOnHighlight(String obj) {
+        Gson gson = new Gson();
+        JsonElement jelem = gson.fromJson(obj, JsonElement.class);
+        JsonObject jobj = jelem.getAsJsonObject();
+
         WritableMap event = Arguments.createMap();
-        event.putString("text", text);
+        event.putString("core", jobj.get("core").getAsString());
+        event.putString("prev", jobj.get("prev").getAsString());
+        event.putString("next", jobj.get("next").getAsString());
+        event.putString("serialized", jobj.get("serialized").getAsString());
         ReactContext reactContext = (ReactContext) getContext();
         reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
                 getId(),
@@ -377,7 +465,7 @@ public class CustomWebview extends WebView implements NotificationObserver {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    executeRemoveHighlight(userInfo.getString("id"));
+//                    executeRemoveHighlight(userInfo.getString("id"));
                 }
             });
         }
@@ -471,54 +559,37 @@ public class CustomWebview extends WebView implements NotificationObserver {
     }
 
     public void executeHighlight() {
-        String id = UUID.randomUUID().toString();
-        evaluateJavascript(highlightJS + id + "')", value -> {
-            Log.v("executeHighlight", highlightJS + id + ") " + value);
-            if (value != null) {
-                String text = value.substring(1, value.length() - 1).trim();
-                if (isValidHighlight(text)) {
-                    String newText = text.trim();
-                    sendOnHighlight(text);
-                    highlightedToId.put(id, newText);
-                } else {
-                    WritableMap event = Arguments.createMap();
-                    event.putInt("error", 301);
-                    ReactContext reactContext = (ReactContext) getContext();
-                    reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
-                            getId(),
-                            "highlight",
-                            event);
-                }
-            }
+        evaluateJavascript(createHighlights, value -> {
+
         });
     }
 
-    public void showHightlight(ArrayList highlightedTexts) {
-        for (int i = 0; i < highlightedTexts.size(); i++) {
-            String id = UUID.randomUUID().toString();
-            String text = highlightedTexts.get(i).toString().trim();
-            highlightedToId.put(id, text);
-        }
-
-        StringBuilder string = new StringBuilder("");
-        for (int i = 0; i < highlightedTexts.size(); i++) {
-            string.append("\"").append(highlightedTexts.get(i).toString()).append("\"");
-            if (i != highlightedTexts.size() - 1)
-                string.append(",");
-        }
-
-        StringBuilder idsString = new StringBuilder("");
-        for (int i = 0; i < highlightedTexts.size(); i++) {
-            idsString.append("\"").append(getKey(highlightedTexts.get(i).toString())).append("\"");
-            if (i != highlightedTexts.size() - 1)
-                idsString.append(",");
-        }
-
-        String rendered = renderHighlight(string.toString(), idsString.toString());
-        evaluateJavascript(rendered, value -> {
-            Log.v("showHightlight", value + ' ' + idsString);
-        });
-    }
+//    public void showHightlight(ArrayList highlightedTexts) {
+//        for (int i = 0; i < highlightedTexts.size(); i++) {
+//            String id = UUID.randomUUID().toString();
+//            String text = highlightedTexts.get(i).toString().trim();
+//            highlightedToId.put(id, text);
+//        }
+//
+//        StringBuilder string = new StringBuilder("");
+//        for (int i = 0; i < highlightedTexts.size(); i++) {
+//            string.append("\"").append(highlightedTexts.get(i).toString()).append("\"");
+//            if (i != highlightedTexts.size() - 1)
+//                string.append(",");
+//        }
+//
+//        StringBuilder idsString = new StringBuilder("");
+//        for (int i = 0; i < highlightedTexts.size(); i++) {
+//            idsString.append("\"").append(getKey(highlightedTexts.get(i).toString())).append("\"");
+//            if (i != highlightedTexts.size() - 1)
+//                idsString.append(",");
+//        }
+//
+//        String rendered = renderHighlight(string.toString(), idsString.toString());
+//        evaluateJavascript(rendered, value -> {
+//            Log.v("showHightlight", value + ' ' + idsString);
+//        });
+//    }
 
     public static MenuItem findByTitle(Menu menu, String regex) {
         for (int i = 0; i < menu.size(); ++i) {
@@ -533,8 +604,28 @@ public class CustomWebview extends WebView implements NotificationObserver {
         this.topInset = topInset;
     }
 
-    public void setHighlights(ArrayList highlights) {
-        this.highlights = (ArrayList) highlights.clone();
+    public void setHighlightString(String highlights) {
+        this.highlightStr = highlights;
+    }
+
+    public void injectJs() {
+        String jsFileStr = "";
+        try {
+            InputStream is = getContext().getAssets().open("js/HighlightHelper.js");
+            jsFileStr = convertInputStreamToString(is);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (!TextUtils.isEmpty(jsFileStr)) {
+                evaluateJavascript("javascript:" + jsFileStr, value1 -> {
+                    String highlightJs = renderHighlightsJS_first + getHighlightString() + renderHighlightsJS_second;
+                    evaluateJavascript(highlightJs, value -> {
+
+                    });
+                });
+            }
+        }
     }
 
     public void executePaddingContent() {
@@ -542,50 +633,60 @@ public class CustomWebview extends WebView implements NotificationObserver {
         });
     }
 
-    public ArrayList getHighlights() {
-        return highlights;
+    public String getHighlightString() {
+        return highlightStr;
     }
 
-    public boolean isValidHighlight(String text) {
-        return !text.equals("_error");
-    }
+//    public boolean isValidHighlight(String text) {
+//        return !text.equals("_error");
+//    }
 
-    public void executeRemoveHighlight(String id) {
-        highlightedToId.remove(id);
-        evaluateJavascript(removeHighlighJS + id + "');", value -> {
-            Log.v("executeRemoveHighlight", removeHighlighJS + id + "); " + value);
-        });
-    }
+//    public void executeRemoveHighlight(String id) {
+//        highlightedToId.remove(id);
+//        evaluateJavascript(removeHighlighJS + id + "');", value -> {
+//            Log.v("executeRemoveHighlight", removeHighlighJS + id + "); " + value);
+//        });
+//    }
 
-    public String renderHighlight(String list, String ids) {
-        return  "javascript: (function showHighlights(texts, ids) {\n" +
-                "        var innerHTML = document.body.innerHTML;\n" +
-                "        for (var i = 0; i< texts.length; i++){" +
-                "           var index = innerHTML.indexOf(texts[i]);\n" +
-                "        if (document.getElementById(ids[i]) != null) {\n" +
-                "           var old = document.getElementById(ids[i]);\n" +
-                "           var newOne = document.createElement('span');\n" +
-                "           newOne.innerHTML = texts[i];\n" +
-                "           newOne.setAttribute('id', ids[i]);\n" +
-                "           newOne.setAttribute('style', \"background-color:yellow\");\n" +
-                "           newOne.onclick = function(event) { interface.callback(event.target.id) }\n" +
-                "           old.parentNode.replaceChild(newOne, old);\n" +
-                "            }" +
-                "         else if (index >= 0) {\n" +
-                "               innerHTML = innerHTML.substring(0,index) + '<span id=' + ids[i] + ' onclick=\"interface.callback(\\\'' + ids[i].toString() + '\\\')\" style=\"background-color:yellow\">' + innerHTML.substring(index,index + texts[i].length) + \"</span>\" + innerHTML.substring(index + texts[i].length);\n" +
-                "           }\n" +
-                "           document.body.innerHTML = innerHTML;\n" +
-                "        }" +
-                "        return true;" +
-                "    }) ([" + list + "], [" + ids + "])";
-    }
+//    public String renderHighlight(String list, String ids) {
+//        return  "javascript: (function showHighlights(texts, ids) {\n" +
+//                "        var innerHTML = document.body.innerHTML;\n" +
+//                "        for (var i = 0; i< texts.length; i++){" +
+//                "           var index = innerHTML.indexOf(texts[i]);\n" +
+//                "        if (document.getElementById(ids[i]) != null) {\n" +
+//                "           var old = document.getElementById(ids[i]);\n" +
+//                "           var newOne = document.createElement('span');\n" +
+//                "           newOne.innerHTML = texts[i];\n" +
+//                "           newOne.setAttribute('id', ids[i]);\n" +
+//                "           newOne.setAttribute('style', \"background-color:yellow\");\n" +
+//                "           newOne.onclick = function(event) { interface.callback(event.target.id) }\n" +
+//                "           old.parentNode.replaceChild(newOne, old);\n" +
+//                "            }" +
+//                "         else if (index >= 0) {\n" +
+//                "               innerHTML = innerHTML.substring(0,index) + '<span id=' + ids[i] + ' onclick=\"interface.callback(\\\'' + ids[i].toString() + '\\\')\" style=\"background-color:yellow\">' + innerHTML.substring(index,index + texts[i].length) + \"</span>\" + innerHTML.substring(index + texts[i].length);\n" +
+//                "           }\n" +
+//                "           document.body.innerHTML = innerHTML;\n" +
+//                "        }" +
+//                "        return true;" +
+//                "    }) ([" + list + "], [" + ids + "])";
+//    }
 
-    private String getKey(String value){
-        for(String key : highlightedToId.keySet()){
-            if (highlightedToId.get(key).equals(value.trim())){
-                return key; //return the first found
-            }
+//    private String getKey(String value){
+//        for(String key : highlightedToId.keySet()){
+//            if (highlightedToId.get(key).equals(value.trim())){
+//                return key; //return the first found
+//            }
+//        }
+//        return null;
+//    }
+
+    private String convertInputStreamToString(InputStream is) throws IOException {
+        BufferedReader r = new BufferedReader(new InputStreamReader(is));
+        StringBuilder total = new StringBuilder();
+        String line;
+        while ((line = r.readLine()) != null) {
+            total.append(line).append('\n');
         }
-        return null;
+        return total.toString();
     }
 }

@@ -96,19 +96,10 @@ public class ReactWebviewManager extends SimpleViewManager<CustomWebview> {
         view.scrollToPosition(initPosition.toHashMap());
     }
 
-    @ReactProp(name = "highlights")
-    public void setHighlights(CustomWebview view, ReadableArray highlights) {
-        if (highlights != null) {
-            ArrayList stringParsedList = new ArrayList();
-            for (int i = 0; i < highlights.size(); i++) {
-                stringParsedList.add(highlights.getString(i));
-            }
-            view.setHighlights(stringParsedList);
-        }
-        else view.setHighlights(null);
+    @ReactProp(name = "highlightData")
+    public void setHighlightData(CustomWebview view, String s) {
+        view.setHighlightString(s);
     }
-
-
 
     @Override
     public Map getExportedCustomDirectEventTypeConstants() {

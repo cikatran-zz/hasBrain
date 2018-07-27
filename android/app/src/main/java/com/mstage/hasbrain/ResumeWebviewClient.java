@@ -148,9 +148,8 @@ public class ResumeWebviewClient extends WebViewClient {
         webView.changeState(state.ordinal());
         webView.sendOnNavigationChanged();
         webView.sendOnUrlChanged();
+        webView.injectJs();
         webView.executePaddingContent();
-        if (webView.getHighlights() != null)
-            webView.showHightlight(webView.getHighlights());
     }
 
     public void loadContinueReading(Point current, float scale) {
