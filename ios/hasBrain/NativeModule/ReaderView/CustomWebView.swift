@@ -108,17 +108,17 @@ class CustomWebView: WKWebView {
     public var source: String = "" {
         didSet {
             if let _url = URL(string: source), _url != self.url {
-                
-                let request = URLRequest(url: _url, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad)
-                let cachedUrl = URLCache.shared.cachedResponse(for: request)
-                if cachedUrl == nil {
-                    SwiftURLCache.shared.cacheURL(source)
-                    print("Not load \(source)")
+                //self.load(URLRequest(url: URL(string:"about:blank")!))
+                //let request = URLRequest(url: _url, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad)
+                //let cachedUrl = URLCache.shared.cachedResponse(for: request)
+                //if cachedUrl == nil {
+                    //SwiftURLCache.shared.cacheURL(source)
+                    //print("Not load \(source)")
                     self.load(URLRequest(url: _url, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad) )
-                } else {
+                //} else {
                     print("Load from cache \(source)")
-                    self.load(cachedUrl!.data, mimeType: cachedUrl!.response.mimeType ?? "text/html", characterEncodingName: cachedUrl!.response.textEncodingName ?? "UTF-8", baseURL: cachedUrl!.response.url!.baseURL ?? cachedUrl!.response.url!)
-                }
+                    //self.load(cachedUrl!.data, mimeType: cachedUrl!.response.mimeType ?? "text/html", characterEncodingName: cachedUrl!.response.textEncodingName ?? "UTF-8", baseURL: cachedUrl!.response.url!.baseURL ?? cachedUrl!.response.url!)
+                //}
             }
             
         }

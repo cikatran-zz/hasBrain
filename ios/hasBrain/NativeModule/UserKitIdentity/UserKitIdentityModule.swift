@@ -65,7 +65,7 @@ class UserKitIdentityModule: NSObject {
     }
     
     @objc func isLoggedIn() -> String {
-      return asJSONString(["is_sign_in": module.accountManager.isLoggedIn()]) ?? ""
+      return asJSONString(["is_sign_in": NSNumber(value: module.accountManager.isLoggedIn())]) ?? ""
     }
     
     @objc func profileInfo() -> [String: Any] {
