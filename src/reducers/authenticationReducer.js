@@ -32,11 +32,16 @@ export default function authenticationReducer(state=initialState, action) {
                 onboarded: action.isOnboarded
             };
         case actionTypes.CHECK_ONBOARDED_FAILURE:
+            let error = action.errorMessage;
+            try {
+                error = JSON.parse(action.errorMessage).message;
+            } catch (e) {
+            }
             return {
                 ...state,
                 isCheckingOnboarded: false,
                 checkedOnboarded: true,
-                error: JSON.parse(action.errorMessage).message
+                error: error
             };
         case actionTypes.CHECKING_SIGN_IN:
             return {
