@@ -288,9 +288,7 @@ const getUserHighLight = gql`
                     articleId
                     highlights {
                         comment
-                        highlight
-                        note
-                        position
+                        core
                         _id
                     }
                     state

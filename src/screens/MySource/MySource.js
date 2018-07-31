@@ -20,6 +20,7 @@ import HBText from '../../components/HBText'
 import Sources from './Sources'
 import Topic from './Topic'
 import People from './People'
+import TabItem from "../../components/TabItem";
 
 export default class MySource extends React.Component {
 
@@ -27,6 +28,7 @@ export default class MySource extends React.Component {
         super(props);
         this.state = {
             selectedTab: 0,
+            tabWidth: 0
         };
 
         this._debounceToggleTab = _.debounce(this._selectTab, 500);
@@ -125,27 +127,42 @@ export default class MySource extends React.Component {
                     <HBText style={styles.headerTitle}>Edit interest</HBText>
                 </View>
                 <View style={{backgroundColor: colors.lightGray}}>
-                    <View style={styles.tabContainer}>
-                        <TouchableWithoutFeedback style={{height: 17, width: 73}} onPress={() => this._toggleTab(0)}>
-                            <HBText style={[
-                                styles.tabTitle,
-                                selectedTab == 0 ? {color: colors.blueText} : {color: colors.tagGrayText}
-                            ]}>Source</HBText>
-                        </TouchableWithoutFeedback>
+                    <View style={styles.tabContainer} onLayout={(event) => {
+                        let {width} = event.nativeEvent.layout;
+                        this.setState({tabWidth: (width-20)/3});
+                    }}>
+                        {/*<TouchableWithoutFeedback style={{height: 17, width: 73}} onPress={() => this._toggleTab(0)}>*/}
+                            {/*<HBText style={[*/}
+                                {/*styles.tabTitle,*/}
+                                {/*selectedTab == 0 ? {color: colors.blueText} : {color: colors.tagGrayText}*/}
+                            {/*]}>Source</HBText>*/}
+                        {/*</TouchableWithoutFeedback>*/}
 
-                        <TouchableWithoutFeedback onPress={() => this._toggleTab(1)}>
-                            <HBText style={[
-                                styles.tabTitle,
-                                selectedTab == 1 ? {color: colors.blueText} : {color: colors.tagGrayText}
-                            ]}>People</HBText>
-                        </TouchableWithoutFeedback>
+                        {/*<TouchableWithoutFeedback onPress={() => this._toggleTab(1)}>*/}
+                            {/*<HBText style={[*/}
+                                {/*styles.tabTitle,*/}
+                                {/*selectedTab == 1 ? {color: colors.blueText} : {color: colors.tagGrayText}*/}
+                            {/*]}>People</HBText>*/}
+                        {/*</TouchableWithoutFeedback>*/}
 
-                        <TouchableWithoutFeedback onPress={() => this._toggleTab(2)}>
-                            <HBText style={[
-                                styles.tabTitle,
-                                selectedTab == 2 ? {color: colors.blueText} : {color: colors.tagGrayText}
-                            ]}>Topic</HBText>
-                        </TouchableWithoutFeedback>
+                        {/*<TouchableWithoutFeedback onPress={() => this._toggleTab(2)}>*/}
+                            {/*<HBText style={[*/}
+                                {/*styles.tabTitle,*/}
+                                {/*selectedTab == 2 ? {color: colors.blueText} : {color: colors.tagGrayText}*/}
+                            {/*]}>Topic</HBText>*/}
+                        {/*</TouchableWithoutFeedback>*/}
+                        <TabItem title={"SOURCE"}
+                                 selected={selectedTab === 0}
+                                 style={[styles.tabItem, {width: this.state.tabWidth}]}
+                                 onClicked={()=>this._toggleTab(0)}/>
+                        <TabItem title={"PEOPLE"}
+                                 selected={selectedTab === 1}
+                                 style={[styles.tabItem, {width: this.state.tabWidth}]}
+                                 onClicked={()=>this._toggleTab(1)}/>
+                        <TabItem title={"TOPIC"}
+                                 selected={selectedTab === 2}
+                                 style={[styles.tabItem, {width: this.state.tabWidth}]}
+                                 onClicked={()=>this._toggleTab(2)}/>
                     </View>
                     {this._renderTabContainer()}
                 </View>
@@ -170,8 +187,9 @@ const styles = StyleSheet.create({
     },
     tabContainer: {
         flexDirection: 'row',
-        marginVertical: 10,
-        marginHorizontal: 20
+        justifyContent: 'space-between',
+        width: '100%',
+        paddingHorizontal: 10,
     },
     tabTitle: {
         height: 17,
@@ -246,4 +264,8 @@ const styles = StyleSheet.create({
         fontFamily: 'CircularStd-Book',
         opacity: 0.5
     },
+    tabItem: {
+        height: 36,
+        marginTop: 18
+    }
 });
